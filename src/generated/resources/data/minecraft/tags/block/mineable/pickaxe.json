@@ -1,0 +1,7 @@
+{
+  "values": [
+    "create_solar_powered:solar_panel",
+    "create_solar_powered:solar_heater",
+    "create_solar_powered:heat_pipe"
+  ]
+}

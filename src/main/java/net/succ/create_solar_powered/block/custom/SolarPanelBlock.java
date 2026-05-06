@@ -1,0 +1,62 @@
+package net.succ.create_solar_powered.block.custom;
+
+import com.simibubi.create.content.kinetics.base.KineticBlock;
+import com.simibubi.create.foundation.block.IBE;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.succ.create_solar_powered.block.entity.ModBlockEntities;
+import net.succ.create_solar_powered.block.entity.custom.SolarPanelBlockEntity;
+
+public class SolarPanelBlock extends KineticBlock implements IBE<SolarPanelBlockEntity> {
+
+    public static final BooleanProperty LIT = BlockStateProperties.LIT;
+
+    public SolarPanelBlock(Properties properties) {
+        super(properties);
+        registerDefaultState(defaultBlockState().setValue(LIT, false));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(LIT);
+    }
+
+    @Override
+    public Direction.Axis getRotationAxis(BlockState state) {
+        return Direction.Axis.Y;
+    }
+
+    @Override
+    public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
+        return face == Direction.DOWN;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        if (type == ModBlockEntities.SOLAR_PANEL.get())
+            return (BlockEntityTicker<T>) (BlockEntityTicker<SolarPanelBlockEntity>) (l, p, s, be) -> be.tick();
+        return null;
+    }
+
+    @Override
+    public Class<SolarPanelBlockEntity> getBlockEntityClass() {
+        return SolarPanelBlockEntity.class;
+    }
+
+    @Override
+    public BlockEntityType<? extends SolarPanelBlockEntity> getBlockEntityType() {
+        return ModBlockEntities.SOLAR_PANEL.get();
+    }
+}

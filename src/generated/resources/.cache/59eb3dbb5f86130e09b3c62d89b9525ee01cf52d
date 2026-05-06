@@ -1,0 +1,4 @@
+// 1.21.1	2026-05-06T14:17:20.612029221	Loot Tables
+63c19767d2c6f78dabafa037a60df9b3f367c46c data/create_solar_powered/loot_table/blocks/heat_pipe.json
+fed2923f95e7385f8c872d981639b8b2e838cd94 data/create_solar_powered/loot_table/blocks/solar_heater.json
+c8a81c196f72fd3ed8bc0a89cacee8ce9b082065 data/create_solar_powered/loot_table/blocks/solar_panel.json

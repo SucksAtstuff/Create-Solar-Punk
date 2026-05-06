@@ -1,0 +1,6 @@
+{
+  "block.create_solar_powered.heat_pipe": "Heat Pipe",
+  "block.create_solar_powered.solar_heater": "Solar Heater",
+  "block.create_solar_powered.solar_panel": "Solar Panel",
+  "itemGroup.create_solar_powered": "Create: Solar Powered"
+}
