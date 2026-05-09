@@ -1,0 +1,6 @@
+{
+  "values": [
+    "create_solar_powered:molten_salt",
+    "create_solar_powered:molten_salt_flowing"
+  ]
+}

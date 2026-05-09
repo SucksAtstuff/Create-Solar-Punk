@@ -1,0 +1,10 @@
+{
+  "type": "create_solar_powered:solar_heating",
+  "ingredient": {
+    "item": "minecraft:stone"
+  },
+  "result": {
+    "amount": 1000,
+    "id": "minecraft:lava"
+  }
+}

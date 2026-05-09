@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "create_solar_powered:solar_panel"
+          "name": "create_solar_powered:brass_solar_panel"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "create_solar_powered:blocks/solar_panel"
+  "random_sequence": "create_solar_powered:blocks/brass_solar_panel"
 }

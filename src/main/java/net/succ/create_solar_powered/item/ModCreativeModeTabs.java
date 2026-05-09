@@ -9,6 +9,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.succ.create_solar_powered.Create_solar_powered;
 import net.succ.create_solar_powered.block.ModBlocks;
+import net.succ.create_solar_powered.fluid.ModFluids;
 
 public class ModCreativeModeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
@@ -18,11 +19,14 @@ public class ModCreativeModeTabs {
             CREATIVE_MODE_TABS.register("create_solar_powered_tab", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.create_solar_powered"))
                     .withTabsBefore(CreativeModeTabs.COMBAT)
-                    .icon(() -> ModBlocks.SOLAR_PANEL.get().asItem().getDefaultInstance())
+                    .icon(() -> ModBlocks.ANDESITE_SOLAR_PANEL.get().asItem().getDefaultInstance())
                     .displayItems((parameters, output) -> {
-                        output.accept(ModBlocks.SOLAR_PANEL.get());
+                        output.accept(ModBlocks.ANDESITE_SOLAR_PANEL.get());
+                        output.accept(ModBlocks.BRASS_SOLAR_PANEL.get());
                         output.accept(ModBlocks.SOLAR_HEATER.get());
-                        output.accept(ModBlocks.HEAT_PIPE.get());
+                        output.accept(ModBlocks.SALT_BLOCK.get());
+                        output.accept(ModFluids.MOLTEN_SALT_BUCKET.get());
+                        output.accept(ModBlocks.KINETIC_BATTERY.get());
                     })
                     .build());
 

@@ -20,8 +20,10 @@ public class ModBlockTagProvider extends BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
-                .add(ModBlocks.SOLAR_PANEL.get())
+                .add(ModBlocks.ANDESITE_SOLAR_PANEL.get())
+                .add(ModBlocks.BRASS_SOLAR_PANEL.get())
                 .add(ModBlocks.SOLAR_HEATER.get())
-                .add(ModBlocks.HEAT_PIPE.get());
+                .add(ModBlocks.SALT_BLOCK.get())
+                .add(ModBlocks.KINETIC_BATTERY.get());
     }
 }

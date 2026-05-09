@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "create_solar_powered:block/solar_heater"
+    },
+    "lit=true": {
+      "model": "create_solar_powered:block/solar_heater_lit"
+    }
+  }
+}

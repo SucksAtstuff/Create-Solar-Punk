@@ -15,13 +15,13 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.succ.create_solar_powered.block.entity.ModBlockEntities;
-import net.succ.create_solar_powered.block.entity.custom.SolarPanelBlockEntity;
+import net.succ.create_solar_powered.block.entity.custom.AndesiteSolarPanelBlockEntity;
 
-public class SolarPanelBlock extends KineticBlock implements IBE<SolarPanelBlockEntity> {
+public class AndesiteSolarPanelBlock extends KineticBlock implements IBE<AndesiteSolarPanelBlockEntity> {
 
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
-    public SolarPanelBlock(Properties properties) {
+    public AndesiteSolarPanelBlock(Properties properties) {
         super(properties);
         registerDefaultState(defaultBlockState().setValue(LIT, false));
     }
@@ -45,18 +45,18 @@ public class SolarPanelBlock extends KineticBlock implements IBE<SolarPanelBlock
     @Override
     @SuppressWarnings("unchecked")
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (type == ModBlockEntities.SOLAR_PANEL.get())
-            return (BlockEntityTicker<T>) (BlockEntityTicker<SolarPanelBlockEntity>) (l, p, s, be) -> be.tick();
+        if (type == ModBlockEntities.ANDESITE_SOLAR_PANEL.get())
+            return (BlockEntityTicker<T>) (BlockEntityTicker<AndesiteSolarPanelBlockEntity>) (l, p, s, be) -> be.tick();
         return null;
     }
 
     @Override
-    public Class<SolarPanelBlockEntity> getBlockEntityClass() {
-        return SolarPanelBlockEntity.class;
+    public Class<AndesiteSolarPanelBlockEntity> getBlockEntityClass() {
+        return AndesiteSolarPanelBlockEntity.class;
     }
 
     @Override
-    public BlockEntityType<? extends SolarPanelBlockEntity> getBlockEntityType() {
-        return ModBlockEntities.SOLAR_PANEL.get();
+    public BlockEntityType<? extends AndesiteSolarPanelBlockEntity> getBlockEntityType() {
+        return ModBlockEntities.ANDESITE_SOLAR_PANEL.get();
     }
 }

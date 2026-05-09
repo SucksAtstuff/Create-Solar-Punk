@@ -1,1 +1,4 @@
-// 1.21.1	2026-05-06T04:15:00.89704082	Recipes
+// 1.21.1	2026-05-08T23:38:23.876335192	Recipes
+c4bbad6c617b2549b13fec7a16ef95339ee1d2d2 data/create_solar_powered/recipe/solar_heating/cobblestone_to_lava.json
+82a226064ae6f2f756340c067cdce66fd9c1615a data/create_solar_powered/recipe/solar_heating/salt_to_molten_salt.json
+d5dea584e699c1452acb826742eae002248c6d78 data/create_solar_powered/recipe/solar_heating/stone_to_lava.json

@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "axis=x,lit=false": {
+      "model": "create_solar_powered:block/kinetic_battery",
+      "x": 90,
+      "y": 90
+    },
+    "axis=x,lit=true": {
+      "model": "create_solar_powered:block/kinetic_battery_lit",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y,lit=false": {
+      "model": "create_solar_powered:block/kinetic_battery"
+    },
+    "axis=y,lit=true": {
+      "model": "create_solar_powered:block/kinetic_battery_lit"
+    },
+    "axis=z,lit=false": {
+      "model": "create_solar_powered:block/kinetic_battery",
+      "x": 90
+    },
+    "axis=z,lit=true": {
+      "model": "create_solar_powered:block/kinetic_battery_lit",
+      "x": 90
+    }
+  }
+}

@@ -15,6 +15,11 @@ public class ModLangProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         add("itemGroup.create_solar_powered", "Create: Solar Powered");
+        add("fluid_type.create_solar_powered.molten_salt", "Molten Salt");
+
+        add("create.create_solar_powered.tooltip.fe_header", "Generator Stats");
+        add("create.create_solar_powered.tooltip.generating", "Generating: ");
+        add("create.create_solar_powered.tooltip.stored", "Stored: ");
 
         ModBlocks.BLOCKS.getEntries().forEach(entry ->
                 add(entry.get(), toTitleCase(entry.getId().getPath())));

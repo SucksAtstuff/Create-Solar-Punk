@@ -4,9 +4,9 @@ import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.succ.create_solar_powered.block.custom.SolarPanelBlock;
+import net.succ.create_solar_powered.block.custom.AndesiteSolarPanelBlock;
 
-public class SolarPanelBlockEntity extends GeneratingKineticBlockEntity {
+public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity {
 
     private static final float MORNING_RPM = 8f;
     private static final float NOON_RPM = 16f;
@@ -17,7 +17,7 @@ public class SolarPanelBlockEntity extends GeneratingKineticBlockEntity {
     private static final long EVENING_START = 10000;
     private static final long NIGHT_START   = 12000;
 
-    public SolarPanelBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+    public AndesiteSolarPanelBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
@@ -63,8 +63,8 @@ public class SolarPanelBlockEntity extends GeneratingKineticBlockEntity {
             updateGeneratedRotation();
             boolean active = getGeneratedSpeed() != 0;
             BlockState state = level.getBlockState(worldPosition);
-            if (state.getValue(SolarPanelBlock.LIT) != active)
-                level.setBlock(worldPosition, state.setValue(SolarPanelBlock.LIT, active), 3);
+            if (state.getValue(AndesiteSolarPanelBlock.LIT) != active)
+                level.setBlock(worldPosition, state.setValue(AndesiteSolarPanelBlock.LIT, active), 3);
         }
     }
 }

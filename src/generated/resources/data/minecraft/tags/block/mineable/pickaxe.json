@@ -1,7 +1,9 @@
 {
   "values": [
-    "create_solar_powered:solar_panel",
+    "create_solar_powered:andesite_solar_panel",
+    "create_solar_powered:brass_solar_panel",
     "create_solar_powered:solar_heater",
-    "create_solar_powered:heat_pipe"
+    "create_solar_powered:salt_block",
+    "create_solar_powered:kinetic_battery"
   ]
 }

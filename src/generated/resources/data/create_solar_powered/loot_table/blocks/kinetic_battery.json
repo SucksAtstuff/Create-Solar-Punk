@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "create_solar_powered:heat_pipe"
+          "name": "create_solar_powered:kinetic_battery"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "create_solar_powered:blocks/heat_pipe"
+  "random_sequence": "create_solar_powered:blocks/kinetic_battery"
 }
