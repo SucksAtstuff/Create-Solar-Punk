@@ -34,8 +34,10 @@ Thanks to the following people for their ideas:
 - Multyfora
 - Jimmithy5
 - pumpkin_p._patch
+- yui_riku
+- arccam
 
 ## Links
 
-- [Issues](https://github.com/IsuckAtEverything/create-solar-powered/issues)
-- [Wiki](https://github.com/SucksAtstuff/Create-Solar-Powered/wiki)
+- [Issues](https://github.com/SucksAtstuff/Create-Solar-Punk/issues)
+- [Wiki](https://github.com/SucksAtstuff/Create-Solar-Punk/wiki)
