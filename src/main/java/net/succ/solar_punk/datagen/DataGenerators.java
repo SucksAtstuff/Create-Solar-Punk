@@ -39,5 +39,8 @@ public class DataGenerators {
         generator.addProvider(event.includeClient(), new ModBlockStateProvider(output, existingFileHelper));
         generator.addProvider(event.includeClient(), new ModItemModelProvider(output, existingFileHelper));
         generator.addProvider(event.includeClient(), new ModLangProvider(output));
+
+        // Ponder schematics (client assets — loaded by resource manager)
+        generator.addProvider(event.includeClient(), new ModPonderProvider(output));
     }
 }

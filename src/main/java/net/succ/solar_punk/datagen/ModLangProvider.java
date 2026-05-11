@@ -16,11 +16,68 @@ public class ModLangProvider extends LanguageProvider {
     protected void addTranslations() {
         add("itemGroup.solar_punk", "Create: Solarpunk");
         add("jei.solarpunk.category.solar_heating", "Solar Heating");
+
+        // Ponder tag — format: <namespace>.ponder.tag.<path>
+        add("solarpunk.ponder.tag.solar_machines", "Solar Machines");
+        add("solarpunk.ponder.tag.solar_machines.description", "Machines that harness the power of sunlight");
+
+        // Ponder scene text — format: <namespace>.ponder.<sceneId>.header / .text_N
+        add("solarpunk.ponder.solar_heater_usage.header", "Using the Solar Heater");
+        add("solarpunk.ponder.solar_heater_usage.text_1", "The Solar Heater melts items into fluids using sunlight");
+        add("solarpunk.ponder.solar_heater_usage.text_2", "Right-click to place an item into the input slot");
+        add("solarpunk.ponder.solar_heater_usage.text_3", "During the day with clear skies, the heater slowly processes the item");
+        add("solarpunk.ponder.solar_heater_usage.text_4", "Rain halves the processing speed");
+        add("solarpunk.ponder.solar_heater_usage.text_5", "The resulting fluid fills the output tank — drain it with a pipe or bucket");
+
+        add("solarpunk.ponder.solar_heater_evaporation.header", "Evaporating Salt");
+        add("solarpunk.ponder.solar_heater_evaporation.text_1", "The Solar Heater can also evaporate water into Salt");
+        add("solarpunk.ponder.solar_heater_evaporation.text_2", "Fill the water tank by right-clicking with a water bucket, or pipe water in from the side");
+        add("solarpunk.ponder.solar_heater_evaporation.text_3", "With sunlight present, water slowly evaporates and Salt accumulates in the second slot");
+        add("solarpunk.ponder.solar_heater_evaporation.text_4", "Salt can be smelted into Molten Salt directly in the Solar Heater");
+
+        add("solarpunk.ponder.andesite_panel_usage.header", "Andesite Solar Panel");
+        add("solarpunk.ponder.andesite_panel_usage.text_1", "The Andesite Solar Panel generates Rotational Force from sunlight");
+        add("solarpunk.ponder.andesite_panel_usage.text_2", "It outputs rotation downwards — connect a shaft or machine directly below");
+        add("solarpunk.ponder.andesite_panel_usage.text_3", "At dawn and dusk: 8 RPM with 1024 SU of stress capacity");
+        add("solarpunk.ponder.andesite_panel_usage.text_4", "At noon in clear weather: 16 RPM with 4096 SU of stress capacity");
+        add("solarpunk.ponder.andesite_panel_usage.text_5", "Rain reduces output to dawn levels — night stops generation entirely");
+        add("solarpunk.ponder.andesite_panel_usage.text_6", "The panel must have a clear view of the sky directly above to function");
+
+        add("solarpunk.ponder.brass_panel_usage.header", "Brass Solar Panel");
+        add("solarpunk.ponder.brass_panel_usage.text_1", "The Brass Solar Panel generates Forge Energy (FE) directly from sunlight");
+        add("solarpunk.ponder.brass_panel_usage.text_2", "Connect cables or conduits to any face to transfer the generated power");
+        add("solarpunk.ponder.brass_panel_usage.text_3", "At dawn and dusk: 40 FE/t — at noon in clear weather: 80 FE/t");
+        add("solarpunk.ponder.brass_panel_usage.text_4", "Rain reduces output to dawn levels — the panel must have clear sky access above it");
+
+        add("solarpunk.ponder.heat_battery_filling.header", "Filling the Heat Battery");
+        add("solarpunk.ponder.heat_battery_filling.text_1", "The Heat Battery stores thermal energy in the form of Molten Salt");
+        add("solarpunk.ponder.heat_battery_filling.text_2", "Fill it by right-clicking with a Molten Salt bucket, or piping fluid into any face");
+        add("solarpunk.ponder.heat_battery_filling.text_3", "Fill it to capacity for maximum heat output");
+        add("solarpunk.ponder.heat_battery_filling.text_4", "The block's glow indicates heat level — brighter means hotter");
+
+        add("solarpunk.ponder.heat_battery_usage.header", "Using the Heat Battery");
+        add("solarpunk.ponder.heat_battery_usage.text_1", "A filled Heat Battery acts as a heat source for Create's steam engines");
+        add("solarpunk.ponder.heat_battery_usage.text_2", "Place it directly below a Boiler to supply heat — no fuel required");
+        add("solarpunk.ponder.heat_battery_usage.text_3", "The heat level depends on how much Molten Salt is stored");
+        add("solarpunk.ponder.heat_battery_usage.text_4", "Stored heat dissipates slowly over time — keep it topped up with the Solar Heater");
+
+        add("solarpunk.ponder.kinetic_battery_usage.header", "Using the Kinetic Battery");
+        add("solarpunk.ponder.kinetic_battery_usage.text_1", "The Kinetic Battery stores Rotational Force for later use");
+        add("solarpunk.ponder.kinetic_battery_usage.text_2", "When connected to a spinning network without a Redstone signal, it charges up");
+        add("solarpunk.ponder.kinetic_battery_usage.text_3", "Apply a Redstone signal to discharge — it outputs rotation along its axis");
+        add("solarpunk.ponder.kinetic_battery_usage.text_4", "Discharge output: 16 RPM with 256 SU of stress capacity");
+        add("solarpunk.ponder.kinetic_battery_usage.text_5", "The battery discharges at a constant speed until empty, then stops");
+        add("solarpunk.ponder.kinetic_battery_usage.text_6", "Use it to buffer power from intermittent sources like solar panels");
+
         add("fluid_type.solar_punk.molten_salt", "Molten Salt");
 
         add("create.solar_punk.tooltip.fe_header", "Generator Stats");
         add("create.solar_punk.tooltip.generating", "Generating: ");
         add("create.solar_punk.tooltip.stored", "Stored: ");
+
+        add("create.solar_punk.tooltip.kinetic_battery_header", "Kinetic Battery");
+        add("create.solar_punk.tooltip.charge", "Charge:");
+        add("create.solar_punk.tooltip.runtime", "Runtime:");
 
         add("create.solar_punk.tooltip.heater_header", "Solar Heater");
         add("create.solar_punk.tooltip.melting", "Melting: ");
