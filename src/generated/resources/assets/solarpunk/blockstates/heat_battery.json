@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "heat=0": {
+      "model": "solarpunk:block/heat_battery"
+    },
+    "heat=1": {
+      "model": "solarpunk:block/heat_battery_lit"
+    },
+    "heat=2": {
+      "model": "solarpunk:block/heat_battery_superheated"
+    }
+  }
+}

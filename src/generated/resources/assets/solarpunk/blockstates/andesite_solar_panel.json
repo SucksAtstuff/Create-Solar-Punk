@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "solarpunk:block/andesite_solar_panel"
+    },
+    "lit=true": {
+      "model": "solarpunk:block/andesite_solar_panel_lit"
+    }
+  }
+}

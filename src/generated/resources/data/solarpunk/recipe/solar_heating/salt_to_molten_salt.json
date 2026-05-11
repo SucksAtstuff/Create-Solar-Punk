@@ -1,0 +1,10 @@
+{
+  "type": "solarpunk:solar_heating",
+  "ingredient": {
+    "item": "solarpunk:salt_block"
+  },
+  "result": {
+    "amount": 1000,
+    "id": "solarpunk:molten_salt"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "solarpunk:block/heat_battery",
+  "textures": {
+    "top": "solarpunk:block/heat_battery/heat_battery_top_lit"
+  }
+}

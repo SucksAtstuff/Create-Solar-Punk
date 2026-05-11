@@ -1,10 +1,10 @@
 {
   "values": [
-    "solar_punk:andesite_solar_panel",
-    "solar_punk:brass_solar_panel",
-    "solar_punk:solar_heater",
-    "solar_punk:salt_block",
-    "solar_punk:kinetic_battery",
-    "solar_punk:heat_battery"
+    "solarpunk:andesite_solar_panel",
+    "solarpunk:brass_solar_panel",
+    "solarpunk:solar_heater",
+    "solarpunk:salt_block",
+    "solarpunk:kinetic_battery",
+    "solarpunk:heat_battery"
   ]
 }

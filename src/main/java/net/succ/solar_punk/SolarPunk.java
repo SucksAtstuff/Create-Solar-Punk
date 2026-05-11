@@ -22,7 +22,7 @@ import net.succ.solar_punk.recipe.ModRecipeTypes;
 
 @Mod(SolarPunk.MODID)
 public class SolarPunk {
-    public static final String MODID = "solar_punk";
+    public static final String MODID = "solarpunk";
 
     public SolarPunk(IEventBus modEventBus, ModContainer modContainer) {
         ModFluidTypes.register(modEventBus);

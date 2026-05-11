@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#solarpunk:has_salt_deposits",
+  "features": "solarpunk:salt_deposit",
+  "step": "underground_ores"
+}

@@ -1,0 +1,23 @@
+{
+  "block.solarpunk.andesite_solar_panel": "Andesite Solar Panel",
+  "block.solarpunk.brass_solar_panel": "Brass Solar Panel",
+  "block.solarpunk.heat_battery": "Heat Battery",
+  "block.solarpunk.kinetic_battery": "Kinetic Battery",
+  "block.solarpunk.molten_salt": "Molten Salt",
+  "block.solarpunk.salt_block": "Salt Block",
+  "block.solarpunk.solar_heater": "Solar Heater",
+  "create.solar_punk.tooltip.evaporation": "Evaporation: ",
+  "create.solar_punk.tooltip.fe_header": "Generator Stats",
+  "create.solar_punk.tooltip.generating": "Generating: ",
+  "create.solar_punk.tooltip.heater_header": "Solar Heater",
+  "create.solar_punk.tooltip.melting": "Melting: ",
+  "create.solar_punk.tooltip.output_fluid": "Output: ",
+  "create.solar_punk.tooltip.progress": "Progress: ",
+  "create.solar_punk.tooltip.salt_output": "Salt: ",
+  "create.solar_punk.tooltip.stored": "Stored: ",
+  "create.solar_punk.tooltip.water": "Water: ",
+  "fluid_type.solar_punk.molten_salt": "Molten Salt",
+  "item.solarpunk.molten_salt_bucket": "Molten Salt Bucket",
+  "item.solarpunk.salt": "Salt",
+  "itemGroup.solar_punk": "Create: Solarpunk"
+}
