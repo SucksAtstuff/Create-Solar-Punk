@@ -19,5 +19,6 @@
   "fluid_type.solar_punk.molten_salt": "Molten Salt",
   "item.solarpunk.molten_salt_bucket": "Molten Salt Bucket",
   "item.solarpunk.salt": "Salt",
-  "itemGroup.solar_punk": "Create: Solarpunk"
+  "itemGroup.solar_punk": "Create: Solarpunk",
+  "jei.solarpunk.category.solar_heating": "Solar Heating"
 }

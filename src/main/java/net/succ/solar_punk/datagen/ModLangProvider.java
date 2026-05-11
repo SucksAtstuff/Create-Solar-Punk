@@ -15,6 +15,7 @@ public class ModLangProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         add("itemGroup.solar_punk", "Create: Solarpunk");
+        add("jei.solarpunk.category.solar_heating", "Solar Heating");
         add("fluid_type.solar_punk.molten_salt", "Molten Salt");
 
         add("create.solar_punk.tooltip.fe_header", "Generator Stats");
