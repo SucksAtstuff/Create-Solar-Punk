@@ -1,4 +1,4 @@
-# Create: Solar Powered
+# Create: Solarpunk
 
 A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation and thermal storage to the Create ecosystem.
 

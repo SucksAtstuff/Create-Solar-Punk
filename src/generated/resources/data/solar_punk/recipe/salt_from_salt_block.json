@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "solar_punk:salt_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "solar_punk:salt"
+  }
+}

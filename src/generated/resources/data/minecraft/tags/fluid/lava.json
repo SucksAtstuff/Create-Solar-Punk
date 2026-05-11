@@ -1,6 +1,6 @@
 {
   "values": [
-    "create_solar_powered:molten_salt",
-    "create_solar_powered:molten_salt_flowing"
+    "solar_punk:molten_salt",
+    "solar_punk:molten_salt_flowing"
   ]
 }

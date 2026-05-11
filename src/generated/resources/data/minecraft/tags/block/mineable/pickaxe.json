@@ -1,10 +1,10 @@
 {
   "values": [
-    "create_solar_powered:andesite_solar_panel",
-    "create_solar_powered:brass_solar_panel",
-    "create_solar_powered:solar_heater",
-    "create_solar_powered:salt_block",
-    "create_solar_powered:kinetic_battery",
-    "create_solar_powered:heat_battery"
+    "solar_punk:andesite_solar_panel",
+    "solar_punk:brass_solar_panel",
+    "solar_punk:solar_heater",
+    "solar_punk:salt_block",
+    "solar_punk:kinetic_battery",
+    "solar_punk:heat_battery"
   ]
 }

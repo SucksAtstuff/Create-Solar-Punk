@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "solar_punk:andesite_solar_panel"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "solar_punk:blocks/andesite_solar_panel"
+}

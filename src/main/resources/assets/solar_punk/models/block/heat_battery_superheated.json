@@ -1,0 +1,7 @@
+{
+  "parent": "solar_punk:block/heat_battery",
+  "textures": {
+    "top":      "solar_punk:block/heat_battery/heat_battery_top_superheated",
+    "particle": "solar_punk:block/heat_battery/heat_battery_top_superheated"
+  }
+}

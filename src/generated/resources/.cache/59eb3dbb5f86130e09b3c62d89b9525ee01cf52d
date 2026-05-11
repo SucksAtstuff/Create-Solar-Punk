@@ -1,7 +1,7 @@
-// 1.21.1	2026-05-11T02:39:35.984557011	Loot Tables
-449ab1cf5d9fed38a73222d9be82500bcce826c1 data/create_solar_powered/loot_table/blocks/andesite_solar_panel.json
-86404d2a520ecdef2e5d107b8465f31eeb7d1fa6 data/create_solar_powered/loot_table/blocks/brass_solar_panel.json
-6823b9b307914b468cf485718e3139db5051d860 data/create_solar_powered/loot_table/blocks/heat_battery.json
-ddd752b609f7df60f3922420ba60d2f9160ea3fc data/create_solar_powered/loot_table/blocks/kinetic_battery.json
-42dc89dbbee7a996395ff6da4a9c279575fb083f data/create_solar_powered/loot_table/blocks/salt_block.json
-fed2923f95e7385f8c872d981639b8b2e838cd94 data/create_solar_powered/loot_table/blocks/solar_heater.json
+// 1.21.1	2026-05-11T15:22:45.829790924	Loot Tables
+61fe0bb25d4f43a2ee03d96f67f0cd2ab3a15510 data/solar_punk/loot_table/blocks/andesite_solar_panel.json
+9e1d26f71c89178e96a24cefa4e4188d3ee67d8d data/solar_punk/loot_table/blocks/brass_solar_panel.json
+edb3578c4373a5b41ba732fe670236db8a1e81b7 data/solar_punk/loot_table/blocks/heat_battery.json
+86cc117c795f3e200b2c267bfcb04925896cd05d data/solar_punk/loot_table/blocks/kinetic_battery.json
+fa4e9373e8854f62fc04797b1fcdeea5bc38ec23 data/solar_punk/loot_table/blocks/salt_block.json
+362b17add8a7099248b48196cf08a8c2d6cd60ea data/solar_punk/loot_table/blocks/solar_heater.json

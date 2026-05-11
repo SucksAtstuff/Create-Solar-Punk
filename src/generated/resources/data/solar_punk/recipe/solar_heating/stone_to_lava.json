@@ -1,0 +1,10 @@
+{
+  "type": "solar_punk:solar_heating",
+  "ingredient": {
+    "item": "minecraft:stone"
+  },
+  "result": {
+    "amount": 1000,
+    "id": "minecraft:lava"
+  }
+}

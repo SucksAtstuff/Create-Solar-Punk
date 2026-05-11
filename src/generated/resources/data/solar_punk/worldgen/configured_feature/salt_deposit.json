@@ -1,0 +1,45 @@
+{
+  "type": "minecraft:ore",
+  "config": {
+    "discard_chance_on_air_exposure": 0.0,
+    "size": 20,
+    "targets": [
+      {
+        "state": {
+          "Name": "solar_punk:salt_block"
+        },
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "minecraft:sand"
+        }
+      },
+      {
+        "state": {
+          "Name": "solar_punk:salt_block"
+        },
+        "target": {
+          "block": "minecraft:sandstone",
+          "predicate_type": "minecraft:block_match"
+        }
+      },
+      {
+        "state": {
+          "Name": "solar_punk:salt_block"
+        },
+        "target": {
+          "block": "minecraft:red_sandstone",
+          "predicate_type": "minecraft:block_match"
+        }
+      },
+      {
+        "state": {
+          "Name": "solar_punk:salt_block"
+        },
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "minecraft:terracotta"
+        }
+      }
+    ]
+  }
+}
