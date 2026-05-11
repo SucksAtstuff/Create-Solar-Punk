@@ -24,8 +24,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
         litCustomModelBlock(ModBlocks.ANDESITE_SOLAR_PANEL, false);
         litCustomModelBlock(ModBlocks.BRASS_SOLAR_PANEL, true);
         litAxisModelBlock(ModBlocks.KINETIC_BATTERY, false);
-        litCubeAllBlock(ModBlocks.SOLAR_HEATER, mcLoc("block/iron_block"), mcLoc("block/gold_block"));
-        cubeAllBlock(ModBlocks.SALT_BLOCK, mcLoc("block/calcite"));
+        litCustomModelBlock(ModBlocks.SOLAR_HEATER, true);
+        blockWithItem(ModBlocks.SALT_BLOCK);
+        litCubeAllBlock(ModBlocks.HEAT_BATTERY, mcLoc("block/polished_deepslate"), mcLoc("block/magma"));
     }
 
     // For blocks whose models are hand-crafted (Blockbench).
@@ -82,5 +83,17 @@ public class ModBlockStateProvider extends BlockStateProvider {
                         .modelFile(state.getValue(BlockStateProperties.LIT) ? lit : unlit)
                         .build());
         simpleBlockItem(block.get(), unlit);
+    }
+
+    private void blockWithItem(DeferredBlock<?> deferredBlock){
+        simpleBlockWithItem(deferredBlock.get(), cubeAll(deferredBlock.get()));
+    }
+
+    private void blockItem(DeferredBlock<Block> deferredBlock){
+        simpleBlockItem(deferredBlock.get(), new ModelFile.UncheckedModelFile("succsessentials:block/" + deferredBlock.getId().getPath()));
+    }
+
+    private void blockItemOther(DeferredBlock<Block> deferredBlock, String appendix){
+        simpleBlockItem(deferredBlock.get(), new ModelFile.UncheckedModelFile("succsessentials:block/" + deferredBlock.getId().getPath() + appendix));
     }
 }

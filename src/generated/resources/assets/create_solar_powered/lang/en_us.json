@@ -1,6 +1,7 @@
 {
   "block.create_solar_powered.andesite_solar_panel": "Andesite Solar Panel",
   "block.create_solar_powered.brass_solar_panel": "Brass Solar Panel",
+  "block.create_solar_powered.heat_battery": "Heat Battery",
   "block.create_solar_powered.kinetic_battery": "Kinetic Battery",
   "block.create_solar_powered.molten_salt": "Molten Salt",
   "block.create_solar_powered.salt_block": "Salt Block",
@@ -10,5 +11,6 @@
   "create.create_solar_powered.tooltip.stored": "Stored: ",
   "fluid_type.create_solar_powered.molten_salt": "Molten Salt",
   "item.create_solar_powered.molten_salt_bucket": "Molten Salt Bucket",
+  "item.create_solar_powered.salt": "Salt",
   "itemGroup.create_solar_powered": "Create: Solar Powered"
 }

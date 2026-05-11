@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:ore",
+  "config": {
+    "targets": [
+      {
+        "target": { "predicate_type": "minecraft:tag_match", "tag": "minecraft:sand" },
+        "state": { "Name": "create_solar_powered:salt_block" }
+      },
+      {
+        "target": { "predicate_type": "minecraft:block_match", "block": "minecraft:sandstone" },
+        "state": { "Name": "create_solar_powered:salt_block" }
+      },
+      {
+        "target": { "predicate_type": "minecraft:block_match", "block": "minecraft:red_sandstone" },
+        "state": { "Name": "create_solar_powered:salt_block" }
+      },
+      {
+        "target": { "predicate_type": "minecraft:tag_match", "tag": "minecraft:terracotta" },
+        "state": { "Name": "create_solar_powered:salt_block" }
+      }
+    ],
+    "size": 20,
+    "discard_chance_on_air_exposure": 0.0
+  }
+}

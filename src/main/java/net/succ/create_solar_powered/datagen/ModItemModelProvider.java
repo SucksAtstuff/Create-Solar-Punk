@@ -9,6 +9,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.succ.create_solar_powered.Create_solar_powered;
+import net.succ.create_solar_powered.item.ModItems;
 
 public class ModItemModelProvider extends ItemModelProvider {
     public ModItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
@@ -17,7 +18,8 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        // Register item models here
+        withExistingParent(ModItems.SALT.getId().getPath(), "item/generated")
+                .texture("layer0", ResourceLocation.fromNamespaceAndPath(Create_solar_powered.MODID, "item/salt"));
     }
 
     private ItemModelBuilder handheldItem(DeferredItem<?> item) {

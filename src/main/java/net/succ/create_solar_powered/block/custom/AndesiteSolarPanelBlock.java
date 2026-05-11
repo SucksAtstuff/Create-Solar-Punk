@@ -4,6 +4,7 @@ import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -14,12 +15,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.succ.create_solar_powered.block.entity.ModBlockEntities;
 import net.succ.create_solar_powered.block.entity.custom.AndesiteSolarPanelBlockEntity;
 
 public class AndesiteSolarPanelBlock extends KineticBlock implements IBE<AndesiteSolarPanelBlockEntity> {
 
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
+
+    private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 14, 16);
 
     public AndesiteSolarPanelBlock(Properties properties) {
         super(properties);
@@ -30,6 +35,11 @@ public class AndesiteSolarPanelBlock extends KineticBlock implements IBE<Andesit
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(LIT);
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
     }
 
     @Override

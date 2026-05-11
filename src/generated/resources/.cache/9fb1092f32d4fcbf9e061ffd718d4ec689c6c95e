@@ -1,4 +1,9 @@
-// 1.21.1	2026-05-08T23:38:23.876335192	Recipes
+// 1.21.1	2026-05-11T02:27:09.19643393	Recipes
+a1491c341920523a2c7c569454aba25807d37113 data/create_solar_powered/advancement/recipes/misc/salt_block.json
+248031722df2debd2590b3991a246d446733758d data/create_solar_powered/advancement/recipes/misc/salt_from_salt_block.json
+2fe4564a9146e716bf170338733f4f0ce3b1c9e2 data/create_solar_powered/recipe/salt_block.json
+70444b1659bfd725cb4de21585880bddd39ca38c data/create_solar_powered/recipe/salt_from_salt_block.json
 c4bbad6c617b2549b13fec7a16ef95339ee1d2d2 data/create_solar_powered/recipe/solar_heating/cobblestone_to_lava.json
+17b63cd2a87d7251f98aae8ea25643c6194419fd data/create_solar_powered/recipe/solar_heating/salt_item_to_molten_salt.json
 82a226064ae6f2f756340c067cdce66fd9c1615a data/create_solar_powered/recipe/solar_heating/salt_to_molten_salt.json
 d5dea584e699c1452acb826742eae002248c6d78 data/create_solar_powered/recipe/solar_heating/stone_to_lava.json

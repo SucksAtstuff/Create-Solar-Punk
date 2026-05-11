@@ -8,6 +8,7 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -17,6 +18,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.succ.create_solar_powered.block.entity.ModBlockEntities;
 import net.succ.create_solar_powered.block.entity.custom.SolarHeaterBlockEntity;
@@ -24,6 +28,13 @@ import net.succ.create_solar_powered.block.entity.custom.SolarHeaterBlockEntity;
 public class SolarHeaterBlock extends Block implements IBE<SolarHeaterBlockEntity> {
 
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
+
+    private static final VoxelShape SHAPE = Shapes.or(
+        Block.box(1, 0, 1, 15, 3, 15),   // base plate
+        Block.box(0, 1, 6, 2, 9, 10),    // left arm
+        Block.box(14, 1, 6, 16, 9, 10),  // right arm
+        Block.box(2, 5, 2, 14, 12, 14)   // mirror plate (approx. rotated bounds)
+    );
 
     public SolarHeaterBlock(Properties properties) {
         super(properties);
@@ -70,6 +81,11 @@ public class SolarHeaterBlock extends Block implements IBE<SolarHeaterBlockEntit
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
     }
 
     @Override

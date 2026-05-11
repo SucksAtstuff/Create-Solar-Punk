@@ -1,6 +1,7 @@
-// 1.21.1	2026-05-09T03:18:17.227870896	Loot Tables
+// 1.21.1	2026-05-11T02:39:35.984557011	Loot Tables
 449ab1cf5d9fed38a73222d9be82500bcce826c1 data/create_solar_powered/loot_table/blocks/andesite_solar_panel.json
 86404d2a520ecdef2e5d107b8465f31eeb7d1fa6 data/create_solar_powered/loot_table/blocks/brass_solar_panel.json
+6823b9b307914b468cf485718e3139db5051d860 data/create_solar_powered/loot_table/blocks/heat_battery.json
 ddd752b609f7df60f3922420ba60d2f9160ea3fc data/create_solar_powered/loot_table/blocks/kinetic_battery.json
 42dc89dbbee7a996395ff6da4a9c279575fb083f data/create_solar_powered/loot_table/blocks/salt_block.json
 fed2923f95e7385f8c872d981639b8b2e838cd94 data/create_solar_powered/loot_table/blocks/solar_heater.json

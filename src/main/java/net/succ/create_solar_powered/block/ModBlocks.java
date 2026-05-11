@@ -11,6 +11,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.succ.create_solar_powered.Create_solar_powered;
 import net.succ.create_solar_powered.block.custom.AndesiteSolarPanelBlock;
 import net.succ.create_solar_powered.block.custom.BrassSolarPanelBlock;
+import net.succ.create_solar_powered.block.custom.HeatBatteryBlock;
 import net.succ.create_solar_powered.block.custom.KineticBatteryBlock;
 import net.succ.create_solar_powered.block.custom.SolarHeaterBlock;
 import net.succ.create_solar_powered.item.ModItems;
@@ -30,7 +31,8 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
             () -> new SolarHeaterBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_ORANGE)
                     .requiresCorrectToolForDrops()
-                    .strength(3.5f, 6.0f)));
+                    .strength(3.5f, 6.0f)
+                    .noOcclusion()));
 
     public static final DeferredBlock<KineticBatteryBlock> KINETIC_BATTERY = registerBlock("kinetic_battery",
             () -> new KineticBatteryBlock(BlockBehaviour.Properties.of()
@@ -52,6 +54,13 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
+
+    public static final DeferredBlock<HeatBatteryBlock> HEAT_BATTERY = registerBlock("heat_battery",
+            () -> new HeatBatteryBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.DEEPSLATE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)
+                    .lightLevel(state -> state.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.LIT) ? 7 : 0)));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);
