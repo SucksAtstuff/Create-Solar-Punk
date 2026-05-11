@@ -37,5 +37,5 @@ Thanks to the following people for their ideas:
 
 ## Links
 
-- [Issues](https://github.com/IsuckAtEverything/create-solar-powered/issues)
-- [Wiki](https://github.com/SucksAtstuff/Create-Solar-Powered/wiki)
+- [Issues](https://github.com/SucksAtstuff/Create-Solar-Punk/issues)
+- [Wiki](https://github.com/SucksAtstuff/Create-Solar-Punk/wiki)
