@@ -34,6 +34,8 @@ Thanks to the following people for their ideas:
 - Multyfora
 - Jimmithy5
 - pumpkin_p._patch
+- yui_riku
+- arccam
 
 ## Links
 
