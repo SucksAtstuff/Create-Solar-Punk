@@ -26,7 +26,16 @@ A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation and therma
 5. Place the Heat Battery adjacent to a Create boiler to heat it
 6. For electricity, place a **Brass Solar Panel** with sky access and connect it to your FE network
 
+## Thanks
+
+Thanks to the following people for their ideas:
+
+- Slopton
+- Multyfora
+- Jimmithy5
+- pumpkin_p._patch
+
 ## Links
 
 - [Issues](https://github.com/IsuckAtEverything/create-solar-powered/issues)
-- [Wiki](WIKI.md)
+- [Wiki](https://github.com/SucksAtstuff/Create-Solar-Powered/wiki)
