@@ -1,6 +1,7 @@
 package net.succ.solar_punk.datagen;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -8,6 +9,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluids;
@@ -46,6 +48,59 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .requires(ModBlocks.SALT_BLOCK.get())
                 .unlockedBy("has_salt_block", has(ModBlocks.SALT_BLOCK.get()))
                 .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "salt_from_salt_block"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SOLAR_HEATER.get())
+                .pattern("GGG")
+                .pattern("C C")
+                .pattern("AAA")
+                .define('G', Items.GLASS_PANE)
+                .define('C', Items.COPPER_INGOT)
+                .define('A', createItem("andesite_alloy"))
+                .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ANDESITE_SOLAR_PANEL.get())
+                .pattern("GGG")
+                .pattern("AAA")
+                .pattern("ASA")
+                .define('G', Items.GLASS_PANE)
+                .define('A', createItem("andesite_alloy"))
+                .define('S', createItem("shaft"))
+                .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BRASS_SOLAR_PANEL.get())
+                .pattern("GGG")
+                .pattern("BBB")
+                .pattern("EBE")
+                .define('G', Items.GLASS_PANE)
+                .define('B', createItem("brass_ingot"))
+                .define('E', createItem("electron_tube"))
+                .unlockedBy("has_brass_ingot", has(createItem("brass_ingot")))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.KINETIC_BATTERY.get())
+                .pattern("AAA")
+                .pattern("AFA")
+                .pattern("AAA")
+                .define('A', createItem("andesite_alloy"))
+                .define('F', createItem("flywheel"))
+                .unlockedBy("has_flywheel", has(createItem("flywheel")))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.HEAT_BATTERY.get())
+                .pattern("DDD")
+                .pattern("BSB")
+                .pattern("DDD")
+                .define('D', Items.DEEPSLATE_BRICKS)
+                .define('B', createItem("brass_ingot"))
+                .define('S', ModBlocks.SALT_BLOCK.get())
+                .unlockedBy("has_brass_ingot", has(createItem("brass_ingot")))
+                .save(output);
+    }
+
+    private static Item createItem(String name) {
+        return BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create", name));
     }
 
     private static void solarHeating(RecipeOutput output, String name, Ingredient ingredient, FluidStack result) {

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "create:brass_ingot"
+    },
+    "D": {
+      "item": "minecraft:deepslate_bricks"
+    },
+    "S": {
+      "item": "solarpunk:salt_block"
+    }
+  },
+  "pattern": [
+    "DDD",
+    "BSB",
+    "DDD"
+  ],
+  "result": {
+    "count": 1,
+    "id": "solarpunk:heat_battery"
+  }
+}
