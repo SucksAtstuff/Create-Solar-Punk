@@ -24,6 +24,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.BRASS_SOLAR_PANEL.get())
                 .add(ModBlocks.SOLAR_HEATER.get())
                 .add(ModBlocks.SALT_BLOCK.get())
-                .add(ModBlocks.KINETIC_BATTERY.get());
+                .add(ModBlocks.KINETIC_BATTERY.get())
+                .add(ModBlocks.HEAT_BATTERY.get());
+
     }
 }

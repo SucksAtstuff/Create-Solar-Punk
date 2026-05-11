@@ -24,7 +24,7 @@ public class HeatBatteryBlockEntity extends BlockEntity {
     public static final int TANK_CAPACITY = 8000;
     public static final int MAX_HEAT = 40000;
     private static final int HEAT_PER_MB = 10;
-    private static final int HEAT_DECAY = 3;
+    private static final int HEAT_DECAY = 1;
 
     public final FluidTank fluidTank = new FluidTank(TANK_CAPACITY) {
         @Override
@@ -62,9 +62,9 @@ public class HeatBatteryBlockEntity extends BlockEntity {
             changed = true;
         }
 
-        boolean isLit = heatStored > 0;
-        if (isLit != getBlockState().getValue(HeatBatteryBlock.LIT)) {
-            level.setBlock(worldPosition, getBlockState().setValue(HeatBatteryBlock.LIT, isLit), 3);
+        int newHeat = heatStored <= 0 ? 0 : heatStored >= MAX_HEAT / 4 ? 2 : 1;
+        if (newHeat != getBlockState().getValue(HeatBatteryBlock.HEAT)) {
+            level.setBlock(worldPosition, getBlockState().setValue(HeatBatteryBlock.HEAT, newHeat), 3);
         }
 
         if (changed) setChanged();

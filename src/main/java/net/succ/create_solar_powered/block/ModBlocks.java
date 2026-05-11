@@ -60,7 +60,7 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .mapColor(MapColor.DEEPSLATE)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
-                    .lightLevel(state -> state.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.LIT) ? 7 : 0)));
+                    .lightLevel(state -> state.getValue(HeatBatteryBlock.HEAT) * 4)));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

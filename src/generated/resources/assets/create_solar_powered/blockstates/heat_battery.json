@@ -1,10 +1,13 @@
 {
   "variants": {
-    "lit=false": {
+    "heat=0": {
       "model": "create_solar_powered:block/heat_battery"
     },
-    "lit=true": {
+    "heat=1": {
       "model": "create_solar_powered:block/heat_battery_lit"
+    },
+    "heat=2": {
+      "model": "create_solar_powered:block/heat_battery_superheated"
     }
   }
 }

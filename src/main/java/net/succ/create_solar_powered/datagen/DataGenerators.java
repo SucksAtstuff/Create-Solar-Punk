@@ -30,6 +30,10 @@ public class DataGenerators {
                 new ModItemTagProvider(output, lookupProvider, blockTagProvider.contentsGetter(), existingFileHelper));
         generator.addProvider(event.includeServer(),
                 new ModFluidTagsProvider(output, lookupProvider, existingFileHelper));
+        ModWorldGenProvider worldGenProvider = generator.addProvider(event.includeServer(),
+                new ModWorldGenProvider(output, lookupProvider));
+        generator.addProvider(event.includeServer(),
+                new ModBiomeTagProvider(output, worldGenProvider.getRegistryProvider(), existingFileHelper));
 
         // Client providers
         generator.addProvider(event.includeClient(), new ModBlockStateProvider(output, existingFileHelper));

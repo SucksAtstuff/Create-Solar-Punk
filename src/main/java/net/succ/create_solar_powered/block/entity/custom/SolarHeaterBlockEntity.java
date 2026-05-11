@@ -1,9 +1,14 @@
 package net.succ.create_solar_powered.block.entity.custom;
 
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.foundation.utility.CreateLang;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -21,9 +26,10 @@ import net.succ.create_solar_powered.item.ModItems;
 import net.succ.create_solar_powered.recipe.ModRecipeTypes;
 import net.succ.create_solar_powered.recipe.SolarHeaterRecipe;
 
+import java.util.List;
 import java.util.Optional;
 
-public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.entity.BlockEntity {
+public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.entity.BlockEntity implements IHaveGoggleInformation {
 
     public static final int MAX_PROGRESS = 200;
     public static final int TANK_CAPACITY = 8000;
@@ -173,6 +179,9 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
         }
 
         if (shouldBeLit != currentlyLit) setLit(shouldBeLit);
+
+        if (level.getGameTime() % 20 == 0)
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
     }
 
     private boolean canOutputSalt() {
@@ -245,6 +254,71 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
             Fluid f = BuiltInRegistries.FLUID.getOptional(fluidId).orElse(Fluids.EMPTY);
             if (f != Fluids.EMPTY) waterTank.setFluid(new FluidStack(f, waterTag.getInt("Amount")));
         }
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveWithoutMetadata(registries);
+    }
+
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        CreateLang.translate("create_solar_powered.tooltip.heater_header").forGoggles(tooltip);
+
+        ItemStack input = itemHandler.getStackInSlot(0);
+        if (!input.isEmpty()) {
+            CreateLang.translate("create_solar_powered.tooltip.melting")
+                    .style(ChatFormatting.GRAY)
+                    .add(input.getHoverName().copy().withStyle(ChatFormatting.WHITE))
+                    .forGoggles(tooltip, 1);
+            CreateLang.translate("create_solar_powered.tooltip.progress")
+                    .style(ChatFormatting.GRAY)
+                    .add(CreateLang.number(progress).text(" / " + MAX_PROGRESS).style(ChatFormatting.YELLOW).component())
+                    .forGoggles(tooltip, 1);
+        }
+
+        CreateLang.translate("create_solar_powered.tooltip.water")
+                .style(ChatFormatting.GRAY)
+                .add(CreateLang.number(waterTank.getFluidAmount())
+                        .text(" / " + TANK_CAPACITY + " mB")
+                        .style(ChatFormatting.AQUA)
+                        .component())
+                .forGoggles(tooltip, 1);
+        if (evaporationProgress > 0) {
+            CreateLang.translate("create_solar_powered.tooltip.evaporation")
+                    .style(ChatFormatting.GRAY)
+                    .add(CreateLang.number(evaporationProgress)
+                            .text(" / " + EVAPORATION_TIME)
+                            .style(ChatFormatting.YELLOW)
+                            .component())
+                    .forGoggles(tooltip, 2);
+        }
+
+        if (!fluidTank.isEmpty()) {
+            CreateLang.translate("create_solar_powered.tooltip.output_fluid")
+                    .style(ChatFormatting.GRAY)
+                    .add(fluidTank.getFluid().getHoverName().copy().withStyle(ChatFormatting.YELLOW))
+                    .forGoggles(tooltip, 1);
+            CreateLang.number(fluidTank.getFluidAmount())
+                    .text(" / " + TANK_CAPACITY + " mB")
+                    .style(ChatFormatting.AQUA)
+                    .forGoggles(tooltip, 2);
+        }
+
+        ItemStack saltOutput = itemHandler.getStackInSlot(1);
+        if (!saltOutput.isEmpty()) {
+            CreateLang.translate("create_solar_powered.tooltip.salt_output")
+                    .style(ChatFormatting.GRAY)
+                    .add(CreateLang.number(saltOutput.getCount()).style(ChatFormatting.WHITE).component())
+                    .forGoggles(tooltip, 1);
+        }
+
+        return true;
     }
 
     public int getProgress() { return progress; }

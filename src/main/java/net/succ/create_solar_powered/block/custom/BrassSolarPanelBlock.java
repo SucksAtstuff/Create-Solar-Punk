@@ -1,6 +1,7 @@
 package net.succ.create_solar_powered.block.custom;
 
 import com.mojang.serialization.MapCodec;
+import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -20,7 +21,7 @@ import net.succ.create_solar_powered.block.entity.ModBlockEntities;
 import net.succ.create_solar_powered.block.entity.custom.BrassSolarPanelBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-public class BrassSolarPanelBlock extends BaseEntityBlock {
+public class BrassSolarPanelBlock extends BaseEntityBlock implements IWrenchable {
 
     public static final MapCodec<BrassSolarPanelBlock> CODEC = simpleCodec(BrassSolarPanelBlock::new);
 

@@ -21,6 +21,14 @@ public class ModLangProvider extends LanguageProvider {
         add("create.create_solar_powered.tooltip.generating", "Generating: ");
         add("create.create_solar_powered.tooltip.stored", "Stored: ");
 
+        add("create.create_solar_powered.tooltip.heater_header", "Solar Heater");
+        add("create.create_solar_powered.tooltip.melting", "Melting: ");
+        add("create.create_solar_powered.tooltip.progress", "Progress: ");
+        add("create.create_solar_powered.tooltip.water", "Water: ");
+        add("create.create_solar_powered.tooltip.evaporation", "Evaporation: ");
+        add("create.create_solar_powered.tooltip.output_fluid", "Output: ");
+        add("create.create_solar_powered.tooltip.salt_output", "Salt: ");
+
         ModBlocks.BLOCKS.getEntries().forEach(entry ->
                 add(entry.get(), toTitleCase(entry.getId().getPath())));
 

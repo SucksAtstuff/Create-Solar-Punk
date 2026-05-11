@@ -13,6 +13,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.succ.create_solar_powered.Create_solar_powered;
 import net.succ.create_solar_powered.block.ModBlocks;
+import net.succ.create_solar_powered.block.custom.HeatBatteryBlock;
 
 public class ModBlockStateProvider extends BlockStateProvider {
     public ModBlockStateProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
@@ -24,9 +25,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
         litCustomModelBlock(ModBlocks.ANDESITE_SOLAR_PANEL, false);
         litCustomModelBlock(ModBlocks.BRASS_SOLAR_PANEL, true);
         litAxisModelBlock(ModBlocks.KINETIC_BATTERY, false);
-        litCustomModelBlock(ModBlocks.SOLAR_HEATER, true);
+        litFacingCustomModelBlock(ModBlocks.SOLAR_HEATER, true);
         blockWithItem(ModBlocks.SALT_BLOCK);
-        litCubeAllBlock(ModBlocks.HEAT_BATTERY, mcLoc("block/polished_deepslate"), mcLoc("block/magma"));
+        heatStateModelBlock(ModBlocks.HEAT_BATTERY);
     }
 
     // For blocks whose models are hand-crafted (Blockbench).
@@ -40,6 +41,30 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 ConfiguredModel.builder()
                         .modelFile(state.getValue(BlockStateProperties.LIT) ? lit : unlit)
                         .build());
+
+        if (generateItem) simpleBlockItem(block.get(), unlit);
+    }
+
+    // Like litCustomModelBlock but also handles a HORIZONTAL_FACING property by rotating the model on Y.
+    private void litFacingCustomModelBlock(DeferredBlock<? extends Block> block, boolean generateItem) {
+        String path     = block.getId().getPath();
+        ModelFile unlit = new UncheckedModelFile(modLoc("block/" + path));
+        ModelFile lit   = new UncheckedModelFile(modLoc("block/" + path + "_lit"));
+
+        getVariantBuilder(block.get()).forAllStates(state -> {
+            boolean isLit = state.getValue(BlockStateProperties.LIT);
+            Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+            int yRot = switch (facing) {
+                case EAST  ->  90;
+                case SOUTH -> 180;
+                case WEST  -> 270;
+                default    ->   0; // NORTH
+            };
+            return ConfiguredModel.builder()
+                    .modelFile(isLit ? lit : unlit)
+                    .rotationY(yRot)
+                    .build();
+        });
 
         if (generateItem) simpleBlockItem(block.get(), unlit);
     }
@@ -71,6 +96,22 @@ public class ModBlockStateProvider extends BlockStateProvider {
     // For simple cube-all blocks. Generates the block model, blockstate, and item model.
     private void cubeAllBlock(DeferredBlock<? extends Block> block, ResourceLocation texture) {
         simpleBlockWithItem(block.get(), models().cubeAll(block.getId().getPath(), texture));
+    }
+
+    // For the heat battery: 3 custom models keyed by heat=0/1/2.
+    private void heatStateModelBlock(DeferredBlock<? extends Block> block) {
+        String path = block.getId().getPath();
+        ModelFile off         = new UncheckedModelFile(modLoc("block/" + path));
+        ModelFile lit         = new UncheckedModelFile(modLoc("block/" + path + "_lit"));
+        ModelFile superheated = new UncheckedModelFile(modLoc("block/" + path + "_superheated"));
+
+        getVariantBuilder(block.get()).forAllStates(state -> {
+            int heat = state.getValue(HeatBatteryBlock.HEAT);
+            return ConfiguredModel.builder()
+                    .modelFile(heat == 2 ? superheated : heat == 1 ? lit : off)
+                    .build();
+        });
+        simpleBlockItem(block.get(), off);
     }
 
     // For cube-all blocks with a LIT property, generating two models (unlit and lit).
