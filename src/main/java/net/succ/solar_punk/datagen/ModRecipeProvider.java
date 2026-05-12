@@ -97,6 +97,18 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('S', ModBlocks.SALT_BLOCK.get())
                 .unlockedBy("has_brass_ingot", has(createItem("brass_ingot")))
                 .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.GEYSER_CAP.get())
+                .pattern("RAR")
+                .pattern("SCS")
+                .pattern("AHA")
+                .define('R', createItem("polished_rose_quartz"))
+                .define('A', createItem("andesite_alloy"))
+                .define('C', createItem("andesite_casing"))
+                .define('S', createItem("shaft"))
+                .define('H', createItem("chute"))
+                .unlockedBy("has_andesite_casing", has(createItem("andesite_casing")))
+                .save(output);
     }
 
     private static Item createItem(String name) {

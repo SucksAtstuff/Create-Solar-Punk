@@ -4,6 +4,7 @@ import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -17,12 +18,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.GeyserCapBlockEntity;
 
 public class GeyserCapBlock extends KineticBlock implements IBE<GeyserCapBlockEntity> {
 
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 14, 16);
 
     @Override
@@ -32,23 +35,31 @@ public class GeyserCapBlock extends KineticBlock implements IBE<GeyserCapBlockEn
 
     public GeyserCapBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(LIT, false));
+        registerDefaultState(defaultBlockState().setValue(LIT, false).setValue(FACING, Direction.NORTH));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(LIT);
+        builder.add(LIT, FACING);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection().getOpposite())
+                .setValue(LIT, false);
     }
 
     @Override
     public Direction.Axis getRotationAxis(BlockState state) {
-        return Direction.Axis.X;
+        Direction facing = state.getValue(FACING);
+        return facing.getAxis() == Direction.Axis.Z ? Direction.Axis.X : Direction.Axis.Z;
     }
 
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-        return face == Direction.EAST || face == Direction.WEST;
+        return face.getAxis() == getRotationAxis(state);
     }
 
     @Override

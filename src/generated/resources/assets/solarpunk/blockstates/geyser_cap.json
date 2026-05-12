@@ -1,9 +1,27 @@
 {
   "variants": {
-    "lit=false": {
+    "facing=east,lit=false": {
       "model": "solarpunk:block/geyser_cap"
     },
-    "lit=true": {
+    "facing=east,lit=true": {
+      "model": "solarpunk:block/geyser_cap"
+    },
+    "facing=north,lit=false": {
+      "model": "solarpunk:block/geyser_cap"
+    },
+    "facing=north,lit=true": {
+      "model": "solarpunk:block/geyser_cap"
+    },
+    "facing=south,lit=false": {
+      "model": "solarpunk:block/geyser_cap"
+    },
+    "facing=south,lit=true": {
+      "model": "solarpunk:block/geyser_cap"
+    },
+    "facing=west,lit=false": {
+      "model": "solarpunk:block/geyser_cap"
+    },
+    "facing=west,lit=true": {
       "model": "solarpunk:block/geyser_cap"
     }
   }
