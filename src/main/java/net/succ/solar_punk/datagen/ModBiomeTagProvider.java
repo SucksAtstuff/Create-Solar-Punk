@@ -24,5 +24,12 @@ public class ModBiomeTagProvider extends BiomeTagsProvider {
                 .add(Biomes.DESERT)
                 .addTag(BiomeTags.IS_BADLANDS)
                 .addTag(BiomeTags.IS_SAVANNA);
+
+        tag(ModTags.Biomes.HAS_GEYSERS)
+                .addTag(BiomeTags.IS_MOUNTAIN)
+                .add(Biomes.STONY_SHORE)
+                .add(Biomes.WINDSWEPT_HILLS)
+                .add(Biomes.WINDSWEPT_GRAVELLY_HILLS)
+                .add(Biomes.SAVANNA_PLATEAU);
     }
 }

@@ -17,6 +17,8 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
+        dropSelf(ModBlocks.GEYSER_CAP.get());
+        dropSelf(ModBlocks.GEYSER_VENT.get());
         dropSelf(ModBlocks.ANDESITE_SOLAR_PANEL.get());
         dropSelf(ModBlocks.BRASS_SOLAR_PANEL.get());
         dropSelf(ModBlocks.SOLAR_HEATER.get());

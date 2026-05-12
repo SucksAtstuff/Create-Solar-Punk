@@ -19,6 +19,7 @@ import net.succ.solar_punk.fluid.ModFluidTypes;
 import net.succ.solar_punk.item.ModCreativeModeTabs;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
+import net.succ.solar_punk.worldgen.ModFeatures;
 
 @Mod(SolarPunk.MODID)
 public class SolarPunk {
@@ -32,6 +33,7 @@ public class SolarPunk {
         ModBlockEntities.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
         ModRecipeTypes.register(modEventBus);
+        ModFeatures.register(modEventBus);
 
         modEventBus.addListener(DataGenerators::gatherData);
         modEventBus.addListener(Config::onLoad);

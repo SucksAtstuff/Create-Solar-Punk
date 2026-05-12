@@ -29,6 +29,8 @@ public class ModCreativeModeTabs {
                         output.accept(ModFluids.MOLTEN_SALT_BUCKET.get());
                         output.accept(ModBlocks.KINETIC_BATTERY.get());
                         output.accept(ModBlocks.HEAT_BATTERY.get());
+                        output.accept(ModBlocks.GEYSER_CAP.get());
+                        output.accept(ModBlocks.GEYSER_VENT.get());
                     })
                     .build());
 

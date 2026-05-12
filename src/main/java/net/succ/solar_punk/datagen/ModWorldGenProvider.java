@@ -11,9 +11,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
@@ -25,12 +27,28 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.worldgen.ModFeatures;
 
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
+
+    public static final ResourceKey<ConfiguredFeature<?, ?>> GEYSER_BLOB_CONFIGURED = ResourceKey.create(
+            Registries.CONFIGURED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "geyser_blob")
+    );
+
+    public static final ResourceKey<PlacedFeature> GEYSER_BLOB_PLACED = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "geyser_blob")
+    );
+
+    public static final ResourceKey<BiomeModifier> ADD_GEYSERS = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "add_geysers")
+    );
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> SALT_DEPOSIT_CONFIGURED = ResourceKey.create(
             Registries.CONFIGURED_FEATURE,
@@ -57,6 +75,10 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
     }
 
     private static void bootstrapConfiguredFeatures(BootstrapContext<ConfiguredFeature<?, ?>> context) {
+        context.register(GEYSER_BLOB_CONFIGURED, new ConfiguredFeature<>(
+                ModFeatures.GEYSER_BLOB.get(), NoneFeatureConfiguration.INSTANCE
+        ));
+
         context.register(SALT_DEPOSIT_CONFIGURED, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(
                 List.of(
                         OreConfiguration.target(new TagMatchTest(BlockTags.SAND),
@@ -73,6 +95,14 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
     }
 
     private static void bootstrapPlacedFeatures(BootstrapContext<PlacedFeature> context) {
+        var geyserConfigured = context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(GEYSER_BLOB_CONFIGURED);
+        context.register(GEYSER_BLOB_PLACED, new PlacedFeature(geyserConfigured, List.of(
+                RarityFilter.onAverageOnceEvery(32),
+                InSquarePlacement.spread(),
+                HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG),
+                BiomeFilter.biome()
+        )));
+
         var configured = context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(SALT_DEPOSIT_CONFIGURED);
         context.register(SALT_DEPOSIT_PLACED, new PlacedFeature(configured, List.of(
                 CountPlacement.of(4),
@@ -85,6 +115,13 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
     private static void bootstrapBiomeModifiers(BootstrapContext<BiomeModifier> context) {
         var biomes = context.lookup(Registries.BIOME);
         var placed = context.lookup(Registries.PLACED_FEATURE);
+
+        context.register(ADD_GEYSERS, new BiomeModifiers.AddFeaturesBiomeModifier(
+                biomes.getOrThrow(ModTags.Biomes.HAS_GEYSERS),
+                HolderSet.direct(placed.getOrThrow(GEYSER_BLOB_PLACED)),
+                GenerationStep.Decoration.SURFACE_STRUCTURES
+        ));
+
         context.register(ADD_SALT_DEPOSITS, new BiomeModifiers.AddFeaturesBiomeModifier(
                 biomes.getOrThrow(ModTags.Biomes.HAS_SALT_DEPOSITS),
                 HolderSet.direct(placed.getOrThrow(SALT_DEPOSIT_PLACED)),

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "solarpunk:block/geyser_cap"
+    },
+    "lit=true": {
+      "model": "solarpunk:block/geyser_cap"
+    }
+  }
+}

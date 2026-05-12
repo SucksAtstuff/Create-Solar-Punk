@@ -1,6 +1,8 @@
-// 1.21.1	2026-05-11T15:39:16.147199738	Loot Tables
+// 1.21.1	2026-05-12T20:49:46.028818797	Loot Tables
 652889c5ed40ceeb7e520d54ddf22365b426170b data/solarpunk/loot_table/blocks/andesite_solar_panel.json
 f74d75474d355683aba22149421d6ac3ffa8a340 data/solarpunk/loot_table/blocks/brass_solar_panel.json
+a1958cbc12980e022b4b0b2c612de7e92dd8578e data/solarpunk/loot_table/blocks/geyser_cap.json
+ed5de5b2622edd2921a27d4c564f7de1a90f055f data/solarpunk/loot_table/blocks/geyser_vent.json
 7a0d4d602ae55425e217a45f07b4a877e12f76bb data/solarpunk/loot_table/blocks/heat_battery.json
 e768610a50600a00839e6347b2501634773135e8 data/solarpunk/loot_table/blocks/kinetic_battery.json
 73d512a8cee114736a280fc22b2092b1b6a74f2d data/solarpunk/loot_table/blocks/salt_block.json

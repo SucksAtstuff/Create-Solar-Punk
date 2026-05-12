@@ -1,0 +1,86 @@
+{
+	"format_version": "1.21.110",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.geyser_cap",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "base",
+					"pivot": [0, 5.5, 0],
+					"rotation": [0, 90, 0],
+					"cubes": [
+						{
+							"origin": [-8, 0, -8],
+							"size": [16, 2, 16],
+							"uv": {
+								"north": {"uv": [32, 57], "uv_size": [16, 2]},
+								"east": {"uv": [32, 57], "uv_size": [16, 2]},
+								"south": {"uv": [32, 57], "uv_size": [16, 2]},
+								"west": {"uv": [32, 57], "uv_size": [16, 2]},
+								"up": {"uv": [48, 43], "uv_size": [-16, -16]},
+								"down": {"uv": [63, 31], "uv_size": [-14, -14]}
+							}
+						},
+						{
+							"origin": [-6, 2, -7.05],
+							"size": [12, 10, 14.1],
+							"uv": {
+								"north": {"uv": [50, 47], "uv_size": [12, 10]},
+								"south": {"uv": [50, 47], "uv_size": [12, 10]},
+								"up": {"uv": [62, 30], "uv_size": [-12, -12]},
+								"down": {"uv": [60, 57], "uv_size": [-12, -14]}
+							}
+						},
+						{
+							"origin": [6, 2, -8],
+							"size": [2, 10, 16],
+							"uv": {
+								"north": {"uv": [46, 47], "uv_size": [2, 10]},
+								"east": {"uv": [32, 47], "uv_size": [16, 10]},
+								"south": {"uv": [32, 47], "uv_size": [2, 10]},
+								"west": {"uv": [32, 47], "uv_size": [16, 10]},
+								"up": {"uv": [48, 49], "uv_size": [-16, -2], "uv_rotation": 270}
+							}
+						},
+						{
+							"origin": [-8, 2, -8],
+							"size": [2, 10, 16],
+							"uv": {
+								"north": {"uv": [32, 47], "uv_size": [2, 10]},
+								"east": {"uv": [32, 47], "uv_size": [16, 10]},
+								"south": {"uv": [46, 47], "uv_size": [2, 10]},
+								"west": {"uv": [32, 47], "uv_size": [16, 10]},
+								"up": {"uv": [48, 49], "uv_size": [-16, -2], "uv_rotation": 270}
+							}
+						}
+					]
+				},
+				{
+					"name": "cap",
+					"pivot": [0, 12, 8],
+					"cubes": [
+						{
+							"origin": [-8, 12, -8],
+							"size": [16, 2, 16],
+							"uv": {
+								"north": {"uv": [48, 0], "uv_size": [16, 2]},
+								"east": {"uv": [48, 0], "uv_size": [16, 2]},
+								"south": {"uv": [48, 0], "uv_size": [16, 2]},
+								"west": {"uv": [48, 0], "uv_size": [16, 2]},
+								"up": {"uv": [48, 0], "uv_size": [16, 16]},
+								"down": {"uv": [48, 16], "uv_size": [16, -16]}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

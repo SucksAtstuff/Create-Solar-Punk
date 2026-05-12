@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "solarpunk:block/geyser_vent"
+    }
+  }
+}

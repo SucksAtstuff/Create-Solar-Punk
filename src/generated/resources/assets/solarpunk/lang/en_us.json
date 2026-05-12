@@ -1,6 +1,8 @@
 {
   "block.solarpunk.andesite_solar_panel": "Andesite Solar Panel",
   "block.solarpunk.brass_solar_panel": "Brass Solar Panel",
+  "block.solarpunk.geyser_cap": "Geyser Cap",
+  "block.solarpunk.geyser_vent": "Geyser Vent",
   "block.solarpunk.heat_battery": "Heat Battery",
   "block.solarpunk.kinetic_battery": "Kinetic Battery",
   "block.solarpunk.molten_salt": "Molten Salt",

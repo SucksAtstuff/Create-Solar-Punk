@@ -11,5 +11,10 @@ public class ModTags {
                 Registries.BIOME,
                 ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "has_salt_deposits")
         );
+
+        public static final TagKey<Biome> HAS_GEYSERS = TagKey.create(
+                Registries.BIOME,
+                ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "has_geysers")
+        );
     }
 }

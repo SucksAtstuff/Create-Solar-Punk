@@ -22,6 +22,14 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
+        // No geometry — GeckoLib renders everything. The hand-crafted model only supplies the particle texture.
+        ModelFile geyserCapBlock = new UncheckedModelFile(modLoc("block/geyser_cap"));
+        getVariantBuilder(ModBlocks.GEYSER_CAP.get()).forAllStates(state ->
+                ConfiguredModel.builder().modelFile(geyserCapBlock).build());
+        itemModels().withExistingParent("geyser_cap", modLoc("block/geyser_cap_display"));
+
+        blockWithItem(ModBlocks.GEYSER_VENT);
+
         litCustomModelBlock(ModBlocks.ANDESITE_SOLAR_PANEL, false);
         litCustomModelBlock(ModBlocks.BRASS_SOLAR_PANEL, true);
         litAxisModelBlock(ModBlocks.KINETIC_BATTERY, false);

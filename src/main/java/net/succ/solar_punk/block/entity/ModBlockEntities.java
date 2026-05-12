@@ -8,6 +8,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.entity.custom.AndesiteSolarPanelBlockEntity;
+import net.succ.solar_punk.block.entity.custom.GeyserCapBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BrassSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticBatteryBlockEntity;
@@ -16,6 +17,11 @@ import net.succ.solar_punk.block.entity.custom.SolarHeaterBlockEntity;
 public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, SolarPunk.MODID);
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GeyserCapBlockEntity>> GEYSER_CAP =
+            BLOCK_ENTITIES.register("geyser_cap", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new GeyserCapBlockEntity(ModBlockEntities.GEYSER_CAP.get(), pos, state), ModBlocks.GEYSER_CAP.get())
+                    .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SolarHeaterBlockEntity>> SOLAR_HEATER =
             BLOCK_ENTITIES.register("solar_heater", () -> BlockEntityType.Builder
