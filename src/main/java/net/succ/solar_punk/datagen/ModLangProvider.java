@@ -79,6 +79,11 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.charge", "Charge:");
         add("create.solar_punk.tooltip.runtime", "Runtime:");
 
+        add("create.solar_punk.tooltip.heat_battery_header", "Heat Battery");
+        add("create.solar_punk.tooltip.heat_level", "Level: ");
+        add("create.solar_punk.tooltip.heat_stored", "Heat: ");
+        add("create.solar_punk.tooltip.molten_salt", "Molten Salt: ");
+
         add("create.solar_punk.tooltip.heater_header", "Solar Heater");
         add("create.solar_punk.tooltip.melting", "Melting: ");
         add("create.solar_punk.tooltip.progress", "Progress: ");
