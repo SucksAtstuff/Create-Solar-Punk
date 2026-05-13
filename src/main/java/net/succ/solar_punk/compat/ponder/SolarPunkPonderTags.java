@@ -22,7 +22,6 @@ public class SolarPunkPonderTags {
                 .add(ModBlocks.SOLAR_HEATER.getId())
                 .add(ModBlocks.ANDESITE_SOLAR_PANEL.getId())
                 .add(ModBlocks.BRASS_SOLAR_PANEL.getId())
-                .add(ModBlocks.HEAT_BATTERY.getId())
-                .add(ModBlocks.KINETIC_BATTERY.getId());
+                .add(ModBlocks.HEAT_BATTERY.getId());
     }
 }

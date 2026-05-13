@@ -70,6 +70,12 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.kinetic_battery_usage.text_5", "The battery discharges at a constant speed until empty, then stops");
         add("solarpunk.ponder.kinetic_battery_usage.text_6", "Use it to buffer power from intermittent sources like solar panels");
 
+        add("solarpunk.ponder.geyser_cap_usage.header", "Geyser Cap");
+        add("solarpunk.ponder.geyser_cap_usage.text_1", "Geyser Vents naturally generate in hot, arid biomes");
+        add("solarpunk.ponder.geyser_cap_usage.text_2", "Place a Geyser Cap directly on top of a Geyser Vent to harness its energy");
+        add("solarpunk.ponder.geyser_cap_usage.text_3", "While active, the cap generates 32 RPM with 16384 SU of stress capacity");
+        add("solarpunk.ponder.geyser_cap_usage.text_4", "Rotation is output along the cap's sides — connect shafts or machines to collect the power");
+
         add("create.solar_punk.tooltip.fe_header", "Generator Stats");
         add("create.solar_punk.tooltip.generating", "Generating: ");
         add("create.solar_punk.tooltip.stored", "Stored: ");

@@ -73,6 +73,14 @@ public class ModPonderProvider implements DataProvider {
                 // facing=north → press shaft connects on south face toward battery
                 .addBlock(2, 1, 1, "create:shaft", "axis", "z")
                 .addBlock(2, 1, 0, "create:mechanical_press", "facing", "north"));
+
+        // cap facing=north → rotation axis=X → shafts connect on east/west (x axis)
+        SCHEMATICS.put("geyser_cap/usage", new SceneStructure()
+                .withBasePlate()
+                .addBlock(2, 1, 2, "solarpunk:geyser_vent")
+                .addBlock(2, 2, 2, "solarpunk:geyser_cap", "facing", "north", "lit", "false")
+                .addBlock(1, 2, 2, "create:shaft", "axis", "x")
+                .addBlock(3, 2, 2, "create:shaft", "axis", "x"));
     }
 
     // -------------------------------------------------------------------------

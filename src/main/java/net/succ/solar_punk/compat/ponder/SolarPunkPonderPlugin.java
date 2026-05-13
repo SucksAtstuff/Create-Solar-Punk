@@ -32,6 +32,9 @@ public class SolarPunkPonderPlugin implements PonderPlugin {
 
         helper.addStoryBoard(ModBlocks.KINETIC_BATTERY.getId(), "kinetic_battery/usage",
                 KineticBatteryScenes::usage, SolarPunkPonderTags.SOLAR_MACHINES);
+
+        helper.addStoryBoard(ModBlocks.GEYSER_CAP.getId(), "geyser_cap/usage",
+                GeyserCapScenes::usage, SolarPunkPonderTags.SOLAR_MACHINES);
     }
 
     @Override
