@@ -20,6 +20,10 @@ public class ModFluidTypes {
             ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "block/molten_salt_flow");
     public static final ResourceLocation WATER_OVERLAY =
             ResourceLocation.parse("block/water_overlay");
+    public static final ResourceLocation WATER_STILL =
+            ResourceLocation.parse("minecraft:block/water_still");
+    public static final ResourceLocation WATER_FLOW =
+            ResourceLocation.parse("minecraft:block/water_flow");
 
     public static final Supplier<FluidType> MOLTEN_SALT_TYPE = FLUID_TYPES.register("molten_salt",
             () -> new BaseFluidType(
@@ -32,6 +36,19 @@ public class ModFluidTypes {
                             .density(3000)
                             .viscosity(6000)
                             .temperature(2100)
+            ));
+
+    public static final Supplier<FluidType> BIOFUEL_TYPE = FLUID_TYPES.register("biofuel",
+            () -> new BaseFluidType(
+                    WATER_STILL,
+                    WATER_FLOW,
+                    WATER_OVERLAY,
+                    0xFF4A7C3F,
+                    new Vector3f(74f / 255f, 124f / 255f, 63f / 255f),
+                    FluidType.Properties.create()
+                            .density(1000)
+                            .viscosity(1000)
+                            .temperature(300)
             ));
 
     public static void register(IEventBus eventBus) {

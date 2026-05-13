@@ -1,5 +1,6 @@
 {
   "block.solarpunk.andesite_solar_panel": "Andesite Solar Panel",
+  "block.solarpunk.biofuel": "Biofuel",
   "block.solarpunk.brass_solar_panel": "Brass Solar Panel",
   "block.solarpunk.geyser_cap": "Geyser Cap",
   "block.solarpunk.geyser_vent": "Geyser Vent",
@@ -25,7 +26,11 @@
   "create.solar_punk.tooltip.salt_output": "Salt: ",
   "create.solar_punk.tooltip.stored": "Stored: ",
   "create.solar_punk.tooltip.water": "Water: ",
+  "fluid_type.solarpunk.biofuel": "Biofuel",
   "fluid_type.solarpunk.molten_salt": "Molten Salt",
+  "item.solarpunk.biofuel_bucket": "Biofuel Bucket",
+  "item.solarpunk.biomass": "Biomass",
+  "item.solarpunk.biomass_pellet": "Biomass Pellet",
   "item.solarpunk.molten_salt_bucket": "Molten Salt Bucket",
   "item.solarpunk.salt": "Salt",
   "itemGroup.solar_punk": "Create: Solarpunk",

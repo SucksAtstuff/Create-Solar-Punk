@@ -44,6 +44,26 @@ public class ModFluids {
             .block(MOLTEN_SALT_BLOCK)
             .bucket(MOLTEN_SALT_BUCKET);
 
+    public static final Supplier<FlowingFluid> BIOFUEL_SOURCE = FLUIDS.register("biofuel",
+            () -> new BaseFlowingFluid.Source(ModFluids.BIOFUEL_PROPERTIES));
+    public static final Supplier<FlowingFluid> BIOFUEL_FLOWING = FLUIDS.register("biofuel_flowing",
+            () -> new BaseFlowingFluid.Flowing(ModFluids.BIOFUEL_PROPERTIES));
+
+    public static final DeferredBlock<LiquidBlock> BIOFUEL_BLOCK = ModBlocks.BLOCKS.register("biofuel",
+            () -> new LiquidBlock(BIOFUEL_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.WATER)
+                    .mapColor(MapColor.COLOR_GREEN)));
+
+    public static final DeferredItem<BucketItem> BIOFUEL_BUCKET = ModItems.ITEMS.registerItem("biofuel_bucket",
+            properties -> new BucketItem(BIOFUEL_SOURCE.get(), properties.stacksTo(1).craftRemainder(Items.BUCKET)));
+
+    public static final BaseFlowingFluid.Properties BIOFUEL_PROPERTIES = new BaseFlowingFluid.Properties(
+            ModFluidTypes.BIOFUEL_TYPE, BIOFUEL_SOURCE, BIOFUEL_FLOWING)
+            .tickRate(5)
+            .slopeFindDistance(4)
+            .levelDecreasePerBlock(1)
+            .block(BIOFUEL_BLOCK)
+            .bucket(BIOFUEL_BUCKET);
+
     public static void register(IEventBus eventBus) {
         FLUIDS.register(eventBus);
     }

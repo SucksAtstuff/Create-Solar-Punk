@@ -20,7 +20,10 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         basicItem(ModItems.SALT.get());
+        basicItem(ModItems.BIOMASS.get());
+        basicItem(ModItems.BIOMASS_PELLET.get());
         basicItem(ModFluids.MOLTEN_SALT_BUCKET.get());
+        basicItem(ModFluids.BIOFUEL_BUCKET.get());
 
     }
     private ItemModelBuilder handheldItem(DeferredItem<?> item) {
