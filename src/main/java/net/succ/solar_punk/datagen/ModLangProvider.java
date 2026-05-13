@@ -5,6 +5,7 @@ import net.minecraft.world.item.BlockItem;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.fluid.ModFluidTypes;
 import net.succ.solar_punk.item.ModItems;
 
 public class ModLangProvider extends LanguageProvider {
@@ -69,8 +70,6 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.kinetic_battery_usage.text_5", "The battery discharges at a constant speed until empty, then stops");
         add("solarpunk.ponder.kinetic_battery_usage.text_6", "Use it to buffer power from intermittent sources like solar panels");
 
-        add("fluid_type.solar_punk.molten_salt", "Molten Salt");
-
         add("create.solar_punk.tooltip.fe_header", "Generator Stats");
         add("create.solar_punk.tooltip.generating", "Generating: ");
         add("create.solar_punk.tooltip.stored", "Stored: ");
@@ -98,6 +97,10 @@ public class ModLangProvider extends LanguageProvider {
         ModItems.ITEMS.getEntries().stream()
                 .filter(entry -> !(entry.get() instanceof BlockItem))
                 .forEach(entry -> add(entry.get(), toTitleCase(entry.getId().getPath())));
+
+        ModFluidTypes.FLUID_TYPES.getEntries().forEach(entry ->
+                add("fluid_type." + entry.getId().getNamespace() + "." + entry.getId().getPath(),
+                        toTitleCase(entry.getId().getPath())));
     }
 
     private static String toTitleCase(String name) {

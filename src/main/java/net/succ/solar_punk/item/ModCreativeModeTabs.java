@@ -24,13 +24,13 @@ public class ModCreativeModeTabs {
                         output.accept(ModBlocks.ANDESITE_SOLAR_PANEL.get());
                         output.accept(ModBlocks.BRASS_SOLAR_PANEL.get());
                         output.accept(ModBlocks.SOLAR_HEATER.get());
-                        output.accept(ModItems.SALT.get());
-                        output.accept(ModBlocks.SALT_BLOCK.get());
-                        output.accept(ModFluids.MOLTEN_SALT_BUCKET.get());
                         output.accept(ModBlocks.KINETIC_BATTERY.get());
                         output.accept(ModBlocks.HEAT_BATTERY.get());
+                        output.accept(ModBlocks.SALT_BLOCK.get());
                         output.accept(ModBlocks.GEYSER_CAP.get());
                         output.accept(ModBlocks.GEYSER_VENT.get());
+                        output.accept(ModItems.SALT.get());
+                        output.accept(ModFluids.MOLTEN_SALT_BUCKET.get());
                     })
                     .build());
 
