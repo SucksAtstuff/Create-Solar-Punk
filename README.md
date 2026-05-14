@@ -26,6 +26,13 @@ A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation and therma
 5. Place the Heat Battery adjacent to a Create boiler to heat it
 6. For electricity, place a **Brass Solar Panel** with sky access and connect it to your FE network
 
+## Planned Features
+
+- **Fermentation Vat** — ferments organic matter into biogas over time
+- **Biomass Gasifier** — converts biomass/biogas into usable fuel
+- **Biofuel Engine** — burns biofuel to generate rotational force (SU), completing the bio-energy chain
+- **Solar Power Tower** — large multi-block structure that concentrates sunlight to generate high-temperature heat, producing large amounts of molten salt.
+
 ## Thanks
 
 Thanks to the following people for their ideas:
