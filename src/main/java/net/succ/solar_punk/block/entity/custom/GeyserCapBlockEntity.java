@@ -39,7 +39,9 @@ public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implement
 
     @Override
     public float calculateAddedStressCapacity() {
-        return hasVent() ? CAPACITY : 0;
+        float capacity = hasVent() ? CAPACITY : 0;
+        this.lastCapacityProvided = capacity;
+        return capacity;
     }
 
     @Override

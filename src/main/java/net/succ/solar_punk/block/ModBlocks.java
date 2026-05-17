@@ -10,7 +10,10 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
+import net.succ.solar_punk.block.custom.BiofuelEngineBlock;
+import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
+import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.GeyserCapBlock;
 import net.succ.solar_punk.block.custom.GeyserVentBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
@@ -22,6 +25,27 @@ import java.util.function.Supplier;
 
 public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(SolarPunk.MODID);
+
+    public static final DeferredBlock<FermentationVatBlock> FERMENTATION_VAT = registerBlock("fermentation_vat",
+            () -> new FermentationVatBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_GREEN)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.0f, 6.0f)
+                    .noOcclusion()));
+
+    public static final DeferredBlock<BiomassGasifierBlock> BIOMASS_GASIFIER = registerBlock("biomass_gasifier",
+            () -> new BiomassGasifierBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_GREEN)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)
+                    .noOcclusion()));
+
+    public static final DeferredBlock<BiofuelEngineBlock> BIOFUEL_ENGINE = registerBlock("biofuel_engine",
+            () -> new BiofuelEngineBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_GREEN)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)
+                    .noOcclusion()));
 
 public static final DeferredBlock<GeyserCapBlock> GEYSER_CAP = registerBlock("geyser_cap",
             () -> new GeyserCapBlock(BlockBehaviour.Properties.of()

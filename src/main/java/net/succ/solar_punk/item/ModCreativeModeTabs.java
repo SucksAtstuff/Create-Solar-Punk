@@ -26,6 +26,9 @@ public class ModCreativeModeTabs {
                         output.accept(ModBlocks.SOLAR_HEATER.get());
                         output.accept(ModBlocks.KINETIC_BATTERY.get());
                         output.accept(ModBlocks.HEAT_BATTERY.get());
+                        output.accept(ModBlocks.FERMENTATION_VAT.get());
+                        output.accept(ModBlocks.BIOMASS_GASIFIER.get());
+                        output.accept(ModBlocks.BIOFUEL_ENGINE.get());
                         output.accept(ModBlocks.SALT_BLOCK.get());
                         output.accept(ModBlocks.GEYSER_CAP.get());
                         output.accept(ModBlocks.GEYSER_VENT.get());

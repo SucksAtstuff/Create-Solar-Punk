@@ -7,6 +7,8 @@ import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.fluid.ModFluidTypes;
 import net.succ.solar_punk.item.ModItems;
+import net.succ.solar_punk.painting.ModPaintings;
+import net.succ.solar_punk.painting.PaintingInfo;
 
 public class ModLangProvider extends LanguageProvider {
     public ModLangProvider(PackOutput output) {
@@ -89,6 +91,18 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.heat_stored", "Heat: ");
         add("create.solar_punk.tooltip.molten_salt", "Molten Salt: ");
 
+        add("create.solar_punk.tooltip.fermentation_vat_header", "Fermentation Vat");
+        add("create.solar_punk.tooltip.fermenting", "Fermenting: ");
+        add("create.solar_punk.tooltip.biofuel", "Biofuel: ");
+
+        add("create.solar_punk.tooltip.gasifier_header", "Biomass Gasifier");
+        add("create.solar_punk.tooltip.fuel", "Fuel: ");
+        add("create.solar_punk.tooltip.burn_time", "Burn time: ");
+        add("create.solar_punk.tooltip.biomass_stored", "Biomass: ");
+
+        add("create.solar_punk.tooltip.biofuel_engine_header", "Biofuel Engine");
+        add("create.solar_punk.tooltip.consumption", "Consumption: ");
+
         add("create.solar_punk.tooltip.heater_header", "Solar Heater");
         add("create.solar_punk.tooltip.melting", "Melting: ");
         add("create.solar_punk.tooltip.progress", "Progress: ");
@@ -107,6 +121,12 @@ public class ModLangProvider extends LanguageProvider {
         ModFluidTypes.FLUID_TYPES.getEntries().forEach(entry ->
                 add("fluid_type." + entry.getId().getNamespace() + "." + entry.getId().getPath(),
                         toTitleCase(entry.getId().getPath())));
+
+        for (PaintingInfo info : ModPaintings.PAINTING_INFOS) {
+            String base = "painting." + SolarPunk.MODID + "." + info.id();
+            add(base + ".title", info.title());
+            add(base + ".author", info.author());
+        }
     }
 
     private static String toTitleCase(String name) {

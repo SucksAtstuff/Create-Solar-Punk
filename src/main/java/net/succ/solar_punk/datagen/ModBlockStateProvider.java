@@ -34,6 +34,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         litCustomModelBlock(ModBlocks.BRASS_SOLAR_PANEL, true);
         litAxisModelBlock(ModBlocks.KINETIC_BATTERY, false);
         litFacingCustomModelBlock(ModBlocks.SOLAR_HEATER, true);
+        litFacingCustomModelBlock(ModBlocks.BIOMASS_GASIFIER, true);
         blockWithItem(ModBlocks.SALT_BLOCK);
         heatStateModelBlock(ModBlocks.HEAT_BATTERY);
     }

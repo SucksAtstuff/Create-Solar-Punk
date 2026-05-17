@@ -39,10 +39,14 @@ public class KineticBatteryBlockEntity extends GeneratingKineticBlockEntity {
 
     @Override
     public float calculateAddedStressCapacity() {
-        if (level == null) return 0f;
-        BlockState state = level.getBlockState(worldPosition);
-        if (!state.hasProperty(KineticBatteryBlock.LIT)) return 0f;
-        return state.getValue(KineticBatteryBlock.LIT) ? BATTERY_CAPACITY : 0f;
+        float capacity = 0f;
+        if (level != null) {
+            BlockState state = level.getBlockState(worldPosition);
+            if (state.hasProperty(KineticBatteryBlock.LIT) && state.getValue(KineticBatteryBlock.LIT))
+                capacity = BATTERY_CAPACITY;
+        }
+        this.lastCapacityProvided = capacity;
+        return capacity;
     }
 
     @Override

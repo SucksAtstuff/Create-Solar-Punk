@@ -48,12 +48,16 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
 
     @Override
     public float calculateAddedStressCapacity() {
-        if (!hasSkyAccess()) return 0;
-        return switch (getPhase()) {
-            case MORNING, EVENING -> MORNING_CAPACITY;
-            case NOON -> level.isRaining() ? MORNING_CAPACITY : NOON_CAPACITY;
-            case NIGHT -> 0;
-        };
+        float capacity = 0;
+        if (hasSkyAccess()) {
+            capacity = switch (getPhase()) {
+                case MORNING, EVENING -> MORNING_CAPACITY;
+                case NOON -> level.isRaining() ? MORNING_CAPACITY : NOON_CAPACITY;
+                case NIGHT -> 0;
+            };
+        }
+        this.lastCapacityProvided = capacity;
+        return capacity;
     }
 
     @Override

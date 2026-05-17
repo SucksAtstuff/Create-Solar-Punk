@@ -11,8 +11,8 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
+import net.succ.solar_punk.block.entity.custom.FermentationVatBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
-import net.succ.solar_punk.block.entity.custom.SolarHeaterBlockEntity;
 import net.succ.solar_punk.datagen.DataGenerators;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.fluid.ModFluidTypes;
@@ -50,7 +50,6 @@ public class SolarPunk {
                 (be, side) -> be.itemHandler
         );
         // Top face intentionally blocked — a pipe there would occlude the sky check.
-        // Water fill and molten salt drain both route through the combined handler on all other faces.
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 ModBlockEntities.SOLAR_HEATER.get(),
@@ -66,15 +65,39 @@ public class SolarPunk {
                 ModBlockEntities.HEAT_BATTERY.get(),
                 (be, side) -> be.fluidTank
         );
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.FERMENTATION_VAT.get(),
+                (be, side) -> {
+                    FermentationVatBlockEntity ctrl = be.getControllerBE();
+                    return ctrl != null ? ctrl.itemHandler : null;
+                }
+        );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.FERMENTATION_VAT.get(),
+                (be, side) -> be.combinedFluidHandler
+        );
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.BIOMASS_GASIFIER.get(),
+                (be, side) -> be.itemHandler
+        );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.BIOFUEL_ENGINE.get(),
+                (be, side) -> be.biofuelTank
+        );
     }
 
     private static void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() ->
+        event.enqueueWork(() -> {
             BoilerHeater.REGISTRY.register(ModBlocks.HEAT_BATTERY.get(), (level, pos, state) -> {
                 if (!(level.getBlockEntity(pos) instanceof HeatBatteryBlockEntity be))
                     return BoilerHeater.NO_HEAT;
                 return be.getHeatLevel();
-            })
-        );
+            });
+
+        });
     }
 }

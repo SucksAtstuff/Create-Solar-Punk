@@ -5,6 +5,10 @@
     "solarpunk:solar_heater",
     "solarpunk:salt_block",
     "solarpunk:kinetic_battery",
-    "solarpunk:heat_battery"
+    "solarpunk:heat_battery",
+    "solarpunk:fermentation_vat",
+    "solarpunk:biomass_gasifier",
+    "solarpunk:biofuel_engine",
+    "solarpunk:geyser_cap"
   ]
 }

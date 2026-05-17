@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,lit=false": {
+      "model": "solarpunk:block/biomass_gasifier",
+      "y": 90
+    },
+    "facing=east,lit=true": {
+      "model": "solarpunk:block/biomass_gasifier_lit",
+      "y": 90
+    },
+    "facing=north,lit=false": {
+      "model": "solarpunk:block/biomass_gasifier"
+    },
+    "facing=north,lit=true": {
+      "model": "solarpunk:block/biomass_gasifier_lit"
+    },
+    "facing=south,lit=false": {
+      "model": "solarpunk:block/biomass_gasifier",
+      "y": 180
+    },
+    "facing=south,lit=true": {
+      "model": "solarpunk:block/biomass_gasifier_lit",
+      "y": 180
+    },
+    "facing=west,lit=false": {
+      "model": "solarpunk:block/biomass_gasifier",
+      "y": 270
+    },
+    "facing=west,lit=true": {
+      "model": "solarpunk:block/biomass_gasifier_lit",
+      "y": 270
+    }
+  }
+}

@@ -8,6 +8,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.entity.custom.AndesiteSolarPanelBlockEntity;
+import net.succ.solar_punk.block.entity.custom.BiofuelEngineBlockEntity;
+import net.succ.solar_punk.block.entity.custom.BiomassGasifierBlockEntity;
+import net.succ.solar_punk.block.entity.custom.FermentationVatBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GeyserCapBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BrassSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
@@ -17,6 +20,21 @@ import net.succ.solar_punk.block.entity.custom.SolarHeaterBlockEntity;
 public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, SolarPunk.MODID);
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FermentationVatBlockEntity>> FERMENTATION_VAT =
+            BLOCK_ENTITIES.register("fermentation_vat", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new FermentationVatBlockEntity(ModBlockEntities.FERMENTATION_VAT.get(), pos, state), ModBlocks.FERMENTATION_VAT.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BiomassGasifierBlockEntity>> BIOMASS_GASIFIER =
+            BLOCK_ENTITIES.register("biomass_gasifier", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new BiomassGasifierBlockEntity(ModBlockEntities.BIOMASS_GASIFIER.get(), pos, state), ModBlocks.BIOMASS_GASIFIER.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BiofuelEngineBlockEntity>> BIOFUEL_ENGINE =
+            BLOCK_ENTITIES.register("biofuel_engine", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new BiofuelEngineBlockEntity(ModBlockEntities.BIOFUEL_ENGINE.get(), pos, state), ModBlocks.BIOFUEL_ENGINE.get())
+                    .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GeyserCapBlockEntity>> GEYSER_CAP =
             BLOCK_ENTITIES.register("geyser_cap", () -> BlockEntityType.Builder

@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.Containers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -100,6 +101,15 @@ public class SolarHeaterBlock extends Block implements IBE<SolarHeaterBlockEntit
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof SolarHeaterBlockEntity be) {
+            for (int i = 0; i < be.itemHandler.getSlots(); i++)
+                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), be.itemHandler.getStackInSlot(i));
+        }
+        super.onRemove(state, level, pos, newState, movedByPiston);
     }
 
     @Override
