@@ -44,13 +44,12 @@ public class BiofuelEngineBlock extends KineticBlock implements IBE<BiofuelEngin
 
     @Override
     public Direction.Axis getRotationAxis(BlockState state) {
-        Direction facing = state.getValue(FACING);
-        return facing.getAxis() == Direction.Axis.Z ? Direction.Axis.X : Direction.Axis.Z;
+        return Direction.Axis.Y;
     }
 
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-        return face.getAxis() == getRotationAxis(state);
+        return face == Direction.DOWN;
     }
 
     @Override

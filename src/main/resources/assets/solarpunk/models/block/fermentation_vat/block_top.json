@@ -1,0 +1,56 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"0": "solarpunk:block/fermentation_vat/fermentation_vat_top",
+		"1": "solarpunk:block/fermentation_vat/fermentation_vat",
+		"4": "solarpunk:block/fermentation_vat/fermentation_vat_inner",
+		"particle": "solarpunk:block/fermentation_vat/fermentation_vat"
+	},
+	"elements": [
+		{
+			"name": "SideNorth",
+			"from": [0, 0, 0], "to": [16, 12, 1],
+			"faces": {
+				"north": {"uv": [0, 4, 16, 16], "texture": "#1", "cullface": "north"},
+				"south": {"uv": [0, 4, 16, 16], "texture": "#1", "cullface": "north"}
+			}
+		},
+		{
+			"name": "SideEast",
+			"from": [15, 0, 0], "to": [16, 12, 16],
+			"faces": {
+				"east": {"uv": [0, 4, 16, 16], "texture": "#1", "cullface": "east"},
+				"west": {"uv": [0, 4, 16, 16], "texture": "#1", "cullface": "east"}
+			}
+		},
+		{
+			"name": "SideSouth",
+			"from": [0, 0, 15], "to": [16, 12, 16],
+			"faces": {
+				"north": {"uv": [0, 4, 16, 16], "texture": "#1", "cullface": "south"},
+				"south": {"uv": [0, 4, 16, 16], "texture": "#1", "cullface": "south"}
+			}
+		},
+		{
+			"name": "SideWest",
+			"from": [0, 0, 0], "to": [1, 12, 16],
+			"faces": {
+				"east": {"uv": [0, 4, 16, 16], "texture": "#1", "cullface": "west"},
+				"west": {"uv": [0, 4, 16, 16], "texture": "#1", "cullface": "west"}
+			}
+		},
+		{
+			"name": "LidTop",
+			"from": [0, 12, 0], "to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 4],  "texture": "#1", "cullface": "north"},
+				"east":  {"uv": [0, 0, 16, 4],  "texture": "#1", "cullface": "east"},
+				"south": {"uv": [0, 0, 16, 4],  "texture": "#1", "cullface": "south"},
+				"west":  {"uv": [0, 0, 16, 4],  "texture": "#1", "cullface": "west"},
+				"up":    {"uv": [0, 0, 16, 16], "texture": "#0", "cullface": "up"},
+				"down":  {"uv": [0, 0, 16, 16], "texture": "#4"}
+			}
+		}
+	]
+}

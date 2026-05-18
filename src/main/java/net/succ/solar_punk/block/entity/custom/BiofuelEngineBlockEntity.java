@@ -25,7 +25,7 @@ import java.util.List;
 public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity implements IHaveGoggleInformation {
 
     private static final float RPM      = 16f;
-    private static final float CAPACITY = 256f;
+    private static final float CAPACITY = 512f;
     public static final int FUEL_CAPACITY  = 8000;
     public static final int CONSUME_MB     = 50;
     public static final int CONSUME_PERIOD = 40;
@@ -50,7 +50,9 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
 
     @Override
     public float calculateAddedStressCapacity() {
-        return biofuelTank.getFluidAmount() > 0 ? CAPACITY : 0;
+        float capacity = biofuelTank.getFluidAmount() > 0 ? CAPACITY : 0;
+        this.lastCapacityProvided = capacity;
+        return capacity;
     }
 
     @Override
@@ -94,6 +96,7 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         CreateLang.translate("solar_punk.tooltip.biofuel_engine_header").forGoggles(tooltip);
+        super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         CreateLang.translate("solar_punk.tooltip.biofuel")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(biofuelTank.getFluidAmount())

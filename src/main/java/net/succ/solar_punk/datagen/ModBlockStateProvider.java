@@ -13,6 +13,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 
 public class ModBlockStateProvider extends BlockStateProvider {
@@ -35,6 +36,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         litAxisModelBlock(ModBlocks.KINETIC_BATTERY, false);
         litFacingCustomModelBlock(ModBlocks.SOLAR_HEATER, true);
         litFacingCustomModelBlock(ModBlocks.BIOMASS_GASIFIER, true);
+        litFacingCustomModelBlock(ModBlocks.BIOFUEL_ENGINE, true);
+        fermentationVatBlock();
         blockWithItem(ModBlocks.SALT_BLOCK);
         heatStateModelBlock(ModBlocks.HEAT_BATTERY);
     }
@@ -141,6 +144,20 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     private void blockItem(DeferredBlock<Block> deferredBlock){
         simpleBlockItem(deferredBlock.get(), new ModelFile.UncheckedModelFile("succsessentials:block/" + deferredBlock.getId().getPath()));
+    }
+
+    private void fermentationVatBlock() {
+        String base = "block/fermentation_vat/";
+
+        getVariantBuilder(ModBlocks.FERMENTATION_VAT.get()).forAllStates(state -> {
+            String vStr = state.getValue(FermentationVatBlock.POSITION).getSerializedName();
+            return ConfiguredModel.builder()
+                    .modelFile(new UncheckedModelFile(modLoc(base + "block_" + vStr)))
+                    .build();
+        });
+
+        simpleBlockItem(ModBlocks.FERMENTATION_VAT.get(),
+                new UncheckedModelFile(modLoc(base + "block_single")));
     }
 
     private void blockItemOther(DeferredBlock<Block> deferredBlock, String appendix){

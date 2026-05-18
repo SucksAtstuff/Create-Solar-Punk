@@ -26,6 +26,7 @@ import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.succ.solar_punk.block.custom.FermentationVatBlock.VatPosition;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.fluid.ModFluids;
 
@@ -116,7 +117,7 @@ public class FermentationVatBlockEntity extends BlockEntity
         }
     };
 
-    private int progress = 0;
+    public int progress = 0;
 
     public FermentationVatBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -182,6 +183,26 @@ public class FermentationVatBlockEntity extends BlockEntity
     public void notifyMultiUpdated() {
         setChanged();
         sync();
+        if (level != null && !level.isClientSide)
+            updatePosition();
+    }
+
+    private void updatePosition() {
+        FermentationVatBlockEntity ctrl = getControllerBE();
+        if (ctrl == null) return;
+
+        int yOffset = worldPosition.getY() - ctrl.worldPosition.getY();
+        boolean alone = ctrl.height == 1;
+        boolean isBot = yOffset == 0;
+        boolean isTop = yOffset == ctrl.height - 1;
+        VatPosition vPos = alone ? VatPosition.SINGLE
+                : isBot  ? VatPosition.BOTTOM
+                : isTop  ? VatPosition.TOP
+                         : VatPosition.MIDDLE;
+
+        BlockState state = level.getBlockState(worldPosition);
+        if (state.getValue(FermentationVatBlock.POSITION) != vPos)
+            level.setBlock(worldPosition, state.setValue(FermentationVatBlock.POSITION, vPos), 2);
     }
 
     @Override
@@ -342,6 +363,14 @@ public class FermentationVatBlockEntity extends BlockEntity
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         return saveWithoutMetadata(registries);
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
+        super.handleUpdateTag(tag, registries);
+        requestModelDataUpdate();
+        if (level != null && level.isClientSide)
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 8);
     }
 
     // -------------------------------------------------------------------------

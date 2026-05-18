@@ -1,0 +1,14 @@
+{
+  "type": "create:milling",
+  "ingredients": [
+    {
+      "tag": "minecraft:saplings"
+    }
+  ],
+  "results": [
+    {
+      "chance": 0.5,
+      "id": "solarpunk:biomass"
+    }
+  ]
+}

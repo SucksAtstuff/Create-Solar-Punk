@@ -14,6 +14,7 @@ import net.succ.solar_punk.block.custom.BiofuelEngineBlock;
 import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
+import net.succ.solar_punk.block.custom.FermentationVatItem;
 import net.succ.solar_punk.block.custom.GeyserCapBlock;
 import net.succ.solar_punk.block.custom.GeyserVentBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
@@ -26,12 +27,13 @@ import java.util.function.Supplier;
 public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(SolarPunk.MODID);
 
-    public static final DeferredBlock<FermentationVatBlock> FERMENTATION_VAT = registerBlock("fermentation_vat",
+    public static final DeferredBlock<FermentationVatBlock> FERMENTATION_VAT = registerBlockCustomItem("fermentation_vat",
             () -> new FermentationVatBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_GREEN)
                     .requiresCorrectToolForDrops()
                     .strength(3.0f, 6.0f)
-                    .noOcclusion()));
+                    .noOcclusion()),
+            block -> new FermentationVatItem(block, new Item.Properties()));
 
     public static final DeferredBlock<BiomassGasifierBlock> BIOMASS_GASIFIER = registerBlock("biomass_gasifier",
             () -> new BiomassGasifierBlock(BlockBehaviour.Properties.of()
@@ -104,6 +106,13 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);
         ModItems.ITEMS.register(name, () -> new BlockItem(toReturn.get(), new Item.Properties()));
+        return toReturn;
+    }
+
+    private static <T extends Block> DeferredBlock<T> registerBlockCustomItem(String name, Supplier<T> block,
+            java.util.function.Function<T, ? extends BlockItem> itemFactory) {
+        DeferredBlock<T> toReturn = BLOCKS.register(name, block);
+        ModItems.ITEMS.register(name, () -> itemFactory.apply(toReturn.get()));
         return toReturn;
     }
 

@@ -26,7 +26,7 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
             TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "bio_fuels"));
 
     private static final float RPM      = 8f;
-    private static final float CAPACITY = 128f;
+    private static final float CAPACITY = 256f;
     public static final int BURN_TIME   = 300;
 
     public final ItemStackHandler itemHandler = new ItemStackHandler(1) {

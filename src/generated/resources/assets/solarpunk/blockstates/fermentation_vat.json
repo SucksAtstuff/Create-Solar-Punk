@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "lit=false,position=bottom": {
+      "model": "solarpunk:block/fermentation_vat/block_bottom"
+    },
+    "lit=false,position=middle": {
+      "model": "solarpunk:block/fermentation_vat/block_middle"
+    },
+    "lit=false,position=single": {
+      "model": "solarpunk:block/fermentation_vat/block_single"
+    },
+    "lit=false,position=top": {
+      "model": "solarpunk:block/fermentation_vat/block_top"
+    },
+    "lit=true,position=bottom": {
+      "model": "solarpunk:block/fermentation_vat/block_bottom"
+    },
+    "lit=true,position=middle": {
+      "model": "solarpunk:block/fermentation_vat/block_middle"
+    },
+    "lit=true,position=single": {
+      "model": "solarpunk:block/fermentation_vat/block_single"
+    },
+    "lit=true,position=top": {
+      "model": "solarpunk:block/fermentation_vat/block_top"
+    }
+  }
+}

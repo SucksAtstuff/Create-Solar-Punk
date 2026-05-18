@@ -11,6 +11,7 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
@@ -96,6 +97,36 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('B', createItem("brass_ingot"))
                 .define('S', ModBlocks.SALT_BLOCK.get())
                 .unlockedBy("has_brass_ingot", has(createItem("brass_ingot")))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BIOMASS_GASIFIER.get())
+                .pattern("ACA")
+                .pattern("CSC")
+                .pattern("ACA")
+                .define('A', createItem("andesite_alloy"))
+                .define('C', createItem("andesite_casing"))
+                .define('S', createItem("shaft"))
+                .unlockedBy("has_andesite_casing", has(createItem("andesite_casing")))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BIOFUEL_ENGINE.get())
+                .pattern("BCB")
+                .pattern("SFS")
+                .pattern("BCB")
+                .define('B', createItem("brass_ingot"))
+                .define('C', createItem("brass_casing"))
+                .define('S', createItem("shaft"))
+                .define('F', createItem("flywheel"))
+                .unlockedBy("has_brass_casing", has(createItem("brass_casing")))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.FERMENTATION_VAT.get())
+                .pattern("ACA")
+                .pattern("C C")
+                .pattern("ACA")
+                .define('A', createItem("andesite_alloy"))
+                .define('C', createItem("industrial_iron_block"))
+                .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
                 .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.GEYSER_CAP.get())
