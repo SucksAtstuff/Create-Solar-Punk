@@ -16,6 +16,7 @@ import net.succ.solar_punk.block.entity.custom.BrassSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarHeaterBlockEntity;
+import net.succ.solar_punk.block.entity.custom.SolarPowerTowerBlockEntity;
 
 public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
@@ -64,6 +65,11 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HeatBatteryBlockEntity>> HEAT_BATTERY =
             BLOCK_ENTITIES.register("heat_battery", () -> BlockEntityType.Builder
                     .of((pos, state) -> new HeatBatteryBlockEntity(ModBlockEntities.HEAT_BATTERY.get(), pos, state), ModBlocks.HEAT_BATTERY.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SolarPowerTowerBlockEntity>> SOLAR_POWER_TOWER =
+            BLOCK_ENTITIES.register("solar_power_tower", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new SolarPowerTowerBlockEntity(ModBlockEntities.SOLAR_POWER_TOWER.get(), pos, state), ModBlocks.SOLAR_POWER_TOWER.get())
                     .build(null));
 
     public static void register(IEventBus eventBus) {

@@ -20,6 +20,8 @@ import net.succ.solar_punk.block.custom.GeyserVentBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.KineticBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarHeaterBlock;
+import net.succ.solar_punk.block.custom.SolarMirrorBlock;
+import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.function.Supplier;
@@ -102,6 +104,19 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .lightLevel(state -> state.getValue(HeatBatteryBlock.HEAT) * 4)));
+
+    public static final DeferredBlock<SolarPowerTowerBlock> SOLAR_POWER_TOWER = registerBlock("solar_power_tower",
+            () -> new SolarPowerTowerBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_ORANGE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)
+                    .noOcclusion()));
+
+    public static final DeferredBlock<SolarMirrorBlock> SOLAR_MIRROR = registerBlock("solar_mirror",
+            () -> new SolarMirrorBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .requiresCorrectToolForDrops()
+                    .strength(2.0f, 4.0f)));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

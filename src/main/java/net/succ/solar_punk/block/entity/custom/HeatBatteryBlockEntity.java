@@ -25,13 +25,13 @@ import java.util.List;
 
 public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 
-    // A full tank of molten salt (8000 mB) charges the battery to exactly MAX_HEAT.
-    // Each mB adds 10 heat; each tick loses 3 heat, so net gain is +7/tick while charging.
-    // Superheated threshold is 25% of MAX_HEAT (10000), reached after ~1430 ticks of charging.
+    // A full tank of molten salt (8000 mB) is needed to charge the battery to MAX_HEAT.
+    // Each mB adds 10 heat; decay is 2/tick, so net gain is +8/tick while charging.
+    // Superheated threshold is 25% of MAX_HEAT (20000), reached after ~2500 ticks (~2 min) of charging.
     public static final int TANK_CAPACITY = 8000;
-    public static final int MAX_HEAT = 40000;
+    public static final int MAX_HEAT = 80000;
     private static final int HEAT_PER_MB = 10;
-    private static final int HEAT_DECAY = 1;
+    private static final int HEAT_DECAY = 2;
 
     public final FluidTank fluidTank = new FluidTank(TANK_CAPACITY) {
         @Override

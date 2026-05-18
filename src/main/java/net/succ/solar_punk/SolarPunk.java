@@ -90,6 +90,11 @@ public class SolarPunk {
                 ModBlockEntities.BIOFUEL_ENGINE.get(),
                 (be, side) -> be.biofuelTank
         );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.SOLAR_POWER_TOWER.get(),
+                (be, side) -> be.combinedFluidHandler
+        );
     }
 
     private static void commonSetup(FMLCommonSetupEvent event) {

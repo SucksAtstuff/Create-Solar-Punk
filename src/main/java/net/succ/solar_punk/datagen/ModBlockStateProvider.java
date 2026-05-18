@@ -40,6 +40,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         fermentationVatBlock();
         blockWithItem(ModBlocks.SALT_BLOCK);
         heatStateModelBlock(ModBlocks.HEAT_BATTERY);
+        litCustomModelBlock(ModBlocks.SOLAR_POWER_TOWER, true);
+        simpleCustomModelBlock(ModBlocks.SOLAR_MIRROR);
     }
 
     // For blocks whose models are hand-crafted (Blockbench).
@@ -136,6 +138,14 @@ public class ModBlockStateProvider extends BlockStateProvider {
                         .modelFile(state.getValue(BlockStateProperties.LIT) ? lit : unlit)
                         .build());
         simpleBlockItem(block.get(), unlit);
+    }
+
+    // For blocks whose model is hand-crafted with no state variants.
+    private void simpleCustomModelBlock(DeferredBlock<? extends Block> block) {
+        ModelFile model = new UncheckedModelFile(modLoc("block/" + block.getId().getPath()));
+        getVariantBuilder(block.get()).forAllStates(state ->
+                ConfiguredModel.builder().modelFile(model).build());
+        simpleBlockItem(block.get(), model);
     }
 
     private void blockWithItem(DeferredBlock<?> deferredBlock){

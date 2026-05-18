@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "solarpunk:block/solar_power_tower"
+    },
+    "lit=true": {
+      "model": "solarpunk:block/solar_power_tower_lit"
+    }
+  }
+}
