@@ -2,7 +2,9 @@ package net.succ.solar_punk.block.entity.custom;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -12,10 +14,14 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
+import net.succ.solar_punk.client.sound.BrassPanelSoundInstance;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -43,6 +49,10 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
     }
 
     public final GeneratingEnergyStorage energyStorage = new GeneratingEnergyStorage(BUFFER_CAPACITY, MAX_EXTRACT);
+
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    private BrassPanelSoundInstance soundInstance;
 
     public BrassSolarPanelBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -73,7 +83,11 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
     }
 
     public void tick() {
-        if (level == null || level.isClientSide) return;
+        if (level == null) return;
+        if (level.isClientSide) {
+            CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> this.tickAudio());
+            return;
+        }
 
         int generated = getGeneratedFE();
         if (generated > 0) {
@@ -105,6 +119,15 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
             if (state.getValue(BrassSolarPanelBlock.LIT) != active)
                 level.setBlock(worldPosition, state.setValue(BrassSolarPanelBlock.LIT, active), 3);
             level.sendBlockUpdated(worldPosition, state, level.getBlockState(worldPosition), 2);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void tickAudio() {
+        if (getBlockState().getValue(BrassSolarPanelBlock.LIT)
+                && (soundInstance == null || soundInstance.isStopped())) {
+            soundInstance = new BrassPanelSoundInstance(this);
+            Minecraft.getInstance().getSoundManager().play(soundInstance);
         }
     }
 

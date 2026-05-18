@@ -1,0 +1,12 @@
+{
+    "alternator": {
+        "sounds": [
+            "solarpunk:electric_motor_buzz"
+        ]
+    },
+    "geyser_puff": {
+        "sounds": [
+            "solarpunk:geyser_puff"
+        ]
+    }
+}
