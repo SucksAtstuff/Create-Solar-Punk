@@ -1,0 +1,22 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"2": "solarpunk:block/solar_power_tower/solar_power_tower_gauge"
+	},
+	"elements": [
+		{
+			"name": "GaugeDial",
+			"from": [15.75, 5.3, 6.05],
+			"to": [16.45, 6.3, 11.05],
+			"rotation": {"angle": 0, "axis": "x", "origin": [16.1, 5.3, 6.05]},
+			"faces": {
+				"north": {"uv": [0, 11, 1, 12], "rotation": 180, "texture": "#2"},
+				"east": {"uv": [0, 11, 5, 12], "rotation": 180, "texture": "#2"},
+				"south": {"uv": [4, 11, 5, 12], "rotation": 180, "texture": "#2"},
+				"west": {"uv": [5, 11, 0, 12], "rotation": 180, "texture": "#2"},
+				"up": {"uv": [0, 11, 5, 12], "rotation": 90, "texture": "#2"},
+				"down": {"uv": [0, 11, 5, 12], "rotation": 270, "texture": "#2"}
+			}
+		}
+	]
+}

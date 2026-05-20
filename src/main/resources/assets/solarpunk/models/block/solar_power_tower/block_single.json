@@ -1,0 +1,68 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"0": "solarpunk:block/solar_power_tower/solar_power_tower_top",
+		"1": "solarpunk:block/solar_power_tower/solar_power_tower",
+		"4": "solarpunk:block/solar_power_tower/solar_power_tower_inner",
+		"particle": "solarpunk:block/solar_power_tower/solar_power_tower"
+	},
+	"elements": [
+		{
+			"name": "LidBottom",
+			"from": [0, 0, 0], "to": [16, 4, 16],
+			"faces": {
+				"north": {"uv": [0, 12, 16, 16], "texture": "#1", "cullface": "north"},
+				"east":  {"uv": [0, 12, 16, 16], "texture": "#1", "cullface": "east"},
+				"south": {"uv": [0, 12, 16, 16], "texture": "#1", "cullface": "south"},
+				"west":  {"uv": [0, 12, 16, 16], "texture": "#1", "cullface": "west"},
+				"up":    {"uv": [0, 0, 16, 16],  "texture": "#4"},
+				"down":  {"uv": [0, 0, 16, 16],  "texture": "#0", "cullface": "down"}
+			}
+		},
+		{
+			"name": "SideEast",
+			"from": [15, 4, 0], "to": [16, 12, 16],
+			"faces": {
+				"east": {"uv": [0, 4, 16, 12], "texture": "#1", "cullface": "east"},
+				"west": {"uv": [0, 4, 16, 12], "texture": "#1", "cullface": "east"}
+			}
+		},
+		{
+			"name": "SideSouth",
+			"from": [0, 4, 15], "to": [16, 12, 16],
+			"faces": {
+				"north": {"uv": [0, 4, 16, 12], "texture": "#1", "cullface": "south"},
+				"south": {"uv": [0, 4, 16, 12], "texture": "#1", "cullface": "south"}
+			}
+		},
+		{
+			"name": "SideWest",
+			"from": [0, 4, 0], "to": [1, 12, 16],
+			"faces": {
+				"east": {"uv": [0, 4, 16, 12], "texture": "#1", "cullface": "west"},
+				"west": {"uv": [0, 4, 16, 12], "texture": "#1", "cullface": "west"}
+			}
+		},
+		{
+			"name": "LidTop",
+			"from": [0, 12, 0], "to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 4],  "texture": "#1", "cullface": "north"},
+				"east":  {"uv": [0, 0, 16, 4],  "texture": "#1", "cullface": "east"},
+				"south": {"uv": [0, 0, 16, 4],  "texture": "#1", "cullface": "south"},
+				"west":  {"uv": [0, 0, 16, 4],  "texture": "#1", "cullface": "west"},
+				"up":    {"uv": [0, 0, 16, 16], "texture": "#0", "cullface": "up"},
+				"down":  {"uv": [0, 0, 16, 16], "texture": "#4"}
+			}
+		},
+		{
+			"name": "SideNorth",
+			"from": [0, 4, 0], "to": [16, 12, 1],
+			"faces": {
+				"north": {"uv": [0, 4, 16, 12], "texture": "#1", "cullface": "north"},
+				"south": {"uv": [0, 4, 16, 12], "texture": "#1", "cullface": "north"}
+			}
+		}
+	]
+}

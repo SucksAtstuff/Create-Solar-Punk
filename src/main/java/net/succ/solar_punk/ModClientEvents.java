@@ -20,8 +20,10 @@ import net.neoforged.neoforge.client.event.ModelEvent;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.client.model.FermentationVatModel;
 import net.succ.solar_punk.client.model.ModSpriteShifts;
+import net.succ.solar_punk.client.model.SolarPowerTowerModel;
 import net.succ.solar_punk.client.renderer.FermentationVatRenderer;
 import net.succ.solar_punk.client.renderer.GeyserCapRenderer;
+import net.succ.solar_punk.client.renderer.SolarPowerTowerRenderer;
 import net.succ.solar_punk.compat.ponder.SolarPunkPonderPlugin;
 
 import java.util.ArrayList;
@@ -39,28 +41,32 @@ public class ModClientEvents {
         // The explicit register() call guarantees baking regardless of handler order.
         event.register(ModelResourceLocation.standalone(FermentationVatRenderer.GAUGE.modelLocation()));
         event.register(ModelResourceLocation.standalone(FermentationVatRenderer.GAUGE_DIAL.modelLocation()));
+        event.register(ModelResourceLocation.standalone(SolarPowerTowerRenderer.GAUGE.modelLocation()));
+        event.register(ModelResourceLocation.standalone(SolarPowerTowerRenderer.GAUGE_DIAL.modelLocation()));
     }
 
     @SubscribeEvent
     public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
         Map<ModelResourceLocation, BakedModel> models = event.getModels();
-        List<ModelResourceLocation> toWrap = new ArrayList<>();
+        List<ModelResourceLocation> vatKeys   = new ArrayList<>();
+        List<ModelResourceLocation> towerKeys = new ArrayList<>();
         for (ModelResourceLocation key : models.keySet()) {
             ResourceLocation id = key.id();
-            if (id.getNamespace().equals(SolarPunk.MODID)
-                    && id.getPath().equals("fermentation_vat")) {
-                toWrap.add(key);
-            }
+            if (!id.getNamespace().equals(SolarPunk.MODID)) continue;
+            if (id.getPath().equals("fermentation_vat"))   vatKeys.add(key);
+            if (id.getPath().equals("solar_power_tower"))  towerKeys.add(key);
         }
-        for (ModelResourceLocation key : toWrap) {
+        for (ModelResourceLocation key : vatKeys)
             models.put(key, new FermentationVatModel(models.get(key)));
-        }
+        for (ModelResourceLocation key : towerKeys)
+            models.put(key, new SolarPowerTowerModel(models.get(key)));
     }
 
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntities.GEYSER_CAP.get(), GeyserCapRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.FERMENTATION_VAT.get(), FermentationVatRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_POWER_TOWER.get(), SolarPowerTowerRenderer::new);
     }
 
     @SubscribeEvent

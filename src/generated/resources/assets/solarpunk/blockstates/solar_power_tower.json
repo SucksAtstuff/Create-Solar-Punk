@@ -1,10 +1,28 @@
 {
   "variants": {
-    "lit=false": {
-      "model": "solarpunk:block/solar_power_tower"
+    "lit=false,position=bottom": {
+      "model": "solarpunk:block/solar_power_tower/block_bottom"
     },
-    "lit=true": {
-      "model": "solarpunk:block/solar_power_tower_lit"
+    "lit=false,position=middle": {
+      "model": "solarpunk:block/solar_power_tower/block_middle"
+    },
+    "lit=false,position=single": {
+      "model": "solarpunk:block/solar_power_tower/block_single"
+    },
+    "lit=false,position=top": {
+      "model": "solarpunk:block/solar_power_tower/block_top"
+    },
+    "lit=true,position=bottom": {
+      "model": "solarpunk:block/solar_power_tower/block_bottom"
+    },
+    "lit=true,position=middle": {
+      "model": "solarpunk:block/solar_power_tower/block_middle"
+    },
+    "lit=true,position=single": {
+      "model": "solarpunk:block/solar_power_tower/block_single"
+    },
+    "lit=true,position=top": {
+      "model": "solarpunk:block/solar_power_tower/block_top"
     }
   }
 }

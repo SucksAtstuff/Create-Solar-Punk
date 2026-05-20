@@ -148,6 +148,24 @@ public class SolarPowerTowerBlockEntity extends BlockEntity
     public void notifyMultiUpdated() {
         setChanged();
         sync();
+        if (level != null && !level.isClientSide)
+            updatePosition();
+    }
+
+    private void updatePosition() {
+        SolarPowerTowerBlockEntity ctrl = getControllerBE();
+        if (ctrl == null) return;
+        int yOffset = worldPosition.getY() - ctrl.worldPosition.getY();
+        boolean alone  = ctrl.height == 1;
+        boolean isBot  = yOffset == 0;
+        boolean isTop  = yOffset == ctrl.height - 1;
+        SolarPowerTowerBlock.TowerPosition pos = alone  ? SolarPowerTowerBlock.TowerPosition.SINGLE
+                                               : isBot  ? SolarPowerTowerBlock.TowerPosition.BOTTOM
+                                               : isTop  ? SolarPowerTowerBlock.TowerPosition.TOP
+                                                        : SolarPowerTowerBlock.TowerPosition.MIDDLE;
+        BlockState state = getBlockState();
+        if (state.getValue(SolarPowerTowerBlock.POSITION) != pos)
+            level.setBlock(worldPosition, state.setValue(SolarPowerTowerBlock.POSITION, pos), 2);
     }
 
     @Override public Direction.Axis getMainConnectionAxis() { return Direction.Axis.Y; }

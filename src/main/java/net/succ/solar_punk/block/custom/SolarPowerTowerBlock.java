@@ -2,10 +2,18 @@ package net.succ.solar_punk.block.custom;
 
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import com.simibubi.create.content.fluids.tank.FluidTankBlock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -13,22 +21,38 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.SolarPowerTowerBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class SolarPowerTowerBlock extends Block implements EntityBlock, IWrenchable {
 
+    public enum TowerPosition implements StringRepresentable {
+        SINGLE, BOTTOM, MIDDLE, TOP;
+        @Override public String getSerializedName() { return name().toLowerCase(); }
+    }
+
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
+    public static final EnumProperty<TowerPosition> POSITION = EnumProperty.create("position", TowerPosition.class);
 
     public SolarPowerTowerBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(LIT, false));
+        registerDefaultState(defaultBlockState()
+                .setValue(LIT, false)
+                .setValue(POSITION, TowerPosition.SINGLE));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(LIT);
+        builder.add(LIT, POSITION);
+    }
+
+    @Override
+    public SoundType getSoundType(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
+        if (entity instanceof Player player && player.getPersistentData().contains("SilenceTowerSound"))
+            return FluidTankBlock.SILENCED_METAL;
+        return super.getSoundType(state, level, pos, entity);
     }
 
     @Override
@@ -47,6 +71,11 @@ public class SolarPowerTowerBlock extends Block implements EntityBlock, IWrencha
                 ConnectivityHandler.splitMulti(be);
         }
         super.onRemove(state, level, pos, newState, movedByPiston);
+    }
+
+    @Override
+    public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+        return InteractionResult.PASS;
     }
 
     @Nullable

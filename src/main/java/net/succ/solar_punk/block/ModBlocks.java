@@ -22,6 +22,7 @@ import net.succ.solar_punk.block.custom.KineticBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarHeaterBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
+import net.succ.solar_punk.block.custom.SolarPowerTowerItem;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.function.Supplier;
@@ -105,12 +106,13 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .strength(3.5f, 6.0f)
                     .lightLevel(state -> state.getValue(HeatBatteryBlock.HEAT) * 4)));
 
-    public static final DeferredBlock<SolarPowerTowerBlock> SOLAR_POWER_TOWER = registerBlock("solar_power_tower",
+    public static final DeferredBlock<SolarPowerTowerBlock> SOLAR_POWER_TOWER = registerBlockCustomItem("solar_power_tower",
             () -> new SolarPowerTowerBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_ORANGE)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
-                    .noOcclusion()));
+                    .noOcclusion()),
+            block -> new SolarPowerTowerItem(block, new Item.Properties()));
 
     public static final DeferredBlock<SolarMirrorBlock> SOLAR_MIRROR = registerBlock("solar_mirror",
             () -> new SolarMirrorBlock(BlockBehaviour.Properties.of()

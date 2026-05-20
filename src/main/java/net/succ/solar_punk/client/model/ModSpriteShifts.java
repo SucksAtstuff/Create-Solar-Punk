@@ -8,18 +8,22 @@ import net.succ.solar_punk.SolarPunk;
 
 public class ModSpriteShifts {
 
-    private static final String VAT = "block/fermentation_vat/";
+    private static final String VAT   = "block/fermentation_vat/";
+    private static final String TOWER = "block/solar_power_tower/";
 
     public static final CTSpriteShiftEntry
-        FERMENTATION_VAT       = getCT("fermentation_vat"),
-        FERMENTATION_VAT_TOP   = getCT("fermentation_vat_top"),
-        FERMENTATION_VAT_INNER = getCT("fermentation_vat_inner");
+        FERMENTATION_VAT       = shift(VAT,   "fermentation_vat"),
+        FERMENTATION_VAT_TOP   = shift(VAT,   "fermentation_vat_top"),
+        FERMENTATION_VAT_INNER = shift(VAT,   "fermentation_vat_inner"),
+        SOLAR_POWER_TOWER       = shift(TOWER, "solar_power_tower"),
+        SOLAR_POWER_TOWER_TOP   = shift(TOWER, "solar_power_tower_top"),
+        SOLAR_POWER_TOWER_INNER = shift(TOWER, "solar_power_tower_inner");
 
-    private static CTSpriteShiftEntry getCT(String name) {
+    private static CTSpriteShiftEntry shift(String folder, String name) {
         return CTSpriteShifter.getCT(
             AllCTTypes.RECTANGLE,
-            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, VAT + name),
-            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, VAT + name + "_connected")
+            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, folder + name),
+            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, folder + name + "_connected")
         );
     }
 

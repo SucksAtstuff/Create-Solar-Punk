@@ -15,6 +15,7 @@ import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
+import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
 
 public class ModBlockStateProvider extends BlockStateProvider {
     public ModBlockStateProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
@@ -40,7 +41,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         fermentationVatBlock();
         blockWithItem(ModBlocks.SALT_BLOCK);
         heatStateModelBlock(ModBlocks.HEAT_BATTERY);
-        litCustomModelBlock(ModBlocks.SOLAR_POWER_TOWER, true);
+        solarPowerTowerBlock();
         simpleCustomModelBlock(ModBlocks.SOLAR_MIRROR);
     }
 
@@ -154,6 +155,18 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     private void blockItem(DeferredBlock<Block> deferredBlock){
         simpleBlockItem(deferredBlock.get(), new ModelFile.UncheckedModelFile("succsessentials:block/" + deferredBlock.getId().getPath()));
+    }
+
+    private void solarPowerTowerBlock() {
+        String base = "block/solar_power_tower/";
+        getVariantBuilder(ModBlocks.SOLAR_POWER_TOWER.get()).forAllStates(state -> {
+            String pos = state.getValue(SolarPowerTowerBlock.POSITION).getSerializedName();
+            return ConfiguredModel.builder()
+                    .modelFile(new UncheckedModelFile(modLoc(base + "block_" + pos)))
+                    .build();
+        });
+        simpleBlockItem(ModBlocks.SOLAR_POWER_TOWER.get(),
+                new UncheckedModelFile(modLoc(base + "block_single")));
     }
 
     private void fermentationVatBlock() {
