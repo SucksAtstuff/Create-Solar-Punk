@@ -228,7 +228,7 @@ public class SolarPowerTowerBlockEntity extends BlockEntity
 
         int saltToAdd = (int) saltAccumulator;
         if (saltToAdd >= 1) {
-            int waterToDrain = Math.max(1, saltToAdd / 4);
+            int waterToDrain = saltToAdd;
             if (waterTank.getFluidAmount() >= waterToDrain &&
                 saltTank.fill(new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), saltToAdd),
                         IFluidHandler.FluidAction.SIMULATE) == saltToAdd) {
@@ -251,25 +251,24 @@ public class SolarPowerTowerBlockEntity extends BlockEntity
         return level.canSeeSky(worldPosition.above(height));
     }
 
-    // Scans on all sides of the tower at each block height for Solar Mirror blocks with sky access.
-    // Range of 3 blocks from any tower wall face; mirrors must have clear sky above them.
+    // Counts Solar Mirror blocks placed directly against each of the 4 side faces of the tower.
+    // Mirrors must touch the face — no stacking outward.
     private int scanMirrors() {
         if (level == null) return 0;
-        int range = 3;
         int count = 0;
-        for (int dx = -range; dx <= range + width - 1; dx++) {
-            for (int dz = -range; dz <= range + width - 1; dz++) {
-                if (dx >= 0 && dx < width && dz >= 0 && dz < width) continue; // inside footprint
-                for (int dy = 0; dy < height; dy++) {
-                    BlockPos p = worldPosition.offset(dx, dy, dz);
-                    if (!level.isLoaded(p)) continue;
-                    if (level.getBlockState(p).is(ModBlocks.SOLAR_MIRROR.get()) &&
-                        level.canSeeSky(p.above()))
-                        count++;
-                }
+        for (int dy = 0; dy < height; dy++) {
+            for (int d = 0; d < width; d++) {
+                if (isMirrorAt(worldPosition.offset(-1,    dy, d     ))) count++; // west face
+                if (isMirrorAt(worldPosition.offset(width, dy, d     ))) count++; // east face
+                if (isMirrorAt(worldPosition.offset(d,     dy, -1    ))) count++; // north face
+                if (isMirrorAt(worldPosition.offset(d,     dy, width ))) count++; // south face
             }
         }
         return count;
+    }
+
+    private boolean isMirrorAt(BlockPos p) {
+        return level.isLoaded(p) && level.getBlockState(p).is(ModBlocks.SOLAR_MIRROR.get());
     }
 
     // Triangle curve: ramps 0→100% up to the optimal mirror count, then falls back to 0% at 2× optimal.
