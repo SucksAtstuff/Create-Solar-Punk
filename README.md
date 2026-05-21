@@ -1,6 +1,6 @@
 # Create: Solarpunk
 
-A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation and thermal storage to the Create ecosystem.
+A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation, thermal storage, and biofuel production to the Create ecosystem.
 
 ## Requirements
 
@@ -10,25 +10,51 @@ A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation and therma
 
 ## Features
 
-- **Solar Heater** — concentrates sunlight to melt salt into molten salt and evaporate water into salt crystals
+### Solar Heat Chain
+- **Salt** — a new material found as underground deposits in desert, badlands, and savanna biomes; the core fuel of the solar heat chain
+- **Solar Heater** — concentrates sunlight to melt salt into molten salt or evaporate water into salt crystals; requires a clear view of the sky
+- **Solar Power Tower** — large multiblock structure (1×1 up to 3×3 footprint, up to 20 blocks tall) that concentrates reflected sunlight to produce molten salt at scale; pair with Solar Mirrors for maximum efficiency
+- **Solar Mirror** — a heliostat that reflects sunlight toward a Solar Power Tower; place directly against the tower's side faces; can be mounted on floors, walls, and ceilings
+- **Heat Battery** — stores thermal energy from molten salt and heats Create boilers
+
+### Electricity
 - **Andesite Solar Panel** — generates Create rotational force (SU) from sunlight
 - **Brass Solar Panel** — generates Forge Energy (FE) from sunlight
 - **Kinetic Battery** — stores rotational energy (SU) for later use
-- **Heat Battery** — stores thermal energy from molten salt and heats Create boilers
-- **Salt** — a new material found underground in arid biomes; the core fuel of the solar heat chain
+
+### Biofuel Chain
+- **Biomass** — crafted from organic matter
+- **Biomass Gasifier** — processes raw biomass using rotational force
+- **Fermentation Vat** — multiblock structure (stackable vertically) that converts biomass into liquid biofuel using water
+- **Biofuel Engine** — burns biofuel to generate rotational force (SU)
+
+### Geothermal
+- **Geyser Vent** — spawns naturally in desert, badlands, and savanna biomes
+- **Geyser Cap** — harnesses geothermal energy from a Geyser Vent and converts it into rotational force; passive, works day and night in any weather
 
 ## Quick Start
 
-1. Find or craft **salt** (spawns in desert, badlands, and savanna biomes as underground deposits)
-2. Place a **Solar Heater** somewhere with a clear view of the sky (no blocks above it)
-3. Right-click salt into the heater's input slot — it will melt into molten salt during daytime
+1. Find **salt** underground in arid biomes (desert, badlands, savanna) or craft it
+2. Place a **Solar Heater** with a clear view of the sky
+3. Right-click salt into the heater's input slot — it converts to molten salt during daytime
 4. Pipe the molten salt into a **Heat Battery**
 5. Place the Heat Battery adjacent to a Create boiler to heat it
-6. For electricity, place a **Brass Solar Panel** with sky access and connect it to your FE network
 
-## Planned Features
+For high-volume molten salt production, build a **Solar Power Tower** and surround its sides with **Solar Mirrors**.
 
-- **Solar Power Tower** — large multi-block structure that concentrates sunlight to generate high-temperature heat, producing large amounts of molten salt.
+## Solar Power Tower Guide
+
+The tower is a multiblock built by stacking tower blocks and using the Solar Power Tower item to place multiple in a row (like fluid tanks). It operates only in direct sunlight and stops during rain or thunderstorms.
+
+| Footprint | Max height | Optimal mirrors | Water demand (per mB salt) |
+|-----------|-----------|-----------------|---------------------------|
+| 1×1       | 5         | 10              | 1× (1:1)                  |
+| 2×2       | 10        | 40              | 4× (4:1)                  |
+| 3×3       | 20        | 180             | 9× (9:1)                  |
+
+**Mirror efficiency** follows a triangle curve: efficiency rises linearly from 0 mirrors to the optimal count (100%), then falls back to 0% at twice the optimal. Over-mirroring shuts the tower down.
+
+**Minimum size:** the tower requires at least a 3×3 footprint to produce anything.
 
 ## Thanks
 

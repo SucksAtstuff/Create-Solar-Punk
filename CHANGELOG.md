@@ -1,3 +1,19 @@
+# 0.1.0-1.21.1
+
+### Solar Power Tower
+
+Added the **Solar Power Tower** multiblock and **Solar Mirror** heliostat block.
+
+The tower concentrates reflected sunlight to produce large quantities of Molten Salt from water. Build it in a 1×1, 2×2, or 3×3 footprint (maximum heights 5, 10, and 20 blocks respectively) and surround the sides with Solar Mirrors to increase output. Mirror efficiency follows a triangle curve — filling roughly half the available wall faces is optimal; over-mirroring past twice the optimal count reduces output to zero.
+
+The tower requires a minimum **3×3 footprint** to produce anything. Water consumption scales with footprint area (9:1 water-to-salt for a full 3×3 tower), making larger towers a serious infrastructure investment.
+
+The Solar Mirror is a wall-mountable heliostat that can be placed on floors, walls, and ceilings. It must touch the tower's side face directly to count. Use a Create wrench to cycle it through all six facing orientations.
+
+Both blocks are wrenchable: sneak + right-click breaks them and returns them as items.
+
+---
+
 # 0.0.1-1.21.1
 
 ### Biofuel Chain
