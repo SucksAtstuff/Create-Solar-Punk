@@ -1,28 +1,39 @@
 # 0.1.1-1.21.1
 
-### Fermentation Vat
-
-The **Fermentation Vat** now requires a minimum **2×2 footprint** to operate. In exchange, production now scales with footprint area: a 2×2 vat processes 4 batches per cycle and a 3×3 processes 9, consuming water and biomass proportionally. Height still only adds tank capacity. This makes larger vats meaningfully more productive than stacking many small ones. Goggles now display the current batch scale and warn when the vat is too small to function.
-
-### Bug Fixes
-
-- Added missing cross-mod fluid tags: `c:molten_salt` and `c:molten` for Molten Salt, `c:biofuel` for Biofuel.
-
----
-
-# 0.1.0-1.21.1
-
 ### Solar Power Tower
 
 Added the **Solar Power Tower** multiblock and **Solar Mirror** heliostat block.
 
-The tower concentrates reflected sunlight to produce large quantities of Molten Salt from water. Build it in a 1×1, 2×2, or 3×3 footprint (maximum heights 5, 10, and 20 blocks respectively) and surround the sides with Solar Mirrors to increase output. Mirror efficiency follows a triangle curve — filling roughly half the available wall faces is optimal; over-mirroring past twice the optimal count reduces output to zero.
+The tower concentrates reflected sunlight to produce large quantities of Molten Salt from water. Build it in a 1x1, 2x2, or 3x3 footprint (maximum heights 5, 10, and 20 blocks respectively) and surround the sides with Solar Mirrors to increase output. Mirror efficiency follows a triangle curve - filling roughly half the available wall faces is optimal; over-mirroring past twice the optimal count reduces output to zero.
 
-The tower requires a minimum **3×3 footprint** to produce anything. Water consumption scales with footprint area (9:1 water-to-salt for a full 3×3 tower), making larger towers a serious infrastructure investment.
+The tower requires a minimum **3x3 footprint** to produce anything. Water consumption scales with footprint area (9:1 water-to-salt for a full 3x3 tower), making larger towers a serious infrastructure investment.
 
 The Solar Mirror is a wall-mountable heliostat that can be placed on floors, walls, and ceilings. It must touch the tower's side face directly to count. Use a Create wrench to cycle it through all six facing orientations.
 
 Both blocks are wrenchable: sneak + right-click breaks them and returns them as items.
+
+### Fermentation Vat
+
+The **Fermentation Vat** now requires a minimum **2x2 footprint** to operate. In exchange, production now scales with footprint area: a 2x2 vat processes 4 batches per cycle and a 3x3 processes 9, consuming water and biomass proportionally. Height still only adds tank capacity. This makes larger vats meaningfully more productive than stacking many small ones. Goggles now display the current batch scale and warn when the vat is too small to function.
+
+### Ponder Scenes
+
+Added in-game Ponder tutorials (press W on a block in the creative menu or use a Ponder Wand) for all machines:
+
+- **Solar Power Tower & Solar Mirror** - two scenes: multiblock assembly and mirror placement. Both blocks share the same entry.
+- **Fermentation Vat** - two scenes: basic usage (2x2 minimum, water and biomass input, biofuel output) and scaling (how footprint area increases batch size and tank capacity).
+- **Biomass Gasifier** - shows biomass insertion, ignition, and shaft output below.
+- **Biofuel Engine** - shows biofuel piping, ignition, and shaft output below.
+
+Ponder entries are organised into three tag groups in the index: **Solar Machines** (Solar Heater, Solar Panels, Heat Battery, Kinetic Battery, Geyser Cap), **Bio Machines** (Gasifier, Engine, Fermentation Vat), and **Solar Power Tower**.
+
+### JEI Integration
+
+Added JEI recipe categories for the **Fermentation Vat** (Biomass + water -> Biofuel). Click either block in the JEI item list to open its category.
+
+### Bug Fixes
+
+- Added missing cross-mod fluid tags: `c:molten_salt` and `c:molten` for Molten Salt, `c:biofuel` for Biofuel.
 
 ---
 
