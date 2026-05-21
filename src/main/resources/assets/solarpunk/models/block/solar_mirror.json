@@ -1,21 +1,68 @@
 {
+  "credit": "Made with Blockbench",
+  "render_type": "minecraft:translucent",
+  "parent": "block/block",
   "textures": {
-    "top":      "solarpunk:block/solar_mirror/solar_mirror_top",
-    "side":     "solarpunk:block/solar_mirror/polished_blackstone",
-    "bottom":   "solarpunk:block/solar_mirror/polished_blackstone",
-    "particle": "solarpunk:block/solar_mirror/polished_blackstone"
+    "0": "solarpunk:block/solar_power_tower/solar_power_tower_mirror/glass",
+    "1": "solarpunk:block/solar_power_tower/solar_power_tower_mirror/glass_pane_horizontal_top",
+    "2": "solarpunk:block/solar_power_tower/solar_power_tower_mirror/glass_pane_top",
+    "3": "solarpunk:block/solar_power_tower/solar_power_tower_mirror/solar_power_tower_mirror_sides",
+    "4": "solarpunk:block/solar_power_tower/solar_power_tower_mirror/smooth_stone",
+    "5": "solarpunk:block/solar_power_tower/solar_power_tower_mirror/smooth_stone_slab_side",
+    "particle": "solarpunk:block/solar_power_tower/solar_power_tower_mirror/glass"
   },
   "elements": [
     {
-      "from": [0, 0, 0],
-      "to": [16, 16, 16],
+      "name": "mirror",
+      "from": [1, 1.354, 7.952],
+      "to": [15, 17.354, 9.952],
+      "rotation": {"angle": 45, "axis": "x", "origin": [8, 9.354, 8.952]},
       "faces": {
-        "north": {"uv": [0, 0, 16, 16], "texture": "#side"},
-        "east":  {"uv": [0, 0, 16, 16], "texture": "#side"},
-        "south": {"uv": [0, 0, 16, 16], "texture": "#side"},
-        "west":  {"uv": [0, 0, 16, 16], "texture": "#side"},
-        "up":    {"uv": [0, 0, 16, 16], "texture": "#top"},
-        "down":  {"uv": [0, 0, 16, 16], "texture": "#bottom"}
+        "north": {"uv": [0, 0, 16, 16], "texture": "#0"},
+        "east":  {"uv": [0, 0, 16, 16], "texture": "#0"},
+        "south": {"uv": [0, 0, 16, 16], "texture": "#0"},
+        "west":  {"uv": [0, 0, 16, 16], "texture": "#0"},
+        "up":    {"uv": [0, 0, 16, 16], "texture": "#0"},
+        "down":  {"uv": [0, 0, 16, 16], "texture": "#0"}
+      }
+    },
+    {
+      "name": "base",
+      "from": [1, 0, 1],
+      "to": [15, 2, 16],
+      "faces": {
+        "north": {"uv": [1, 13, 15, 15], "texture": "#5"},
+        "east":  {"uv": [1, 13, 15, 15], "texture": "#5"},
+        "south": {"uv": [1, 13, 15, 15], "texture": "#5", "cullface": "south"},
+        "west":  {"uv": [1, 13, 15, 15], "texture": "#5"},
+        "up":    {"uv": [1, 1, 15, 15], "texture": "#4"},
+        "down":  {"uv": [1, 1, 15, 15], "texture": "#4", "cullface": "down"}
+      }
+    },
+    {
+      "name": "side1",
+      "from": [0, 0, 8],
+      "to": [1, 10, 10],
+      "faces": {
+        "north": {"uv": [7, 3, 8, 13], "texture": "#3"},
+        "east":  {"uv": [7, 3, 9, 13], "texture": "#3"},
+        "south": {"uv": [8, 3, 9, 13], "texture": "#3"},
+        "west":  {"uv": [7, 3, 9, 13], "texture": "#3", "cullface": "west"},
+        "up":    {"uv": [12, 14, 13, 16], "texture": "#3"},
+        "down":  {"uv": [12, 14, 13, 16], "texture": "#3"}
+      }
+    },
+    {
+      "name": "side2",
+      "from": [15, 0, 8],
+      "to": [16, 10, 10],
+      "faces": {
+        "north": {"uv": [8, 3, 9, 13], "texture": "#3"},
+        "east":  {"uv": [7, 3, 9, 13], "texture": "#3", "cullface": "east"},
+        "south": {"uv": [7, 3, 8, 13], "texture": "#3"},
+        "west":  {"uv": [7, 3, 9, 13], "texture": "#3"},
+        "up":    {"uv": [12, 14, 13, 16], "texture": "#3"},
+        "down":  {"uv": [12, 14, 13, 16], "texture": "#3"}
       }
     }
   ],
@@ -26,7 +73,6 @@
     "firstperson_lefthand":  {"rotation": [0, -135, 0], "scale": [0.4, 0.4, 0.4]},
     "ground":  {"translation": [0, 3, 0], "scale": [0.25, 0.25, 0.25]},
     "gui":     {"rotation": [30, -135, 0], "scale": [0.625, 0.625, 0.625]},
-    "head":    {"rotation": [0, -180, 0], "translation": [0, 13, 7]},
     "fixed":   {"scale": [0.5, 0.5, 0.5]}
   }
 }

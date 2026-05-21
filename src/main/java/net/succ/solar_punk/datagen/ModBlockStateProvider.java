@@ -15,6 +15,7 @@ import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
+import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
 
 public class ModBlockStateProvider extends BlockStateProvider {
@@ -42,7 +43,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         blockWithItem(ModBlocks.SALT_BLOCK);
         heatStateModelBlock(ModBlocks.HEAT_BATTERY);
         solarPowerTowerBlock();
-        simpleCustomModelBlock(ModBlocks.SOLAR_MIRROR);
+        solarMirrorBlock();
     }
 
     // For blocks whose models are hand-crafted (Blockbench).
@@ -139,6 +140,32 @@ public class ModBlockStateProvider extends BlockStateProvider {
                         .modelFile(state.getValue(BlockStateProperties.LIT) ? lit : unlit)
                         .build());
         simpleBlockItem(block.get(), unlit);
+    }
+
+    private void solarMirrorBlock() {
+        ModelFile model = new UncheckedModelFile(modLoc("block/solar_mirror"));
+        getVariantBuilder(ModBlocks.SOLAR_MIRROR.get()).forAllStates(state -> {
+            Direction facing = state.getValue(SolarMirrorBlock.FACING);
+            // X/Y rotations so the model's base (bottom face) attaches to the clicked surface.
+            // rotationX=90 tips the model so its base points toward local-North; Y then spins that.
+            int xRot = switch (facing) {
+                case UP    -> 0;   // floor: base sits on the ground, no rotation
+                case DOWN  -> 180; // ceiling: base against ceiling, upside down
+                default    -> 270; // walls: X=270 puts the base (bottom) against the surface
+            };
+            int yRot = switch (facing) {
+                case NORTH -> 180; // base → south, block placed north of wall
+                case EAST  -> 270; // base → west
+                case WEST  -> 90;  // base → east
+                default    -> 0;   // SOUTH / DOWN / UP
+            };
+            return ConfiguredModel.builder()
+                    .modelFile(model)
+                    .rotationX(xRot)
+                    .rotationY(yRot)
+                    .build();
+        });
+        simpleBlockItem(ModBlocks.SOLAR_MIRROR.get(), model);
     }
 
     // For blocks whose model is hand-crafted with no state variants.

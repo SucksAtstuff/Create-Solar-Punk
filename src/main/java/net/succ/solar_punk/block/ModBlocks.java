@@ -118,6 +118,7 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
             () -> new SolarMirrorBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
+                    .noOcclusion()
                     .strength(2.0f, 4.0f)));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
