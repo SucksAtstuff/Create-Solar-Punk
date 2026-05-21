@@ -61,7 +61,7 @@ The tower is a multiblock built by stacking tower blocks and using the Solar Pow
 Thanks to the following people for their ideas:
 
 - Slopton
-- Multyfora
+- [Multyfora](https://modrinth.com/user/Multyfora)
 - Jimmithy5
 - pumpkin_p._patch
 - yui_riku
