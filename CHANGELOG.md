@@ -1,3 +1,15 @@
+# 0.1.1-1.21.1
+
+### Fermentation Vat
+
+The **Fermentation Vat** now requires a minimum **2×2 footprint** to operate. In exchange, production now scales with footprint area: a 2×2 vat processes 4 batches per cycle and a 3×3 processes 9, consuming water and biomass proportionally. Height still only adds tank capacity. This makes larger vats meaningfully more productive than stacking many small ones. Goggles now display the current batch scale and warn when the vat is too small to function.
+
+### Bug Fixes
+
+- Added missing cross-mod fluid tags: `c:molten_salt` and `c:molten` for Molten Salt, `c:biofuel` for Biofuel.
+
+---
+
 # 0.1.0-1.21.1
 
 ### Solar Power Tower
