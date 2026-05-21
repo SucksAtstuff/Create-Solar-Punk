@@ -246,7 +246,7 @@ public class SolarPowerTowerBlockEntity extends BlockEntity
 
         int saltToAdd = (int) saltAccumulator;
         if (saltToAdd >= 1) {
-            int waterToDrain = saltToAdd;
+            int waterToDrain = saltToAdd * width * width;
             if (waterTank.getFluidAmount() >= waterToDrain &&
                 saltTank.fill(new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), saltToAdd),
                         IFluidHandler.FluidAction.SIMULATE) == saltToAdd) {
