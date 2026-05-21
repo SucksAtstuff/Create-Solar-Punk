@@ -1,7 +1,6 @@
 package net.succ.solar_punk.client.model;
 
-import com.simibubi.create.api.connectivity.ConnectivityHandler;
-import com.simibubi.create.content.fluids.tank.FluidTankCTBehaviour;
+import net.succ.solar_punk.block.ModBlocks;
 import com.simibubi.create.foundation.block.connected.CTModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -23,7 +22,7 @@ public class SolarPowerTowerModel extends CTModel {
     private static final ModelProperty<CullData> CULL_PROPERTY = new ModelProperty<>();
 
     public SolarPowerTowerModel(BakedModel originalModel) {
-        super(originalModel, new FluidTankCTBehaviour(
+        super(originalModel, new SolarPowerTowerCTBehaviour(
             ModSpriteShifts.SOLAR_POWER_TOWER,
             ModSpriteShifts.SOLAR_POWER_TOWER_TOP,
             ModSpriteShifts.SOLAR_POWER_TOWER_INNER
@@ -36,7 +35,7 @@ public class SolarPowerTowerModel extends CTModel {
         super.gatherModelData(builder, world, pos, state, blockEntityData);
         CullData cullData = new CullData();
         for (Direction d : Direction.Plane.HORIZONTAL)
-            cullData.setCulled(d, ConnectivityHandler.isConnected(world, pos, pos.relative(d)));
+            cullData.setCulled(d, world.getBlockState(pos.relative(d)).is(ModBlocks.SOLAR_POWER_TOWER.get()));
         return builder.with(CULL_PROPERTY, cullData);
     }
 

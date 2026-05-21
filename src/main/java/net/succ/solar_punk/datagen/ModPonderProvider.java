@@ -36,6 +36,16 @@ public class ModPonderProvider implements DataProvider {
     private static final Map<String, SceneStructure> SCHEMATICS = new LinkedHashMap<>();
 
     static {
+        SCHEMATICS.put("biomass_gasifier/usage", new SceneStructure()
+                .withBasePlate()
+                .addBlock(2, 1, 2, "create:shaft", "axis", "y")
+                .addBlock(2, 2, 2, "solarpunk:biomass_gasifier", "facing", "north", "lit", "false"));
+
+        SCHEMATICS.put("biofuel_engine/usage", new SceneStructure()
+                .withBasePlate()
+                .addBlock(2, 1, 2, "create:shaft", "axis", "y")
+                .addBlock(2, 2, 2, "solarpunk:biofuel_engine", "facing", "north", "lit", "false"));
+
         SceneStructure solarHeaterScene = new SceneStructure()
                 .withBasePlate()
                 .addBlock(2, 1, 2, "solarpunk:solar_heater",
@@ -81,6 +91,21 @@ public class ModPonderProvider implements DataProvider {
                 .addBlock(2, 2, 2, "solarpunk:geyser_cap", "facing", "north", "lit", "false")
                 .addBlock(1, 2, 2, "create:shaft", "axis", "x")
                 .addBlock(3, 2, 2, "create:shaft", "axis", "x"));
+
+        // 2×2×3 minimum working vat: x=1-2, z=1-2, y=1-3
+        SCHEMATICS.put("fermentation_vat/usage",   addVatLayers(new SceneStructure().withBasePlate(), 2, 3));
+        // 3×3×3 larger vat to show scaling
+        SCHEMATICS.put("fermentation_vat/scaling", addVatLayers(new SceneStructure().withBasePlate(), 3, 3));
+
+        // Tower + mirrors on west (x=0) and east (x=4) faces — used by both scenes
+        SceneStructure towerWithMirrors = addTowerLayers(new SceneStructure().withBasePlate());
+        for (int y = 1; y <= 3; y++)
+            for (int z = 1; z <= 3; z++) {
+                towerWithMirrors.addBlock(0, y, z, "solarpunk:solar_mirror", "facing", "west");
+                towerWithMirrors.addBlock(4, y, z, "solarpunk:solar_mirror", "facing", "east");
+            }
+        SCHEMATICS.put("solar_power_tower/usage",   towerWithMirrors);
+        SCHEMATICS.put("solar_power_tower/mirrors", towerWithMirrors);
     }
 
     // -------------------------------------------------------------------------
@@ -122,6 +147,30 @@ public class ModPonderProvider implements DataProvider {
     @Override
     public String getName() {
         return "Ponder Schematics: " + SolarPunk.MODID;
+    }
+
+    private static SceneStructure addVatLayers(SceneStructure s, int width, int height) {
+        for (int x = 1; x <= width; x++)
+            for (int z = 1; z <= width; z++) {
+                String bottom = height == 1 ? "single" : "bottom";
+                s.addBlock(x, 1, z, "solarpunk:fermentation_vat", "lit", "false", "position", bottom);
+                for (int y = 2; y < height; y++)
+                    s.addBlock(x, y, z, "solarpunk:fermentation_vat", "lit", "false", "position", "middle");
+                if (height > 1)
+                    s.addBlock(x, height, z, "solarpunk:fermentation_vat", "lit", "false", "position", "top");
+            }
+        return s;
+    }
+
+    // Adds a 3×3×3 tower footprint (x=1-3, z=1-3, y=1-3) with correct position states.
+    private static SceneStructure addTowerLayers(SceneStructure s) {
+        for (int x = 1; x <= 3; x++)
+            for (int z = 1; z <= 3; z++) {
+                s.addBlock(x, 1, z, "solarpunk:solar_power_tower", "lit", "false", "position", "bottom");
+                s.addBlock(x, 2, z, "solarpunk:solar_power_tower", "lit", "false", "position", "middle");
+                s.addBlock(x, 3, z, "solarpunk:solar_power_tower", "lit", "false", "position", "top");
+            }
+        return s;
     }
 
     // -------------------------------------------------------------------------

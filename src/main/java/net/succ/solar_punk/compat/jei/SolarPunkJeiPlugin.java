@@ -26,8 +26,11 @@ public class SolarPunkJeiPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
+        var guiHelper = registration.getJeiHelpers().getGuiHelper();
         registration.addRecipeCategories(
-                new SolarHeaterCategory(registration.getJeiHelpers().getGuiHelper())
+                new SolarHeaterCategory(guiHelper),
+                new SolarPowerTowerCategory(guiHelper),
+                new FermentationVatCategory(guiHelper)
         );
     }
 
@@ -43,6 +46,8 @@ public class SolarPunkJeiPlugin implements IModPlugin {
                 .toList();
 
         registration.addRecipes(SolarHeaterCategory.RECIPE_TYPE, recipes);
+        registration.addRecipes(SolarPowerTowerCategory.RECIPE_TYPE, List.of(SolarPowerTowerCategory.INSTANCE));
+        registration.addRecipes(FermentationVatCategory.RECIPE_TYPE, List.of(FermentationVatCategory.INSTANCE));
     }
 
     @Override
@@ -50,6 +55,14 @@ public class SolarPunkJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(
                 new ItemStack(ModBlocks.SOLAR_HEATER.get()),
                 SolarHeaterCategory.RECIPE_TYPE
+        );
+        registration.addRecipeCatalyst(
+                new ItemStack(ModBlocks.SOLAR_POWER_TOWER.get()),
+                SolarPowerTowerCategory.RECIPE_TYPE
+        );
+        registration.addRecipeCatalyst(
+                new ItemStack(ModBlocks.FERMENTATION_VAT.get()),
+                FermentationVatCategory.RECIPE_TYPE
         );
     }
 }

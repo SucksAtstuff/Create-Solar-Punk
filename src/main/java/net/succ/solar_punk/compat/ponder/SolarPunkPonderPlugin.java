@@ -16,6 +16,12 @@ public class SolarPunkPonderPlugin implements PonderPlugin {
 
     @Override
     public void registerScenes(PonderSceneRegistrationHelper<ResourceLocation> helper) {
+        helper.forComponents(ModBlocks.BIOMASS_GASIFIER.getId(), ModBlocks.BIOFUEL_ENGINE.getId(), ModBlocks.FERMENTATION_VAT.getId())
+                .addStoryBoard("biomass_gasifier/usage",   BiomassGasifierScenes::usage,   SolarPunkPonderTags.BIO_MACHINES)
+                .addStoryBoard("biofuel_engine/usage",     BiofuelEngineScenes::usage,     SolarPunkPonderTags.BIO_MACHINES)
+                .addStoryBoard("fermentation_vat/usage",   FermentationVatScenes::usage,   SolarPunkPonderTags.BIO_MACHINES)
+                .addStoryBoard("fermentation_vat/scaling", FermentationVatScenes::scaling, SolarPunkPonderTags.BIO_MACHINES);
+
         helper.forComponents(ModBlocks.SOLAR_HEATER.getId())
                 .addStoryBoard("solar_heater/usage", SolarHeaterScenes::usage, SolarPunkPonderTags.SOLAR_MACHINES)
                 .addStoryBoard("solar_heater/evaporation", SolarHeaterScenes::evaporation, SolarPunkPonderTags.SOLAR_MACHINES);
@@ -35,6 +41,10 @@ public class SolarPunkPonderPlugin implements PonderPlugin {
 
         helper.addStoryBoard(ModBlocks.GEYSER_CAP.getId(), "geyser_cap/usage",
                 GeyserCapScenes::usage, SolarPunkPonderTags.SOLAR_MACHINES);
+
+        helper.forComponents(ModBlocks.SOLAR_POWER_TOWER.getId(), ModBlocks.SOLAR_MIRROR.getId())
+                .addStoryBoard("solar_power_tower/usage",   SolarPowerTowerScenes::usage,   SolarPunkPonderTags.SOLAR_TOWER)
+                .addStoryBoard("solar_power_tower/mirrors", SolarPowerTowerScenes::mirrors, SolarPunkPonderTags.SOLAR_TOWER);
     }
 
     @Override

@@ -19,12 +19,31 @@ public class ModLangProvider extends LanguageProvider {
     protected void addTranslations() {
         add("itemGroup.solar_punk", "Create: Solarpunk");
         add("jei.solarpunk.category.solar_heating", "Solar Heating");
+        add("jei.solarpunk.category.solar_power_tower", "Solar Power Tower");
+        add("jei.solarpunk.category.fermentation_vat", "Fermentation Vat");
 
         // Ponder tag — format: <namespace>.ponder.tag.<path>
         add("solarpunk.ponder.tag.solar_machines", "Solar Machines");
         add("solarpunk.ponder.tag.solar_machines.description", "Machines that harness the power of sunlight");
+        add("solarpunk.ponder.tag.bio_machines", "Bio Machines");
+        add("solarpunk.ponder.tag.bio_machines.description", "Machines for producing and burning Biofuel");
+        add("solarpunk.ponder.tag.solar_tower", "Solar Power Tower");
+        add("solarpunk.ponder.tag.solar_tower.description", "Concentrated solar power for producing Molten Salt");
 
         // Ponder scene text — format: <namespace>.ponder.<sceneId>.header / .text_N
+        add("solarpunk.ponder.biomass_gasifier_usage.header", "Using the Biomass Gasifier");
+        add("solarpunk.ponder.biomass_gasifier_usage.text_1", "The Biomass Gasifier burns Biomass to generate Rotational Force");
+        add("solarpunk.ponder.biomass_gasifier_usage.text_2", "Add Biomass into the top slot — each piece burns for 15 seconds");
+        add("solarpunk.ponder.biomass_gasifier_usage.text_3", "While burning, it outputs 8 RPM with 2048 SU of stress capacity");
+        add("solarpunk.ponder.biomass_gasifier_usage.text_4", "Rotation exits downward — connect a shaft or machine directly below");
+        add("solarpunk.ponder.biomass_gasifier_usage.text_5", "Output is intermittent — use a Kinetic Battery to buffer power between refills");
+
+        add("solarpunk.ponder.biofuel_engine_usage.header", "Using the Biofuel Engine");
+        add("solarpunk.ponder.biofuel_engine_usage.text_1", "The Biofuel Engine burns Biofuel to generate Rotational Force");
+        add("solarpunk.ponder.biofuel_engine_usage.text_2", "Pipe Biofuel into any face to fill the internal tank");
+        add("solarpunk.ponder.biofuel_engine_usage.text_3", "With Biofuel present, it outputs 16 RPM with 8192 SU of stress capacity");
+        add("solarpunk.ponder.biofuel_engine_usage.text_4", "Rotation exits downward — connect a shaft or machine directly below");
+
         add("solarpunk.ponder.solar_heater_usage.header", "Using the Solar Heater");
         add("solarpunk.ponder.solar_heater_usage.text_1", "The Solar Heater melts items into fluids using sunlight");
         add("solarpunk.ponder.solar_heater_usage.text_2", "Right-click to place an item into the input slot");
@@ -77,6 +96,33 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.geyser_cap_usage.text_2", "Place a Geyser Cap directly on top of a Geyser Vent to harness its energy");
         add("solarpunk.ponder.geyser_cap_usage.text_3", "While active, the cap generates 32 RPM with 16384 SU of stress capacity");
         add("solarpunk.ponder.geyser_cap_usage.text_4", "Rotation is output along the cap's sides — connect shafts or machines to collect the power");
+
+        add("solarpunk.ponder.solar_power_tower_usage.header", "Using the Solar Power Tower");
+        add("solarpunk.ponder.solar_power_tower_usage.text_1", "Stack Solar Power Tower blocks vertically — they merge into a single multiblock");
+        add("solarpunk.ponder.solar_power_tower_usage.text_2", "The tower requires at least a 3x3 footprint and 3 blocks tall to produce anything");
+        add("solarpunk.ponder.solar_power_tower_usage.text_3", "Pipe water in through any side face to fill the water tank");
+        add("solarpunk.ponder.solar_power_tower_usage.text_4", "During the day with a clear sky, the tower converts water into Molten Salt — rain and night stop production");
+        add("solarpunk.ponder.solar_power_tower_usage.text_5", "Place Solar Mirrors on the tower's side faces to boost output — see the Solar Mirrors scene for details");
+        add("solarpunk.ponder.solar_power_tower_usage.text_6", "Drain the Molten Salt from the output and pipe it to a Heat Battery");
+
+        add("solarpunk.ponder.solar_power_tower_mirrors.header", "Solar Mirrors");
+        add("solarpunk.ponder.solar_power_tower_mirrors.text_1", "Place Solar Mirrors directly against the tower's side faces to increase output");
+        add("solarpunk.ponder.solar_power_tower_mirrors.text_2", "Mirror efficiency follows a triangle curve — it peaks when roughly half the available side faces are covered");
+        add("solarpunk.ponder.solar_power_tower_mirrors.text_3", "Adding mirrors past twice the optimal count reduces efficiency to zero — do not over-mirror");
+        add("solarpunk.ponder.solar_power_tower_mirrors.text_4", "Taller and wider towers have more wall space for mirrors and a higher maximum output rate");
+
+        add("solarpunk.ponder.fermentation_vat_usage.header", "Using the Fermentation Vat");
+        add("solarpunk.ponder.fermentation_vat_usage.text_1", "Stack Fermentation Vat blocks — they merge into a single multiblock");
+        add("solarpunk.ponder.fermentation_vat_usage.text_2", "The vat needs at least a 2x2 footprint to ferment anything");
+        add("solarpunk.ponder.fermentation_vat_usage.text_3", "Pipe water in through any face to fill the water tank");
+        add("solarpunk.ponder.fermentation_vat_usage.text_4", "Insert Biomass into the input from the top");
+        add("solarpunk.ponder.fermentation_vat_usage.text_5", "The vat ferments Biomass with water into Biofuel — a 2x2 vat consumes 4 Biomass per batch");
+        add("solarpunk.ponder.fermentation_vat_usage.text_6", "Drain Biofuel from any face and pipe it to a Biofuel Engine");
+
+        add("solarpunk.ponder.fermentation_vat_scaling.header", "Scaling the Fermentation Vat");
+        add("solarpunk.ponder.fermentation_vat_scaling.text_1", "A larger footprint increases the batch size — a 2x2 vat processes 4 Biomass at once, a 3x3 processes 9");
+        add("solarpunk.ponder.fermentation_vat_scaling.text_2", "Water consumed and Biofuel produced per batch scale with the footprint area");
+        add("solarpunk.ponder.fermentation_vat_scaling.text_3", "Tank capacity grows with each block added — taller vats hold more fluid");
 
         add("create.solar_punk.tooltip.fe_header", "Generator Stats");
         add("create.solar_punk.tooltip.generating", "Generating: ");

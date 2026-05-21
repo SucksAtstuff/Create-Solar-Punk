@@ -31,6 +31,7 @@ public class SolarPowerTowerRenderer extends SafeBlockEntityRenderer<SolarPowerT
     protected void renderSafe(SolarPowerTowerBlockEntity be, float partialTicks, PoseStack ms,
             MultiBufferSource buffer, int light, int overlay) {
         if (!be.isController()) return;
+        if (be.getWidth() < 3) return;
 
         BlockState blockState = be.getBlockState();
         VertexConsumer vb = buffer.getBuffer(RenderType.cutout());

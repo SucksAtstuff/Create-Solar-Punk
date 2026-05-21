@@ -31,6 +31,7 @@ public class FermentationVatRenderer extends SafeBlockEntityRenderer<Fermentatio
     protected void renderSafe(FermentationVatBlockEntity be, float partialTicks, PoseStack ms,
             MultiBufferSource buffer, int light, int overlay) {
         if (!be.isController()) return;
+        if (be.getWidth() < FermentationVatBlockEntity.MIN_WIDTH) return;
 
         BlockState blockState = be.getBlockState();
         VertexConsumer vb = buffer.getBuffer(RenderType.cutout());
