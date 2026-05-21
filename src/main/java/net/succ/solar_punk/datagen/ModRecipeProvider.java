@@ -140,6 +140,26 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('H', createItem("chute"))
                 .unlockedBy("has_andesite_casing", has(createItem("andesite_casing")))
                 .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SOLAR_MIRROR.get())
+                .pattern("GGG")
+                .pattern(" A ")
+                .pattern("SAS")
+                .define('G', Items.GLASS_PANE)
+                .define('S', Blocks.SMOOTH_STONE)
+                .define('A', createItem("andesite_alloy"))
+                .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SOLAR_POWER_TOWER.get())
+                .pattern("QIQ")
+                .pattern("IAI")
+                .pattern("QIQ")
+                .define('Q', Items.QUARTZ_BLOCK)
+                .define('I', Items.IRON_INGOT)
+                .define('A', createItem("andesite_alloy"))
+                .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
+                .save(output);
     }
 
     private static Item createItem(String name) {
