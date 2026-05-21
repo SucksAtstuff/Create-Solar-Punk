@@ -12,9 +12,9 @@
 	"elements": [
 		{
 			"name": "mirror",
-			"from": [1, 1.35442, 7.95248],
-			"to": [15, 17.35442, 9.95248],
-			"rotation": {"angle": 45, "axis": "x", "origin": [8, 9.35442, 8.95248]},
+			"from": [1, 1.35442, 5.95248],
+			"to": [15, 17.35442, 7.95248],
+			"rotation": {"angle": -45, "axis": "x", "origin": [8, 9.35442, 6.95248]},
 			"faces": {
 				"north": {"uv": [0, 0, 16, 16], "texture": "#0"},
 				"east": {"uv": [7, 0, 9, 16], "texture": "#1"},
@@ -40,7 +40,7 @@
 		{
 			"name": "side1",
 			"from": [0, 0, 8],
-			"to": [1, 10, 10],
+			"to": [1, 8, 10],
 			"rotation": {"angle": 0, "axis": "y", "origin": [-1, 0, 8]},
 			"faces": {
 				"north": {"uv": [7, 3, 8, 13], "texture": "#3"},
@@ -54,7 +54,7 @@
 		{
 			"name": "side2",
 			"from": [15, 0, 8],
-			"to": [16, 10, 10],
+			"to": [16, 8, 10],
 			"rotation": {"angle": 0, "axis": "y", "origin": [14, 0, 8]},
 			"faces": {
 				"north": {"uv": [8, 3, 9, 13], "texture": "#3"},
