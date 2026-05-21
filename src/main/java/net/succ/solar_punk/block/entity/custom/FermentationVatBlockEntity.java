@@ -39,6 +39,7 @@ public class FermentationVatBlockEntity extends BlockEntity
     public static final int WATER_PER_BATCH         = 1000;
     public static final int BIOFUEL_PER_BATCH       = 1000;
     public static final int TANK_CAPACITY_PER_BLOCK = 8000;
+    public static final int MIN_WIDTH               = 2;
     public static final int MAX_WIDTH               = 3;
     public static final int MAX_HEIGHT              = 16;
 
@@ -260,9 +261,19 @@ public class FermentationVatBlockEntity extends BlockEntity
 
         if (!isController()) return;
 
-        boolean hasInput   = !itemHandler.getStackInSlot(0).isEmpty();
-        boolean hasWater   = waterTank.getFluidAmount() >= WATER_PER_BATCH;
-        boolean hasSpace   = biofuelTank.getFluidAmount() + BIOFUEL_PER_BATCH <= biofuelTank.getCapacity();
+        if (width < MIN_WIDTH) {
+            if (progress > 0) { progress = 0; setChanged(); sync(); }
+            setLit(false);
+            return;
+        }
+
+        int batchScale    = width * width;
+        int waterNeeded   = WATER_PER_BATCH  * batchScale;
+        int biofuelOutput = BIOFUEL_PER_BATCH * batchScale;
+
+        boolean hasInput   = itemHandler.getStackInSlot(0).getCount() >= batchScale;
+        boolean hasWater   = waterTank.getFluidAmount() >= waterNeeded;
+        boolean hasSpace   = biofuelTank.getFluidAmount() + biofuelOutput <= biofuelTank.getCapacity();
         boolean canFerment = hasInput && hasWater && hasSpace;
 
         if (!canFerment) {
@@ -277,9 +288,9 @@ public class FermentationVatBlockEntity extends BlockEntity
         if (progress % 20 == 0) sync();
 
         if (progress >= FERMENTATION_TIME) {
-            itemHandler.extractItem(0, 1, false);
-            waterTank.drain(WATER_PER_BATCH, IFluidHandler.FluidAction.EXECUTE);
-            biofuelTank.fill(new FluidStack(ModFluids.BIOFUEL_SOURCE.get(), BIOFUEL_PER_BATCH),
+            itemHandler.extractItem(0, batchScale, false);
+            waterTank.drain(waterNeeded, IFluidHandler.FluidAction.EXECUTE);
+            biofuelTank.fill(new FluidStack(ModFluids.BIOFUEL_SOURCE.get(), biofuelOutput),
                     IFluidHandler.FluidAction.EXECUTE);
             progress = 0;
             setChanged();
@@ -385,6 +396,19 @@ public class FermentationVatBlockEntity extends BlockEntity
 
         int cap = waterTank.getCapacity();
         CreateLang.translate("solar_punk.tooltip.fermentation_vat_header").forGoggles(tooltip);
+
+        if (ctrl.width < MIN_WIDTH) {
+            CreateLang.translate("solar_punk.tooltip.vat_too_small")
+                    .style(ChatFormatting.RED)
+                    .forGoggles(tooltip, 1);
+            return true;
+        }
+
+        int batchScale = ctrl.width * ctrl.width;
+        CreateLang.translate("solar_punk.tooltip.vat_batch_scale")
+                .style(ChatFormatting.GRAY)
+                .add(CreateLang.number(batchScale).style(ChatFormatting.WHITE).component())
+                .forGoggles(tooltip, 1);
 
         ItemStack input = itemHandler.getStackInSlot(0);
         if (!input.isEmpty()) {

@@ -42,6 +42,8 @@
   "create.solar_punk.tooltip.salt_output": "Salt: ",
   "create.solar_punk.tooltip.solar_power_tower_header": "Solar Power Tower",
   "create.solar_punk.tooltip.stored": "Stored: ",
+  "create.solar_punk.tooltip.vat_batch_scale": "Batch size: ",
+  "create.solar_punk.tooltip.vat_too_small": "Needs at least 2x2 footprint",
   "create.solar_punk.tooltip.water": "Water: ",
   "fluid_type.solarpunk.biofuel": "Biofuel",
   "fluid_type.solarpunk.molten_salt": "Molten Salt",

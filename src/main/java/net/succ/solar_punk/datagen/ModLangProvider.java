@@ -92,6 +92,8 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.molten_salt", "Molten Salt: ");
 
         add("create.solar_punk.tooltip.fermentation_vat_header", "Fermentation Vat");
+        add("create.solar_punk.tooltip.vat_too_small", "Needs at least 2x2 footprint");
+        add("create.solar_punk.tooltip.vat_batch_scale", "Batch size: ");
         add("create.solar_punk.tooltip.fermenting", "Fermenting: ");
         add("create.solar_punk.tooltip.biofuel", "Biofuel: ");
 
