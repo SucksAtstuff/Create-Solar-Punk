@@ -38,7 +38,28 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.FERMENTATION_VAT.get())
                 .add(ModBlocks.BIOMASS_GASIFIER.get())
                 .add(ModBlocks.BIOFUEL_ENGINE.get())
+                .add(ModBlocks.GEYSER_CAP.get())
+                .add(ModBlocks.SOLAR_POWER_TOWER.get())
+                .add(ModBlocks.SOLAR_MIRROR.get())
+                .add(ModBlocks.GEYSER_VENT.get());
+
+        // Stone-tool-tier blocks: salt/glass-adjacent, early game
+        tag(BlockTags.NEEDS_STONE_TOOL)
+                .add(ModBlocks.SALT_BLOCK.get())
+                .add(ModBlocks.SOLAR_MIRROR.get())
+                .add(ModBlocks.SOLAR_HEATER.get())
+                .add(ModBlocks.ANDESITE_SOLAR_PANEL.get())
                 .add(ModBlocks.GEYSER_CAP.get());
+
+        // Iron-tool-tier blocks: brass/metal machines, mid game
+        tag(BlockTags.NEEDS_IRON_TOOL)
+                .add(ModBlocks.BRASS_SOLAR_PANEL.get())
+                .add(ModBlocks.KINETIC_BATTERY.get())
+                .add(ModBlocks.HEAT_BATTERY.get())
+                .add(ModBlocks.FERMENTATION_VAT.get())
+                .add(ModBlocks.BIOMASS_GASIFIER.get())
+                .add(ModBlocks.BIOFUEL_ENGINE.get())
+                .add(ModBlocks.SOLAR_POWER_TOWER.get());
 
         tag(Tags.Blocks.STORAGE_BLOCKS).add(ModBlocks.SALT_BLOCK.get());
         tag(STORAGE_BLOCKS_SALT).add(ModBlocks.SALT_BLOCK.get());

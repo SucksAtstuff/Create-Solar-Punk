@@ -1,17 +1,11 @@
 {
   "values": [
-    "solarpunk:andesite_solar_panel",
     "solarpunk:brass_solar_panel",
-    "solarpunk:solar_heater",
-    "solarpunk:salt_block",
     "solarpunk:kinetic_battery",
     "solarpunk:heat_battery",
     "solarpunk:fermentation_vat",
     "solarpunk:biomass_gasifier",
     "solarpunk:biofuel_engine",
-    "solarpunk:geyser_cap",
-    "solarpunk:solar_power_tower",
-    "solarpunk:solar_mirror",
-    "solarpunk:geyser_vent"
+    "solarpunk:solar_power_tower"
   ]
 }
