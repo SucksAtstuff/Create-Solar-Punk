@@ -30,12 +30,10 @@ public class FermentationVatCategory implements IRecipeCategory<FermentationVatC
     private static final int WIDTH  = 110;
     private static final int HEIGHT = 40;
 
-    private final IDrawable background;
     private final IDrawable icon;
     private final IDrawableAnimated arrow;
 
     public FermentationVatCategory(IGuiHelper guiHelper) {
-        this.background = guiHelper.createBlankDrawable(WIDTH, HEIGHT);
         this.icon = guiHelper.createDrawableItemStack(new ItemStack(ModBlocks.FERMENTATION_VAT.get()));
         this.arrow = guiHelper.createAnimatedRecipeArrow(200);
     }
@@ -50,10 +48,8 @@ public class FermentationVatCategory implements IRecipeCategory<FermentationVatC
         return Component.translatable("jei.solarpunk.category.fermentation_vat");
     }
 
-    @Override
-    public IDrawable getBackground() {
-        return background;
-    }
+    @Override public int getWidth()  { return WIDTH; }
+    @Override public int getHeight() { return HEIGHT; }
 
     @Override
     public IDrawable getIcon() {

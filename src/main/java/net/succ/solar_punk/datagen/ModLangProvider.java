@@ -147,6 +147,7 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.fuel", "Fuel: ");
         add("create.solar_punk.tooltip.burn_time", "Burn time: ");
         add("create.solar_punk.tooltip.biomass_stored", "Biomass: ");
+        add("create.solar_punk.tooltip.biochar_stored", "Biochar: ");
 
         add("create.solar_punk.tooltip.biofuel_engine_header", "Biofuel Engine");
         add("create.solar_punk.tooltip.consumption", "Consumption: ");

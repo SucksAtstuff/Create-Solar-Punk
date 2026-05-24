@@ -22,6 +22,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.SALT.get());
         basicItem(ModItems.BIOMASS.get());
         basicItem(ModItems.BIOMASS_PELLET.get());
+        basicItem(ModItems.BIOCHAR.get());
         basicItem(ModFluids.MOLTEN_SALT_BUCKET.get());
         basicItem(ModFluids.BIOFUEL_BUCKET.get());
 

@@ -29,12 +29,10 @@ public class SolarPowerTowerCategory implements IRecipeCategory<SolarPowerTowerC
     private static final int WIDTH  = 100;
     private static final int HEIGHT = 40;
 
-    private final IDrawable background;
     private final IDrawable icon;
     private final IDrawableAnimated arrow;
 
     public SolarPowerTowerCategory(IGuiHelper guiHelper) {
-        this.background = guiHelper.createBlankDrawable(WIDTH, HEIGHT);
         this.icon = guiHelper.createDrawableItemStack(new ItemStack(ModBlocks.SOLAR_POWER_TOWER.get()));
         this.arrow = guiHelper.createAnimatedRecipeArrow(200);
     }
@@ -49,10 +47,8 @@ public class SolarPowerTowerCategory implements IRecipeCategory<SolarPowerTowerC
         return Component.translatable("jei.solarpunk.category.solar_power_tower");
     }
 
-    @Override
-    public IDrawable getBackground() {
-        return background;
-    }
+    @Override public int getWidth()  { return WIDTH; }
+    @Override public int getHeight() { return HEIGHT; }
 
     @Override
     public IDrawable getIcon() {

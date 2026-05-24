@@ -8,38 +8,19 @@ import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
 
 public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity {
 
-    private static final float MORNING_RPM = 8f;
-    private static final float NOON_RPM = 16f;
+    private static final float MORNING_RPM      = 8f;
+    private static final float NOON_RPM         = 16f;
     private static final float MORNING_CAPACITY = 128f;
-    private static final float NOON_CAPACITY = 256f;
-
-    private static final long NOON_START    = 2000;
-    private static final long EVENING_START = 10000;
-    private static final long NIGHT_START   = 12000;
+    private static final float NOON_CAPACITY    = 256f;
 
     public AndesiteSolarPanelBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
-    private enum Phase { NIGHT, MORNING, NOON, EVENING }
-
-    private Phase getPhase() {
-        if (level == null) return Phase.NIGHT;
-        long time = level.getDayTime() % 24000;
-        if (time < NOON_START)    return Phase.MORNING;
-        if (time < EVENING_START) return Phase.NOON;
-        if (time < NIGHT_START)   return Phase.EVENING;
-        return Phase.NIGHT;
-    }
-
-    private boolean hasSkyAccess() {
-        return level != null && level.canSeeSky(worldPosition.above());
-    }
-
     @Override
     public float getGeneratedSpeed() {
-        if (!hasSkyAccess()) return 0;
-        return switch (getPhase()) {
+        if (!SolarHelper.hasSkyAccess(level, worldPosition)) return 0;
+        return switch (SolarHelper.getPhase(level)) {
             case MORNING, EVENING -> MORNING_RPM;
             case NOON -> level.isRaining() ? MORNING_RPM : NOON_RPM;
             case NIGHT -> 0;
@@ -49,8 +30,8 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
     @Override
     public float calculateAddedStressCapacity() {
         float capacity = 0;
-        if (hasSkyAccess()) {
-            capacity = switch (getPhase()) {
+        if (SolarHelper.hasSkyAccess(level, worldPosition)) {
+            capacity = switch (SolarHelper.getPhase(level)) {
                 case MORNING, EVENING -> MORNING_CAPACITY;
                 case NOON -> level.isRaining() ? MORNING_CAPACITY : NOON_CAPACITY;
                 case NIGHT -> 0;

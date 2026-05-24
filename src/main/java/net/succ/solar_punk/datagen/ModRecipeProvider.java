@@ -50,6 +50,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_salt_block", has(ModBlocks.SALT_BLOCK.get()))
                 .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "salt_from_salt_block"));
 
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SOLAR_HEATER.get())
                 .pattern("GGG")
                 .pattern("C C")

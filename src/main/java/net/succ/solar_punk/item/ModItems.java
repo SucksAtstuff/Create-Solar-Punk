@@ -18,6 +18,9 @@ public class ModItems {
     public static final DeferredItem<Item> BIOMASS_PELLET = ITEMS.register("biomass_pellet",
             () -> new Item(new Item.Properties()));
 
+    public static final DeferredItem<BiocharItem> BIOCHAR = ITEMS.register("biochar",
+            () -> new BiocharItem(new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

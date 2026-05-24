@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
+import net.succ.solar_punk.item.ModItems;
 
 import java.util.List;
 
@@ -29,15 +30,21 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
     private static final float CAPACITY = 256f;
     public static final int BURN_TIME   = 300;
 
-    public final ItemStackHandler itemHandler = new ItemStackHandler(1) {
+    // Slot 0 = fuel input, Slot 1 = biochar output
+    public final ItemStackHandler itemHandler = new ItemStackHandler(2) {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            return stack.is(BIO_FUELS);
+            return slot == 0 && stack.is(BIO_FUELS);
         }
         @Override
         public int getSlotLimit(int slot) { return 64; }
         @Override
         protected void onContentsChanged(int slot) { setChanged(); }
+        @Override
+        public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+            super.deserializeNBT(provider, nbt);
+            if (getSlots() < 2) setSize(2);
+        }
     };
 
     private int burnTimeRemaining = 0;
@@ -73,10 +80,21 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
             setChanged();
         }
 
-        if (burnTimeRemaining == 0 && !itemHandler.getStackInSlot(0).isEmpty()) {
-            itemHandler.extractItem(0, 1, false);
-            burnTimeRemaining = BURN_TIME;
-            setChanged();
+        if (burnTimeRemaining == 0) {
+            ItemStack fuel = itemHandler.getStackInSlot(0);
+            ItemStack charOutput = itemHandler.getStackInSlot(1);
+            boolean outputHasRoom = charOutput.isEmpty()
+                    || (charOutput.is(ModItems.BIOCHAR.get()) && charOutput.getCount() < charOutput.getMaxStackSize());
+            if (!fuel.isEmpty() && outputHasRoom) {
+                itemHandler.extractItem(0, 1, false);
+                burnTimeRemaining = BURN_TIME;
+                if (charOutput.isEmpty()) {
+                    itemHandler.setStackInSlot(1, new ItemStack(ModItems.BIOCHAR.get(), 1));
+                } else {
+                    charOutput.grow(1);
+                }
+                setChanged();
+            }
         }
 
         boolean active = burnTimeRemaining > 0;
@@ -111,6 +129,12 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
         CreateLang.translate("solar_punk.tooltip.biomass_stored")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(stored).text(" / 64").style(ChatFormatting.WHITE).component())
+                .forGoggles(tooltip, 1);
+
+        int biochar = itemHandler.getStackInSlot(1).getCount();
+        CreateLang.translate("solar_punk.tooltip.biochar_stored")
+                .style(ChatFormatting.GRAY)
+                .add(CreateLang.number(biochar).text(" / 64").style(ChatFormatting.DARK_GREEN).component())
                 .forGoggles(tooltip, 1);
 
         if (burnTimeRemaining > 0) {

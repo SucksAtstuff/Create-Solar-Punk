@@ -1,3 +1,13 @@
+# 0.2.0-1.21.1
+
+### Biochar
+
+Added **Biochar**, a byproduct of the Biomass Gasifier. Each fuel item burned produces one Biochar in the Gasifier's output slot. The Gasifier pauses if the output is full, so keep it drained with a funnel or chute.
+
+Biochar acts as a direct bonemeal substitute - right-click crops, grass, and other growable blocks to fertilize them. It is obtained only from the Gasifier, closing the biofuel loop with a useful agricultural byproduct.
+
+---
+
 # 0.1.1-1.21.1
 
 ### Solar Power Tower

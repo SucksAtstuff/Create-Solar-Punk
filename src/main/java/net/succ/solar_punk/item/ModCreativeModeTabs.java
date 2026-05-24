@@ -37,6 +37,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.SALT.get());
                         output.accept(ModItems.BIOMASS.get());
                         output.accept(ModItems.BIOMASS_PELLET.get());
+                        output.accept(ModItems.BIOCHAR.get());
                         output.accept(ModFluids.MOLTEN_SALT_BUCKET.get());
                         output.accept(ModFluids.BIOFUEL_BUCKET.get());
                     })

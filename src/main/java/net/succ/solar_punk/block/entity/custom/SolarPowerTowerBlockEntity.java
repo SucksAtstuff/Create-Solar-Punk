@@ -2,18 +2,13 @@ package net.succ.solar_punk.block.entity.custom;
 
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
-import com.simibubi.create.foundation.blockEntity.IMultiBlockEntityContainer;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
@@ -27,26 +22,17 @@ import net.succ.solar_punk.fluid.ModFluids;
 
 import java.util.List;
 
-public class SolarPowerTowerBlockEntity extends BlockEntity
-        implements IHaveGoggleInformation, IMultiBlockEntityContainer.Fluid {
+public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowerBlockEntity>
+        implements IHaveGoggleInformation {
 
     public static final int TANK_CAPACITY_PER_BLOCK = 8000;
-    public static final int MAX_WIDTH               = 3;
     // Max height per footprint width: index 1→5, 2→10, 3→20
     private static final int[] MAX_HEIGHTS = {0, 5, 10, 20};
 
-    // IMultiBlockEntityContainer state
-    private BlockPos controller       = null;
-    private int      width            = 1;
-    private int      height           = 1;
-    public boolean   updateConnectivity = false;
-
-    // Production state (controller only)
-    private float saltAccumulator  = 0f;
+    private float saltAccumulator   = 0f;
     private int   cachedMirrorCount = 0;
     private int   mirrorScanCooldown = 0;
 
-    // Tanks (controller only; non-controllers always empty)
     public final FluidTank waterTank = new FluidTank(TANK_CAPACITY_PER_BLOCK) {
         @Override public boolean isFluidValid(FluidStack stack) { return stack.getFluid().isSame(Fluids.WATER); }
         @Override protected void onContentsChanged() { setChanged(); sync(); }
@@ -59,7 +45,6 @@ public class SolarPowerTowerBlockEntity extends BlockEntity
         @Override protected void onContentsChanged() { setChanged(); sync(); }
     };
 
-    // External fluid capability: water fills waterTank, drains molten salt from saltTank.
     public final IFluidHandler combinedFluidHandler = new IFluidHandler() {
         private SolarPowerTowerBlockEntity ctrl() { return getControllerBE(); }
 
@@ -99,60 +84,15 @@ public class SolarPowerTowerBlockEntity extends BlockEntity
     };
 
     public SolarPowerTowerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
+        super(type, pos, state, SolarPowerTowerBlockEntity.class);
     }
 
     // -------------------------------------------------------------------------
     // IMultiBlockEntityContainer.Fluid
     // -------------------------------------------------------------------------
 
-    @Override public BlockPos getController() { return isController() ? worldPosition : controller; }
-    @Override public boolean isController() { return controller == null || worldPosition.equals(controller); }
-
-    @SuppressWarnings("unchecked")
     @Override
-    public SolarPowerTowerBlockEntity getControllerBE() {
-        if (isController()) return this;
-        if (level == null) return null;
-        BlockEntity be = level.getBlockEntity(controller);
-        return be instanceof SolarPowerTowerBlockEntity t ? t : null;
-    }
-
-    @Override
-    public void setController(BlockPos pos) {
-        if (level != null && level.isClientSide) return;
-        if (pos.equals(controller)) return;
-        this.controller = pos;
-        setChanged();
-        invalidateCapabilities();
-        sync();
-    }
-
-    @Override
-    public void removeController(boolean keepContents) {
-        if (level != null && level.isClientSide) return;
-        updateConnectivity = true;
-        if (!keepContents) setTankSize(0, 1);
-        controller = null;
-        width  = 1;
-        height = 1;
-        setChanged();
-        invalidateCapabilities();
-        sync();
-    }
-
-    @Override public BlockPos getLastKnownPos() { return worldPosition; }
-    @Override public void preventConnectivityUpdate() { updateConnectivity = false; }
-
-    @Override
-    public void notifyMultiUpdated() {
-        setChanged();
-        sync();
-        if (level != null && !level.isClientSide)
-            updatePosition();
-    }
-
-    private void updatePosition() {
+    protected void updatePosition() {
         SolarPowerTowerBlockEntity ctrl = getControllerBE();
         if (ctrl == null) return;
         int yOffset = worldPosition.getY() - ctrl.worldPosition.getY();
@@ -168,8 +108,6 @@ public class SolarPowerTowerBlockEntity extends BlockEntity
             level.setBlock(worldPosition, state.setValue(SolarPowerTowerBlock.POSITION, pos), 2);
     }
 
-    @Override public Direction.Axis getMainConnectionAxis() { return Direction.Axis.Y; }
-
     @Override
     public int getMaxLength(Direction.Axis longAxis, int width) {
         if (longAxis != Direction.Axis.Y) return MAX_WIDTH;
@@ -180,14 +118,6 @@ public class SolarPowerTowerBlockEntity extends BlockEntity
         };
     }
 
-    @Override public int getMaxWidth() { return MAX_WIDTH; }
-
-    @Override public int getHeight()            { return height; }
-    @Override public void setHeight(int height) { this.height = height; }
-    @Override public int getWidth()             { return width; }
-    @Override public void setWidth(int width)   { this.width = width; }
-
-    @Override public boolean hasTank() { return true; }
     @Override public int getTankSize(int tank) { return TANK_CAPACITY_PER_BLOCK; }
 
     @Override
@@ -195,10 +125,8 @@ public class SolarPowerTowerBlockEntity extends BlockEntity
         int newCap = TANK_CAPACITY_PER_BLOCK * Math.max(blocks, 1);
         waterTank.setCapacity(newCap);
         saltTank.setCapacity(newCap);
-        if (waterTank.getFluidAmount() > newCap)
-            waterTank.setFluid(new FluidStack(waterTank.getFluid().getFluid(), newCap));
-        if (saltTank.getFluidAmount() > newCap)
-            saltTank.setFluid(new FluidStack(saltTank.getFluid().getFluid(), newCap));
+        if (waterTank.getFluidAmount() > newCap) waterTank.setFluid(new FluidStack(waterTank.getFluid().getFluid(), newCap));
+        if (saltTank.getFluidAmount()  > newCap) saltTank.setFluid(new FluidStack(saltTank.getFluid().getFluid(), newCap));
     }
 
     @Override public IFluidTank getTank(int tank) { return waterTank; }
@@ -261,7 +189,6 @@ public class SolarPowerTowerBlockEntity extends BlockEntity
         if (level.getGameTime() % 20 == 0) sync();
     }
 
-    // No production during rain or thunder; mirrors need direct sunlight.
     private boolean isSunActive() {
         if (level == null) return false;
         long time = level.getDayTime() % 24000;
@@ -269,17 +196,15 @@ public class SolarPowerTowerBlockEntity extends BlockEntity
         return level.canSeeSky(worldPosition.above(height));
     }
 
-    // Counts Solar Mirror blocks placed directly against each of the 4 side faces of the tower.
-    // Mirrors must touch the face — no stacking outward.
     private int scanMirrors() {
         if (level == null) return 0;
         int count = 0;
         for (int dy = 0; dy < height; dy++) {
             for (int d = 0; d < width; d++) {
-                if (isMirrorAt(worldPosition.offset(-1,    dy, d     ))) count++; // west face
-                if (isMirrorAt(worldPosition.offset(width, dy, d     ))) count++; // east face
-                if (isMirrorAt(worldPosition.offset(d,     dy, -1    ))) count++; // north face
-                if (isMirrorAt(worldPosition.offset(d,     dy, width ))) count++; // south face
+                if (isMirrorAt(worldPosition.offset(-1,    dy, d     ))) count++;
+                if (isMirrorAt(worldPosition.offset(width, dy, d     ))) count++;
+                if (isMirrorAt(worldPosition.offset(d,     dy, -1    ))) count++;
+                if (isMirrorAt(worldPosition.offset(d,     dy, width ))) count++;
             }
         }
         return count;
@@ -306,11 +231,6 @@ public class SolarPowerTowerBlockEntity extends BlockEntity
             level.setBlock(worldPosition, state.setValue(SolarPowerTowerBlock.LIT, lit), 3);
     }
 
-    private void sync() {
-        if (level != null && !level.isClientSide)
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-    }
-
     // -------------------------------------------------------------------------
     // NBT
     // -------------------------------------------------------------------------
@@ -318,26 +238,17 @@ public class SolarPowerTowerBlockEntity extends BlockEntity
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        if (!isController()) tag.putLong("Controller", controller.asLong());
-        tag.putInt("Width",  width);
-        tag.putInt("Height", height);
-        if (updateConnectivity) tag.putBoolean("Uninitialized", true);
-        tag.putFloat("SaltAccumulator",  saltAccumulator);
+        saveMultiblockNBT(tag);
+        tag.putFloat("SaltAccumulator", saltAccumulator);
         tag.putInt("CachedMirrors", cachedMirrorCount);
-        saveFluidTank(tag, "WaterTank", waterTank);
-        saveFluidTank(tag, "SaltTank",  saltTank);
+        FluidTankNBTHelper.save(tag, "WaterTank", waterTank);
+        FluidTankNBTHelper.save(tag, "SaltTank",  saltTank);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        controller = null;
-        if (tag.contains("Controller")) controller = BlockPos.of(tag.getLong("Controller"));
-        width  = tag.getInt("Width");
-        height = tag.getInt("Height");
-        if (width  == 0) width  = 1;
-        if (height == 0) height = 1;
-        updateConnectivity = tag.contains("Uninitialized");
+        loadMultiblockNBT(tag);
         saltAccumulator   = tag.getFloat("SaltAccumulator");
         cachedMirrorCount = tag.getInt("CachedMirrors");
         if (isController()) {
@@ -345,42 +256,8 @@ public class SolarPowerTowerBlockEntity extends BlockEntity
             waterTank.setCapacity(TANK_CAPACITY_PER_BLOCK * totalBlocks);
             saltTank.setCapacity(TANK_CAPACITY_PER_BLOCK * totalBlocks);
         }
-        loadFluidTank(tag, "WaterTank", waterTank);
-        loadFluidTank(tag, "SaltTank",  saltTank);
-    }
-
-    private static void saveFluidTank(CompoundTag tag, String key, FluidTank tank) {
-        if (tank.isEmpty()) return;
-        CompoundTag t = new CompoundTag();
-        t.putString("Fluid", BuiltInRegistries.FLUID.getKey(tank.getFluid().getFluid()).toString());
-        t.putInt("Amount", tank.getFluidAmount());
-        tag.put(key, t);
-    }
-
-    private static void loadFluidTank(CompoundTag tag, String key, FluidTank tank) {
-        if (!tag.contains(key)) return;
-        CompoundTag t = tag.getCompound(key);
-        BuiltInRegistries.FLUID.getOptional(ResourceLocation.parse(t.getString("Fluid")))
-                .filter(fluid -> fluid != Fluids.EMPTY)
-                .ifPresent(fluid -> tank.setFluid(new FluidStack(fluid, t.getInt("Amount"))));
-    }
-
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
-    }
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
-        super.handleUpdateTag(tag, registries);
-        requestModelDataUpdate();
-        if (level != null && level.isClientSide)
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 8);
+        FluidTankNBTHelper.load(tag, "WaterTank", waterTank);
+        FluidTankNBTHelper.load(tag, "SaltTank",  saltTank);
     }
 
     // -------------------------------------------------------------------------

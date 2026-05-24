@@ -32,10 +32,6 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
     private static final int BUFFER_CAPACITY     = 100_000;
     private static final int MAX_EXTRACT         = 80;
 
-    private static final long NOON_START    = 2000;
-    private static final long EVENING_START = 10000;
-    private static final long NIGHT_START   = 12000;
-
     private static class GeneratingEnergyStorage extends EnergyStorage {
         GeneratingEnergyStorage(int capacity, int maxExtract) {
             super(capacity, 0, maxExtract);
@@ -58,24 +54,9 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
         super(type, pos, state);
     }
 
-    private enum Phase { NIGHT, MORNING, NOON, EVENING }
-
-    private Phase getPhase() {
-        if (level == null) return Phase.NIGHT;
-        long time = level.getDayTime() % 24000;
-        if (time < NOON_START)    return Phase.MORNING;
-        if (time < EVENING_START) return Phase.NOON;
-        if (time < NIGHT_START)   return Phase.EVENING;
-        return Phase.NIGHT;
-    }
-
-    private boolean hasSkyAccess() {
-        return level != null && level.canSeeSky(worldPosition.above());
-    }
-
     private int getGeneratedFE() {
-        if (!hasSkyAccess()) return 0;
-        return switch (getPhase()) {
+        if (!SolarHelper.hasSkyAccess(level, worldPosition)) return 0;
+        return switch (SolarHelper.getPhase(level)) {
             case MORNING, EVENING -> MORNING_FE_PER_TICK;
             case NOON -> level.isRaining() ? MORNING_FE_PER_TICK : NOON_FE_PER_TICK;
             case NIGHT -> 0;
