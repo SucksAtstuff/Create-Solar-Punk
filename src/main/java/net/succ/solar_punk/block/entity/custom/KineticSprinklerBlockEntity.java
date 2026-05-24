@@ -1,0 +1,160 @@
+package net.succ.solar_punk.block.entity.custom;
+
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.utility.CreateLang;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.FarmBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+
+import software.bernie.geckolib.animatable.GeoBlockEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
+
+import java.util.List;
+
+public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, GeoBlockEntity {
+
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+    public static final int TANK_CAPACITY = 4000;
+    private static final int WATER_PER_CYCLE = 100;
+    private static final int RANGE = 2;
+    private static final int SCAN_DEPTH = 5;
+
+    public final FluidTank fluidTank = new FluidTank(TANK_CAPACITY) {
+        @Override
+        public boolean isFluidValid(FluidStack stack) {
+            return stack.getFluid().isSame(Fluids.WATER);
+        }
+
+        @Override
+        protected void onContentsChanged() {
+            setChanged();
+        }
+    };
+
+    public KineticSprinklerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (level == null || level.isClientSide) return;
+        if (level.getGameTime() % 20 != 0) return;
+        if (fluidTank.isEmpty()) return;
+
+        fluidTank.drain(WATER_PER_CYCLE, IFluidHandler.FluidAction.EXECUTE);
+
+        ServerLevel serverLevel = (ServerLevel) level;
+
+        for (int x = -RANGE; x <= RANGE; x++) {
+            for (int z = -RANGE; z <= RANGE; z++) {
+                for (int dy = 1; dy <= SCAN_DEPTH; dy++) {
+                    BlockPos checkPos = worldPosition.offset(x, -dy, z);
+                    BlockState checkState = level.getBlockState(checkPos);
+                    Block block = checkState.getBlock();
+
+                    if (block instanceof FarmBlock) {
+                        if (checkState.getValue(FarmBlock.MOISTURE) < 7)
+                            level.setBlock(checkPos, checkState.setValue(FarmBlock.MOISTURE, 7), 2);
+                        break;
+                    } else if (block instanceof BonemealableBlock) {
+                        checkState.randomTick(serverLevel, checkPos, serverLevel.random);
+                    } else if (!checkState.isAir()) {
+                        break;
+                    }
+                }
+
+                if (serverLevel.random.nextFloat() < 0.7f) {
+                    serverLevel.sendParticles(
+                        ParticleTypes.FALLING_WATER,
+                        worldPosition.getX() + 0.5 + x + (serverLevel.random.nextDouble() - 0.5) * 0.8,
+                        worldPosition.getY() + 0.1,
+                        worldPosition.getZ() + 0.5 + z + (serverLevel.random.nextDouble() - 0.5) * 0.8,
+                        1, 0, 0, 0, 0
+                    );
+                }
+            }
+        }
+
+        setChanged();
+        sendData();
+    }
+
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        CreateLang.translate("solar_punk.tooltip.sprinkler_header").forGoggles(tooltip);
+
+        boolean active = !fluidTank.isEmpty();
+        CreateLang.translate("solar_punk.tooltip.sprinkler_status")
+                .style(ChatFormatting.GRAY)
+                .add(Component.literal(active ? "Active" : "Stopped")
+                        .withStyle(active ? ChatFormatting.GREEN : ChatFormatting.RED))
+                .forGoggles(tooltip, 1);
+
+        CreateLang.translate("solar_punk.tooltip.water")
+                .style(ChatFormatting.GRAY)
+                .add(CreateLang.number(fluidTank.getFluidAmount())
+                        .text(" / " + TANK_CAPACITY + " mB")
+                        .style(ChatFormatting.AQUA)
+                        .component())
+                .forGoggles(tooltip, 1);
+
+        return true;
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {}
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
+
+    @Override
+    protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.write(tag, registries, clientPacket);
+        FluidStack fluid = fluidTank.getFluid();
+        if (!fluid.isEmpty()) {
+            CompoundTag fluidTag = new CompoundTag();
+            fluidTag.putString("Fluid", BuiltInRegistries.FLUID.getKey(fluid.getFluid()).toString());
+            fluidTag.putInt("Amount", fluid.getAmount());
+            tag.put("FluidTank", fluidTag);
+        }
+    }
+
+    @Override
+    protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.read(tag, registries, clientPacket);
+        if (tag.contains("FluidTank")) {
+            CompoundTag fluidTag = tag.getCompound("FluidTank");
+            ResourceLocation fluidId = ResourceLocation.parse(fluidTag.getString("Fluid"));
+            Fluid f = BuiltInRegistries.FLUID.getOptional(fluidId).orElse(Fluids.EMPTY);
+            if (f != Fluids.EMPTY)
+                fluidTank.setFluid(new FluidStack(f, fluidTag.getInt("Amount")));
+        }
+    }
+
+    @Override
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {}
+}

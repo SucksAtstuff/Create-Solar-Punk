@@ -44,6 +44,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         heatStateModelBlock(ModBlocks.HEAT_BATTERY);
         solarPowerTowerBlock();
         solarMirrorBlock();
+        kineticSprinklerBlock();
     }
 
     // For blocks whose models are hand-crafted (Blockbench).
@@ -174,6 +175,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
         getVariantBuilder(block.get()).forAllStates(state ->
                 ConfiguredModel.builder().modelFile(model).build());
         simpleBlockItem(block.get(), model);
+    }
+
+    private void kineticSprinklerBlock() {
+        ModelFile model = new UncheckedModelFile(modLoc("block/kinetic_sprinkler"));
+        getVariantBuilder(ModBlocks.KINETIC_SPRINKLER.get()).forAllStates(state ->
+                ConfiguredModel.builder().modelFile(model).build());
+        itemModels().withExistingParent("kinetic_sprinkler", modLoc("block/kinetic_sprinkler_display"));
     }
 
     private void blockWithItem(DeferredBlock<?> deferredBlock){

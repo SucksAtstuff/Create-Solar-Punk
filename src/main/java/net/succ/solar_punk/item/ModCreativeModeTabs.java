@@ -34,6 +34,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModBlocks.GEYSER_VENT.get());
                         output.accept(ModBlocks.SOLAR_POWER_TOWER.get());
                         output.accept(ModBlocks.SOLAR_MIRROR.get());
+                        output.accept(ModBlocks.KINETIC_SPRINKLER.get());
                         output.accept(ModItems.SALT.get());
                         output.accept(ModItems.BIOMASS.get());
                         output.accept(ModItems.BIOMASS_PELLET.get());

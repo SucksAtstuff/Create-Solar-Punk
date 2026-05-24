@@ -1,6 +1,7 @@
 {
   "credit": "Made with Blockbench",
   "render_type": "minecraft:translucent",
+  "ambientocclusion": false,
   "parent": "block/block",
   "textures": {
     "0": "solarpunk:block/solar_power_tower/solar_power_tower_mirror/glass",

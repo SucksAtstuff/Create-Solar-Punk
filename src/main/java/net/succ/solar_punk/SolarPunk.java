@@ -95,6 +95,11 @@ public class SolarPunk {
                 ModBlockEntities.SOLAR_POWER_TOWER.get(),
                 (be, side) -> be.combinedFluidHandler
         );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.KINETIC_SPRINKLER.get(),
+                (be, side) -> be.fluidTank
+        );
     }
 
     private static void commonSetup(FMLCommonSetupEvent event) {

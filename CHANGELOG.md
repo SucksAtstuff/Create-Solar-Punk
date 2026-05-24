@@ -1,5 +1,14 @@
 # 0.2.0-1.21.1
 
+### Kinetic Sprinkler
+
+Added the **Kinetic Sprinkler**. Pipe water into it from any face and it will hydrate farmland and accelerate crop growth in a 5x5 area below it.
+
+### Bug Fixes
+
+- Fixed Solar Mirror blocks becoming excessively dark when another mirror is placed directly above them on the tower.                                                                                                                                                                              
+
+
 ### Biochar
 
 Added **Biochar**, a byproduct of the Biomass Gasifier. Each fuel item burned produces one Biochar in the Gasifier's output slot. The Gasifier pauses if the output is full, so keep it drained with a funnel or chute.

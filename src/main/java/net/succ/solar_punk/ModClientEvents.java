@@ -23,6 +23,7 @@ import net.succ.solar_punk.client.model.ModSpriteShifts;
 import net.succ.solar_punk.client.model.SolarPowerTowerModel;
 import net.succ.solar_punk.client.renderer.FermentationVatRenderer;
 import net.succ.solar_punk.client.renderer.GeyserCapRenderer;
+import net.succ.solar_punk.client.renderer.KineticSprinklerRenderer;
 import net.succ.solar_punk.client.renderer.SolarPowerTowerRenderer;
 import net.succ.solar_punk.compat.ponder.SolarPunkPonderPlugin;
 
@@ -67,6 +68,7 @@ public class ModClientEvents {
         event.registerBlockEntityRenderer(ModBlockEntities.GEYSER_CAP.get(), GeyserCapRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.FERMENTATION_VAT.get(), FermentationVatRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_POWER_TOWER.get(), SolarPowerTowerRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.KINETIC_SPRINKLER.get(), KineticSprinklerRenderer::new);
     }
 
     @SubscribeEvent
