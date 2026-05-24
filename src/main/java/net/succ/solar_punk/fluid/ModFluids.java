@@ -64,6 +64,26 @@ public class ModFluids {
             .block(BIOFUEL_BLOCK)
             .bucket(BIOFUEL_BUCKET);
 
+    public static final Supplier<FlowingFluid> FERTILIZER_SOURCE = FLUIDS.register("fertilizer",
+            () -> new BaseFlowingFluid.Source(ModFluids.FERTILIZER_PROPERTIES));
+    public static final Supplier<FlowingFluid> FERTILIZER_FLOWING = FLUIDS.register("fertilizer_flowing",
+            () -> new BaseFlowingFluid.Flowing(ModFluids.FERTILIZER_PROPERTIES));
+
+    public static final DeferredBlock<LiquidBlock> FERTILIZER_BLOCK = ModBlocks.BLOCKS.register("fertilizer",
+            () -> new LiquidBlock(FERTILIZER_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.WATER)
+                    .mapColor(MapColor.COLOR_GREEN)));
+
+    public static final DeferredItem<BucketItem> FERTILIZER_BUCKET = ModItems.ITEMS.registerItem("fertilizer_bucket",
+            properties -> new BucketItem(FERTILIZER_SOURCE.get(), properties.stacksTo(1).craftRemainder(Items.BUCKET)));
+
+    public static final BaseFlowingFluid.Properties FERTILIZER_PROPERTIES = new BaseFlowingFluid.Properties(
+            ModFluidTypes.FERTILIZER_TYPE, FERTILIZER_SOURCE, FERTILIZER_FLOWING)
+            .tickRate(10)
+            .slopeFindDistance(3)
+            .levelDecreasePerBlock(1)
+            .block(FERTILIZER_BLOCK)
+            .bucket(FERTILIZER_BUCKET);
+
     public static void register(IEventBus eventBus) {
         FLUIDS.register(eventBus);
     }

@@ -1,6 +1,7 @@
 {
   "values": [
     "solarpunk:biofuel_bucket",
-    "solarpunk:molten_salt_bucket"
+    "solarpunk:molten_salt_bucket",
+    "solarpunk:fertilizer_bucket"
   ]
 }

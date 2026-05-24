@@ -51,6 +51,19 @@ public class ModFluidTypes {
                             .temperature(300)
             ));
 
+    public static final Supplier<FluidType> FERTILIZER_TYPE = FLUID_TYPES.register("fertilizer",
+            () -> new BaseFluidType(
+                    WATER_STILL,
+                    WATER_FLOW,
+                    WATER_OVERLAY,
+                    0xFF6B8C23,
+                    new Vector3f(107f / 255f, 140f / 255f, 35f / 255f),
+                    FluidType.Properties.create()
+                            .density(1100)
+                            .viscosity(1200)
+                            .temperature(300)
+            ));
+
     public static void register(IEventBus eventBus) {
         FLUID_TYPES.register(eventBus);
     }

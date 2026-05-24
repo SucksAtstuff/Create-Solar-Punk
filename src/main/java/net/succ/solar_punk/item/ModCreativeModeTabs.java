@@ -41,6 +41,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.BIOCHAR.get());
                         output.accept(ModFluids.MOLTEN_SALT_BUCKET.get());
                         output.accept(ModFluids.BIOFUEL_BUCKET.get());
+                        output.accept(ModFluids.FERTILIZER_BUCKET.get());
                     })
                     .build());
 

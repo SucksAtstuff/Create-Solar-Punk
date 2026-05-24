@@ -4,6 +4,10 @@
 
 Added the **Kinetic Sprinkler**. Pipe water into it from any face and it will hydrate farmland and accelerate crop growth in a 5x5 area below it.
 
+### Fertilizer
+
+Added **Fertilizer**, a liquid made by mixing Biochar with water in a Create basin. Fill a bucket with it or pipe it around your base.
+
 ### Bug Fixes
 
 - Fixed Solar Mirror blocks becoming excessively dark when another mirror is placed directly above them on the tower.                                                                                                                                                                              
