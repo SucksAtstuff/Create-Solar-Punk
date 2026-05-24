@@ -48,6 +48,16 @@ public class HeatBatteryBlock extends Block implements IBE<HeatBatteryBlockEntit
     }
 
     @Override
+    public boolean hasAnalogOutputSignal(BlockState state) { return true; }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof HeatBatteryBlockEntity be)
+            return Math.round(be.getHeatStored() / (float) HeatBatteryBlockEntity.MAX_HEAT * 15);
+        return 0;
+    }
+
+    @Override
     public Class<HeatBatteryBlockEntity> getBlockEntityClass() {
         return HeatBatteryBlockEntity.class;
     }

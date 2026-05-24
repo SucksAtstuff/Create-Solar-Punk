@@ -53,6 +53,16 @@ public class BiofuelEngineBlock extends KineticBlock implements IBE<BiofuelEngin
     }
 
     @Override
+    public boolean hasAnalogOutputSignal(BlockState state) { return true; }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof BiofuelEngineBlockEntity be)
+            return Math.round(be.biofuelTank.getFluidAmount() / (float) BiofuelEngineBlockEntity.FUEL_CAPACITY * 15);
+        return 0;
+    }
+
+    @Override
     public Class<BiofuelEngineBlockEntity> getBlockEntityClass() {
         return BiofuelEngineBlockEntity.class;
     }

@@ -161,6 +161,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('A', createItem("andesite_alloy"))
                 .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
                 .save(output);
+
     }
 
     private static Item createItem(String name) {

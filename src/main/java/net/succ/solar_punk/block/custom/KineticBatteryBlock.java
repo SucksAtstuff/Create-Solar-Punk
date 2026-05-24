@@ -60,6 +60,16 @@ public class KineticBatteryBlock extends KineticBlock implements IBE<KineticBatt
     }
 
     @Override
+    public boolean hasAnalogOutputSignal(BlockState state) { return true; }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof KineticBatteryBlockEntity be)
+            return Math.round(be.getChargeLevel() / KineticBatteryBlockEntity.MAX_CHARGE * 15);
+        return 0;
+    }
+
+    @Override
     public Class<KineticBatteryBlockEntity> getBlockEntityClass() {
         return KineticBatteryBlockEntity.class;
     }

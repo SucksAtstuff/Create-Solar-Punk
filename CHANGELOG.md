@@ -8,16 +8,23 @@ Added the **Kinetic Sprinkler**. Pipe water into it from any face and it will hy
 
 Added **Fertilizer**, a liquid made by mixing Biochar with water in a Create basin. Pipe it into the Kinetic Sprinkler for forced crop growth on every cycle.
 
-### Bug Fixes
-
-- Fixed Solar Mirror blocks becoming excessively dark when another mirror is placed directly above them on the tower.                                                                                                                                                                              
-
-
 ### Biochar
 
 Added **Biochar**, a byproduct of the Biomass Gasifier. Each fuel item burned produces one Biochar in the Gasifier's output slot. The Gasifier pauses if the output is full, so keep it drained with a funnel or chute.
 
 Biochar acts as a direct bonemeal substitute - right-click crops, grass, and other growable blocks to fertilize them. It is obtained only from the Gasifier, closing the biofuel loop with a useful agricultural byproduct.
+
+### Comparator Support
+
+Comparators now read stored levels from three blocks:
+
+- **Heat Battery** - signal proportional to stored heat
+- **Kinetic Battery** - signal proportional to stored charge
+- **Biofuel Engine** - signal proportional to fuel in the tank
+
+### Bug Fixes
+
+- Fixed Solar Mirror blocks becoming excessively dark when another mirror is placed directly above them on the tower.
 
 ---
 
