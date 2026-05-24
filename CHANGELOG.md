@@ -2,11 +2,11 @@
 
 ### Kinetic Sprinkler
 
-Added the **Kinetic Sprinkler**. Pipe water into it from any face and it will hydrate farmland and accelerate crop growth in a 5x5 area below it.
+Added the **Kinetic Sprinkler**. Pipe water into it from any face and it will hydrate farmland and accelerate crop growth in a 5x5 area below it. Pipe in Fertilizer instead for forced instant growth every cycle.
 
 ### Fertilizer
 
-Added **Fertilizer**, a liquid made by mixing Biochar with water in a Create basin. Fill a bucket with it or pipe it around your base.
+Added **Fertilizer**, a liquid made by mixing Biochar with water in a Create basin. Pipe it into the Kinetic Sprinkler for forced crop growth on every cycle.
 
 ### Bug Fixes
 

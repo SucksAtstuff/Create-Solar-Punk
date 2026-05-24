@@ -163,6 +163,7 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.melting", "Melting: ");
         add("create.solar_punk.tooltip.progress", "Progress: ");
         add("create.solar_punk.tooltip.water", "Water: ");
+        add("create.solar_punk.tooltip.fertilizer", "Fertilizer: ");
         add("create.solar_punk.tooltip.evaporation", "Evaporation: ");
         add("create.solar_punk.tooltip.output_fluid", "Output: ");
         add("create.solar_punk.tooltip.salt_output", "Salt: ");

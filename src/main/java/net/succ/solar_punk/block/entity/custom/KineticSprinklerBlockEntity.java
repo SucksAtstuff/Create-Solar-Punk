@@ -23,6 +23,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.succ.solar_punk.fluid.ModFluids;
 
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -36,14 +37,15 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public static final int TANK_CAPACITY = 4000;
-    private static final int WATER_PER_CYCLE = 100;
+    private static final int FLUID_PER_CYCLE = 100;
     private static final int RANGE = 2;
     private static final int SCAN_DEPTH = 5;
 
     public final FluidTank fluidTank = new FluidTank(TANK_CAPACITY) {
         @Override
         public boolean isFluidValid(FluidStack stack) {
-            return stack.getFluid().isSame(Fluids.WATER);
+            Fluid f = stack.getFluid();
+            return f.isSame(Fluids.WATER) || f.isSame(ModFluids.FERTILIZER_SOURCE.get());
         }
 
         @Override
@@ -56,6 +58,10 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
         super(type, pos, state);
     }
 
+    private boolean hasFertilizer() {
+        return !fluidTank.isEmpty() && fluidTank.getFluid().getFluid().isSame(ModFluids.FERTILIZER_SOURCE.get());
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -63,7 +69,8 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
         if (level.getGameTime() % 20 != 0) return;
         if (fluidTank.isEmpty()) return;
 
-        fluidTank.drain(WATER_PER_CYCLE, IFluidHandler.FluidAction.EXECUTE);
+        boolean fertilizer = hasFertilizer();
+        fluidTank.drain(FLUID_PER_CYCLE, IFluidHandler.FluidAction.EXECUTE);
 
         ServerLevel serverLevel = (ServerLevel) level;
 
@@ -78,20 +85,25 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
                         if (checkState.getValue(FarmBlock.MOISTURE) < 7)
                             level.setBlock(checkPos, checkState.setValue(FarmBlock.MOISTURE, 7), 2);
                         break;
-                    } else if (block instanceof BonemealableBlock) {
-                        checkState.randomTick(serverLevel, checkPos, serverLevel.random);
+                    } else if (block instanceof BonemealableBlock bonemealable) {
+                        if (fertilizer) {
+                            if (bonemealable.isValidBonemealTarget(serverLevel, checkPos, checkState))
+                                bonemealable.performBonemeal(serverLevel, serverLevel.random, checkPos, checkState);
+                        } else {
+                            checkState.randomTick(serverLevel, checkPos, serverLevel.random);
+                        }
                     } else if (!checkState.isAir()) {
                         break;
                     }
                 }
 
                 if (serverLevel.random.nextFloat() < 0.7f) {
+                    double px = worldPosition.getX() + 0.5 + x + (serverLevel.random.nextDouble() - 0.5) * 0.8;
+                    double py = worldPosition.getY() + 0.1;
+                    double pz = worldPosition.getZ() + 0.5 + z + (serverLevel.random.nextDouble() - 0.5) * 0.8;
                     serverLevel.sendParticles(
-                        ParticleTypes.FALLING_WATER,
-                        worldPosition.getX() + 0.5 + x + (serverLevel.random.nextDouble() - 0.5) * 0.8,
-                        worldPosition.getY() + 0.1,
-                        worldPosition.getZ() + 0.5 + z + (serverLevel.random.nextDouble() - 0.5) * 0.8,
-                        1, 0, 0, 0, 0
+                        fertilizer ? ParticleTypes.HAPPY_VILLAGER : ParticleTypes.FALLING_WATER,
+                        px, py, pz, 1, 0, 0, 0, 0
                     );
                 }
             }
@@ -112,11 +124,12 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
                         .withStyle(active ? ChatFormatting.GREEN : ChatFormatting.RED))
                 .forGoggles(tooltip, 1);
 
-        CreateLang.translate("solar_punk.tooltip.water")
+        boolean fertilizer = hasFertilizer();
+        CreateLang.translate(fertilizer ? "solar_punk.tooltip.fertilizer" : "solar_punk.tooltip.water")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(fluidTank.getFluidAmount())
                         .text(" / " + TANK_CAPACITY + " mB")
-                        .style(ChatFormatting.AQUA)
+                        .style(fertilizer ? ChatFormatting.GREEN : ChatFormatting.AQUA)
                         .component())
                 .forGoggles(tooltip, 1);
 
