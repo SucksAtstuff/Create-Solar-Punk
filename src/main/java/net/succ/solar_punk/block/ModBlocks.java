@@ -24,6 +24,7 @@ import net.succ.solar_punk.block.custom.SolarHeaterBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerItem;
+import net.succ.solar_punk.block.custom.BiofilterBlock;
 import net.succ.solar_punk.block.custom.KineticSprinklerBlock;
 import net.succ.solar_punk.item.ModItems;
 
@@ -74,6 +75,24 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .requiresCorrectToolForDrops()
                     .strength(1.5f, 3.0f)));
 
+    public static final DeferredBlock<Block> DEAD_GRASS_BLOCK = registerBlock("dead_grass_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BROWN)
+                    .strength(0.5f)
+                    .sound(net.minecraft.world.level.block.SoundType.GRASS)));
+
+    public static final DeferredBlock<Block> RUINED_DIRT = registerBlock("ruined_dirt",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.DIRT)
+                    .strength(0.5f)
+                    .sound(net.minecraft.world.level.block.SoundType.GRAVEL)));
+
+    public static final DeferredBlock<Block> ASH_BLOCK = registerBlock("ash_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                    .strength(0.3f)
+                    .sound(net.minecraft.world.level.block.SoundType.SAND)));
+
     public static final DeferredBlock<SolarHeaterBlock> SOLAR_HEATER = registerBlock("solar_heater",
             () -> new SolarHeaterBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_ORANGE)
@@ -123,6 +142,12 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .requiresCorrectToolForDrops()
                     .noOcclusion()
                     .strength(2.0f, 4.0f)));
+
+    public static final DeferredBlock<BiofilterBlock> BIOFILTER = registerBlock("biofilter",
+            () -> new BiofilterBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.PLANT)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.5f, 4.0f)));
 
     public static final DeferredBlock<KineticSprinklerBlock> KINETIC_SPRINKLER = registerBlock("kinetic_sprinkler",
             () -> new KineticSprinklerBlock(BlockBehaviour.Properties.of()

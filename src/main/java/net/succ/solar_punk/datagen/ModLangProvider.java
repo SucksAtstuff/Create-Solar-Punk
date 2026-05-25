@@ -124,6 +124,11 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.fermentation_vat_scaling.text_2", "Water consumed and Biofuel produced per batch scale with the footprint area");
         add("solarpunk.ponder.fermentation_vat_scaling.text_3", "Tank capacity grows with each block added — taller vats hold more fluid");
 
+        add("create.solar_punk.tooltip.biofilter_header", "Biofilter");
+        add("create.solar_punk.tooltip.biofilter_status", "Status: ");
+        add("create.solar_punk.tooltip.biofilter_pollution", "Chunk Pollution: ");
+        add("create.solar_punk.tooltip.biofilter_removing", "Removing: ");
+
         add("create.solar_punk.tooltip.sprinkler_header", "Sprinkler");
         add("create.solar_punk.tooltip.sprinkler_status", "Status: ");
 

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "create:brass_casing"
+    },
+    "G": {
+      "item": "minecraft:gravel"
+    },
+    "M": {
+      "item": "minecraft:moss_block"
+    },
+    "S": {
+      "item": "create:shaft"
+    }
+  },
+  "pattern": [
+    "GMG",
+    "MBM",
+    "GSG"
+  ],
+  "result": {
+    "count": 1,
+    "id": "solarpunk:biofilter"
+  }
+}

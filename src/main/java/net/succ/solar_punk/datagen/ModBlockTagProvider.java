@@ -7,11 +7,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
@@ -41,9 +43,16 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.GEYSER_CAP.get())
                 .add(ModBlocks.SOLAR_POWER_TOWER.get())
                 .add(ModBlocks.SOLAR_MIRROR.get())
-                .add(ModBlocks.GEYSER_VENT.get());
+                .add(ModBlocks.GEYSER_VENT.get())
+                .add(ModBlocks.BIOFILTER.get());
 
         tag(Tags.Blocks.STORAGE_BLOCKS).add(ModBlocks.SALT_BLOCK.get());
         tag(STORAGE_BLOCKS_SALT).add(ModBlocks.SALT_BLOCK.get());
+
+        tag(GlobalWarmingHandler.POLLUTION_SOURCES)
+                .add(Blocks.CAMPFIRE, Blocks.SOUL_CAMPFIRE, Blocks.FURNACE, Blocks.BLAST_FURNACE, Blocks.SMOKER,
+                     ModBlocks.BIOFUEL_ENGINE.get(), ModBlocks.BIOMASS_GASIFIER.get())
+                .addOptional(ResourceLocation.fromNamespaceAndPath("create", "lit_blaze_burner"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("create", "steam_engine"));
     }
 }

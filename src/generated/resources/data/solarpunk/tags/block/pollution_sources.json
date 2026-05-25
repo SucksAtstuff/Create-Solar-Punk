@@ -1,0 +1,19 @@
+{
+  "values": [
+    "minecraft:campfire",
+    "minecraft:soul_campfire",
+    "minecraft:furnace",
+    "minecraft:blast_furnace",
+    "minecraft:smoker",
+    "solarpunk:biofuel_engine",
+    "solarpunk:biomass_gasifier",
+    {
+      "id": "create:lit_blaze_burner",
+      "required": false
+    },
+    {
+      "id": "create:steam_engine",
+      "required": false
+    }
+  ]
+}

@@ -41,6 +41,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
         litFacingCustomModelBlock(ModBlocks.BIOFUEL_ENGINE, true);
         fermentationVatBlock();
         blockWithItem(ModBlocks.SALT_BLOCK);
+        simpleBlockWithItem(ModBlocks.DEAD_GRASS_BLOCK.get(), new ModelFile.UncheckedModelFile(modLoc("block/dead_grass_block")));
+        simpleBlockWithItem(ModBlocks.RUINED_DIRT.get(), new ModelFile.UncheckedModelFile(modLoc("block/ruined_dirt")));
+        simpleBlockWithItem(ModBlocks.ASH_BLOCK.get(), new ModelFile.UncheckedModelFile(modLoc("block/ash_block")));
         heatStateModelBlock(ModBlocks.HEAT_BATTERY);
         solarPowerTowerBlock();
         solarMirrorBlock();
