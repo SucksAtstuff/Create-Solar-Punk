@@ -107,7 +107,10 @@ public class KineticBatteryBlockEntity extends GeneratingKineticBlockEntity {
 
         if (changed) {
             setChanged();
-            if (level.getGameTime() % 20 == 0) sendData();
+            if (level.getGameTime() % 20 == 0) {
+                sendData();
+                level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
+            }
         }
     }
 

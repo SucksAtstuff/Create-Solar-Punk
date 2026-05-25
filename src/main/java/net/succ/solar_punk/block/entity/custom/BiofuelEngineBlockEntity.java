@@ -36,7 +36,11 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
             return stack.getFluid().isSame(ModFluids.BIOFUEL_SOURCE.get());
         }
         @Override
-        protected void onContentsChanged() { setChanged(); }
+        protected void onContentsChanged() {
+            setChanged();
+            if (level != null && !level.isClientSide)
+                level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
+        }
     };
 
     public BiofuelEngineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {

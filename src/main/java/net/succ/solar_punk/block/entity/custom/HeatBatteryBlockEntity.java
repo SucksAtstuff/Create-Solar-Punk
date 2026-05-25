@@ -76,8 +76,10 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
 
         if (changed) setChanged();
 
-        if (level.getGameTime() % 20 == 0)
+        if (level.getGameTime() % 20 == 0) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+            level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
+        }
     }
 
     // Returns a BoilerHeater heat value:
