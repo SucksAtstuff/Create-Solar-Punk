@@ -8,9 +8,11 @@ Active pollution sources - campfires, furnaces, blast furnaces, smokers, blaze b
 
 All rates, thresholds, and the target dead biome are configurable. The system is designed to make renewable energy the only sustainable long-term choice.
 
+Cleanup reverses the damage: as pollution clears, dead blocks gradually heal back toward grass, and once a chunk drops below the threshold its biome restores to what it was before.
+
 ### Biofilter
 
-Added the **Biofilter**. Connect rotational power to its bottom face and it absorbs pollution from chunks within a configurable radius. It draws stress from the kinetic network while running. Wearing goggles shows the current chunk pollution level and how fast the filter is removing it.
+Added the **Biofilter**, a brass-tier machine. Connect rotational power to its bottom face and it absorbs pollution from chunks within a configurable radius, gradually healing blocks and eventually restoring the biome. It draws stress from the kinetic network while running. Wearing goggles shows the current chunk pollution level and how fast the filter is removing it.
 
 ### Kinetic Sprinkler
 
@@ -42,6 +44,7 @@ Every machine and generator is now configurable in the mod config file. You can 
 
 - Fixed Solar Mirror blocks becoming excessively dark when another mirror is placed directly above them on the tower.
 - Fixed the Brass Solar Panel showing the brass gearbox texture on its underside instead of the brass casing.
+- Geyser Vents can no longer be moved by pistons or Create contraptions.
 
 ---
 
