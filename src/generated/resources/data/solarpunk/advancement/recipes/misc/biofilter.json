@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_andesite_casing": {
+    "has_brass_casing": {
       "conditions": {
         "items": [
           {
-            "items": "create:andesite_casing"
+            "items": "create:brass_casing"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_andesite_casing"
+      "has_brass_casing"
     ]
   ],
   "rewards": {

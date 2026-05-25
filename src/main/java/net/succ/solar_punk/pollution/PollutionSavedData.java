@@ -11,12 +11,15 @@ import net.minecraft.world.level.saveddata.SavedData;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class PollutionSavedData extends SavedData {
     private static final String DATA_NAME = "solarpunk_pollution";
 
     private final Map<ChunkPos, Long> chunkPollution = new HashMap<>();
+    private final Set<ChunkPos> biomeConvertedChunks = new HashSet<>();
 
     public static PollutionSavedData get(ServerLevel level) {
         return level.getDataStorage().computeIfAbsent(
@@ -59,6 +62,20 @@ public class PollutionSavedData extends SavedData {
         return Collections.unmodifiableMap(chunkPollution);
     }
 
+    public void markConverted(ChunkPos chunk) {
+        biomeConvertedChunks.add(chunk);
+        setDirty();
+    }
+
+    public void markRestored(ChunkPos chunk) {
+        biomeConvertedChunks.remove(chunk);
+        setDirty();
+    }
+
+    public Set<ChunkPos> getConvertedChunks() {
+        return Collections.unmodifiableSet(biomeConvertedChunks);
+    }
+
     @Override
     public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
         ListTag list = new ListTag();
@@ -70,6 +87,16 @@ public class PollutionSavedData extends SavedData {
             list.add(entryTag);
         }
         tag.put("ChunkPollution", list);
+
+        ListTag converted = new ListTag();
+        for (ChunkPos pos : biomeConvertedChunks) {
+            CompoundTag entryTag = new CompoundTag();
+            entryTag.putInt("X", pos.x);
+            entryTag.putInt("Z", pos.z);
+            converted.add(entryTag);
+        }
+        tag.put("ConvertedChunks", converted);
+
         return tag;
     }
 
@@ -80,6 +107,11 @@ public class PollutionSavedData extends SavedData {
             CompoundTag entryTag = list.getCompound(i);
             ChunkPos pos = new ChunkPos(entryTag.getInt("X"), entryTag.getInt("Z"));
             data.chunkPollution.put(pos, entryTag.getLong("Pollution"));
+        }
+        ListTag converted = tag.getList("ConvertedChunks", Tag.TAG_COMPOUND);
+        for (int i = 0; i < converted.size(); i++) {
+            CompoundTag entryTag = converted.getCompound(i);
+            data.biomeConvertedChunks.add(new ChunkPos(entryTag.getInt("X"), entryTag.getInt("Z")));
         }
         return data;
     }

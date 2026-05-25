@@ -174,13 +174,13 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BIOFILTER.get())
                 .pattern("GMG")
-                .pattern("MAM")
+                .pattern("MBM")
                 .pattern("GSG")
                 .define('G', Blocks.GRAVEL)
                 .define('M', Blocks.MOSS_BLOCK)
-                .define('A', createItem("andesite_casing"))
+                .define('B', createItem("brass_casing"))
                 .define('S', createItem("shaft"))
-                .unlockedBy("has_andesite_casing", has(createItem("andesite_casing")))
+                .unlockedBy("has_brass_casing", has(createItem("brass_casing")))
                 .save(output);
 
     }

@@ -144,6 +144,7 @@ public class GlobalWarmingHandler {
 
         Holder<Biome> deadBiome = deadBiomeHolder.orElse(null);
         BiomeResolver allDead = deadBiome != null ? (x, y, z, sampler) -> deadBiome : null;
+        BiomeResolver original = level.getChunkSource().getGenerator().getBiomeSource()::getNoiseBiome;
 
         List<ChunkAccess> biomesToResend = new ArrayList<>();
 
@@ -160,19 +161,44 @@ public class GlobalWarmingHandler {
                 if (absorbed > 0) data.reducePollution(chunkPos, absorbed);
             }
 
-            // Gradual block decay for any polluted chunk
-            if (Config.blocksDecayedPerInterval > 0) {
-                decayBlocks(level, chunkPos, level.random);
+            if (pollution >= threshold) {
+                // High pollution: decay blocks and convert biome
+                if (Config.blocksDecayedPerInterval > 0) {
+                    decayBlocks(level, chunkPos, level.random);
+                }
+                if (allDead != null) {
+                    ChunkAccess chunk = level.getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL, false);
+                    if (chunk != null) {
+                        chunk.fillBiomesFromNoise(allDead, level.getChunkSource().randomState().sampler());
+                        chunk.setUnsaved(true);
+                        biomesToResend.add(chunk);
+                        data.markConverted(chunkPos);
+                    }
+                }
+            } else {
+                // Below threshold: heal blocks gradually
+                if (Config.blocksDecayedPerInterval > 0) {
+                    healBlocks(level, chunkPos, level.random);
+                }
+            }
+        }
+
+        // Restore biomes for converted chunks that have dropped below the threshold
+        for (ChunkPos chunkPos : new ArrayList<>(data.getConvertedChunks())) {
+            if (data.getPollution(chunkPos) >= threshold) continue;
+            if (!level.isLoaded(chunkPos.getMiddleBlockPosition(64))) continue;
+
+            ChunkAccess chunk = level.getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL, false);
+            if (chunk != null) {
+                chunk.fillBiomesFromNoise(original, level.getChunkSource().randomState().sampler());
+                chunk.setUnsaved(true);
+                biomesToResend.add(chunk);
+                data.markRestored(chunkPos);
             }
 
-            // Full biome conversion only at threshold
-            if (pollution >= threshold && allDead != null) {
-                ChunkAccess chunk = level.getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL, false);
-                if (chunk != null) {
-                    chunk.fillBiomesFromNoise(allDead, level.getChunkSource().randomState().sampler());
-                    chunk.setUnsaved(true);
-                    biomesToResend.add(chunk);
-                }
+            // Keep healing blocks even after biome is restored, until pollution is gone
+            if (data.getPollution(chunkPos) > 0 && Config.blocksDecayedPerInterval > 0) {
+                healBlocks(level, chunkPos, level.random);
             }
         }
 
@@ -225,6 +251,45 @@ public class GlobalWarmingHandler {
                 break;
             }
         }
+    }
+
+    private static void healBlocks(ServerLevel level, ChunkPos chunkPos, RandomSource random) {
+        LevelChunk chunk = level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
+        if (chunk == null) return;
+
+        for (int i = 0; i < Config.blocksDecayedPerInterval; i++) {
+            int lx = random.nextInt(16);
+            int lz = random.nextInt(16);
+            int worldX = chunkPos.getMinBlockX() + lx;
+            int worldZ = chunkPos.getMinBlockZ() + lz;
+            int surfaceY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, lx, lz);
+
+            for (int dy = 0; dy >= -4; dy--) {
+                BlockPos pos = new BlockPos(worldX, surfaceY + dy, worldZ);
+                BlockState state = level.getBlockState(pos);
+                BlockState replacement = getHealReplacement(state);
+                if (replacement == null) continue;
+                level.setBlock(pos, replacement, 3);
+                break;
+            }
+        }
+    }
+
+    private static BlockState getHealReplacement(BlockState state) {
+        Block block = state.getBlock();
+        if (block == ModBlocks.ASH_BLOCK.get()) {
+            return ModBlocks.RUINED_DIRT.get().defaultBlockState();
+        }
+        if (block == ModBlocks.RUINED_DIRT.get()) {
+            return ModBlocks.DEAD_GRASS_BLOCK.get().defaultBlockState();
+        }
+        if (block == ModBlocks.DEAD_GRASS_BLOCK.get()) {
+            return Blocks.GRASS_BLOCK.defaultBlockState();
+        }
+        if (block == Blocks.DEAD_BUSH) {
+            return Blocks.SHORT_GRASS.defaultBlockState();
+        }
+        return null;
     }
 
     private static BlockState getDecayReplacement(BlockState state) {
