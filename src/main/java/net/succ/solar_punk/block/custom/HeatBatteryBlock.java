@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
+import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 
 public class HeatBatteryBlock extends Block implements IBE<HeatBatteryBlockEntity>, IWrenchable {
@@ -53,7 +54,7 @@ public class HeatBatteryBlock extends Block implements IBE<HeatBatteryBlockEntit
     @Override
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         if (level.getBlockEntity(pos) instanceof HeatBatteryBlockEntity be)
-            return Math.round(be.getHeatStored() / (float) HeatBatteryBlockEntity.MAX_HEAT * 15);
+            return Math.round(be.getHeatStored() / (float) Config.heatBatteryMaxHeat * 15);
         return 0;
     }
 

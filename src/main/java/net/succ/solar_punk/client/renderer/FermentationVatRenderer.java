@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.succ.solar_punk.SolarPunk;
+import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.entity.custom.FermentationVatBlockEntity;
 
 public class FermentationVatRenderer extends SafeBlockEntityRenderer<FermentationVatBlockEntity> {
@@ -31,7 +32,7 @@ public class FermentationVatRenderer extends SafeBlockEntityRenderer<Fermentatio
     protected void renderSafe(FermentationVatBlockEntity be, float partialTicks, PoseStack ms,
             MultiBufferSource buffer, int light, int overlay) {
         if (!be.isController()) return;
-        if (be.getWidth() < FermentationVatBlockEntity.MIN_WIDTH) return;
+        if (be.getWidth() < Config.fermentationVatMinWidth) return;
 
         BlockState blockState = be.getBlockState();
         VertexConsumer vb = buffer.getBuffer(RenderType.cutout());

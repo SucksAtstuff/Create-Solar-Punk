@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
 import net.succ.solar_punk.item.ModItems;
 
@@ -25,10 +26,6 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
 
     private static final TagKey<Item> BIO_FUELS =
             TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "bio_fuels"));
-
-    private static final float RPM      = 8f;
-    private static final float CAPACITY = 256f;
-    public static final int BURN_TIME   = 300;
 
     // Slot 0 = fuel input, Slot 1 = biochar output
     public final ItemStackHandler itemHandler = new ItemStackHandler(2) {
@@ -55,12 +52,12 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
 
     @Override
     public float getGeneratedSpeed() {
-        return burnTimeRemaining > 0 ? RPM : 0;
+        return burnTimeRemaining > 0 ? Config.gasifierRpm : 0;
     }
 
     @Override
     public float calculateAddedStressCapacity() {
-        float capacity = burnTimeRemaining > 0 ? CAPACITY : 0;
+        float capacity = burnTimeRemaining > 0 ? Config.gasifierSu : 0;
         // Must mirror KineticBlockEntity's base impl: keep lastCapacityProvided in sync.
         // Without this, addSilently() on reload fails to subtract our contribution from
         // unloadedCapacity, causing +1024 SU to accumulate on every world reload.
@@ -87,7 +84,7 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
                     || (charOutput.is(ModItems.BIOCHAR.get()) && charOutput.getCount() < charOutput.getMaxStackSize());
             if (!fuel.isEmpty() && outputHasRoom) {
                 itemHandler.extractItem(0, 1, false);
-                burnTimeRemaining = BURN_TIME;
+                burnTimeRemaining = Config.gasifierBurnTicks;
                 if (charOutput.isEmpty()) {
                     itemHandler.setStackInSlot(1, new ItemStack(ModItems.BIOCHAR.get(), 1));
                 } else {

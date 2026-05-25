@@ -16,6 +16,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
 import net.succ.solar_punk.fluid.ModFluids;
@@ -25,7 +26,6 @@ import java.util.List;
 public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowerBlockEntity>
         implements IHaveGoggleInformation {
 
-    public static final int TANK_CAPACITY_PER_BLOCK = 8000;
     // Max height per footprint width: index 1→5, 2→10, 3→20
     private static final int[] MAX_HEIGHTS = {0, 5, 10, 20};
 
@@ -33,12 +33,12 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
     private int   cachedMirrorCount = 0;
     private int   mirrorScanCooldown = 0;
 
-    public final FluidTank waterTank = new FluidTank(TANK_CAPACITY_PER_BLOCK) {
+    public final FluidTank waterTank = new FluidTank(Config.solarPowerTowerTankPerBlock) {
         @Override public boolean isFluidValid(FluidStack stack) { return stack.getFluid().isSame(Fluids.WATER); }
         @Override protected void onContentsChanged() { setChanged(); sync(); }
     };
 
-    public final FluidTank saltTank = new FluidTank(TANK_CAPACITY_PER_BLOCK) {
+    public final FluidTank saltTank = new FluidTank(Config.solarPowerTowerTankPerBlock) {
         @Override public boolean isFluidValid(FluidStack stack) {
             return stack.getFluid().isSame(ModFluids.MOLTEN_SALT_SOURCE.get());
         }
@@ -118,11 +118,11 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         };
     }
 
-    @Override public int getTankSize(int tank) { return TANK_CAPACITY_PER_BLOCK; }
+    @Override public int getTankSize(int tank) { return Config.solarPowerTowerTankPerBlock; }
 
     @Override
     public void setTankSize(int tank, int blocks) {
-        int newCap = TANK_CAPACITY_PER_BLOCK * Math.max(blocks, 1);
+        int newCap = Config.solarPowerTowerTankPerBlock * Math.max(blocks, 1);
         waterTank.setCapacity(newCap);
         saltTank.setCapacity(newCap);
         if (waterTank.getFluidAmount() > newCap) waterTank.setFluid(new FluidStack(waterTank.getFluid().getFluid(), newCap));
@@ -151,7 +151,7 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
             cachedMirrorCount = isSunActive() ? scanMirrors() : 0;
         }
 
-        if (width < 3 || height < 3) {
+        if (width < Config.solarPowerTowerMinWidth || height < Config.solarPowerTowerMinHeight) {
             saltAccumulator = 0f;
             setLit(false);
             return;
@@ -253,8 +253,8 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         cachedMirrorCount = tag.getInt("CachedMirrors");
         if (isController()) {
             int totalBlocks = width * width * height;
-            waterTank.setCapacity(TANK_CAPACITY_PER_BLOCK * totalBlocks);
-            saltTank.setCapacity(TANK_CAPACITY_PER_BLOCK * totalBlocks);
+            waterTank.setCapacity(Config.solarPowerTowerTankPerBlock * totalBlocks);
+            saltTank.setCapacity(Config.solarPowerTowerTankPerBlock * totalBlocks);
         }
         FluidTankNBTHelper.load(tag, "WaterTank", waterTank);
         FluidTankNBTHelper.load(tag, "SaltTank",  saltTank);

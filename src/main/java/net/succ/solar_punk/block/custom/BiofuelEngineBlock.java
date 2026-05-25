@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.LevelReader;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
+import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.entity.custom.BiofuelEngineBlockEntity;
 
 public class BiofuelEngineBlock extends KineticBlock implements IBE<BiofuelEngineBlockEntity> {
@@ -58,7 +59,7 @@ public class BiofuelEngineBlock extends KineticBlock implements IBE<BiofuelEngin
     @Override
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         if (level.getBlockEntity(pos) instanceof BiofuelEngineBlockEntity be)
-            return Math.round(be.biofuelTank.getFluidAmount() / (float) BiofuelEngineBlockEntity.FUEL_CAPACITY * 15);
+            return Math.round(be.biofuelTank.getFluidAmount() / (float) Config.biofuelEngineTank * 15);
         return 0;
     }
 

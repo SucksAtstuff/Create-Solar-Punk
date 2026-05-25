@@ -23,6 +23,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.succ.solar_punk.Config;
 import net.succ.solar_punk.fluid.ModFluids;
 
 import software.bernie.geckolib.animatable.GeoBlockEntity;
@@ -36,12 +37,9 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public static final int TANK_CAPACITY = 4000;
-    private static final int FLUID_PER_CYCLE = 100;
-    private static final int RANGE = 2;
     private static final int SCAN_DEPTH = 5;
 
-    public final FluidTank fluidTank = new FluidTank(TANK_CAPACITY) {
+    public final FluidTank fluidTank = new FluidTank(Config.sprinklerTank) {
         @Override
         public boolean isFluidValid(FluidStack stack) {
             Fluid f = stack.getFluid();
@@ -70,12 +68,12 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
         if (fluidTank.isEmpty()) return;
 
         boolean fertilizer = hasFertilizer();
-        fluidTank.drain(FLUID_PER_CYCLE, IFluidHandler.FluidAction.EXECUTE);
+        fluidTank.drain(Config.sprinklerFluidPerCycle, IFluidHandler.FluidAction.EXECUTE);
 
         ServerLevel serverLevel = (ServerLevel) level;
 
-        for (int x = -RANGE; x <= RANGE; x++) {
-            for (int z = -RANGE; z <= RANGE; z++) {
+        for (int x = -Config.sprinklerRange; x <= Config.sprinklerRange; x++) {
+            for (int z = -Config.sprinklerRange; z <= Config.sprinklerRange; z++) {
                 for (int dy = 1; dy <= SCAN_DEPTH; dy++) {
                     BlockPos checkPos = worldPosition.offset(x, -dy, z);
                     BlockState checkState = level.getBlockState(checkPos);
@@ -128,7 +126,7 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
         CreateLang.translate(fertilizer ? "solar_punk.tooltip.fertilizer" : "solar_punk.tooltip.water")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(fluidTank.getFluidAmount())
-                        .text(" / " + TANK_CAPACITY + " mB")
+                        .text(" / " + Config.sprinklerTank + " mB")
                         .style(fertilizer ? ChatFormatting.GREEN : ChatFormatting.AQUA)
                         .component())
                 .forGoggles(tooltip, 1);

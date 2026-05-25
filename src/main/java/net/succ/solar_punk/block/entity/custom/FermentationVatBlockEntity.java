@@ -22,6 +22,7 @@ import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock.VatPosition;
 import net.succ.solar_punk.fluid.ModFluids;
@@ -31,24 +32,19 @@ import java.util.List;
 public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVatBlockEntity>
         implements IHaveGoggleInformation {
 
-    public static final int FERMENTATION_TIME       = 400;
-    public static final int WATER_PER_BATCH         = 1000;
-    public static final int BIOFUEL_PER_BATCH       = 1000;
-    public static final int TANK_CAPACITY_PER_BLOCK = 8000;
-    public static final int MIN_WIDTH               = 2;
-    public static final int MAX_HEIGHT              = 16;
+    public static final int MAX_HEIGHT = 16;
 
     private static final TagKey<Item> BIO_FUELS =
             TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "bio_fuels"));
 
-    public final FluidTank waterTank = new FluidTank(TANK_CAPACITY_PER_BLOCK) {
+    public final FluidTank waterTank = new FluidTank(Config.fermentationVatTankPerBlock) {
         @Override
         public boolean isFluidValid(FluidStack stack) { return stack.getFluid().isSame(Fluids.WATER); }
         @Override
         protected void onContentsChanged() { setChanged(); sync(); }
     };
 
-    public final FluidTank biofuelTank = new FluidTank(TANK_CAPACITY_PER_BLOCK) {
+    public final FluidTank biofuelTank = new FluidTank(Config.fermentationVatTankPerBlock) {
         @Override
         public boolean isFluidValid(FluidStack stack) { return stack.getFluid().isSame(ModFluids.BIOFUEL_SOURCE.get()); }
         @Override
@@ -134,11 +130,11 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         return longAxis == Direction.Axis.Y ? MAX_HEIGHT : MAX_WIDTH;
     }
 
-    @Override public int getTankSize(int tank) { return TANK_CAPACITY_PER_BLOCK; }
+    @Override public int getTankSize(int tank) { return Config.fermentationVatTankPerBlock; }
 
     @Override
     public void setTankSize(int tank, int blocks) {
-        int newCap = TANK_CAPACITY_PER_BLOCK * blocks;
+        int newCap = Config.fermentationVatTankPerBlock * blocks;
         waterTank.setCapacity(newCap);
         biofuelTank.setCapacity(newCap);
         if (waterTank.getFluidAmount()   > newCap) waterTank.setFluid(new FluidStack(waterTank.getFluid().getFluid(), newCap));
@@ -162,15 +158,15 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
 
         if (!isController()) return;
 
-        if (width < MIN_WIDTH) {
+        if (width < Config.fermentationVatMinWidth) {
             if (progress > 0) { progress = 0; setChanged(); sync(); }
             setLit(false);
             return;
         }
 
         int batchScale    = width * width;
-        int waterNeeded   = WATER_PER_BATCH  * batchScale;
-        int biofuelOutput = BIOFUEL_PER_BATCH * batchScale;
+        int waterNeeded   = Config.fermentationWaterPerBatch  * batchScale;
+        int biofuelOutput = Config.fermentationBiofuelPerBatch * batchScale;
 
         boolean hasInput   = itemHandler.getStackInSlot(0).getCount() >= batchScale;
         boolean hasWater   = waterTank.getFluidAmount() >= waterNeeded;
@@ -188,7 +184,7 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         setChanged();
         if (progress % 20 == 0) sync();
 
-        if (progress >= FERMENTATION_TIME) {
+        if (progress >= Config.fermentationTicks) {
             itemHandler.extractItem(0, batchScale, false);
             waterTank.drain(waterNeeded, IFluidHandler.FluidAction.EXECUTE);
             biofuelTank.fill(new FluidStack(ModFluids.BIOFUEL_SOURCE.get(), biofuelOutput),
@@ -227,8 +223,8 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         progress = tag.getInt("Progress");
         if (isController()) {
             int totalBlocks = width * width * height;
-            waterTank.setCapacity(TANK_CAPACITY_PER_BLOCK * totalBlocks);
-            biofuelTank.setCapacity(TANK_CAPACITY_PER_BLOCK * totalBlocks);
+            waterTank.setCapacity(Config.fermentationVatTankPerBlock * totalBlocks);
+            biofuelTank.setCapacity(Config.fermentationVatTankPerBlock * totalBlocks);
         }
         FluidTankNBTHelper.load(tag, "WaterTank",   waterTank);
         FluidTankNBTHelper.load(tag, "BiofuelTank", biofuelTank);
@@ -247,7 +243,7 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         int cap = waterTank.getCapacity();
         CreateLang.translate("solar_punk.tooltip.fermentation_vat_header").forGoggles(tooltip);
 
-        if (ctrl.width < MIN_WIDTH) {
+        if (ctrl.width < Config.fermentationVatMinWidth) {
             CreateLang.translate("solar_punk.tooltip.vat_too_small")
                     .style(ChatFormatting.RED)
                     .forGoggles(tooltip, 1);
@@ -268,7 +264,7 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
                     .forGoggles(tooltip, 1);
             CreateLang.translate("solar_punk.tooltip.progress")
                     .style(ChatFormatting.GRAY)
-                    .add(CreateLang.number(progress).text(" / " + FERMENTATION_TIME).style(ChatFormatting.YELLOW).component())
+                    .add(CreateLang.number(progress).text(" / " + Config.fermentationTicks).style(ChatFormatting.YELLOW).component())
                     .forGoggles(tooltip, 1);
         }
 
