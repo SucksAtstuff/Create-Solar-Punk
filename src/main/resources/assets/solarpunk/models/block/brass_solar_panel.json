@@ -3,7 +3,6 @@
   "credit": "Made with Blockbench",
   "texture_size": [64, 64],
   "textures": {
-    "0": "solarpunk:block/brass_solar_panel/brass_gearbox",
     "3": "solarpunk:block/brass_solar_panel/brass_casing",
     "4": "solarpunk:block/brass_solar_panel/brass_casing_very_short",
     "5": "solarpunk:block/brass_solar_panel/solar_panel_top",
@@ -78,7 +77,7 @@
       "to": [14, 12, 14],
       "faces": {
         "up": {"uv": [2, 2, 14, 14], "texture": "#3"},
-        "down": {"uv": [2, 2, 14, 14], "texture": "#0"}
+        "down": {"uv": [2, 2, 14, 14], "texture": "#3"}
       }
     }
   ],

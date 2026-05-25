@@ -22,9 +22,14 @@ Comparators now read stored levels from three blocks:
 - **Kinetic Battery** - signal proportional to stored charge
 - **Biofuel Engine** - signal proportional to fuel in the tank
 
+### Config
+
+Every machine and generator is now configurable in the mod config file. You can adjust tank sizes, generator RPM and stress output, production speeds, output amounts, and geyser spawn rates and biomes.
+
 ### Bug Fixes
 
 - Fixed Solar Mirror blocks becoming excessively dark when another mirror is placed directly above them on the tower.
+- Fixed the Brass Solar Panel showing the brass gearbox texture on its underside instead of the brass casing.
 
 ---
 
