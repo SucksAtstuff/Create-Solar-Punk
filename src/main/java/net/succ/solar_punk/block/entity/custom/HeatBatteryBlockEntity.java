@@ -18,6 +18,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.fluid.ModFluids;
 
@@ -25,15 +26,7 @@ import java.util.List;
 
 public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 
-    // A full tank of molten salt (8000 mB) is needed to charge the battery to MAX_HEAT.
-    // Each mB adds 10 heat; decay is 2/tick, so net gain is +8/tick while charging.
-    // Superheated threshold is 25% of MAX_HEAT (20000), reached after ~2500 ticks (~2 min) of charging.
-    public static final int TANK_CAPACITY = 8000;
-    public static final int MAX_HEAT = 80000;
-    private static final int HEAT_PER_MB = 10;
-    private static final int HEAT_DECAY = 2;
-
-    public final FluidTank fluidTank = new FluidTank(TANK_CAPACITY) {
+    public final FluidTank fluidTank = new FluidTank(Config.heatBatteryTank) {
         @Override
         public boolean isFluidValid(FluidStack stack) {
             return stack.getFluid().isSame(ModFluids.MOLTEN_SALT_SOURCE.get());
@@ -57,19 +50,19 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
         boolean changed = false;
 
         // Charge: consume 1 mB of molten salt and convert to heat
-        if (!fluidTank.isEmpty() && heatStored < MAX_HEAT) {
+        if (!fluidTank.isEmpty() && heatStored < Config.heatBatteryMaxHeat) {
             fluidTank.drain(1, IFluidHandler.FluidAction.EXECUTE);
-            heatStored = Math.min(MAX_HEAT, heatStored + HEAT_PER_MB);
+            heatStored = Math.min(Config.heatBatteryMaxHeat, heatStored + Config.heatBatteryHeatPerMb);
             changed = true;
         }
 
         // Decay: heat slowly dissipates whether or not a boiler is attached
         if (heatStored > 0) {
-            heatStored = Math.max(0, heatStored - HEAT_DECAY);
+            heatStored = Math.max(0, heatStored - Config.heatBatteryHeatDecay);
             changed = true;
         }
 
-        int newHeat = heatStored <= 0 ? 0 : heatStored >= MAX_HEAT / 4 ? 2 : 1;
+        int newHeat = heatStored <= 0 ? 0 : heatStored >= Config.heatBatteryMaxHeat / 4 ? 2 : 1;
         if (newHeat != getBlockState().getValue(HeatBatteryBlock.HEAT)) {
             level.setBlock(worldPosition, getBlockState().setValue(HeatBatteryBlock.HEAT, newHeat), 3);
         }
@@ -88,7 +81,7 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
     //  -1 = no heat     (empty)
     public int getHeatLevel() {
         if (heatStored <= 0) return -1;
-        if (heatStored >= MAX_HEAT / 4) return 2;
+        if (heatStored >= Config.heatBatteryMaxHeat / 4) return 2;
         return 1;
     }
 
@@ -125,7 +118,7 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
         CreateLang.translate("solar_punk.tooltip.heat_stored")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(heatStored)
-                        .text(" / " + MAX_HEAT)
+                        .text(" / " + Config.heatBatteryMaxHeat)
                         .style(ChatFormatting.GOLD)
                         .component())
                 .forGoggles(tooltip, 1);
@@ -133,7 +126,7 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
         CreateLang.translate("solar_punk.tooltip.molten_salt")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(fluidTank.getFluidAmount())
-                        .text(" / " + TANK_CAPACITY + " mB")
+                        .text(" / " + Config.heatBatteryTank + " mB")
                         .style(ChatFormatting.AQUA)
                         .component())
                 .forGoggles(tooltip, 1);

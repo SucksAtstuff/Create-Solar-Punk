@@ -21,6 +21,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.SolarHeaterBlock;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
@@ -30,11 +31,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.entity.BlockEntity implements IHaveGoggleInformation {
-
-    public static final int MAX_PROGRESS = 200;
-    public static final int TANK_CAPACITY = 8000;
-    public static final int EVAPORATION_TIME = 200;
-    public static final int WATER_PER_SALT = 250;
 
     // Slot 0: item melting input. Slot 1: evaporation salt output (no external insertion).
     public final ItemStackHandler itemHandler = new ItemStackHandler(2) {
@@ -56,13 +52,13 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
     };
 
     // Output tank for melted fluids (molten salt, lava, etc.)
-    public final FluidTank fluidTank = new FluidTank(TANK_CAPACITY) {
+    public final FluidTank fluidTank = new FluidTank(Config.solarHeaterTank) {
         @Override
         protected void onContentsChanged() { setChanged(); }
     };
 
     // Input tank for water evaporation. Exposed on all non-top sides via combinedFluidHandler.
-    public final FluidTank waterTank = new FluidTank(TANK_CAPACITY) {
+    public final FluidTank waterTank = new FluidTank(Config.solarHeaterTank) {
         @Override
         public boolean isFluidValid(FluidStack stack) {
             return stack.getFluid().isSame(Fluids.WATER);
@@ -142,12 +138,12 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
         Optional<SolarHeaterRecipe> recipeOpt = findRecipe();
         if (recipeOpt.isPresent()) {
             FluidStack output = recipeOpt.get().result();
-            if (fluidTank.getFluidAmount() + output.getAmount() <= TANK_CAPACITY) {
+            if (fluidTank.getFluidAmount() + output.getAmount() <= Config.solarHeaterTank) {
                 shouldBeLit = true;
                 if (!rainPenalty) {
                     progress++;
                     setChanged();
-                    if (progress >= MAX_PROGRESS) {
+                    if (progress >= Config.solarHeaterMeltTicks) {
                         fluidTank.fill(output.copy(), IFluidHandler.FluidAction.EXECUTE);
                         itemHandler.extractItem(0, 1, false);
                         progress = 0;
@@ -162,13 +158,13 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
         }
 
         // --- Water evaporation ---
-        if (waterTank.getFluidAmount() >= WATER_PER_SALT && canOutputSalt()) {
+        if (waterTank.getFluidAmount() >= Config.solarHeaterWaterPerSalt && canOutputSalt()) {
             shouldBeLit = true;
             if (!rainPenalty) {
                 evaporationProgress++;
                 setChanged();
-                if (evaporationProgress >= EVAPORATION_TIME) {
-                    waterTank.drain(WATER_PER_SALT, IFluidHandler.FluidAction.EXECUTE);
+                if (evaporationProgress >= Config.solarHeaterEvaporationTicks) {
+                    waterTank.drain(Config.solarHeaterWaterPerSalt, IFluidHandler.FluidAction.EXECUTE);
                     outputSalt();
                     evaporationProgress = 0;
                     setChanged();
@@ -278,14 +274,14 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
                     .forGoggles(tooltip, 1);
             CreateLang.translate("solar_punk.tooltip.progress")
                     .style(ChatFormatting.GRAY)
-                    .add(CreateLang.number(progress).text(" / " + MAX_PROGRESS).style(ChatFormatting.YELLOW).component())
+                    .add(CreateLang.number(progress).text(" / " + Config.solarHeaterMeltTicks).style(ChatFormatting.YELLOW).component())
                     .forGoggles(tooltip, 1);
         }
 
         CreateLang.translate("solar_punk.tooltip.water")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(waterTank.getFluidAmount())
-                        .text(" / " + TANK_CAPACITY + " mB")
+                        .text(" / " + Config.solarHeaterTank + " mB")
                         .style(ChatFormatting.AQUA)
                         .component())
                 .forGoggles(tooltip, 1);
@@ -293,7 +289,7 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
             CreateLang.translate("solar_punk.tooltip.evaporation")
                     .style(ChatFormatting.GRAY)
                     .add(CreateLang.number(evaporationProgress)
-                            .text(" / " + EVAPORATION_TIME)
+                            .text(" / " + Config.solarHeaterEvaporationTicks)
                             .style(ChatFormatting.YELLOW)
                             .component())
                     .forGoggles(tooltip, 2);
@@ -305,7 +301,7 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
                     .add(fluidTank.getFluid().getHoverName().copy().withStyle(ChatFormatting.YELLOW))
                     .forGoggles(tooltip, 1);
             CreateLang.number(fluidTank.getFluidAmount())
-                    .text(" / " + TANK_CAPACITY + " mB")
+                    .text(" / " + Config.solarHeaterTank + " mB")
                     .style(ChatFormatting.AQUA)
                     .forGoggles(tooltip, 2);
         }

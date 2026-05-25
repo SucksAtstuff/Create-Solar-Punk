@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.KineticBatteryBlock;
 
 import java.util.List;
@@ -16,12 +17,6 @@ import java.util.List;
 public class KineticBatteryBlockEntity extends GeneratingKineticBlockEntity {
 
     private float chargeLevel = 0f;
-
-    public static final float MAX_CHARGE = 1200f;
-    private static final float CHARGE_RATE = 1f;
-    private static final float DISCHARGE_RATE = 0.5f;
-    private static final float BATTERY_RPM = 16f;
-    private static final float BATTERY_CAPACITY = 16f;
 
     public KineticBatteryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -34,7 +29,7 @@ public class KineticBatteryBlockEntity extends GeneratingKineticBlockEntity {
         if (level == null) return 0f;
         BlockState state = level.getBlockState(worldPosition);
         if (!state.hasProperty(KineticBatteryBlock.LIT)) return 0f;
-        return state.getValue(KineticBatteryBlock.LIT) ? BATTERY_RPM : 0f;
+        return state.getValue(KineticBatteryBlock.LIT) ? Config.kineticBatteryRpm : 0f;
     }
 
     @Override
@@ -43,7 +38,7 @@ public class KineticBatteryBlockEntity extends GeneratingKineticBlockEntity {
         if (level != null) {
             BlockState state = level.getBlockState(worldPosition);
             if (state.hasProperty(KineticBatteryBlock.LIT) && state.getValue(KineticBatteryBlock.LIT))
-                capacity = BATTERY_CAPACITY;
+                capacity = Config.kineticBatterySu;
         }
         this.lastCapacityProvided = capacity;
         return capacity;
@@ -55,7 +50,7 @@ public class KineticBatteryBlockEntity extends GeneratingKineticBlockEntity {
 
         CreateLang.translate("solar_punk.tooltip.kinetic_battery_header").forGoggles(tooltip);
 
-        int pct = (int)(chargeLevel / MAX_CHARGE * 100);
+        int pct = (int)(chargeLevel / Config.kineticBatteryMaxCharge * 100);
         CreateLang.translate("solar_punk.tooltip.charge")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(pct)
@@ -65,7 +60,7 @@ public class KineticBatteryBlockEntity extends GeneratingKineticBlockEntity {
                 .forGoggles(tooltip, 1);
 
         if (chargeLevel > 0) {
-            int seconds = (int)(chargeLevel / DISCHARGE_RATE / 20);
+            int seconds = (int)(chargeLevel / (float) Config.kineticBatteryDischargeRate / 20);
             String timeStr = seconds >= 60
                     ? (seconds / 60) + "m " + (seconds % 60) + "s"
                     : seconds + "s";
@@ -90,12 +85,11 @@ public class KineticBatteryBlockEntity extends GeneratingKineticBlockEntity {
 
         if (currentlyLit) {
             // Discharging — deplete charge each tick
-            chargeLevel -= DISCHARGE_RATE;
+            chargeLevel -= (float) Config.kineticBatteryDischargeRate;
             if (chargeLevel < 0) chargeLevel = 0;
             changed = true;
-        } else if (!powered && Math.abs(getSpeed()) > 0 && chargeLevel < MAX_CHARGE) {
-            // Charging — absorb from spinning network when not powered
-            chargeLevel = Math.min(MAX_CHARGE, chargeLevel + CHARGE_RATE);
+        } else if (!powered && Math.abs(getSpeed()) > 0 && chargeLevel < Config.kineticBatteryMaxCharge) {
+            chargeLevel = Math.min(Config.kineticBatteryMaxCharge, chargeLevel + (float) Config.kineticBatteryChargeRate);
             changed = true;
         }
 

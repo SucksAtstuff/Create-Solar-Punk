@@ -17,6 +17,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.BiofuelEngineBlock;
 import net.succ.solar_punk.fluid.ModFluids;
 
@@ -24,13 +25,7 @@ import java.util.List;
 
 public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity implements IHaveGoggleInformation {
 
-    private static final float RPM      = 16f;
-    private static final float CAPACITY = 512f;
-    public static final int FUEL_CAPACITY  = 8000;
-    public static final int CONSUME_MB     = 50;
-    public static final int CONSUME_PERIOD = 40;
-
-    public final FluidTank biofuelTank = new FluidTank(FUEL_CAPACITY) {
+    public final FluidTank biofuelTank = new FluidTank(Config.biofuelEngineTank) {
         @Override
         public boolean isFluidValid(FluidStack stack) {
             return stack.getFluid().isSame(ModFluids.BIOFUEL_SOURCE.get());
@@ -49,12 +44,12 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
 
     @Override
     public float getGeneratedSpeed() {
-        return biofuelTank.getFluidAmount() > 0 ? RPM : 0;
+        return biofuelTank.getFluidAmount() > 0 ? Config.biofuelEngineRpm : 0;
     }
 
     @Override
     public float calculateAddedStressCapacity() {
-        float capacity = biofuelTank.getFluidAmount() > 0 ? CAPACITY : 0;
+        float capacity = biofuelTank.getFluidAmount() > 0 ? Config.biofuelEngineSu : 0;
         this.lastCapacityProvided = capacity;
         return capacity;
     }
@@ -64,8 +59,8 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
         super.tick();
         if (level == null || level.isClientSide) return;
 
-        if (level.getGameTime() % CONSUME_PERIOD == 0 && biofuelTank.getFluidAmount() >= CONSUME_MB)
-            biofuelTank.drain(CONSUME_MB, IFluidHandler.FluidAction.EXECUTE);
+        if (level.getGameTime() % Config.biofuelConsumePeriod == 0 && biofuelTank.getFluidAmount() >= Config.biofuelConsumeMb)
+            biofuelTank.drain(Config.biofuelConsumeMb, IFluidHandler.FluidAction.EXECUTE);
 
         if (level.getGameTime() % 20 == 0) {
             updateGeneratedRotation();
@@ -104,11 +99,11 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
         CreateLang.translate("solar_punk.tooltip.biofuel")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(biofuelTank.getFluidAmount())
-                        .text(" / " + FUEL_CAPACITY + " mB").style(ChatFormatting.GREEN).component())
+                        .text(" / " + Config.biofuelEngineTank + " mB").style(ChatFormatting.GREEN).component())
                 .forGoggles(tooltip, 1);
         CreateLang.translate("solar_punk.tooltip.consumption")
                 .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(CONSUME_MB).text(" mB / " + CONSUME_PERIOD + "t").style(ChatFormatting.YELLOW).component())
+                .add(CreateLang.number(Config.biofuelConsumeMb).text(" mB / " + Config.biofuelConsumePeriod + "t").style(ChatFormatting.YELLOW).component())
                 .forGoggles(tooltip, 1);
         return true;
     }

@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
+import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.entity.custom.KineticBatteryBlockEntity;
 
 public class KineticBatteryBlock extends KineticBlock implements IBE<KineticBatteryBlockEntity> {
@@ -65,7 +66,7 @@ public class KineticBatteryBlock extends KineticBlock implements IBE<KineticBatt
     @Override
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         if (level.getBlockEntity(pos) instanceof KineticBatteryBlockEntity be)
-            return Math.round(be.getChargeLevel() / KineticBatteryBlockEntity.MAX_CHARGE * 15);
+            return Math.round(be.getChargeLevel() / Config.kineticBatteryMaxCharge * 15);
         return 0;
     }
 

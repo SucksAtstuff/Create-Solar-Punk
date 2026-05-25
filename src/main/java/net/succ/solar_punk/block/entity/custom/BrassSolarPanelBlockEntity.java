@@ -19,6 +19,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
 import net.succ.solar_punk.client.sound.BrassPanelSoundInstance;
 import org.jetbrains.annotations.Nullable;
@@ -26,11 +27,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGoggleInformation {
-
-    private static final int MORNING_FE_PER_TICK = 40;
-    private static final int NOON_FE_PER_TICK    = 80;
-    private static final int BUFFER_CAPACITY     = 100_000;
-    private static final int MAX_EXTRACT         = 80;
 
     private static class GeneratingEnergyStorage extends EnergyStorage {
         GeneratingEnergyStorage(int capacity, int maxExtract) {
@@ -44,7 +40,7 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
         }
     }
 
-    public final GeneratingEnergyStorage energyStorage = new GeneratingEnergyStorage(BUFFER_CAPACITY, MAX_EXTRACT);
+    public final GeneratingEnergyStorage energyStorage = new GeneratingEnergyStorage(Config.brassBuffer, Config.brassMaxExtract);
 
     @OnlyIn(Dist.CLIENT)
     @Nullable
@@ -57,8 +53,8 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
     private int getGeneratedFE() {
         if (!SolarHelper.hasSkyAccess(level, worldPosition)) return 0;
         return switch (SolarHelper.getPhase(level)) {
-            case MORNING, EVENING -> MORNING_FE_PER_TICK;
-            case NOON -> level.isRaining() ? MORNING_FE_PER_TICK : NOON_FE_PER_TICK;
+            case MORNING, EVENING -> Config.brassMorningFe;
+            case NOON -> level.isRaining() ? Config.brassMorningFe : Config.brassNoonFe;
             case NIGHT -> 0;
         };
     }
@@ -84,7 +80,7 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
                         dir.getOpposite()
                 );
                 if (neighbor != null && neighbor.canReceive()) {
-                    int toSend = energyStorage.extractEnergy(MAX_EXTRACT, true);
+                    int toSend = energyStorage.extractEnergy(Config.brassMaxExtract, true);
                     int accepted = neighbor.receiveEnergy(toSend, false);
                     if (accepted > 0) {
                         energyStorage.extractEnergy(accepted, false);

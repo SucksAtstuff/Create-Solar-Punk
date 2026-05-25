@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.GeyserCapBlock;
 import net.succ.solar_punk.sound.ModSounds;
@@ -19,9 +20,6 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implements GeoBlockEntity {
-
-    private static final float RPM      = 32f;
-    private static final float CAPACITY = 512f;
 
     private static final RawAnimation ACTIVE = RawAnimation.begin().thenLoop("animation.geyser_cap.active");
     private static final RawAnimation IDLE   = RawAnimation.begin().thenLoop("animation.geyser_cap.idle");
@@ -38,12 +36,12 @@ public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implement
 
     @Override
     public float getGeneratedSpeed() {
-        return hasVent() ? RPM : 0;
+        return hasVent() ? Config.geyserCapRpm : 0;
     }
 
     @Override
     public float calculateAddedStressCapacity() {
-        float capacity = hasVent() ? CAPACITY : 0;
+        float capacity = hasVent() ? Config.geyserCapSu : 0;
         this.lastCapacityProvided = capacity;
         return capacity;
     }
