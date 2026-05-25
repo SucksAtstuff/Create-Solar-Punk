@@ -23,6 +23,7 @@ import net.succ.solar_punk.block.custom.SolarHeaterBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerItem;
+import net.succ.solar_punk.block.custom.BiofilterBlock;
 import net.succ.solar_punk.block.custom.KineticSprinklerBlock;
 import net.succ.solar_punk.item.ModItems;
 
@@ -139,6 +140,12 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .requiresCorrectToolForDrops()
                     .noOcclusion()
                     .strength(2.0f, 4.0f)));
+
+    public static final DeferredBlock<BiofilterBlock> BIOFILTER = registerBlock("biofilter",
+            () -> new BiofilterBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.PLANT)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.5f, 4.0f)));
 
     public static final DeferredBlock<KineticSprinklerBlock> KINETIC_SPRINKLER = registerBlock("kinetic_sprinkler",
             () -> new KineticSprinklerBlock(BlockBehaviour.Properties.of()

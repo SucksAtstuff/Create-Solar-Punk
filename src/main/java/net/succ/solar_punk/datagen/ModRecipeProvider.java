@@ -162,6 +162,27 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
                 .save(output);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.KINETIC_SPRINKLER.get())
+                .pattern("C C")
+                .pattern("CAC")
+                .pattern(" S ")
+                .define('C', Items.COPPER_INGOT)
+                .define('A', createItem("andesite_alloy"))
+                .define('S', createItem("shaft"))
+                .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BIOFILTER.get())
+                .pattern("GMG")
+                .pattern("MAM")
+                .pattern("GSG")
+                .define('G', Blocks.GRAVEL)
+                .define('M', Blocks.MOSS_BLOCK)
+                .define('A', createItem("andesite_casing"))
+                .define('S', createItem("shaft"))
+                .unlockedBy("has_andesite_casing", has(createItem("andesite_casing")))
+                .save(output);
+
     }
 
     private static Item createItem(String name) {

@@ -96,7 +96,12 @@ public class Config {
     private static final ModConfigSpec.BooleanValue CFG_GLOBAL_WARMING_ENABLED;
     private static final ModConfigSpec.IntValue CFG_POLLUTION_PER_SOURCE;
     private static final ModConfigSpec.ConfigValue<List<? extends String>> CFG_PER_BLOCK_POLLUTION;
+    private static final ModConfigSpec.IntValue CFG_POLLUTION_RADIUS_BLOCKS;
     private static final ModConfigSpec.IntValue CFG_POLLUTION_DECAY_RATE;
+    private static final ModConfigSpec.IntValue CFG_LEAF_ABSORPTION_PER_INTERVAL;
+    private static final ModConfigSpec.IntValue CFG_BIOFILTER_SU;
+    private static final ModConfigSpec.IntValue CFG_BIOFILTER_ABSORPTION_PER_SECOND;
+    private static final ModConfigSpec.IntValue CFG_BIOFILTER_RADIUS_BLOCKS;
     private static final ModConfigSpec.IntValue CFG_BIOME_DECAY_THRESHOLD;
     private static final ModConfigSpec.IntValue CFG_BIOME_DECAY_INTERVAL;
     private static final ModConfigSpec.IntValue CFG_BLOCKS_DECAYED_PER_INTERVAL;
@@ -178,6 +183,10 @@ public class Config {
         CFG_SPRINKLER_RANGE           = BUILDER.comment("Horizontal radius (blocks) of the watering area").defineInRange("range", 2, 1, 16);
         BUILDER.pop();
 
+        BUILDER.push("biofilter");
+        CFG_BIOFILTER_SU = BUILDER.comment("Stress units consumed while the Biofilter is running").defineInRange("su", 256, 1, 1_000_000);
+        BUILDER.pop();
+
         BUILDER.pop(); // machines
 
         BUILDER.push("tanks");
@@ -202,6 +211,7 @@ public class Config {
                         () -> new ArrayList<>(List.of("minecraft:desert", "minecraft:badlands", "minecraft:eroded_badlands",
                                 "minecraft:wooded_badlands", "minecraft:savanna", "minecraft:savanna_plateau",
                                 "minecraft:windswept_savanna")),
+                        () -> "minecraft:plains",
                         e -> e instanceof String s && s.contains(":"));
         BUILDER.pop();
 
@@ -226,8 +236,13 @@ public class Config {
                                 "solarpunk:biofuel_engine=10",
                                 "solarpunk:biomass_gasifier=5"
                         )),
+                        () -> "block_id=0",
                         e -> e instanceof String s && s.contains("=") && s.contains(":"));
+        CFG_POLLUTION_RADIUS_BLOCKS = BUILDER.comment("Block radius around each active pollution source that receives pollution (0 = source chunk only).").defineInRange("pollution_radius_blocks", 64, 0, 512);
         CFG_POLLUTION_DECAY_RATE   = BUILDER.comment("Pollution units removed from each chunk per second (0 = pollution never decays).").defineInRange("pollution_decay_rate_per_second", 1, 0, 1_000_000);
+        CFG_LEAF_ABSORPTION_PER_INTERVAL = BUILDER.comment("Pollution absorbed per leaf block in a chunk each decay interval. 0 to disable tree absorption.").defineInRange("leaf_absorption_per_interval", 1, 0, 1_000_000);
+        CFG_BIOFILTER_ABSORPTION_PER_SECOND = BUILDER.comment("Pollution units removed per second by each placed Biofilter block.").defineInRange("biofilter_absorption_per_second", 10, 0, 1_000_000);
+        CFG_BIOFILTER_RADIUS_BLOCKS = BUILDER.comment("Block radius around a Biofilter in which it reduces pollution (0 = own chunk only).").defineInRange("biofilter_radius_blocks", 32, 0, 512);
         CFG_BIOME_DECAY_THRESHOLD       = BUILDER.comment("Pollution level a chunk must reach before its biome converts.").defineInRange("biome_decay_threshold", 10000, 1, Integer.MAX_VALUE);
         CFG_BIOME_DECAY_INTERVAL        = BUILDER.comment("Ticks between each decay and biome-conversion check (1200 = once per minute).").defineInRange("biome_decay_interval_ticks", 1200, 20, 72000);
         CFG_BLOCKS_DECAYED_PER_INTERVAL = BUILDER.comment("Random surface blocks replaced per polluted chunk each decay interval (grass dies, leaves fall, flowers wither). 0 to disable.").defineInRange("blocks_decayed_per_interval", 8, 0, 256);
@@ -267,7 +282,8 @@ public class Config {
     public static List<? extends String> geyserBiomes;
 
     public static boolean globalWarmingEnabled;
-    public static int pollutionPerSource, pollutionDecayRate;
+    public static int pollutionPerSource, pollutionRadiusBlocks, pollutionDecayRate;
+    public static int leafAbsorptionPerInterval, biofilterSu, biofilterAbsorptionPerSecond, biofilterRadiusBlocks;
     public static int biomeDecayThreshold, biomeDecayInterval, blocksDecayedPerInterval;
     public static String deadBiome;
     public static Map<String, Integer> perBlockPollution = new java.util.HashMap<>();
@@ -334,7 +350,12 @@ public class Config {
 
         globalWarmingEnabled  = CFG_GLOBAL_WARMING_ENABLED.get();
         pollutionPerSource    = CFG_POLLUTION_PER_SOURCE.get();
+        pollutionRadiusBlocks = CFG_POLLUTION_RADIUS_BLOCKS.get();
         pollutionDecayRate    = CFG_POLLUTION_DECAY_RATE.get();
+        leafAbsorptionPerInterval       = CFG_LEAF_ABSORPTION_PER_INTERVAL.get();
+        biofilterSu                     = CFG_BIOFILTER_SU.get();
+        biofilterAbsorptionPerSecond    = CFG_BIOFILTER_ABSORPTION_PER_SECOND.get();
+        biofilterRadiusBlocks           = CFG_BIOFILTER_RADIUS_BLOCKS.get();
         biomeDecayThreshold       = CFG_BIOME_DECAY_THRESHOLD.get();
         biomeDecayInterval        = CFG_BIOME_DECAY_INTERVAL.get();
         blocksDecayedPerInterval  = CFG_BLOCKS_DECAYED_PER_INTERVAL.get();

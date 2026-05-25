@@ -1,6 +1,7 @@
 {
   "block.solarpunk.andesite_solar_panel": "Andesite Solar Panel",
   "block.solarpunk.ash_block": "Ash Block",
+  "block.solarpunk.biofilter": "Biofilter",
   "block.solarpunk.biofuel": "Biofuel",
   "block.solarpunk.biofuel_engine": "Biofuel Engine",
   "block.solarpunk.biomass_gasifier": "Biomass Gasifier",
@@ -20,6 +21,10 @@
   "block.solarpunk.solar_mirror": "Solar Mirror",
   "block.solarpunk.solar_power_tower": "Solar Power Tower",
   "create.solar_punk.tooltip.biochar_stored": "Biochar: ",
+  "create.solar_punk.tooltip.biofilter_header": "Biofilter",
+  "create.solar_punk.tooltip.biofilter_pollution": "Chunk Pollution: ",
+  "create.solar_punk.tooltip.biofilter_removing": "Removing: ",
+  "create.solar_punk.tooltip.biofilter_status": "Status: ",
   "create.solar_punk.tooltip.biofuel": "Biofuel: ",
   "create.solar_punk.tooltip.biofuel_engine_header": "Biofuel Engine",
   "create.solar_punk.tooltip.biomass_stored": "Biomass: ",

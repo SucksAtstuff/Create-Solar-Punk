@@ -92,6 +92,10 @@ public class ModClientEvents {
                 ModBlockEntities.KINETIC_BATTERY.get(),
                 new SimpleBlockEntityVisualizer<>(SingleAxisRotatingVisual::shaft, be -> false)
             );
+            VisualizerRegistry.setVisualizer(
+                ModBlockEntities.BIOFILTER.get(),
+                new SimpleBlockEntityVisualizer<>(SingleAxisRotatingVisual::shaft, be -> false)
+            );
         });
     }
 }

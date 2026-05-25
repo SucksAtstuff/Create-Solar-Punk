@@ -17,6 +17,7 @@ import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarHeaterBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarPowerTowerBlockEntity;
+import net.succ.solar_punk.block.entity.custom.BiofilterBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticSprinklerBlockEntity;
 
 public class ModBlockEntities {
@@ -71,6 +72,11 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SolarPowerTowerBlockEntity>> SOLAR_POWER_TOWER =
             BLOCK_ENTITIES.register("solar_power_tower", () -> BlockEntityType.Builder
                     .of((pos, state) -> new SolarPowerTowerBlockEntity(ModBlockEntities.SOLAR_POWER_TOWER.get(), pos, state), ModBlocks.SOLAR_POWER_TOWER.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BiofilterBlockEntity>> BIOFILTER =
+            BLOCK_ENTITIES.register("biofilter", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new BiofilterBlockEntity(ModBlockEntities.BIOFILTER.get(), pos, state), ModBlocks.BIOFILTER.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<KineticSprinklerBlockEntity>> KINETIC_SPRINKLER =

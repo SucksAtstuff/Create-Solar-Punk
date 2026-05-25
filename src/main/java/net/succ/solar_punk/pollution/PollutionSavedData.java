@@ -36,6 +36,18 @@ public class PollutionSavedData extends SavedData {
         return chunkPollution.getOrDefault(chunk, 0L);
     }
 
+    public void reducePollution(ChunkPos chunk, long amount) {
+        long current = chunkPollution.getOrDefault(chunk, 0L);
+        if (current <= 0) return;
+        long next = current - amount;
+        if (next <= 0) {
+            chunkPollution.remove(chunk);
+        } else {
+            chunkPollution.put(chunk, next);
+        }
+        setDirty();
+    }
+
     public void decayAll(long amount) {
         if (amount <= 0 || chunkPollution.isEmpty()) return;
         chunkPollution.replaceAll((pos, val) -> Math.max(0L, val - amount));

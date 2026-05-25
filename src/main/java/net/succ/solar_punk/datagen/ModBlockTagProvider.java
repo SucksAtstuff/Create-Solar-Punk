@@ -43,7 +43,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.GEYSER_CAP.get())
                 .add(ModBlocks.SOLAR_POWER_TOWER.get())
                 .add(ModBlocks.SOLAR_MIRROR.get())
-                .add(ModBlocks.GEYSER_VENT.get());
+                .add(ModBlocks.GEYSER_VENT.get())
+                .add(ModBlocks.BIOFILTER.get());
 
         tag(Tags.Blocks.STORAGE_BLOCKS).add(ModBlocks.SALT_BLOCK.get());
         tag(STORAGE_BLOCKS_SALT).add(ModBlocks.SALT_BLOCK.get());

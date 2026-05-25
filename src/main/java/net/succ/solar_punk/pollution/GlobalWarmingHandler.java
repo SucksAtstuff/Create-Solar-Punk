@@ -72,6 +72,9 @@ public class GlobalWarmingHandler {
     private static Map<ChunkPos, Long> countActiveSources(ServerLevel level) {
         Map<ChunkPos, Long> totals = new HashMap<>();
         int viewDist = Math.min(level.getServer().getPlayerList().getViewDistance(), 16);
+        int radius = Config.pollutionRadiusBlocks;
+        int radiusChunks = (int) Math.ceil(radius / 16.0);
+        double radiusSq = (double) radius * radius;
 
         Set<ChunkPos> visited = new HashSet<>();
         for (ServerPlayer player : level.players()) {
@@ -99,7 +102,21 @@ public class GlobalWarmingHandler {
 
                         String blockId = BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
                         int amount = Config.perBlockPollution.getOrDefault(blockId, Config.pollutionPerSource);
-                        totals.merge(cp, (long) amount, Long::sum);
+
+                        // Spread pollution to every chunk whose nearest point is within radius blocks
+                        for (int rdx = -radiusChunks; rdx <= radiusChunks; rdx++) {
+                            for (int rdz = -radiusChunks; rdz <= radiusChunks; rdz++) {
+                                ChunkPos affected = new ChunkPos(cp.x + rdx, cp.z + rdz);
+                                if (radius > 0) {
+                                    int nearX = Math.max(affected.getMinBlockX(), Math.min(pos.getX(), affected.getMaxBlockX()));
+                                    int nearZ = Math.max(affected.getMinBlockZ(), Math.min(pos.getZ(), affected.getMaxBlockZ()));
+                                    double distSq = (double)(nearX - pos.getX()) * (nearX - pos.getX())
+                                                  + (double)(nearZ - pos.getZ()) * (nearZ - pos.getZ());
+                                    if (distSq > radiusSq) continue;
+                                }
+                                totals.merge(affected, (long) amount, Long::sum);
+                            }
+                        }
                     }
                 }
             }
@@ -130,12 +147,18 @@ public class GlobalWarmingHandler {
 
         List<ChunkAccess> biomesToResend = new ArrayList<>();
 
-        for (Map.Entry<ChunkPos, Long> entry : data.getChunkPollution().entrySet()) {
+        for (Map.Entry<ChunkPos, Long> entry : new ArrayList<>(data.getChunkPollution().entrySet())) {
             long pollution = entry.getValue();
             if (pollution <= 0) continue;
 
             ChunkPos chunkPos = entry.getKey();
             if (!level.isLoaded(chunkPos.getMiddleBlockPosition(64))) continue;
+
+            // Leaf absorption — trees slow the spread before they die off
+            if (Config.leafAbsorptionPerInterval > 0) {
+                long absorbed = countLeaves(level, chunkPos) * Config.leafAbsorptionPerInterval;
+                if (absorbed > 0) data.reducePollution(chunkPos, absorbed);
+            }
 
             // Gradual block decay for any polluted chunk
             if (Config.blocksDecayedPerInterval > 0) {
@@ -156,6 +179,23 @@ public class GlobalWarmingHandler {
         if (!biomesToResend.isEmpty()) {
             level.getChunkSource().chunkMap.resendBiomesForChunks(biomesToResend);
         }
+    }
+
+    private static long countLeaves(ServerLevel level, ChunkPos chunkPos) {
+        LevelChunk chunk = level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
+        if (chunk == null) return 0;
+        long count = 0;
+        for (int lx = 0; lx < 16; lx++) {
+            for (int lz = 0; lz < 16; lz++) {
+                int worldX = chunkPos.getMinBlockX() + lx;
+                int worldZ = chunkPos.getMinBlockZ() + lz;
+                int surfaceY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, lx, lz);
+                for (int dy = -2; dy <= 10; dy++) {
+                    if (level.getBlockState(new BlockPos(worldX, surfaceY + dy, worldZ)).is(BlockTags.LEAVES)) count++;
+                }
+            }
+        }
+        return count;
     }
 
     private static void decayBlocks(ServerLevel level, ChunkPos chunkPos, RandomSource random) {
