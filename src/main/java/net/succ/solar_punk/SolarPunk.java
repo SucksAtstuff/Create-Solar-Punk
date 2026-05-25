@@ -1,6 +1,8 @@
 package net.succ.solar_punk;
 
 import com.simibubi.create.api.boiler.BoilerHeater;
+import com.simibubi.create.api.stress.BlockStressValues;
+import com.simibubi.create.api.stress.BlockStressValues.GeneratedRpm;
 import net.minecraft.core.Direction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -114,6 +116,35 @@ public class SolarPunk {
                 return be.getHeatLevel();
             });
 
+            // Generators — capacity (per RPM) and generated RPM for stress tooltips
+            BlockStressValues.CAPACITIES.register(ModBlocks.ANDESITE_SOLAR_PANEL.get(),
+                () -> (double) Config.andesiteNoonSu);
+            BlockStressValues.RPM.register(ModBlocks.ANDESITE_SOLAR_PANEL.get(),
+                new GeneratedRpm(Config.andesiteNoonRpm, true));
+
+            BlockStressValues.CAPACITIES.register(ModBlocks.BIOMASS_GASIFIER.get(),
+                () -> (double) Config.gasifierSu);
+            BlockStressValues.RPM.register(ModBlocks.BIOMASS_GASIFIER.get(),
+                new GeneratedRpm(Config.gasifierRpm, false));
+
+            BlockStressValues.CAPACITIES.register(ModBlocks.BIOFUEL_ENGINE.get(),
+                () -> (double) Config.biofuelEngineSu);
+            BlockStressValues.RPM.register(ModBlocks.BIOFUEL_ENGINE.get(),
+                new GeneratedRpm(Config.biofuelEngineRpm, false));
+
+            BlockStressValues.CAPACITIES.register(ModBlocks.GEYSER_CAP.get(),
+                () -> (double) Config.geyserCapSu);
+            BlockStressValues.RPM.register(ModBlocks.GEYSER_CAP.get(),
+                new GeneratedRpm(Config.geyserCapRpm, false));
+
+            BlockStressValues.CAPACITIES.register(ModBlocks.KINETIC_BATTERY.get(),
+                () -> (double) Config.kineticBatterySu);
+            BlockStressValues.RPM.register(ModBlocks.KINETIC_BATTERY.get(),
+                new GeneratedRpm(Config.kineticBatteryRpm, false));
+
+            // Consumer — stress impact for tooltip
+            BlockStressValues.IMPACTS.register(ModBlocks.BIOFILTER.get(),
+                () -> (double) Config.biofilterSu);
         });
     }
 }

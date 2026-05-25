@@ -173,6 +173,57 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.output_fluid", "Output: ");
         add("create.solar_punk.tooltip.salt_output", "Salt: ");
 
+        // Inventory hover tooltips
+        add("block.solarpunk.solar_heater.tooltip.summary", "Uses _sunlight_ to melt items into fluid and passively evaporate water into _Salt_.");
+        add("block.solarpunk.solar_heater.tooltip.condition1", "During the day with a clear sky");
+        add("block.solarpunk.solar_heater.tooltip.behaviour1", "Processes the loaded item. Slows in _rain_.");
+
+        add("block.solarpunk.andesite_solar_panel.tooltip.summary", "Generates _Rotational Force_ from sunlight. Output scales with sun angle and weather.");
+        add("block.solarpunk.andesite_solar_panel.tooltip.condition1", "During the day with a clear sky");
+        add("block.solarpunk.andesite_solar_panel.tooltip.behaviour1", "8-16 RPM with 1024-4096 SU of stress capacity. Stops in _rain_ and at _night_.");
+
+        add("block.solarpunk.brass_solar_panel.tooltip.summary", "Generates _Forge Energy_ from sunlight. Output scales with sun angle and weather.");
+        add("block.solarpunk.brass_solar_panel.tooltip.condition1", "During the day with a clear sky");
+        add("block.solarpunk.brass_solar_panel.tooltip.behaviour1", "40-80 FE/t. Stops in _rain_ and at _night_.");
+
+        add("block.solarpunk.heat_battery.tooltip.summary", "Stores thermal energy as _Molten Salt_ and supplies heat to a _Boiler_ placed above it.");
+        add("block.solarpunk.heat_battery.tooltip.condition1", "When filled with Molten Salt");
+        add("block.solarpunk.heat_battery.tooltip.behaviour1", "Passively heats the boiler above. Heat level fades over time.");
+
+        add("block.solarpunk.kinetic_battery.tooltip.summary", "Stores _Rotational Force_ for later use. Useful for buffering intermittent generators like solar panels.");
+        add("block.solarpunk.kinetic_battery.tooltip.condition1", "When connected to a spinning network");
+        add("block.solarpunk.kinetic_battery.tooltip.behaviour1", "Charges up while _no Redstone_ signal is applied.");
+        add("block.solarpunk.kinetic_battery.tooltip.condition2", "When a Redstone signal is applied");
+        add("block.solarpunk.kinetic_battery.tooltip.behaviour2", "Discharges at 16 RPM with 256 SU of stress capacity until empty.");
+
+        add("block.solarpunk.fermentation_vat.tooltip.summary", "Ferments _Biomass_ and water into _Biofuel_. Requires at least a _2x2 footprint_ to operate.");
+        add("block.solarpunk.fermentation_vat.tooltip.condition1", "Larger footprint");
+        add("block.solarpunk.fermentation_vat.tooltip.behaviour1", "Increases batch size and tank capacity. A 3x3 footprint processes 9 Biomass per batch.");
+
+        add("block.solarpunk.biomass_gasifier.tooltip.summary", "Burns _Biomass_ to generate _Rotational Force_. Produces _Biochar_ as a byproduct.");
+        add("block.solarpunk.biomass_gasifier.tooltip.condition1", "While burning");
+        add("block.solarpunk.biomass_gasifier.tooltip.behaviour1", "Outputs 8 RPM with 2048 SU of stress capacity downward.");
+
+        add("block.solarpunk.biofuel_engine.tooltip.summary", "Burns _Biofuel_ to generate _Rotational Force_. Pipe fuel into any face.");
+        add("block.solarpunk.biofuel_engine.tooltip.condition1", "While fuelled");
+        add("block.solarpunk.biofuel_engine.tooltip.behaviour1", "Outputs 16 RPM with 8192 SU of stress capacity downward.");
+
+        add("block.solarpunk.geyser_cap.tooltip.summary", "Harnesses the energy of a _Geyser Vent_ for passive, round-the-clock _Rotational Force_.");
+        add("block.solarpunk.geyser_cap.tooltip.condition1", "When placed on a Geyser Vent");
+        add("block.solarpunk.geyser_cap.tooltip.behaviour1", "Generates 32 RPM with 16384 SU of stress capacity. Works day and night in all weather.");
+
+        add("block.solarpunk.solar_power_tower.tooltip.summary", "Multiblock tower that concentrates reflected sunlight to produce _Molten Salt_ from water.");
+        add("block.solarpunk.solar_power_tower.tooltip.condition1", "Minimum 3x3 footprint with Solar Mirrors");
+        add("block.solarpunk.solar_power_tower.tooltip.behaviour1", "Output scales with tower size and mirror count. Efficiency peaks at _half_ the available wall faces covered.");
+
+        add("block.solarpunk.solar_mirror.tooltip.summary", "Reflects sunlight toward an adjacent _Solar Power Tower_. Over-mirroring past twice the optimal count reduces output to zero.");
+
+        add("block.solarpunk.biofilter.tooltip.summary", "Draws _Rotational Force_ to absorb _pollution_ from nearby chunks, gradually healing blocks and restoring biomes.");
+
+        add("block.solarpunk.kinetic_sprinkler.tooltip.summary", "Hydrates _farmland_ and accelerates _crop growth_ in a 5x5 area below it.");
+        add("block.solarpunk.kinetic_sprinkler.tooltip.condition1", "When supplied with Fertilizer instead of water");
+        add("block.solarpunk.kinetic_sprinkler.tooltip.behaviour1", "Forces _instant growth_ on every crop in range each cycle.");
+
         ModBlocks.BLOCKS.getEntries().forEach(entry ->
                 add(entry.get(), toTitleCase(entry.getId().getPath())));
 
