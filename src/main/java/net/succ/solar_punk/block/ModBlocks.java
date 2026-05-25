@@ -5,6 +5,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -64,7 +65,8 @@ public static final DeferredBlock<GeyserVentBlock> GEYSER_VENT = registerBlock("
             () -> new GeyserVentBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .strength(-1, 3600000f)
-                    .requiresCorrectToolForDrops()));
+                    .requiresCorrectToolForDrops()
+                    .pushReaction(PushReaction.BLOCK)));
 
 public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block",
             () -> new Block(BlockBehaviour.Properties.of()
