@@ -72,6 +72,24 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .requiresCorrectToolForDrops()
                     .strength(1.5f, 3.0f)));
 
+    public static final DeferredBlock<Block> DEAD_GRASS_BLOCK = registerBlock("dead_grass_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BROWN)
+                    .strength(0.5f)
+                    .sound(net.minecraft.world.level.block.SoundType.GRASS)));
+
+    public static final DeferredBlock<Block> RUINED_DIRT = registerBlock("ruined_dirt",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.DIRT)
+                    .strength(0.5f)
+                    .sound(net.minecraft.world.level.block.SoundType.GRAVEL)));
+
+    public static final DeferredBlock<Block> ASH_BLOCK = registerBlock("ash_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                    .strength(0.3f)
+                    .sound(net.minecraft.world.level.block.SoundType.SAND)));
+
     public static final DeferredBlock<SolarHeaterBlock> SOLAR_HEATER = registerBlock("solar_heater",
             () -> new SolarHeaterBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_ORANGE)

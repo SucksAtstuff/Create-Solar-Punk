@@ -9,6 +9,8 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.FermentationVatBlockEntity;
@@ -41,6 +43,8 @@ public class SolarPunk {
         modEventBus.addListener(Config::onLoad);
         modEventBus.addListener(SolarPunk::registerCapabilities);
         modEventBus.addListener(SolarPunk::commonSetup);
+
+        NeoForge.EVENT_BUS.addListener(GlobalWarmingHandler::onLevelTick);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }

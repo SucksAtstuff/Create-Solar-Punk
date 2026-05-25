@@ -26,6 +26,9 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.BRASS_SOLAR_PANEL.get());
         dropSelf(ModBlocks.SOLAR_HEATER.get());
         dropSelf(ModBlocks.SALT_BLOCK.get());
+        dropSelf(ModBlocks.DEAD_GRASS_BLOCK.get());
+        dropSelf(ModBlocks.RUINED_DIRT.get());
+        dropSelf(ModBlocks.ASH_BLOCK.get());
         dropSelf(ModBlocks.KINETIC_BATTERY.get());
         dropSelf(ModBlocks.HEAT_BATTERY.get());
         dropSelf(ModBlocks.SOLAR_POWER_TOWER.get());

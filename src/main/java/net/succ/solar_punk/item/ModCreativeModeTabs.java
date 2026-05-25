@@ -30,6 +30,9 @@ public class ModCreativeModeTabs {
                         output.accept(ModBlocks.BIOMASS_GASIFIER.get());
                         output.accept(ModBlocks.BIOFUEL_ENGINE.get());
                         output.accept(ModBlocks.SALT_BLOCK.get());
+                        output.accept(ModBlocks.DEAD_GRASS_BLOCK.get());
+                        output.accept(ModBlocks.RUINED_DIRT.get());
+                        output.accept(ModBlocks.ASH_BLOCK.get());
                         output.accept(ModBlocks.GEYSER_CAP.get());
                         output.accept(ModBlocks.GEYSER_VENT.get());
                         output.accept(ModBlocks.SOLAR_POWER_TOWER.get());

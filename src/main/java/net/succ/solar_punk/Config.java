@@ -5,6 +5,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
@@ -87,6 +88,19 @@ public class Config {
 
     private static final ModConfigSpec.IntValue CFG_GEYSER_SPAWN_CHANCE;
     private static final ModConfigSpec.ConfigValue<List<? extends String>> CFG_GEYSER_BIOMES;
+
+    // -------------------------------------------------------------------------
+    // Global warming
+    // -------------------------------------------------------------------------
+
+    private static final ModConfigSpec.BooleanValue CFG_GLOBAL_WARMING_ENABLED;
+    private static final ModConfigSpec.IntValue CFG_POLLUTION_PER_SOURCE;
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> CFG_PER_BLOCK_POLLUTION;
+    private static final ModConfigSpec.IntValue CFG_POLLUTION_DECAY_RATE;
+    private static final ModConfigSpec.IntValue CFG_BIOME_DECAY_THRESHOLD;
+    private static final ModConfigSpec.IntValue CFG_BIOME_DECAY_INTERVAL;
+    private static final ModConfigSpec.IntValue CFG_BLOCKS_DECAYED_PER_INTERVAL;
+    private static final ModConfigSpec.ConfigValue<String> CFG_DEAD_BIOME;
 
     static {
         BUILDER.push("generators");
@@ -190,6 +204,35 @@ public class Config {
                                 "minecraft:windswept_savanna")),
                         e -> e instanceof String s && s.contains(":"));
         BUILDER.pop();
+
+        BUILDER.push("global_warming");
+        CFG_GLOBAL_WARMING_ENABLED = BUILDER.comment(
+                "Enable the global warming system. When on, blocks in the #solarpunk:pollution_sources tag",
+                "(campfires, furnaces, blaze burners, steam engines, etc.) emit black smog while active",
+                "and slowly convert the biome of their chunk to a dead wasteland.").define("enabled", false);
+        CFG_POLLUTION_PER_SOURCE   = BUILDER.comment("Default pollution units per second for any active source not listed in per_block_pollution.").defineInRange("pollution_per_active_source_per_second", 5, 0, 1_000_000);
+        CFG_PER_BLOCK_POLLUTION    = BUILDER.comment(
+                "Per-block pollution overrides in \"block_id=amount\" format.",
+                "Any block in #solarpunk:pollution_sources not listed here uses the default above.")
+                .defineListAllowEmpty("per_block_pollution",
+                        () -> new ArrayList<>(List.of(
+                                "minecraft:campfire=2",
+                                "minecraft:soul_campfire=3",
+                                "minecraft:furnace=5",
+                                "minecraft:blast_furnace=8",
+                                "minecraft:smoker=4",
+                                "create:lit_blaze_burner=15",
+                                "create:steam_engine=20",
+                                "solarpunk:biofuel_engine=10",
+                                "solarpunk:biomass_gasifier=5"
+                        )),
+                        e -> e instanceof String s && s.contains("=") && s.contains(":"));
+        CFG_POLLUTION_DECAY_RATE   = BUILDER.comment("Pollution units removed from each chunk per second (0 = pollution never decays).").defineInRange("pollution_decay_rate_per_second", 1, 0, 1_000_000);
+        CFG_BIOME_DECAY_THRESHOLD       = BUILDER.comment("Pollution level a chunk must reach before its biome converts.").defineInRange("biome_decay_threshold", 10000, 1, Integer.MAX_VALUE);
+        CFG_BIOME_DECAY_INTERVAL        = BUILDER.comment("Ticks between each decay and biome-conversion check (1200 = once per minute).").defineInRange("biome_decay_interval_ticks", 1200, 20, 72000);
+        CFG_BLOCKS_DECAYED_PER_INTERVAL = BUILDER.comment("Random surface blocks replaced per polluted chunk each decay interval (grass dies, leaves fall, flowers wither). 0 to disable.").defineInRange("blocks_decayed_per_interval", 8, 0, 256);
+        CFG_DEAD_BIOME                  = BUILDER.comment("The biome polluted chunks convert to once they reach the threshold (resource location format).").define("dead_biome", "minecraft:badlands");
+        BUILDER.pop();
     }
 
     static final ModConfigSpec SPEC = BUILDER.build();
@@ -222,6 +265,12 @@ public class Config {
 
     public static int geyserSpawnChance;
     public static List<? extends String> geyserBiomes;
+
+    public static boolean globalWarmingEnabled;
+    public static int pollutionPerSource, pollutionDecayRate;
+    public static int biomeDecayThreshold, biomeDecayInterval, blocksDecayedPerInterval;
+    public static String deadBiome;
+    public static Map<String, Integer> perBlockPollution = new java.util.HashMap<>();
 
     static void onLoad(final ModConfigEvent event) {
         andesiteMorningRpm   = CFG_ANDESITE_MORNING_RPM.get();
@@ -282,5 +331,22 @@ public class Config {
 
         geyserSpawnChance = CFG_GEYSER_SPAWN_CHANCE.get();
         geyserBiomes      = CFG_GEYSER_BIOMES.get();
+
+        globalWarmingEnabled  = CFG_GLOBAL_WARMING_ENABLED.get();
+        pollutionPerSource    = CFG_POLLUTION_PER_SOURCE.get();
+        pollutionDecayRate    = CFG_POLLUTION_DECAY_RATE.get();
+        biomeDecayThreshold       = CFG_BIOME_DECAY_THRESHOLD.get();
+        biomeDecayInterval        = CFG_BIOME_DECAY_INTERVAL.get();
+        blocksDecayedPerInterval  = CFG_BLOCKS_DECAYED_PER_INTERVAL.get();
+        deadBiome                 = CFG_DEAD_BIOME.get();
+
+        perBlockPollution = new java.util.HashMap<>();
+        for (String entry : CFG_PER_BLOCK_POLLUTION.get()) {
+            int sep = entry.lastIndexOf('=');
+            if (sep < 0) continue;
+            try {
+                perBlockPollution.put(entry.substring(0, sep), Integer.parseInt(entry.substring(sep + 1)));
+            } catch (NumberFormatException ignored) {}
+        }
     }
 }
