@@ -7,6 +7,9 @@ A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation, thermal s
 - Minecraft 1.21.1
 - NeoForge 21.1.228+
 - Create 6.0.4+
+- GeckoLib 4.7.2+
+
+**Optional:** JEI (adds recipe categories for the Solar Heater and Fermentation Vat)
 
 ## Features
 
