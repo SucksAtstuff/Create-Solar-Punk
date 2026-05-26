@@ -40,6 +40,10 @@ Comparators now read stored levels from three blocks:
 
 Every machine and generator is now configurable in the mod config file. You can adjust tank sizes, generator RPM and stress output, production speeds, output amounts, and geyser spawn rates and biomes.
 
+### Tooltips
+
+All machines now show a description tooltip when hovering over them in the inventory, matching Create's style. Generators also display their stress capacity tier and, when wearing goggles, the exact SU output.
+
 ### Bug Fixes
 
 - Fixed Solar Mirror blocks becoming excessively dark when another mirror is placed directly above them on the tower.
