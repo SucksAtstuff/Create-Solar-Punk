@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.custom;
 
+import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
@@ -15,7 +16,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.KineticSprinklerBlockEntity;
 
-public class KineticSprinklerBlock extends Block implements IBE<KineticSprinklerBlockEntity> {
+public class KineticSprinklerBlock extends Block implements IBE<KineticSprinklerBlockEntity>, IWrenchable {
 
     private static final VoxelShape SHAPE = Shapes.or(
         Block.box(0, 0, 0, 16, 6, 16),

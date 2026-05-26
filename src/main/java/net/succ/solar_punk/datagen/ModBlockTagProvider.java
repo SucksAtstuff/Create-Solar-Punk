@@ -44,7 +44,13 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.SOLAR_POWER_TOWER.get())
                 .add(ModBlocks.SOLAR_MIRROR.get())
                 .add(ModBlocks.GEYSER_VENT.get())
-                .add(ModBlocks.BIOFILTER.get());
+                .add(ModBlocks.BIOFILTER.get())
+                .add(ModBlocks.KINETIC_SPRINKLER.get());
+
+        tag(BlockTags.MINEABLE_WITH_SHOVEL)
+                .add(ModBlocks.ASH_BLOCK.get())
+                .add(ModBlocks.DEAD_GRASS_BLOCK.get())
+                .add(ModBlocks.RUINED_DIRT.get());
 
         tag(Tags.Blocks.STORAGE_BLOCKS).add(ModBlocks.SALT_BLOCK.get());
         tag(STORAGE_BLOCKS_SALT).add(ModBlocks.SALT_BLOCK.get());
