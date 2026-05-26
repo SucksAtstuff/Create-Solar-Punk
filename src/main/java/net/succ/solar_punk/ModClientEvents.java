@@ -3,20 +3,26 @@ package net.succ.solar_punk;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.base.OrientedRotatingVisual;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
+import com.simibubi.create.foundation.item.ItemDescription;
+import com.simibubi.create.foundation.item.KineticStats;
+import com.simibubi.create.foundation.item.TooltipModifier;
 import dev.engine_room.flywheel.api.visualization.VisualizerRegistry;
 import dev.engine_room.flywheel.lib.model.Models;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
+import net.createmod.catnip.lang.FontHelper.Palette;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
+import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.client.model.FermentationVatModel;
 import net.succ.solar_punk.client.model.ModSpriteShifts;
@@ -30,6 +36,7 @@ import net.succ.solar_punk.compat.ponder.SolarPunkPonderPlugin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = SolarPunk.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 @SuppressWarnings("removal")
@@ -76,6 +83,7 @@ public class ModClientEvents {
         event.enqueueWork(() -> {
             ModSpriteShifts.init();
             PonderIndex.addPlugin(new SolarPunkPonderPlugin());
+            registerTooltips();
 
             VisualizerRegistry.setVisualizer(
                 ModBlockEntities.ANDESITE_SOLAR_PANEL.get(),
@@ -97,5 +105,29 @@ public class ModClientEvents {
                 new SimpleBlockEntityVisualizer<>(SingleAxisRotatingVisual::shaft, be -> false)
             );
         });
+    }
+
+    private static void registerTooltips() {
+        tip(ModBlocks.SOLAR_HEATER::get);
+        tip(ModBlocks.ANDESITE_SOLAR_PANEL::get);
+        tip(ModBlocks.BRASS_SOLAR_PANEL::get);
+        tip(ModBlocks.HEAT_BATTERY::get);
+        tip(ModBlocks.KINETIC_BATTERY::get);
+        tip(ModBlocks.FERMENTATION_VAT::get);
+        tip(ModBlocks.BIOMASS_GASIFIER::get);
+        tip(ModBlocks.BIOFUEL_ENGINE::get);
+        tip(ModBlocks.GEYSER_CAP::get);
+        tip(ModBlocks.SOLAR_POWER_TOWER::get);
+        tip(ModBlocks.SOLAR_MIRROR::get);
+        tip(ModBlocks.BIOFILTER::get);
+        tip(ModBlocks.KINETIC_SPRINKLER::get);
+    }
+
+    private static void tip(Supplier<? extends net.minecraft.world.level.block.Block> block) {
+        Item item = block.get().asItem();
+        TooltipModifier modifier = new ItemDescription.Modifier(item, Palette.STANDARD_CREATE);
+        KineticStats stats = KineticStats.create(item);
+        if (stats != null) modifier = modifier.andThen(stats);
+        TooltipModifier.REGISTRY.register(item, modifier);
     }
 }
