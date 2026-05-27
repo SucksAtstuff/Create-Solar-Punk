@@ -45,6 +45,33 @@ public class GlobalWarmingHandler {
         ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "pollution_sources")
     );
 
+    private static Set<Block> autoDetectedSources = null;
+
+    public static void invalidateAutoDetectedCache() {
+        autoDetectedSources = null;
+    }
+
+    private static Set<Block> getAutoDetectedSources() {
+        if (autoDetectedSources != null) return autoDetectedSources;
+
+        Set<Block> result = new HashSet<>();
+        List<? extends String> keywords = Config.autoDetectKeywords;
+        if (keywords != null && !keywords.isEmpty()) {
+            for (Block block : BuiltInRegistries.BLOCK) {
+                String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
+                if (block.defaultBlockState().is(POLLUTION_SOURCES)) continue;
+                for (String keyword : keywords) {
+                    if (path.contains(keyword)) {
+                        result.add(block);
+                        break;
+                    }
+                }
+            }
+        }
+        autoDetectedSources = result;
+        return result;
+    }
+
     public static void onLevelTick(LevelTickEvent.Post event) {
         if (!Config.globalWarmingEnabled) return;
         if (!(event.getLevel() instanceof ServerLevel serverLevel)) return;
@@ -75,6 +102,7 @@ public class GlobalWarmingHandler {
         int radius = Config.pollutionRadiusBlocks;
         int radiusChunks = (int) Math.ceil(radius / 16.0);
         double radiusSq = (double) radius * radius;
+        Set<Block> autoSources = getAutoDetectedSources();
 
         Set<ChunkPos> visited = new HashSet<>();
         for (ServerPlayer player : level.players()) {
@@ -91,7 +119,9 @@ public class GlobalWarmingHandler {
                         BlockPos pos = beEntry.getKey();
                         BlockState state = level.getBlockState(pos);
 
-                        if (!state.is(POLLUTION_SOURCES)) continue;
+                        boolean inTag = state.is(POLLUTION_SOURCES);
+                        boolean autoDetected = !inTag && autoSources.contains(state.getBlock());
+                        if (!inTag && !autoDetected) continue;
                         if (!isActive(state)) continue;
 
                         level.sendParticles(
@@ -101,7 +131,9 @@ public class GlobalWarmingHandler {
                         );
 
                         String blockId = BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
-                        int amount = Config.perBlockPollution.getOrDefault(blockId, Config.pollutionPerSource);
+                        int amount = inTag
+                            ? Config.perBlockPollution.getOrDefault(blockId, Config.pollutionPerSource)
+                            : Config.autoDetectPollution;
 
                         // Spread pollution to every chunk whose nearest point is within radius blocks
                         for (int rdx = -radiusChunks; rdx <= radiusChunks; rdx++) {

@@ -2,6 +2,7 @@ package net.succ.solar_punk;
 
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +97,9 @@ public class Config {
     private static final ModConfigSpec.BooleanValue CFG_GLOBAL_WARMING_ENABLED;
     private static final ModConfigSpec.IntValue CFG_POLLUTION_PER_SOURCE;
     private static final ModConfigSpec.ConfigValue<List<? extends String>> CFG_PER_BLOCK_POLLUTION;
+    private static final ModConfigSpec.IntValue CFG_AERONAUTICS_ENGINE_POLLUTION;
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> CFG_AUTO_DETECT_KEYWORDS;
+    private static final ModConfigSpec.IntValue CFG_AUTO_DETECT_POLLUTION;
     private static final ModConfigSpec.IntValue CFG_POLLUTION_RADIUS_BLOCKS;
     private static final ModConfigSpec.IntValue CFG_POLLUTION_DECAY_RATE;
     private static final ModConfigSpec.IntValue CFG_LEAF_ABSORPTION_PER_INTERVAL;
@@ -238,6 +242,25 @@ public class Config {
                         )),
                         () -> "block_id=0",
                         e -> e instanceof String s && s.contains("=") && s.contains(":"));
+        CFG_AERONAUTICS_ENGINE_POLLUTION = BUILDER.comment(
+                "Pollution units per second for each Create Aeronautics portable engine (all 16 dye colours).",
+                "Set to 0 to disable. Has no effect if Create Aeronautics is not installed.")
+                .defineInRange("aeronautics_portable_engine_pollution_per_second", 15, 0, 1_000_000);
+        CFG_AUTO_DETECT_KEYWORDS = BUILDER.comment(
+                "Substrings matched against block registry paths for automatic pollution detection.",
+                "Any block whose registry path contains one of these keywords, and is not already in",
+                "#solarpunk:pollution_sources, will emit the fallback pollution amount below.",
+                "Blocks with no block entity are ignored even if their name matches.")
+                .defineListAllowEmpty("auto_detect_keywords",
+                        () -> new ArrayList<>(List.of(
+                                "furnace", "engine", "motor", "boiler", "burner",
+                                "kiln", "forge", "oven", "incinerator", "smokestack", "generator"
+                        )),
+                        () -> "keyword",
+                        e -> e instanceof String);
+        CFG_AUTO_DETECT_POLLUTION = BUILDER.comment(
+                "Pollution units per second emitted by auto-detected blocks (keyword match, no explicit tag entry).")
+                .defineInRange("auto_detect_pollution_per_second", 3, 0, 1_000_000);
         CFG_POLLUTION_RADIUS_BLOCKS = BUILDER.comment("Block radius around each active pollution source that receives pollution (0 = source chunk only).").defineInRange("pollution_radius_blocks", 64, 0, 512);
         CFG_POLLUTION_DECAY_RATE   = BUILDER.comment("Pollution units removed from each chunk per second (0 = pollution never decays).").defineInRange("pollution_decay_rate_per_second", 1, 0, 1_000_000);
         CFG_LEAF_ABSORPTION_PER_INTERVAL = BUILDER.comment("Pollution absorbed per leaf block in a chunk each decay interval. 0 to disable tree absorption.").defineInRange("leaf_absorption_per_interval", 1, 0, 1_000_000);
@@ -287,6 +310,9 @@ public class Config {
     public static int biomeDecayThreshold, biomeDecayInterval, blocksDecayedPerInterval;
     public static String deadBiome;
     public static Map<String, Integer> perBlockPollution = new java.util.HashMap<>();
+    public static List<? extends String> autoDetectKeywords = new ArrayList<>();
+    public static int autoDetectPollution;
+    public static int aeronauticsEnginePollution;
 
     static void onLoad(final ModConfigEvent event) {
         andesiteMorningRpm   = CFG_ANDESITE_MORNING_RPM.get();
@@ -368,6 +394,16 @@ public class Config {
             try {
                 perBlockPollution.put(entry.substring(0, sep), Integer.parseInt(entry.substring(sep + 1)));
             } catch (NumberFormatException ignored) {}
+        }
+
+        autoDetectKeywords = CFG_AUTO_DETECT_KEYWORDS.get();
+        autoDetectPollution = CFG_AUTO_DETECT_POLLUTION.get();
+        GlobalWarmingHandler.invalidateAutoDetectedCache();
+
+        aeronauticsEnginePollution = CFG_AERONAUTICS_ENGINE_POLLUTION.get();
+        for (String colour : List.of("white", "orange", "magenta", "light_blue", "yellow", "lime",
+                "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black")) {
+            perBlockPollution.put("simulated:" + colour + "_portable_engine", aeronauticsEnginePollution);
         }
     }
 }

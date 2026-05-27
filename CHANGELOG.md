@@ -6,7 +6,7 @@ Added an optional **global warming** system (disabled by default, toggle in the 
 
 Active pollution sources - campfires, furnaces, blast furnaces, smokers, blaze burners, steam engines, biofuel engines, and biomass gasifiers - emit black smoke and accumulate pollution in their chunk. When a chunk's pollution level crosses the threshold, it starts to decay: grass withers into **Dead Grass**, dirt crumbles into **Ruined Dirt**, and ruined dirt turns to **Ash**. Plants, leaves, and other fragile blocks are cleared along the way. Push a chunk far enough and the biome itself converts to a dead wasteland.
 
-All rates, thresholds, and the target dead biome are configurable. The system is designed to make renewable energy the only sustainable long-term choice.
+All rates, thresholds, and the target dead biome are configurable. The system is designed to make renewable energy the only sustainable long-term choice. For full details on pollution sources, mod compatibility, and config options, see the [wiki](https://github.com/SucksAtstuff/Create-Solar-Punk/wiki).
 
 Cleanup reverses the damage: as pollution clears, dead blocks gradually heal back toward grass, and once a chunk drops below the threshold its biome restores to what it was before.
 

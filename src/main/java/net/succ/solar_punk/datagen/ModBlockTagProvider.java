@@ -59,6 +59,23 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(Blocks.CAMPFIRE, Blocks.SOUL_CAMPFIRE, Blocks.FURNACE, Blocks.BLAST_FURNACE, Blocks.SMOKER,
                      ModBlocks.BIOFUEL_ENGINE.get(), ModBlocks.BIOMASS_GASIFIER.get())
                 .addOptional(ResourceLocation.fromNamespaceAndPath("create", "lit_blaze_burner"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("create", "steam_engine"));
+                .addOptional(ResourceLocation.fromNamespaceAndPath("create", "steam_engine"))
+                // Create Aeronautics portable engines (one per dye colour)
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "white_portable_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "orange_portable_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "magenta_portable_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "light_blue_portable_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "yellow_portable_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "lime_portable_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "pink_portable_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "gray_portable_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "light_gray_portable_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "cyan_portable_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "purple_portable_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "blue_portable_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "brown_portable_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "green_portable_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "red_portable_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "black_portable_engine"));
     }
 }
