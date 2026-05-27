@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_biomass_pellet": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:biomass_pellet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "solarpunk:biomass_from_pellets"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_biomass_pellet"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "solarpunk:biomass_from_pellets"
+    ]
+  }
+}

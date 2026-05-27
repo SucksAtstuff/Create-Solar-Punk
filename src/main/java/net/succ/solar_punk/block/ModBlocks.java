@@ -26,6 +26,7 @@ import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerItem;
 import net.succ.solar_punk.block.custom.BiofilterBlock;
 import net.succ.solar_punk.block.custom.KineticSprinklerBlock;
+import net.succ.solar_punk.block.custom.KineticSprinklerItem;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.function.Supplier;
@@ -149,12 +150,13 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .requiresCorrectToolForDrops()
                     .strength(1.5f, 4.0f)));
 
-    public static final DeferredBlock<KineticSprinklerBlock> KINETIC_SPRINKLER = registerBlock("kinetic_sprinkler",
+    public static final DeferredBlock<KineticSprinklerBlock> KINETIC_SPRINKLER = registerBlockCustomItem("kinetic_sprinkler",
             () -> new KineticSprinklerBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
                     .strength(2.5f, 4.0f)
-                    .noOcclusion()));
+                    .noOcclusion()),
+            block -> new KineticSprinklerItem(block, new Item.Properties()));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

@@ -3,6 +3,7 @@ package net.succ.solar_punk.datagen;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
@@ -184,7 +185,22 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile model = new UncheckedModelFile(modLoc("block/kinetic_sprinkler"));
         getVariantBuilder(ModBlocks.KINETIC_SPRINKLER.get()).forAllStates(state ->
                 ConfiguredModel.builder().modelFile(model).build());
-        itemModels().withExistingParent("kinetic_sprinkler", modLoc("block/kinetic_sprinkler_display"));
+        itemModels().getBuilder("kinetic_sprinkler")
+                .parent(new UncheckedModelFile("minecraft:builtin/entity"))
+                .transforms()
+                    .transform(ItemDisplayContext.GUI)
+                        .rotation(30, 225, 0).translation(0, 0, 0).scale(0.625f).end()
+                    .transform(ItemDisplayContext.GROUND)
+                        .rotation(0, 0, 0).translation(0, 3, 0).scale(0.25f).end()
+                    .transform(ItemDisplayContext.FIXED)
+                        .rotation(0, 0, 0).translation(0, 0, 0).scale(0.5f).end()
+                    .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
+                        .rotation(75, 45, 0).translation(0, 2.5f, 0).scale(0.375f).end()
+                    .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND)
+                        .rotation(0, 45, 0).translation(0, 0, 0).scale(0.4f).end()
+                    .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)
+                        .rotation(0, 225, 0).translation(0, 0, 0).scale(0.4f).end()
+                .end();
     }
 
     private void blockWithItem(DeferredBlock<?> deferredBlock){
