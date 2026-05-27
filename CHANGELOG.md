@@ -44,6 +44,10 @@ Every machine and generator is now configurable in the mod config file. You can 
 
 All machines now show a description tooltip when hovering over them in the inventory, matching Create's style. Generators also display their stress capacity tier and, when wearing goggles, the exact SU output.
 
+### Biomass Pellet
+
+Added **Biomass Pellet**. One Biomass crafts into 4 pellets, and 4 pellets combine back into 1 Biomass. Useful for compacting or distributing biomass in smaller amounts.
+
 ### Bug Fixes
 
 - Fixed Solar Mirror blocks becoming excessively dark when another mirror is placed directly above them on the tower.
