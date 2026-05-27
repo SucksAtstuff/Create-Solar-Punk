@@ -102,7 +102,14 @@ public class ModClientEvents {
             );
             VisualizerRegistry.setVisualizer(
                 ModBlockEntities.BIOFILTER.get(),
-                new SimpleBlockEntityVisualizer<>(SingleAxisRotatingVisual::shaft, be -> false)
+                new SimpleBlockEntityVisualizer<>(
+                    (context, blockEntity, partialTick) -> new OrientedRotatingVisual<>(
+                        context, blockEntity, partialTick,
+                        Direction.SOUTH, Direction.DOWN,
+                        Models.partial(AllPartialModels.SHAFT_HALF)
+                    ),
+                    be -> false
+                )
             );
         });
     }
