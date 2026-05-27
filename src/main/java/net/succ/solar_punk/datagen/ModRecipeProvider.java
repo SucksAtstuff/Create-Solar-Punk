@@ -50,20 +50,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_salt_block", has(ModBlocks.SALT_BLOCK.get()))
                 .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "salt_from_salt_block"));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.BIOMASS_PELLET.get(), 4)
-                .requires(ModItems.BIOMASS.get())
-                .unlockedBy("has_biomass", has(ModItems.BIOMASS.get()))
-                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "biomass_pellet_from_biomass"));
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.BIOMASS.get())
-                .requires(ModItems.BIOMASS_PELLET.get())
-                .requires(ModItems.BIOMASS_PELLET.get())
-                .requires(ModItems.BIOMASS_PELLET.get())
-                .requires(ModItems.BIOMASS_PELLET.get())
-                .unlockedBy("has_biomass_pellet", has(ModItems.BIOMASS_PELLET.get()))
-                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "biomass_from_pellets"));
-
-
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SOLAR_HEATER.get())
                 .pattern("GGG")
                 .pattern("C C")

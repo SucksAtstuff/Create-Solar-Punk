@@ -1,0 +1,16 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "item": "solarpunk:biomass"
+    },
+    {
+      "item": "solarpunk:biomass"
+    }
+  ],
+  "results": [
+    {
+      "id": "solarpunk:biomass_pellet"
+    }
+  ]
+}

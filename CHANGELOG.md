@@ -1,5 +1,9 @@
 # 0.2.0-1.21.1
 
+### Biomass Pellet
+
+**Biomass Pellets** now have a distinct role in the Biomass Gasifier. Raw Biomass burns quickly (200 ticks) with 1 Biochar per piece. Pellets burn slower (400 ticks) and produce 2 Biochar each, making them the dedicated path for farming Biochar and Fertilizer. All values are configurable.
+
 ### Global Warming
 
 Added an optional **global warming** system (disabled by default, toggle in the config).

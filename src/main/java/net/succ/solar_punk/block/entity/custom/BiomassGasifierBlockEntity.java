@@ -50,6 +50,16 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
         super(type, pos, state);
     }
 
+    private static int getBurnTicks(ItemStack stack) {
+        if (stack.is(ModItems.BIOMASS_PELLET.get())) return Config.pelletBurnTicks;
+        return Config.gasifierBurnTicks;
+    }
+
+    private static int getBiocharAmount(ItemStack stack) {
+        if (stack.is(ModItems.BIOMASS_PELLET.get())) return Config.pelletBiocharAmount;
+        return 1;
+    }
+
     @Override
     public float getGeneratedSpeed() {
         return burnTimeRemaining > 0 ? Config.gasifierRpm : 0;
@@ -80,15 +90,16 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
         if (burnTimeRemaining == 0) {
             ItemStack fuel = itemHandler.getStackInSlot(0);
             ItemStack charOutput = itemHandler.getStackInSlot(1);
+            int biocharAmount = getBiocharAmount(fuel);
             boolean outputHasRoom = charOutput.isEmpty()
-                    || (charOutput.is(ModItems.BIOCHAR.get()) && charOutput.getCount() < charOutput.getMaxStackSize());
+                    || (charOutput.is(ModItems.BIOCHAR.get()) && charOutput.getCount() + biocharAmount <= charOutput.getMaxStackSize());
             if (!fuel.isEmpty() && outputHasRoom) {
                 itemHandler.extractItem(0, 1, false);
-                burnTimeRemaining = Config.gasifierBurnTicks;
+                burnTimeRemaining = getBurnTicks(fuel);
                 if (charOutput.isEmpty()) {
-                    itemHandler.setStackInSlot(1, new ItemStack(ModItems.BIOCHAR.get(), 1));
+                    itemHandler.setStackInSlot(1, new ItemStack(ModItems.BIOCHAR.get(), biocharAmount));
                 } else {
-                    charOutput.grow(1);
+                    charOutput.grow(biocharAmount);
                 }
                 setChanged();
             }

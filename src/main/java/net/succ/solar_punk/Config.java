@@ -53,6 +53,8 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_BIOFUEL_PER_BATCH;
 
     private static final ModConfigSpec.IntValue CFG_GASIFIER_BURN_TICKS;
+    private static final ModConfigSpec.IntValue CFG_PELLET_BURN_TICKS;
+    private static final ModConfigSpec.IntValue CFG_PELLET_BIOCHAR_AMOUNT;
 
     private static final ModConfigSpec.IntValue CFG_BIOFUEL_CONSUME_MB;
     private static final ModConfigSpec.IntValue CFG_BIOFUEL_CONSUME_PERIOD;
@@ -168,7 +170,9 @@ public class Config {
         BUILDER.pop();
 
         BUILDER.push("biomass_gasifier");
-        CFG_GASIFIER_BURN_TICKS = BUILDER.comment("Ticks one fuel item burns for").defineInRange("burn_ticks", 300, 1, 100_000);
+        CFG_GASIFIER_BURN_TICKS = BUILDER.comment("Ticks raw Biomass burns for in the Gasifier.").defineInRange("burn_ticks", 200, 1, 100_000);
+        CFG_PELLET_BURN_TICKS   = BUILDER.comment("Ticks one Biomass Pellet burns for in the Gasifier. Pellets are denser, so they burn longer.").defineInRange("pellet_burn_ticks", 400, 1, 100_000);
+        CFG_PELLET_BIOCHAR_AMOUNT = BUILDER.comment("Biochar produced per Biomass Pellet burned (raw Biomass always produces 1).").defineInRange("pellet_biochar_amount", 2, 1, 64);
         BUILDER.pop();
 
         BUILDER.push("biofuel_engine");
@@ -289,7 +293,7 @@ public class Config {
 
     public static int solarHeaterMeltTicks, solarHeaterEvaporationTicks, solarHeaterWaterPerSalt;
     public static int fermentationTicks, fermentationWaterPerBatch, fermentationBiofuelPerBatch;
-    public static int gasifierBurnTicks;
+    public static int gasifierBurnTicks, pelletBurnTicks, pelletBiocharAmount;
     public static int biofuelConsumeMb, biofuelConsumePeriod;
     public static int heatBatteryMaxHeat, heatBatteryHeatPerMb, heatBatteryHeatDecay;
     public static int sprinklerFluidPerCycle, sprinklerRange;
@@ -349,6 +353,8 @@ public class Config {
         fermentationBiofuelPerBatch = CFG_FERMENTATION_BIOFUEL_PER_BATCH.get();
 
         gasifierBurnTicks    = CFG_GASIFIER_BURN_TICKS.get();
+        pelletBurnTicks      = CFG_PELLET_BURN_TICKS.get();
+        pelletBiocharAmount  = CFG_PELLET_BIOCHAR_AMOUNT.get();
 
         biofuelConsumeMb     = CFG_BIOFUEL_CONSUME_MB.get();
         biofuelConsumePeriod = CFG_BIOFUEL_CONSUME_PERIOD.get();
