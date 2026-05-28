@@ -93,6 +93,7 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
         if (level.getGameTime() % 20 == 0) {
             boolean active = generated > 0;
             BlockState state = level.getBlockState(worldPosition);
+            if (!(state.getBlock() instanceof BrassSolarPanelBlock)) return;
             if (state.getValue(BrassSolarPanelBlock.LIT) != active)
                 level.setBlock(worldPosition, state.setValue(BrassSolarPanelBlock.LIT, active), 3);
             level.sendBlockUpdated(worldPosition, state, level.getBlockState(worldPosition), 2);
