@@ -8,7 +8,7 @@
 
 Added an optional **global warming** system (disabled by default, toggle in the config).
 
-Active pollution sources - campfires, furnaces, blast furnaces, smokers, blaze burners, steam engines, biofuel engines, and biomass gasifiers - emit black smoke and accumulate pollution in their chunk. When a chunk's pollution level crosses the threshold, it starts to decay: grass withers into **Dead Grass**, dirt crumbles into **Ruined Dirt**, and ruined dirt turns to **Ash**. Plants, leaves, and other fragile blocks are cleared along the way. Push a chunk far enough and the biome itself converts to a dead wasteland.
+Active pollution sources - campfires, furnaces, blast furnaces, smokers, blaze burners, steam engines, biofuel engines, and biomass gasifiers - emit black smoke and accumulate pollution in their chunk. When a chunk's pollution level crosses the threshold, it starts to decay: grass withers into **Dead Grass**, dirt crumbles into **Ruined Dirt**, and ruined dirt turns to **Ash**. Plants, leaves, and other fragile blocks are cleared along the way. Push a chunk far enough and the biome itself converts to a dead wasteland. Custom textures for the decay blocks are coming in the next release.
 
 All rates, thresholds, and the target dead biome are configurable. The system is designed to make renewable energy the only sustainable long-term choice. For full details on pollution sources, mod compatibility, and config options, see the [wiki](https://github.com/SucksAtstuff/Create-Solar-Punk/wiki).
 
@@ -47,10 +47,6 @@ Every machine and generator is now configurable in the mod config file. You can 
 ### Tooltips
 
 All machines now show a description tooltip when hovering over them in the inventory, matching Create's style. Generators also display their stress capacity tier and, when wearing goggles, the exact SU output.
-
-### Biomass Pellet
-
-Added **Biomass Pellet**. One Biomass crafts into 4 pellets, and 4 pellets combine back into 1 Biomass. Useful for compacting or distributing biomass in smaller amounts.
 
 ### Bug Fixes
 
