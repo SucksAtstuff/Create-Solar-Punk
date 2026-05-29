@@ -44,6 +44,7 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
             updateGeneratedRotation();
             boolean active = getGeneratedSpeed() != 0;
             BlockState state = level.getBlockState(worldPosition);
+            if (!(state.getBlock() instanceof AndesiteSolarPanelBlock)) return;
             if (state.getValue(AndesiteSolarPanelBlock.LIT) != active)
                 level.setBlock(worldPosition, state.setValue(AndesiteSolarPanelBlock.LIT, active), 3);
         }

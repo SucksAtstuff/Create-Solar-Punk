@@ -50,6 +50,7 @@ All machines now show a description tooltip when hovering over them in the inven
 
 ### Bug Fixes
 
+- Fixed a crash where Andesite and Brass Solar Panels could tick after their block was removed, causing a crash during day/night transitions in large connected networks.
 - Fixed Solar Mirror blocks becoming excessively dark when another mirror is placed directly above them on the tower.
 - Fixed the Brass Solar Panel showing the brass gearbox texture on its underside instead of the brass casing.
 - Geyser Vents can no longer be moved by pistons or Create contraptions.
