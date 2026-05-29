@@ -1,6 +1,6 @@
 # Create: Solarpunk
 
-A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation, thermal storage, and biofuel production to the Create ecosystem.
+A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation, thermal storage, biofuel production, and an optional global warming system to the Create ecosystem.
 
 ## Requirements
 
@@ -27,13 +27,25 @@ A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation, thermal s
 
 ### Biofuel Chain
 - **Biomass** - crafted from organic matter
-- **Biomass Gasifier** - processes raw biomass using rotational force
-- **Fermentation Vat** - multiblock structure (stackable vertically) that converts biomass into liquid biofuel using water
+- **Biomass Pellet** - a compacted form of biomass; burns slower in the Gasifier but produces twice the Biochar per piece
+- **Biomass Gasifier** - processes raw biomass or pellets using rotational force; produces Biochar as a byproduct
+- **Fermentation Vat** - multiblock structure (minimum 2×2 footprint, stackable vertically) that converts biomass into liquid biofuel using water; larger footprints process more batches per cycle
 - **Biofuel Engine** - burns biofuel to generate rotational force (SU)
+- **Biochar** - byproduct of the Gasifier; acts as a bonemeal substitute or mixes with water to make Fertilizer
+- **Fertilizer** - liquid made from Biochar and water; used in the Kinetic Sprinkler for forced instant crop growth
+- **Kinetic Sprinkler** - hydrates farmland and accelerates crop growth in a 5×5 area; pipe in water to boost growth or Fertilizer for instant growth every cycle
 
 ### Geothermal
 - **Geyser Vent** - spawns naturally in desert, badlands, and savanna biomes
 - **Geyser Cap** - harnesses geothermal energy from a Geyser Vent and converts it into rotational force; passive, works day and night in any weather
+
+### Global Warming (optional)
+An opt-in pollution system, disabled by default and toggled in the config.
+
+- **Pollution sources** - campfires, furnaces, blast furnaces, smokers, blaze burners, steam engines, biofuel engines, and biomass gasifiers emit smoke and accumulate pollution in nearby chunks
+- **Block decay** - polluted chunks decay progressively: grass withers to Dead Grass, dirt crumbles to Ruined Dirt, then Ash; plants and leaves are cleared; biomes convert to a dead wasteland at high pollution levels
+- **Biofilter** - a brass-tier machine that draws rotational power and scrubs pollution from surrounding chunks, reversing the decay over time; goggles show the current pollution level and filter rate
+- All pollution rates, thresholds, decay speeds, and the target dead biome are configurable; see the [wiki](https://github.com/SucksAtstuff/Create-Solar-Punk/wiki) for full details
 
 ## Quick Start
 
