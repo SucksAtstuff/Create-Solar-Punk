@@ -50,6 +50,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
         solarPowerTowerBlock();
         solarMirrorBlock();
         kineticSprinklerBlock();
+
+        ResourceLocation casingTex = modLoc("block/industrial_iron_casing/industrial_iron_casing");
+        simpleBlockWithItem(ModBlocks.TURBINE_CASING.get(),
+                models().cubeAll("turbine_casing", casingTex));
+        simpleBlockWithItem(ModBlocks.TURBINE_CASING_GLASS.get(),
+                models().cubeAll("turbine_casing_glass", casingTex));
     }
 
     // For blocks whose models are hand-crafted (Blockbench).

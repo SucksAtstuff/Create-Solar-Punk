@@ -26,6 +26,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModFluids.MOLTEN_SALT_BUCKET.get());
         basicItem(ModFluids.BIOFUEL_BUCKET.get());
         basicItem(ModFluids.FERTILIZER_BUCKET.get());
+        basicItem(ModFluids.STEAM_BUCKET.get());
 
     }
     private ItemModelBuilder handheldItem(DeferredItem<?> item) {

@@ -64,6 +64,19 @@ public class ModFluidTypes {
                             .temperature(300)
             ));
 
+    public static final Supplier<FluidType> STEAM_TYPE = FLUID_TYPES.register("steam",
+            () -> new BaseFluidType(
+                    WATER_STILL,
+                    WATER_FLOW,
+                    WATER_OVERLAY,
+                    0xFFDDEEFF,
+                    new Vector3f(221f / 255f, 238f / 255f, 255f / 255f),
+                    FluidType.Properties.create()
+                            .density(5)
+                            .viscosity(10)
+                            .temperature(373)
+            ));
+
     public static void register(IEventBus eventBus) {
         FLUID_TYPES.register(eventBus);
     }

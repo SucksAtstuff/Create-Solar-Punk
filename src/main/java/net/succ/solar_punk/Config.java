@@ -40,6 +40,11 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_BIOFUEL_ENGINE_RPM;
     private static final ModConfigSpec.IntValue CFG_BIOFUEL_ENGINE_SU;
 
+    private static final ModConfigSpec.IntValue CFG_TURBINE_MAX_RPM;
+    private static final ModConfigSpec.IntValue CFG_TURBINE_RPM_PER_LAYER;
+    private static final ModConfigSpec.IntValue CFG_TURBINE_SU_PER_LAYER;
+    private static final ModConfigSpec.IntValue CFG_TURBINE_STEAM_PER_LAYER_PER_TICK;
+
     // -------------------------------------------------------------------------
     // Machines — speed and output amounts
     // -------------------------------------------------------------------------
@@ -70,6 +75,8 @@ public class Config {
     // Tanks
     // -------------------------------------------------------------------------
 
+    private static final ModConfigSpec.IntValue CFG_TURBINE_STEAM_TANK;
+    private static final ModConfigSpec.IntValue CFG_TURBINE_CONDENSATE_TANK;
     private static final ModConfigSpec.IntValue CFG_HEAT_BATTERY_TANK;
     private static final ModConfigSpec.IntValue CFG_BIOFUEL_ENGINE_TANK;
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_VAT_TANK_PER_BLOCK;
@@ -153,6 +160,13 @@ public class Config {
         CFG_BIOFUEL_ENGINE_SU  = BUILDER.comment("Stress capacity while running").defineInRange("su", 512, 1, 1_000_000);
         BUILDER.pop();
 
+        BUILDER.push("steam_turbine");
+        CFG_TURBINE_MAX_RPM              = BUILDER.comment("Maximum RPM the turbine can reach (at max height)").defineInRange("max_rpm", 64, 1, 256);
+        CFG_TURBINE_RPM_PER_LAYER        = BUILDER.comment("RPM added per rotor layer").defineInRange("rpm_per_layer", 4, 1, 256);
+        CFG_TURBINE_SU_PER_LAYER         = BUILDER.comment("SU capacity per rotor layer at full blade efficiency").defineInRange("su_per_layer", 128, 1, 1_000_000);
+        CFG_TURBINE_STEAM_PER_LAYER_PER_TICK = BUILDER.comment("mB of steam consumed per rotor layer per tick at full efficiency (wasteful with fewer blades)").defineInRange("steam_per_layer_per_tick", 2, 1, 10_000);
+        BUILDER.pop();
+
         BUILDER.pop(); // generators
 
         BUILDER.push("machines");
@@ -198,6 +212,8 @@ public class Config {
         BUILDER.pop(); // machines
 
         BUILDER.push("tanks");
+        CFG_TURBINE_STEAM_TANK      = BUILDER.comment("Steam Turbine: steam input tank capacity (mB)").defineInRange("steam_turbine_steam_mb", 16000, 100, 1_000_000);
+        CFG_TURBINE_CONDENSATE_TANK = BUILDER.comment("Steam Turbine: condensate water tank capacity (mB)").defineInRange("steam_turbine_condensate_mb", 8000, 100, 1_000_000);
         CFG_HEAT_BATTERY_TANK               = BUILDER.comment("Heat Battery: molten salt tank capacity (mB)").defineInRange("heat_battery_mb", 8000, 100, 1_000_000);
         CFG_BIOFUEL_ENGINE_TANK             = BUILDER.comment("Biofuel Engine: fuel tank capacity (mB)").defineInRange("biofuel_engine_mb", 8000, 100, 1_000_000);
         CFG_FERMENTATION_VAT_TANK_PER_BLOCK = BUILDER.comment("Fermentation Vat: fluid capacity per multiblock block (mB)").defineInRange("fermentation_vat_per_block_mb", 8000, 100, 1_000_000);
@@ -290,6 +306,8 @@ public class Config {
     public static double kineticBatteryChargeRate, kineticBatteryDischargeRate;
     public static int gasifierRpm, gasifierSu;
     public static int biofuelEngineRpm, biofuelEngineSu;
+    public static int turbineMaxRpm, turbineRpmPerLayer, turbineSuPerLayer, turbineSteamPerLayerPerTick;
+    public static int turbineSteamTank, turbineCondensateTank;
 
     public static int solarHeaterMeltTicks, solarHeaterEvaporationTicks, solarHeaterWaterPerSalt;
     public static int fermentationTicks, fermentationWaterPerBatch, fermentationBiofuelPerBatch;
@@ -344,6 +362,11 @@ public class Config {
         biofuelEngineRpm     = CFG_BIOFUEL_ENGINE_RPM.get();
         biofuelEngineSu      = CFG_BIOFUEL_ENGINE_SU.get();
 
+        turbineMaxRpm               = CFG_TURBINE_MAX_RPM.get();
+        turbineRpmPerLayer          = CFG_TURBINE_RPM_PER_LAYER.get();
+        turbineSuPerLayer           = CFG_TURBINE_SU_PER_LAYER.get();
+        turbineSteamPerLayerPerTick = CFG_TURBINE_STEAM_PER_LAYER_PER_TICK.get();
+
         solarHeaterMeltTicks       = CFG_SOLAR_HEATER_MELT_TICKS.get();
         solarHeaterEvaporationTicks = CFG_SOLAR_HEATER_EVAPORATION_TICKS.get();
         solarHeaterWaterPerSalt    = CFG_SOLAR_HEATER_WATER_PER_SALT.get();
@@ -366,6 +389,8 @@ public class Config {
         sprinklerFluidPerCycle = CFG_SPRINKLER_FLUID_PER_CYCLE.get();
         sprinklerRange         = CFG_SPRINKLER_RANGE.get();
 
+        turbineSteamTank        = CFG_TURBINE_STEAM_TANK.get();
+        turbineCondensateTank   = CFG_TURBINE_CONDENSATE_TANK.get();
         heatBatteryTank              = CFG_HEAT_BATTERY_TANK.get();
         biofuelEngineTank            = CFG_BIOFUEL_ENGINE_TANK.get();
         fermentationVatTankPerBlock  = CFG_FERMENTATION_VAT_TANK_PER_BLOCK.get();

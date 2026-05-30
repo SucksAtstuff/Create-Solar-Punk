@@ -1,0 +1,364 @@
+package net.succ.solar_punk.block.entity.custom;
+
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
+import com.simibubi.create.foundation.utility.CreateLang;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.succ.solar_punk.Config;
+import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.block.custom.TurbineRotorBlock;
+import net.succ.solar_punk.fluid.ModFluids;
+
+import java.util.List;
+
+public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
+        implements IHaveGoggleInformation {
+
+    private static final int SCAN_INTERVAL = 40;
+    private static final int MAX_HEIGHT = 20;
+    private static final float BASE_EFFICIENCY = 0.1f;
+
+    private boolean structureValid = false;
+    public boolean isMaster = false;
+    private int turbineHeight = 0;
+    private int andesiteBladeCount = 0;
+    private int brassBladeCount = 0;
+    private float bladeEfficiency = BASE_EFFICIENCY;
+    private int scanCooldown = 1;
+
+    public final FluidTank steamTank = new FluidTank(Config.turbineSteamTank) {
+        @Override
+        public boolean isFluidValid(FluidStack stack) {
+            return stack.getFluid().isSame(ModFluids.STEAM_SOURCE.get());
+        }
+        @Override
+        protected void onContentsChanged() { setChanged(); }
+    };
+
+    public final FluidTank condensateTank = new FluidTank(Config.turbineCondensateTank) {
+        @Override
+        public boolean isFluidValid(FluidStack stack) { return false; }
+        @Override
+        protected void onContentsChanged() { setChanged(); }
+    };
+
+    public final IFluidHandler combinedFluidHandler = new IFluidHandler() {
+        @Override public int getTanks() { return 2; }
+
+        @Override public FluidStack getFluidInTank(int tank) {
+            return tank == 0 ? steamTank.getFluid() : condensateTank.getFluid();
+        }
+
+        @Override public int getTankCapacity(int tank) {
+            return tank == 0 ? steamTank.getCapacity() : condensateTank.getCapacity();
+        }
+
+        @Override public boolean isFluidValid(int tank, FluidStack stack) {
+            return tank == 0 && stack.getFluid().isSame(ModFluids.STEAM_SOURCE.get());
+        }
+
+        @Override public int fill(FluidStack resource, FluidAction action) {
+            if (!resource.getFluid().isSame(ModFluids.STEAM_SOURCE.get())) return 0;
+            return steamTank.fill(resource, action);
+        }
+
+        @Override public FluidStack drain(FluidStack resource, FluidAction action) {
+            if (resource.getFluid().isSame(Fluids.WATER))
+                return condensateTank.drain(resource, action);
+            return FluidStack.EMPTY;
+        }
+
+        @Override public FluidStack drain(int maxDrain, FluidAction action) {
+            return condensateTank.drain(maxDrain, action);
+        }
+    };
+
+    public TurbineRotorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
+    // -------------------------------------------------------------------------
+    // GeneratingKineticBlockEntity
+    // -------------------------------------------------------------------------
+
+    @Override
+    public float getGeneratedSpeed() {
+        if (!structureValid || !isMaster || steamTank.isEmpty()) return 0;
+        return Math.min(Config.turbineMaxRpm, Config.turbineRpmPerLayer * turbineHeight);
+    }
+
+    @Override
+    public float calculateAddedStressCapacity() {
+        if (!structureValid || !isMaster || steamTank.isEmpty()) {
+            this.lastCapacityProvided = 0;
+            return 0;
+        }
+        float su = Config.turbineSuPerLayer * turbineHeight * bladeEfficiency;
+        this.lastCapacityProvided = su;
+        return su;
+    }
+
+    // -------------------------------------------------------------------------
+    // Tick
+    // -------------------------------------------------------------------------
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (level == null || level.isClientSide) return;
+
+        if (--scanCooldown <= 0) {
+            scanCooldown = SCAN_INTERVAL;
+            boolean wasValid = structureValid;
+            boolean wasMaster = isMaster;
+            structureValid = doStructureScan();
+            if (wasValid != structureValid || wasMaster != isMaster) {
+                updateGeneratedRotation();
+                setChanged();
+            }
+        }
+
+        if (!structureValid || !isMaster || steamTank.isEmpty()) {
+            setActive(false);
+            return;
+        }
+
+        int steamPerTick = Math.max(1,
+                (int) Math.ceil(Config.turbineSteamPerLayerPerTick * turbineHeight / bladeEfficiency));
+        FluidStack consumed = steamTank.drain(steamPerTick, IFluidHandler.FluidAction.EXECUTE);
+
+        if (consumed.isEmpty()) {
+            setActive(false);
+            return;
+        }
+
+        int waterProduced = consumed.getAmount() / 10;
+        if (waterProduced > 0)
+            condensateTank.fill(new FluidStack(Fluids.WATER, waterProduced), IFluidHandler.FluidAction.EXECUTE);
+
+        setActive(true);
+        if (level.getGameTime() % 20 == 0) {
+            updateGeneratedRotation();
+            setChanged();
+        }
+    }
+
+    private void setActive(boolean active) {
+        BlockState state = getBlockState();
+        if (state.getBlock() instanceof TurbineRotorBlock && state.getValue(TurbineRotorBlock.ACTIVE) != active)
+            level.setBlock(worldPosition, state.setValue(TurbineRotorBlock.ACTIVE, active), 3);
+    }
+
+    public void invalidateStructure() {
+        structureValid = false;
+        isMaster = false;
+        scanCooldown = 0;
+        updateGeneratedRotation();
+        setChanged();
+    }
+
+    // -------------------------------------------------------------------------
+    // Structure scan
+    // -------------------------------------------------------------------------
+
+    // The rotor is always at the center of the 5x5 interior, so the 7x7 ring
+    // is always exactly 3 blocks out in each horizontal direction.
+    private boolean doStructureScan() {
+        if (level == null) return false;
+
+        int rx = worldPosition.getX();
+        int ry = worldPosition.getY();
+        int rz = worldPosition.getZ();
+
+        int rMinX = rx - 3, rMaxX = rx + 3;
+        int rMinZ = rz - 3, rMaxZ = rz + 3;
+
+        if (!validateRing(rMinX, rMaxX, rMinZ, rMaxZ, ry)) {
+            isMaster = false;
+            return false;
+        }
+
+        // If there's a lower rotor at the same (x,z) inside a valid ring, it is master.
+        for (int y = ry - 1; y >= ry - MAX_HEIGHT; y--) {
+            if (!level.isLoaded(new BlockPos(rx, y, rz))) break;
+            if (!validateRing(rMinX, rMaxX, rMinZ, rMaxZ, y)) break;
+            if (level.getBlockState(new BlockPos(rx, y, rz)).is(ModBlocks.TURBINE_ROTOR.get())) {
+                isMaster = false;
+                return true; // structure valid, not master
+            }
+        }
+
+        // This is the master (lowest blade layer). The layer directly below must be the solid floor.
+        isMaster = true;
+        if (!validateFloor(rx, ry - 1, rz)) return false;
+
+        // Scan upward: find consecutive rotor+ring layers.
+        int topY = ry;
+        for (int y = ry + 1; y <= ry + MAX_HEIGHT; y++) {
+            BlockPos checkPos = new BlockPos(rx, y, rz);
+            if (!level.isLoaded(checkPos)) break;
+            if (!validateRing(rMinX, rMaxX, rMinZ, rMaxZ, y)) break;
+            if (!level.getBlockState(checkPos).is(ModBlocks.TURBINE_ROTOR.get())) break;
+            topY = y;
+        }
+
+        // Top layer must have its interior fully sealed (the cap).
+        if (topY == ry) return false; // no cap found above master
+        if (!validateTopCap(rx, topY, rz)) return false;
+
+        int height = topY - ry + 1; // blade layers + cap
+        if (height < 2) return false; // minimum: 1 blade layer + cap
+
+        // Count blades in all layers except the top cap.
+        int andesite = 0, brass = 0;
+        int[][] bladeOffsets = {{0,-2},{0,-1},{0,1},{0,2},{-2,0},{-1,0},{1,0},{2,0}};
+        for (int y = ry; y < topY; y++) {
+            for (int[] off : bladeOffsets) {
+                BlockState bs = level.getBlockState(new BlockPos(rx + off[0], y, rz + off[1]));
+                if (bs.is(ModBlocks.ANDESITE_TURBINE_BLADE.get())) andesite++;
+                else if (bs.is(ModBlocks.BRASS_TURBINE_BLADE.get())) brass++;
+            }
+        }
+
+        int maxBlades = (height - 1) * 8; // only cap has no blades
+        float weighted = andesite * 0.7f + brass;
+        float bladeRatio = maxBlades > 0 ? Math.min(1f, weighted / maxBlades) : 0f;
+
+        this.turbineHeight = height;
+        this.andesiteBladeCount = andesite;
+        this.brassBladeCount = brass;
+        this.bladeEfficiency = BASE_EFFICIENCY + (1f - BASE_EFFICIENCY) * bladeRatio;
+        return true;
+    }
+
+    private boolean validateRing(int minX, int maxX, int minZ, int maxZ, int y) {
+        for (int x = minX; x <= maxX; x++) {
+            if (!isCasing(new BlockPos(x, y, minZ))) return false;
+            if (!isCasing(new BlockPos(x, y, maxZ))) return false;
+        }
+        for (int z = minZ + 1; z < maxZ; z++) {
+            if (!isCasing(new BlockPos(minX, y, z))) return false;
+            if (!isCasing(new BlockPos(maxX, y, z))) return false;
+        }
+        return true;
+    }
+
+    // Every position in the full 7×7 footprint must be casing — no rotor, no air.
+    private boolean validateFloor(int rx, int y, int rz) {
+        for (int x = rx - 3; x <= rx + 3; x++)
+            for (int z = rz - 3; z <= rz + 3; z++)
+                if (!isCasing(new BlockPos(x, y, z))) return false;
+        return true;
+    }
+
+    // Every position in the 5×5 interior (excluding outer ring and center rotor) must be casing.
+    private boolean validateTopCap(int rx, int y, int rz) {
+        for (int dx = -2; dx <= 2; dx++)
+            for (int dz = -2; dz <= 2; dz++) {
+                if (dx == 0 && dz == 0) continue;
+                if (!isCasing(new BlockPos(rx + dx, y, rz + dz))) return false;
+            }
+        return true;
+    }
+
+    private boolean isCasing(BlockPos pos) {
+        if (level == null || !level.isLoaded(pos)) return false;
+        BlockState s = level.getBlockState(pos);
+        return s.is(ModBlocks.TURBINE_CASING.get()) || s.is(ModBlocks.TURBINE_CASING_GLASS.get());
+    }
+
+    // -------------------------------------------------------------------------
+    // Goggle tooltip
+    // -------------------------------------------------------------------------
+
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        CreateLang.translate("solar_punk.tooltip.steam_turbine_header").forGoggles(tooltip);
+
+        if (!structureValid) {
+            CreateLang.translate("solar_punk.tooltip.turbine_invalid")
+                    .style(ChatFormatting.RED).forGoggles(tooltip, 1);
+            return true;
+        }
+        if (!isMaster) {
+            CreateLang.translate("solar_punk.tooltip.turbine_not_master")
+                    .style(ChatFormatting.GRAY).forGoggles(tooltip, 1);
+            return true;
+        }
+
+        CreateLang.translate("solar_punk.tooltip.turbine_height")
+                .style(ChatFormatting.GRAY)
+                .add(CreateLang.number(turbineHeight).style(ChatFormatting.WHITE).component())
+                .forGoggles(tooltip, 1);
+
+        CreateLang.translate("solar_punk.tooltip.turbine_blades")
+                .style(ChatFormatting.GRAY)
+                .add(CreateLang.number(andesiteBladeCount + brassBladeCount)
+                        .text(" (" + andesiteBladeCount + "A / " + brassBladeCount + "B)")
+                        .style(ChatFormatting.YELLOW).component())
+                .forGoggles(tooltip, 1);
+
+        int effPct = (int) (bladeEfficiency * 100);
+        CreateLang.translate("solar_punk.tooltip.efficiency")
+                .style(ChatFormatting.GRAY)
+                .add(CreateLang.number(effPct).text("%").style(ChatFormatting.GREEN).component())
+                .forGoggles(tooltip, 1);
+
+        CreateLang.translate("solar_punk.tooltip.steam")
+                .style(ChatFormatting.GRAY)
+                .add(CreateLang.number(steamTank.getFluidAmount())
+                        .text(" / " + steamTank.getCapacity() + " mB")
+                        .style(ChatFormatting.AQUA).component())
+                .forGoggles(tooltip, 1);
+
+        CreateLang.translate("solar_punk.tooltip.water")
+                .style(ChatFormatting.GRAY)
+                .add(CreateLang.number(condensateTank.getFluidAmount())
+                        .text(" / " + condensateTank.getCapacity() + " mB")
+                        .style(ChatFormatting.BLUE).component())
+                .forGoggles(tooltip, 1);
+
+        return true;
+    }
+
+    // -------------------------------------------------------------------------
+    // NBT
+    // -------------------------------------------------------------------------
+
+    @Override
+    protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.write(tag, registries, clientPacket);
+        tag.putBoolean("StructureValid", structureValid);
+        tag.putBoolean("IsMaster", isMaster);
+        tag.putInt("TurbineHeight", turbineHeight);
+        tag.putInt("AndesiteBlades", andesiteBladeCount);
+        tag.putInt("BrassBlades", brassBladeCount);
+        tag.putFloat("BladeEfficiency", bladeEfficiency);
+        FluidTankNBTHelper.save(tag, "SteamTank", steamTank);
+        FluidTankNBTHelper.save(tag, "CondensateTank", condensateTank);
+    }
+
+    @Override
+    protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.read(tag, registries, clientPacket);
+        structureValid = tag.getBoolean("StructureValid");
+        isMaster = tag.getBoolean("IsMaster");
+        turbineHeight = tag.getInt("TurbineHeight");
+        andesiteBladeCount = tag.getInt("AndesiteBlades");
+        brassBladeCount = tag.getInt("BrassBlades");
+        bladeEfficiency = tag.getFloat("BladeEfficiency");
+        if (bladeEfficiency < BASE_EFFICIENCY) bladeEfficiency = BASE_EFFICIENCY;
+        FluidTankNBTHelper.load(tag, "SteamTank", steamTank);
+        FluidTankNBTHelper.load(tag, "CondensateTank", condensateTank);
+    }
+}

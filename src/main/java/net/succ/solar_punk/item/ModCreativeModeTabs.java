@@ -44,9 +44,16 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.BIOMASS.get());
                         output.accept(ModItems.BIOMASS_PELLET.get());
                         output.accept(ModItems.BIOCHAR.get());
+                        output.accept(ModBlocks.TURBINE_CASING.get());
+                        output.accept(ModBlocks.TURBINE_CASING_GLASS.get());
+                        output.accept(ModBlocks.TURBINE_ROTOR.get());
+                        output.accept(ModBlocks.TURBINE_ROTOR.get());
+                        output.accept(ModBlocks.ANDESITE_TURBINE_BLADE.get());
+                        output.accept(ModBlocks.BRASS_TURBINE_BLADE.get());
                         output.accept(ModFluids.MOLTEN_SALT_BUCKET.get());
                         output.accept(ModFluids.BIOFUEL_BUCKET.get());
                         output.accept(ModFluids.FERTILIZER_BUCKET.get());
+                        output.accept(ModFluids.STEAM_BUCKET.get());
                     })
                     .build());
 

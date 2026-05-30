@@ -29,6 +29,8 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.tag.bio_machines.description", "Machines for producing and burning Biofuel");
         add("solarpunk.ponder.tag.solar_tower", "Solar Power Tower");
         add("solarpunk.ponder.tag.solar_tower.description", "Concentrated solar power for producing Molten Salt");
+        add("solarpunk.ponder.tag.steam_turbine", "Steam Turbine");
+        add("solarpunk.ponder.tag.steam_turbine.description", "High-throughput steam-powered rotational force generator");
 
         // Ponder scene text — format: <namespace>.ponder.<sceneId>.header / .text_N
         add("solarpunk.ponder.biomass_gasifier_usage.header", "Using the Biomass Gasifier");
@@ -118,6 +120,23 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.fermentation_vat_usage.text_4", "Insert Biomass into the input from the top");
         add("solarpunk.ponder.fermentation_vat_usage.text_5", "The vat ferments Biomass with water into Biofuel — a 2x2 vat consumes 4 Biomass per batch");
         add("solarpunk.ponder.fermentation_vat_usage.text_6", "Drain Biofuel from any face and pipe it to a Biofuel Engine");
+
+        add("solarpunk.ponder.turbine_structure.header", "Building the Steam Turbine");
+        add("solarpunk.ponder.turbine_structure.text_1", "Start with a sealed floor — fill the entire 7x7 footprint with Turbine Casing, including the center");
+        add("solarpunk.ponder.turbine_structure.text_2", "Above the floor, build ring-only layers with a Rotor at center and Turbine Blades in the plus pattern");
+        add("solarpunk.ponder.turbine_structure.text_3", "Two blades per arm, four arms — eight blades total per layer. Andesite is cheaper; Brass is more efficient");
+        add("solarpunk.ponder.turbine_structure.text_4", "Stack as many blade layers as you want — each adds more throughput");
+        add("solarpunk.ponder.turbine_structure.text_5", "Seal the top the same way as the floor — full 7x7 of Turbine Casing with the Rotor at center");
+        add("solarpunk.ponder.turbine_structure.text_6", "Pipe Steam into any face of the outer casing wall — condensate water drains from any casing face too");
+        add("solarpunk.ponder.turbine_structure.text_7", "Rotational power exits from the top face of the cap rotor — connect a shaft directly above");
+
+        add("solarpunk.ponder.turbine_max.header", "Maximum Efficiency Turbine");
+        add("solarpunk.ponder.turbine_max.text_1", "The sealed floor is a full 7x7 of Turbine Casing with no rotor — it anchors the structure from below");
+        add("solarpunk.ponder.turbine_max.text_2", "A taller turbine consumes more Steam per tick but produces proportionally more SU — height is the main throughput lever");
+        add("solarpunk.ponder.turbine_max.text_3", "Fill every blade slot with Brass Blades for the best Steam-to-SU efficiency");
+        add("solarpunk.ponder.turbine_max.text_4", "Cap the top identically to the floor — full 7x7 Casing with the Rotor at center. Power exits from the top of this rotor");
+        add("solarpunk.ponder.turbine_max.text_5", "Replace any casing with Turbine Casing Glass anywhere in the structure to see inside — still valid");
+        add("solarpunk.ponder.turbine_max.text_6", "The maximum is 20 blade layers — at full brass and max height it can power an entire base");
 
         add("solarpunk.ponder.fermentation_vat_scaling.header", "Scaling the Fermentation Vat");
         add("solarpunk.ponder.fermentation_vat_scaling.text_1", "A larger footprint increases the batch size — a 2x2 vat processes 4 Biomass at once, a 3x3 processes 9");

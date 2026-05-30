@@ -16,6 +16,9 @@ public class SolarPunkPonderTags {
     public static final ResourceLocation SOLAR_TOWER =
             ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "solar_tower");
 
+    public static final ResourceLocation STEAM_TURBINE =
+            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "steam_turbine");
+
     public static void register(PonderTagRegistrationHelper<ResourceLocation> helper) {
         helper.registerTag(SOLAR_MACHINES)
                 .addToIndex()
@@ -54,5 +57,19 @@ public class SolarPunkPonderTags {
         helper.addToTag(SOLAR_TOWER)
                 .add(ModBlocks.SOLAR_POWER_TOWER.getId())
                 .add(ModBlocks.SOLAR_MIRROR.getId());
+
+        helper.registerTag(STEAM_TURBINE)
+                .addToIndex()
+                .item(ModBlocks.TURBINE_ROTOR.get(), true, false)
+                .title("Steam Turbine")
+                .description("High-throughput steam-powered rotational force generator")
+                .register();
+
+        helper.addToTag(STEAM_TURBINE)
+                .add(ModBlocks.TURBINE_ROTOR.getId())
+                .add(ModBlocks.TURBINE_CASING.getId())
+                .add(ModBlocks.TURBINE_CASING_GLASS.getId())
+                .add(ModBlocks.ANDESITE_TURBINE_BLADE.getId())
+                .add(ModBlocks.BRASS_TURBINE_BLADE.getId());
     }
 }

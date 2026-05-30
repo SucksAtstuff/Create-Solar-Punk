@@ -3,6 +3,7 @@ package net.succ.solar_punk.block;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -28,6 +29,11 @@ import net.succ.solar_punk.block.custom.BiofilterBlock;
 import net.succ.solar_punk.block.custom.DeadGrassBlock;
 import net.succ.solar_punk.block.custom.KineticSprinklerBlock;
 import net.succ.solar_punk.block.custom.KineticSprinklerItem;
+import net.succ.solar_punk.block.custom.TurbineCasingBlock;
+import net.succ.solar_punk.block.custom.TurbineCasingGlassBlock;
+import net.succ.solar_punk.block.custom.TurbineRotorBlock;
+import net.succ.solar_punk.block.custom.AndesiteTurbineBladeBlock;
+import net.succ.solar_punk.block.custom.BrassTurbineBladeBlock;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.function.Supplier;
@@ -167,6 +173,41 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .strength(2.5f, 4.0f)
                     .noOcclusion()),
             block -> new KineticSprinklerItem(block, new Item.Properties()));
+
+    public static final DeferredBlock<TurbineCasingBlock> TURBINE_CASING = registerBlock("turbine_casing",
+            () -> new TurbineCasingBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .requiresCorrectToolForDrops()
+                    .strength(4.0f, 8.0f)
+                    .sound(SoundType.NETHERITE_BLOCK)));
+
+    public static final DeferredBlock<TurbineCasingGlassBlock> TURBINE_CASING_GLASS = registerBlock("turbine_casing_glass",
+            () -> new TurbineCasingGlassBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.0f, 6.0f)
+                    .noOcclusion()
+                    .sound(SoundType.NETHERITE_BLOCK)));
+
+    public static final DeferredBlock<TurbineRotorBlock> TURBINE_ROTOR = registerBlock("turbine_rotor",
+            () -> new TurbineRotorBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)));
+
+    public static final DeferredBlock<AndesiteTurbineBladeBlock> ANDESITE_TURBINE_BLADE = registerBlock("andesite_turbine_blade",
+            () -> new AndesiteTurbineBladeBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.0f, 6.0f)
+                    .noOcclusion()));
+
+    public static final DeferredBlock<BrassTurbineBladeBlock> BRASS_TURBINE_BLADE = registerBlock("brass_turbine_blade",
+            () -> new BrassTurbineBladeBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_YELLOW)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)
+                    .noOcclusion()));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

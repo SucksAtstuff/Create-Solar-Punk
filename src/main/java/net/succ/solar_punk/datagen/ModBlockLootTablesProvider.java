@@ -27,7 +27,7 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.SOLAR_HEATER.get());
         dropSelf(ModBlocks.SALT_BLOCK.get());
         dropSelf(ModBlocks.DEAD_GRASS_BLOCK.get());
-        dropSelf(ModBlocks.DEAD_GRASS.get());
+        add(ModBlocks.DEAD_GRASS.get(), noDrop());
         dropSelf(ModBlocks.RUINED_DIRT.get());
         dropSelf(ModBlocks.ASH_BLOCK.get());
         dropSelf(ModBlocks.KINETIC_BATTERY.get());
@@ -36,6 +36,12 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.SOLAR_MIRROR.get());
         dropSelf(ModBlocks.BIOFILTER.get());
         dropSelf(ModBlocks.KINETIC_SPRINKLER.get());
+        dropSelf(ModBlocks.TURBINE_CASING.get());
+        dropSelf(ModBlocks.TURBINE_CASING_GLASS.get());
+        dropSelf(ModBlocks.TURBINE_ROTOR.get());
+        dropSelf(ModBlocks.ANDESITE_TURBINE_BLADE.get());
+        dropSelf(ModBlocks.BRASS_TURBINE_BLADE.get());
+        dropSelf(ModBlocks.TURBINE_ROTOR.get());
     }
 
     @Override

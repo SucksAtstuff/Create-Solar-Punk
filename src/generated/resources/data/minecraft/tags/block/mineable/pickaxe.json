@@ -14,6 +14,12 @@
     "solarpunk:solar_mirror",
     "solarpunk:geyser_vent",
     "solarpunk:biofilter",
-    "solarpunk:kinetic_sprinkler"
+    "solarpunk:kinetic_sprinkler",
+    "solarpunk:turbine_casing",
+    "solarpunk:turbine_casing_glass",
+    "solarpunk:turbine_rotor",
+    "solarpunk:andesite_turbine_blade",
+    "solarpunk:brass_turbine_blade",
+    "solarpunk:turbine_rotor"
   ]
 }

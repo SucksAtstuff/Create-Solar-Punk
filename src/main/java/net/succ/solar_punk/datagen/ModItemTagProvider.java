@@ -35,6 +35,8 @@ public class ModItemTagProvider extends ItemTagsProvider {
             TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "buckets/fertilizer"));
     private static final TagKey<Item> BIO_FUELS =
             TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "bio_fuels"));
+    private static final TagKey<Item> BUCKETS_STEAM =
+            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "buckets/steam"));
 
     public ModItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
                               CompletableFuture<TagLookup<Block>> blockTagProvider,
@@ -56,10 +58,14 @@ public class ModItemTagProvider extends ItemTagsProvider {
         tag(BIO_FUELS).add(ModItems.BIOMASS.get()).add(ModItems.BIOMASS_PELLET.get());
 
         // Fluid buckets
-        tag(Tags.Items.BUCKETS).add(ModFluids.BIOFUEL_BUCKET.get()).add(ModFluids.MOLTEN_SALT_BUCKET.get()).add(ModFluids.FERTILIZER_BUCKET.get());
+        tag(Tags.Items.BUCKETS).add(ModFluids.BIOFUEL_BUCKET.get())
+                .add(ModFluids.MOLTEN_SALT_BUCKET.get())
+                .add(ModFluids.STEAM_BUCKET.get())
+                .add(ModFluids.FERTILIZER_BUCKET.get());
         tag(BUCKETS_BIOFUEL).add(ModFluids.BIOFUEL_BUCKET.get());
         tag(BUCKETS_MOLTEN_SALT).add(ModFluids.MOLTEN_SALT_BUCKET.get());
         tag(BUCKETS_FERTILIZER).add(ModFluids.FERTILIZER_BUCKET.get());
+        tag(BUCKETS_STEAM).add(ModFluids.STEAM_BUCKET.get());
 
         // Create compat
         tag(BLAZE_BURNER_FUEL_REGULAR)

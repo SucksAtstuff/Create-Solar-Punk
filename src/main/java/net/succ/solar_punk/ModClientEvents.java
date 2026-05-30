@@ -11,6 +11,7 @@ import dev.engine_room.flywheel.lib.model.Models;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import net.createmod.catnip.lang.FontHelper.Palette;
 import net.createmod.ponder.foundation.PonderIndex;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
@@ -22,11 +23,16 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.block.custom.KineticSprinklerItem;
+import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.client.model.FermentationVatModel;
 import net.succ.solar_punk.client.model.ModSpriteShifts;
 import net.succ.solar_punk.client.model.SolarPowerTowerModel;
+import net.succ.solar_punk.client.model.TurbineCasingModel;
 import net.succ.solar_punk.client.renderer.FermentationVatRenderer;
 import net.succ.solar_punk.client.renderer.GeyserCapRenderer;
 import net.succ.solar_punk.client.renderer.KineticSprinklerRenderer;
@@ -38,9 +44,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-@EventBusSubscriber(modid = SolarPunk.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-@SuppressWarnings("removal")
+@EventBusSubscriber(modid = SolarPunk.MODID, value = Dist.CLIENT)
 public class ModClientEvents {
+
+    @SubscribeEvent
+    public static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
+        KineticSprinklerItem item = (KineticSprinklerItem) ModBlocks.KINETIC_SPRINKLER.get().asItem();
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return GeoRenderProvider.of(item).getGeoItemRenderer();
+            }
+        }, item);
+    }
 
     @SubscribeEvent
     public static void onRegisterAdditionalModels(ModelEvent.RegisterAdditional event) {
@@ -56,18 +72,23 @@ public class ModClientEvents {
     @SubscribeEvent
     public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
         Map<ModelResourceLocation, BakedModel> models = event.getModels();
-        List<ModelResourceLocation> vatKeys   = new ArrayList<>();
-        List<ModelResourceLocation> towerKeys = new ArrayList<>();
+        List<ModelResourceLocation> vatKeys    = new ArrayList<>();
+        List<ModelResourceLocation> towerKeys  = new ArrayList<>();
+        List<ModelResourceLocation> casingKeys = new ArrayList<>();
         for (ModelResourceLocation key : models.keySet()) {
             ResourceLocation id = key.id();
             if (!id.getNamespace().equals(SolarPunk.MODID)) continue;
             if (id.getPath().equals("fermentation_vat"))   vatKeys.add(key);
             if (id.getPath().equals("solar_power_tower"))  towerKeys.add(key);
+            if (id.getPath().equals("turbine_casing") || id.getPath().equals("turbine_casing_glass"))
+                casingKeys.add(key);
         }
         for (ModelResourceLocation key : vatKeys)
             models.put(key, new FermentationVatModel(models.get(key)));
         for (ModelResourceLocation key : towerKeys)
             models.put(key, new SolarPowerTowerModel(models.get(key)));
+        for (ModelResourceLocation key : casingKeys)
+            models.put(key, new TurbineCasingModel(models.get(key)));
     }
 
     @SubscribeEvent

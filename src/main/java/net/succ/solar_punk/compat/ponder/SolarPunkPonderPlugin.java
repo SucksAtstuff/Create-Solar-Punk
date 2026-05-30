@@ -45,6 +45,13 @@ public class SolarPunkPonderPlugin implements PonderPlugin {
         helper.forComponents(ModBlocks.SOLAR_POWER_TOWER.getId(), ModBlocks.SOLAR_MIRROR.getId())
                 .addStoryBoard("solar_power_tower/usage",   SolarPowerTowerScenes::usage,   SolarPunkPonderTags.SOLAR_TOWER)
                 .addStoryBoard("solar_power_tower/mirrors", SolarPowerTowerScenes::mirrors, SolarPunkPonderTags.SOLAR_TOWER);
+
+        helper.forComponents(
+                        ModBlocks.TURBINE_ROTOR.getId(), ModBlocks.TURBINE_CASING.getId(),
+                        ModBlocks.TURBINE_CASING_GLASS.getId(), ModBlocks.ANDESITE_TURBINE_BLADE.getId(),
+                        ModBlocks.BRASS_TURBINE_BLADE.getId())
+                .addStoryBoard("turbine_rotor/structure",   SteamTurbineScenes::structure,   SolarPunkPonderTags.STEAM_TURBINE)
+                .addStoryBoard("turbine_rotor/max_turbine", SteamTurbineScenes::maxTurbine, SolarPunkPonderTags.STEAM_TURBINE);
     }
 
     @Override
