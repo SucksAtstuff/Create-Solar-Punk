@@ -1,3 +1,11 @@
+# 0.2.1-1.21.1
+
+### Create: Aeronautics Compat
+
+Pollution sources inside Aeronautics sublevels (engines on airships) now correctly accumulate pollution in the real-world chunk where the airship is located. Previously they had no effect on the pollution system at all. Requires Sable/Aeronautics to be installed; has no effect otherwise.
+
+---
+
 # 0.2.0-1.21.1
 
 ### Biomass Pellet

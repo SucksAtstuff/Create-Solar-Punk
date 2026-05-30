@@ -25,10 +25,12 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.compat.sable.SableCompat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -152,6 +154,10 @@ public class GlobalWarmingHandler {
                     }
                 }
             }
+        }
+
+        if (ModList.get().isLoaded("sable")) {
+            SableCompat.countSubLevelSources(level, totals, autoSources);
         }
 
         return totals;
