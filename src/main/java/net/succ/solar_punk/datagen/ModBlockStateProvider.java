@@ -45,6 +45,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(ModBlocks.DEAD_GRASS_BLOCK.get(), new ModelFile.UncheckedModelFile(modLoc("block/dead_grass_block")));
         simpleBlockWithItem(ModBlocks.RUINED_DIRT.get(), new ModelFile.UncheckedModelFile(modLoc("block/ruined_dirt")));
         simpleBlockWithItem(ModBlocks.ASH_BLOCK.get(), new ModelFile.UncheckedModelFile(modLoc("block/ash_block")));
+        deadGrassPlantBlock();
         heatStateModelBlock(ModBlocks.HEAT_BATTERY);
         solarPowerTowerBlock();
         solarMirrorBlock();
@@ -201,6 +202,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)
                         .rotation(0, 225, 0).translation(0, 0, 0).scale(0.4f).end()
                 .end();
+    }
+
+    private void deadGrassPlantBlock() {
+        ModelFile crossModel = new UncheckedModelFile(modLoc("block/dead_grass"));
+        simpleBlock(ModBlocks.DEAD_GRASS.get(), crossModel);
+        itemModels().withExistingParent("dead_grass", "minecraft:item/generated")
+                .texture("layer0", modLoc("block/dead_grass"));
     }
 
     private void blockWithItem(DeferredBlock<?> deferredBlock){

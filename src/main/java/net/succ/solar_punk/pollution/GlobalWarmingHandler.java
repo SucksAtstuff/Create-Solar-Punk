@@ -321,6 +321,9 @@ public class GlobalWarmingHandler {
         if (block == Blocks.DEAD_BUSH) {
             return Blocks.SHORT_GRASS.defaultBlockState();
         }
+        if (block == ModBlocks.DEAD_GRASS.get()) {
+            return Blocks.SHORT_GRASS.defaultBlockState();
+        }
         return null;
     }
 
@@ -357,6 +360,9 @@ public class GlobalWarmingHandler {
 
         // Grasses and ferns die
         if (block == Blocks.SHORT_GRASS || block == Blocks.FERN) {
+            return ModBlocks.DEAD_GRASS.get().defaultBlockState();
+        }
+        if (block == ModBlocks.DEAD_GRASS.get()) {
             return Blocks.AIR.defaultBlockState();
         }
         if (block == Blocks.TALL_GRASS || block == Blocks.LARGE_FERN) {

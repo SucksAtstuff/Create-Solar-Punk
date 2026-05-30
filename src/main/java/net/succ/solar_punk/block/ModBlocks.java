@@ -25,6 +25,7 @@ import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerItem;
 import net.succ.solar_punk.block.custom.BiofilterBlock;
+import net.succ.solar_punk.block.custom.DeadGrassBlock;
 import net.succ.solar_punk.block.custom.KineticSprinklerBlock;
 import net.succ.solar_punk.block.custom.KineticSprinklerItem;
 import net.succ.solar_punk.item.ModItems;
@@ -81,6 +82,15 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .mapColor(MapColor.COLOR_BROWN)
                     .strength(0.5f)
                     .sound(net.minecraft.world.level.block.SoundType.GRASS)));
+
+    public static final DeferredBlock<DeadGrassBlock> DEAD_GRASS = registerBlock("dead_grass",
+            () -> new DeadGrassBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BROWN)
+                    .noCollission()
+                    .instabreak()
+                    .sound(net.minecraft.world.level.block.SoundType.GRASS)
+                    .offsetType(BlockBehaviour.OffsetType.XZ)
+                    .replaceable()));
 
     public static final DeferredBlock<Block> RUINED_DIRT = registerBlock("ruined_dirt",
             () -> new Block(BlockBehaviour.Properties.of()
