@@ -46,7 +46,7 @@ public class SolarPunkJeiPlugin implements IModPlugin {
                 .toList();
 
         registration.addRecipes(SolarHeaterCategory.RECIPE_TYPE, recipes);
-        registration.addRecipes(SolarPowerTowerCategory.RECIPE_TYPE, List.of(SolarPowerTowerCategory.INSTANCE));
+        registration.addRecipes(SolarPowerTowerCategory.RECIPE_TYPE, List.of(SolarPowerTowerCategory.SALT_INSTANCE, SolarPowerTowerCategory.STEAM_INSTANCE));
         registration.addRecipes(FermentationVatCategory.RECIPE_TYPE, List.of(FermentationVatCategory.INSTANCE));
     }
 

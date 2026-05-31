@@ -32,7 +32,7 @@ public class SolarPanelScenes {
         scene.idle(80);
 
         scene.overlay().showText(70)
-                .text("It outputs rotation downwards — connect a shaft or machine directly below")
+                .text("It outputs rotation downwards - connect a shaft or machine directly below")
                 .pointAt(util.vector().centerOf(shaftPos))
                 .attachKeyFrame();
         scene.idle(80);
@@ -54,7 +54,7 @@ public class SolarPanelScenes {
         scene.idle(80);
 
         scene.overlay().showText(60)
-                .text("Rain reduces output to dawn levels — night stops generation entirely")
+                .text("Rain reduces output to dawn levels - night stops generation entirely")
                 .pointAt(util.vector().topOf(panelPos))
                 .attachKeyFrame();
         scene.idle(70);
@@ -94,13 +94,13 @@ public class SolarPanelScenes {
         scene.idle(80);
 
         scene.overlay().showText(70)
-                .text("At dawn and dusk: 40 FE/t — at noon in clear weather: 80 FE/t")
+                .text("At dawn and dusk: 40 FE/t - at noon in clear weather: 80 FE/t")
                 .pointAt(util.vector().topOf(panelPos))
                 .attachKeyFrame();
         scene.idle(80);
 
         scene.overlay().showText(60)
-                .text("Rain reduces output to dawn levels — the panel must have clear sky access above it")
+                .text("Rain reduces output to dawn levels - the panel must have clear sky access above it")
                 .pointAt(util.vector().topOf(panelPos))
                 .attachKeyFrame();
         scene.idle(70);

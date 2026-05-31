@@ -5,6 +5,8 @@ import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.fluids.tank.FluidTankBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -16,6 +18,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
+
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -75,7 +78,25 @@ public class SolarPowerTowerBlock extends Block implements EntityBlock, IWrencha
 
     @Override
     public InteractionResult onWrenched(BlockState state, UseOnContext context) {
-        return InteractionResult.PASS;
+        Level level = context.getLevel();
+        if (level.isClientSide) return InteractionResult.SUCCESS;
+        if (!(level.getBlockEntity(context.getClickedPos()) instanceof SolarPowerTowerBlockEntity be))
+            return InteractionResult.PASS;
+        SolarPowerTowerBlockEntity ctrl = be.getControllerBE();
+        if (ctrl == null) return InteractionResult.PASS;
+        ctrl.steamMode = !ctrl.steamMode;
+        if (ctrl.steamMode) ctrl.saltTank.setFluid(FluidStack.EMPTY);
+        else                ctrl.steamTank.setFluid(FluidStack.EMPTY);
+        ctrl.setChanged();
+        ctrl.syncToClients();
+        Player player = context.getPlayer();
+        if (player != null) {
+            String key = ctrl.steamMode
+                    ? "solarpunk.tooltip.tower_mode_steam"
+                    : "solarpunk.tooltip.tower_mode_salt";
+            player.displayClientMessage(Component.translatable(key), true);
+        }
+        return InteractionResult.SUCCESS;
     }
 
     @Nullable

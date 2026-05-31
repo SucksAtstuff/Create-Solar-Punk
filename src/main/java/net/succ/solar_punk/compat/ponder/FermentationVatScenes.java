@@ -41,7 +41,7 @@ public class FermentationVatScenes {
         scene.idle(20);
 
         scene.overlay().showText(70)
-                .text("Stack Fermentation Vat blocks — they merge into a single multiblock")
+                .text("Stack Fermentation Vat blocks - they merge into a single multiblock")
                 .pointAt(util.vector().topOf(TOP_2))
                 .attachKeyFrame();
         scene.idle(80);
@@ -69,7 +69,7 @@ public class FermentationVatScenes {
         scene.idle(70);
 
         scene.overlay().showText(80)
-                .text("The vat ferments Biomass with water into Biofuel — a 2×2 vat consumes 4 Biomass per batch")
+                .text("The vat ferments Biomass with water into Biofuel - a 2×2 vat consumes 4 Biomass per batch")
                 .pointAt(util.vector().centerOf(CONTROLLER))
                 .attachKeyFrame();
         for (int y = 1; y <= 3; y++)
@@ -102,7 +102,7 @@ public class FermentationVatScenes {
         scene.idle(20);
 
         scene.overlay().showText(80)
-                .text("A larger footprint increases the batch size — a 2×2 vat processes 4 Biomass at once, a 3×3 processes 9")
+                .text("A larger footprint increases the batch size - a 2×2 vat processes 4 Biomass at once, a 3×3 processes 9")
                 .pointAt(util.vector().topOf(TOP_3))
                 .attachKeyFrame();
         scene.idle(90);
@@ -114,7 +114,7 @@ public class FermentationVatScenes {
         scene.idle(80);
 
         scene.overlay().showText(60)
-                .text("Tank capacity grows with each block added — taller vats hold more fluid")
+                .text("Tank capacity grows with each block added - taller vats hold more fluid")
                 .pointAt(util.vector().centerOf(CENTER_3))
                 .attachKeyFrame();
         scene.idle(70);

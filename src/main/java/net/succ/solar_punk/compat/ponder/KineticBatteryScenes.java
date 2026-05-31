@@ -61,7 +61,7 @@ public class KineticBatteryScenes {
         scene.world().setKineticSpeed(util.select().position(pressPos), -16f);
 
         scene.overlay().showText(70)
-                .text("Apply a Redstone signal to discharge — it outputs rotation along its axis")
+                .text("Apply a Redstone signal to discharge - it outputs rotation along its axis")
                 .pointAt(util.vector().centerOf(batteryPos))
                 .attachKeyFrame();
         scene.idle(80);

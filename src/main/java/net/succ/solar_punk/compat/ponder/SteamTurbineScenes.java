@@ -39,7 +39,7 @@ public class SteamTurbineScenes {
                     scene.world().showSection(util.select().position(new BlockPos(x, y, z)), Direction.DOWN);
     }
 
-    // Show the full sealed interior of the floor layer (5x5 including center — all casing, no rotor)
+    // Show the full sealed interior of the floor layer (5x5 including center - all casing, no rotor)
     private static void showFloorInterior(SceneBuilder scene, SceneBuildingUtil util, int y) {
         for (int x = 1; x <= 5; x++)
             for (int z = 1; z <= 5; z++)
@@ -47,7 +47,7 @@ public class SteamTurbineScenes {
     }
 
     /**
-     * Scene 1 — walks through building a minimum turbine component by component.
+     * Scene 1 - walks through building a minimum turbine component by component.
      * Layout: floor(y=1) + blades(y=2,3,4) + cap(y=5).
      */
     public static void structure(SceneBuilder scene, SceneBuildingUtil util) {
@@ -63,7 +63,7 @@ public class SteamTurbineScenes {
         scene.idle(10);
 
         scene.overlay().showText(80)
-                .text("Start with a sealed floor — fill the entire 7x7 footprint with Turbine Casing, including the center")
+                .text("Start with a sealed floor - fill the entire 7x7 footprint with Turbine Casing, including the center")
                 .pointAt(util.vector().centerOf(new BlockPos(3, 1, 3)))
                 .attachKeyFrame();
         scene.idle(90);
@@ -82,7 +82,7 @@ public class SteamTurbineScenes {
         scene.idle(90);
 
         scene.overlay().showText(70)
-                .text("Two blades per arm, four arms — eight blades total per layer. Andesite is cheaper; Brass is more efficient")
+                .text("Two blades per arm, four arms - eight blades total per layer. Andesite is cheaper; Brass is more efficient")
                 .pointAt(util.vector().centerOf(new BlockPos(5, 2, 3)))
                 .attachKeyFrame();
         scene.idle(80);
@@ -98,7 +98,7 @@ public class SteamTurbineScenes {
         scene.idle(15);
 
         scene.overlay().showText(60)
-                .text("Stack as many blade layers as you want — each adds more throughput")
+                .text("Stack as many blade layers as you want - each adds more throughput")
                 .pointAt(util.vector().topOf(ROTOR_3))
                 .attachKeyFrame();
         scene.idle(70);
@@ -111,19 +111,19 @@ public class SteamTurbineScenes {
         scene.idle(10);
 
         scene.overlay().showText(80)
-                .text("Seal the top the same way as the floor — full 7x7 of Turbine Casing with the Rotor at center")
+                .text("Seal the top the same way as the floor - full 7x7 of Turbine Casing with the Rotor at center")
                 .pointAt(util.vector().topOf(CAP_ROTOR_5))
                 .attachKeyFrame();
         scene.idle(90);
 
         scene.overlay().showText(80)
-                .text("Pipe Steam into any face of the outer casing wall — condensate water drains from any casing face too")
+                .text("Pipe Steam into any face of the outer casing wall - condensate water drains from any casing face too")
                 .pointAt(util.vector().centerOf(ROTOR_3))
                 .attachKeyFrame();
         scene.idle(90);
 
         scene.overlay().showText(60)
-                .text("Rotational power exits from the top face of the cap rotor — connect a shaft directly above")
+                .text("Rotational power exits from the top face of the cap rotor - connect a shaft directly above")
                 .pointAt(util.vector().topOf(CAP_ROTOR_5))
                 .attachKeyFrame();
         scene.idle(70);
@@ -132,7 +132,7 @@ public class SteamTurbineScenes {
     }
 
     /**
-     * Scene 2 — shows a full 7-blade-layer, all-brass turbine.
+     * Scene 2 - shows a full 7-blade-layer, all-brass turbine.
      * Layout: floor(y=1) + blades(y=2-8) + cap(y=9).
      */
     public static void maxTurbine(SceneBuilder scene, SceneBuildingUtil util) {
@@ -147,7 +147,7 @@ public class SteamTurbineScenes {
         scene.idle(8);
 
         scene.overlay().showText(60)
-                .text("The sealed floor is a full 7x7 of Turbine Casing with no rotor — it anchors the structure from below")
+                .text("The sealed floor is a full 7x7 of Turbine Casing with no rotor - it anchors the structure from below")
                 .pointAt(util.vector().centerOf(new BlockPos(3, 1, 3)))
                 .attachKeyFrame();
         scene.idle(70);
@@ -160,7 +160,7 @@ public class SteamTurbineScenes {
         scene.idle(10);
 
         scene.overlay().showText(80)
-                .text("A taller turbine consumes more Steam per tick but produces proportionally more SU — height is the main throughput lever")
+                .text("A taller turbine consumes more Steam per tick but produces proportionally more SU - height is the main throughput lever")
                 .pointAt(util.vector().topOf(new BlockPos(3, 8, 3)))
                 .attachKeyFrame();
         scene.idle(90);
@@ -176,19 +176,19 @@ public class SteamTurbineScenes {
         scene.idle(10);
 
         scene.overlay().showText(80)
-                .text("Cap the top identically to the floor — full 7x7 Casing with the Rotor at center. Power exits from the top of this rotor")
+                .text("Cap the top identically to the floor - full 7x7 Casing with the Rotor at center. Power exits from the top of this rotor")
                 .pointAt(util.vector().topOf(new BlockPos(3, 9, 3)))
                 .attachKeyFrame();
         scene.idle(90);
 
         scene.overlay().showText(70)
-                .text("Replace any casing with Turbine Casing Glass anywhere in the structure to see inside — still valid")
+                .text("Replace any casing with Turbine Casing Glass anywhere in the structure to see inside - still valid")
                 .pointAt(util.vector().centerOf(new BlockPos(0, 5, 3)))
                 .attachKeyFrame();
         scene.idle(80);
 
         scene.overlay().showText(70)
-                .text("The maximum is 20 blade layers — at full brass and max height it can power an entire base")
+                .text("The maximum is 20 blade layers - at full brass and max height it can power an entire base")
                 .pointAt(util.vector().topOf(new BlockPos(3, 9, 3)))
                 .attachKeyFrame();
         scene.idle(80);
