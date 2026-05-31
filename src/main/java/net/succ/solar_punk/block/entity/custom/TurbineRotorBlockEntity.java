@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
@@ -35,6 +36,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
     private int brassBladeCount = 0;
     private float bladeEfficiency = BASE_EFFICIENCY;
     private int scanCooldown = 1;
+    private boolean needsCapabilityRefresh = true; // not persisted - fires once after each load
 
     public final FluidTank steamTank = new FluidTank(Config.turbineSteamTank) {
         @Override
@@ -117,6 +119,11 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         super.tick();
         if (level == null || level.isClientSide) return;
 
+        if (needsCapabilityRefresh && structureValid && isMaster) {
+            needsCapabilityRefresh = false;
+            invalidateStructureCapabilities();
+        }
+
         if (--scanCooldown <= 0) {
             scanCooldown = SCAN_INTERVAL;
             boolean wasValid = structureValid;
@@ -125,12 +132,26 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
             if (wasValid != structureValid || wasMaster != isMaster) {
                 updateGeneratedRotation();
                 setChanged();
+                invalidateStructureCapabilities();
             }
         }
 
         if (!structureValid || !isMaster || steamTank.isEmpty()) {
-            setActive(false);
+            if (getBlockState().getBlock() instanceof TurbineRotorBlock b
+                    && getBlockState().getValue(TurbineRotorBlock.ACTIVE)) {
+                setActive(false);
+                updateGeneratedRotation();
+            }
             return;
+        }
+
+        // Update speed BEFORE draining so getGeneratedSpeed() sees a non-empty tank.
+        // Also fire immediately on the first active tick so the kinetic network wakes up.
+        boolean wasActive = getBlockState().getBlock() instanceof TurbineRotorBlock
+                && getBlockState().getValue(TurbineRotorBlock.ACTIVE);
+        if (!wasActive || level.getGameTime() % 20 == 0) {
+            updateGeneratedRotation();
+            setChanged();
         }
 
         int steamPerTick = Math.max(1,
@@ -139,6 +160,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
 
         if (consumed.isEmpty()) {
             setActive(false);
+            updateGeneratedRotation();
             return;
         }
 
@@ -147,10 +169,6 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
             condensateTank.fill(new FluidStack(Fluids.WATER, waterProduced), IFluidHandler.FluidAction.EXECUTE);
 
         setActive(true);
-        if (level.getGameTime() % 20 == 0) {
-            updateGeneratedRotation();
-            setChanged();
-        }
     }
 
     private void setActive(boolean active) {
@@ -165,6 +183,25 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         scanCooldown = 0;
         updateGeneratedRotation();
         setChanged();
+        invalidateStructureCapabilities();
+    }
+
+    private void invalidateStructureCapabilities() {
+        if (level == null || level.isClientSide) return;
+        level.invalidateCapabilities(worldPosition);
+        int rx = worldPosition.getX(), ry = worldPosition.getY(), rz = worldPosition.getZ();
+        int height = Math.max(turbineHeight, 2);
+        for (int y = ry - 1; y <= ry + height; y++) {
+            for (int x = rx - 3; x <= rx + 3; x++) {
+                for (int z = rz - 3; z <= rz + 3; z++) {
+                    BlockPos p = new BlockPos(x, y, z);
+                    level.invalidateCapabilities(p);
+                    // Notify outer ring neighbours so adjacent pipes recheck and auto-connect
+                    if (x == rx - 3 || x == rx + 3 || z == rz - 3 || z == rz + 3)
+                        level.updateNeighborsAt(p, level.getBlockState(p).getBlock());
+                }
+            }
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -281,8 +318,25 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
     // Goggle tooltip
     // -------------------------------------------------------------------------
 
+    private TurbineRotorBlockEntity findMaster() {
+        if (level == null) return null;
+        for (int dy = 1; dy <= MAX_HEIGHT; dy++) {
+            BlockPos check = worldPosition.below(dy);
+            if (!level.isLoaded(check)) break;
+            if (!level.getBlockState(check).is(ModBlocks.TURBINE_ROTOR.get())) break;
+            BlockEntity be = level.getBlockEntity(check);
+            if (be instanceof TurbineRotorBlockEntity rotor && rotor.isMaster) return rotor;
+        }
+        return null;
+    }
+
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        if (!isMaster && structureValid) {
+            TurbineRotorBlockEntity master = findMaster();
+            if (master != null) return master.addToGoggleTooltip(tooltip, isPlayerSneaking);
+        }
+
         CreateLang.translate("solar_punk.tooltip.steam_turbine_header").forGoggles(tooltip);
 
         if (!structureValid) {
@@ -291,8 +345,8 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
             return true;
         }
         if (!isMaster) {
-            CreateLang.translate("solar_punk.tooltip.turbine_not_master")
-                    .style(ChatFormatting.GRAY).forGoggles(tooltip, 1);
+            CreateLang.translate("solar_punk.tooltip.turbine_invalid")
+                    .style(ChatFormatting.RED).forGoggles(tooltip, 1);
             return true;
         }
 
@@ -328,6 +382,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
                         .style(ChatFormatting.BLUE).component())
                 .forGoggles(tooltip, 1);
 
+        super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         return true;
     }
 

@@ -34,7 +34,6 @@ public class TurbineRotorBlock extends KineticBlock implements IBE<TurbineRotorB
         builder.add(ACTIVE);
     }
 
-    // Shaft always exits from the top; rotation is around Y axis.
     @Override
     public Direction.Axis getRotationAxis(BlockState state) {
         return Direction.Axis.Y;
@@ -42,7 +41,7 @@ public class TurbineRotorBlock extends KineticBlock implements IBE<TurbineRotorB
 
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-        return face == Direction.UP;
+        return face == Direction.UP || face == Direction.DOWN;
     }
 
     @Override

@@ -195,10 +195,11 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         float efficiency = mirrorEfficiency();
         // Rate scales super-linearly with height (exponent 1.5) so taller towers are
         // always more block-efficient than multiple short ones.
-        // At max size (3×3×20) and 100% mirrors: 9 mB/tick.
+        // The 7/3 multiplier scales the base formula so a max-size tower (3×3×20) at
+        // full sun produces 21 mB/t of steam, matching the default max-turbine consumption.
         int maxH = switch (width) { case 2 -> MAX_HEIGHTS[2]; case 3 -> MAX_HEIGHTS[3]; default -> MAX_HEIGHTS[1]; };
         float heightFraction = (float) height / maxH;
-        float rate = (width * width) * (float) Math.pow(heightFraction, 1.5) * efficiency;
+        float rate = (width * width) * (float) Math.pow(heightFraction, 1.5) * efficiency * (7f / 3f);
         if (steamMode) {
             steamAccumulator += rate;
             saltAccumulator = 0f;

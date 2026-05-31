@@ -163,8 +163,8 @@ public class Config {
         BUILDER.push("steam_turbine");
         CFG_TURBINE_MAX_RPM              = BUILDER.comment("Maximum RPM the turbine can reach (at max height)").defineInRange("max_rpm", 64, 1, 256);
         CFG_TURBINE_RPM_PER_LAYER        = BUILDER.comment("RPM added per rotor layer").defineInRange("rpm_per_layer", 4, 1, 256);
-        CFG_TURBINE_SU_PER_LAYER         = BUILDER.comment("SU capacity per rotor layer at full blade efficiency").defineInRange("su_per_layer", 128, 1, 1_000_000);
-        CFG_TURBINE_STEAM_PER_LAYER_PER_TICK = BUILDER.comment("mB of steam consumed per rotor layer per tick at full efficiency (wasteful with fewer blades)").defineInRange("steam_per_layer_per_tick", 2, 1, 10_000);
+        CFG_TURBINE_SU_PER_LAYER         = BUILDER.comment("SU capacity per rotor layer at full blade efficiency. Default 256 gives 344 064 SU at max height + full brass, beating the Create superheated steam engine (294 912 SU).").defineInRange("su_per_layer", 256, 1, 1_000_000);
+        CFG_TURBINE_STEAM_PER_LAYER_PER_TICK = BUILDER.comment("mB of steam consumed per rotor layer per tick at full blade efficiency (less-efficient blades waste more steam). Default 1 means a max-height turbine consumes 21 mB/t, matching one max-size Solar Power Tower in steam mode at noon.").defineInRange("steam_per_layer_per_tick", 1, 1, 10_000);
         BUILDER.pop();
 
         BUILDER.pop(); // generators

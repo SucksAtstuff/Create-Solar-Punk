@@ -19,6 +19,7 @@ import net.succ.solar_punk.block.entity.custom.SolarHeaterBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarPowerTowerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BiofilterBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticSprinklerBlockEntity;
+import net.succ.solar_punk.block.entity.custom.TurbineCasingBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineRotorBlockEntity;
 
 public class ModBlockEntities {
@@ -83,6 +84,12 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<KineticSprinklerBlockEntity>> KINETIC_SPRINKLER =
             BLOCK_ENTITIES.register("kinetic_sprinkler", () -> BlockEntityType.Builder
                     .of((pos, state) -> new KineticSprinklerBlockEntity(ModBlockEntities.KINETIC_SPRINKLER.get(), pos, state), ModBlocks.KINETIC_SPRINKLER.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TurbineCasingBlockEntity>> TURBINE_CASING =
+            BLOCK_ENTITIES.register("turbine_casing", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new TurbineCasingBlockEntity(ModBlockEntities.TURBINE_CASING.get(), pos, state),
+                            ModBlocks.TURBINE_CASING.get(), ModBlocks.TURBINE_CASING_GLASS.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TurbineRotorBlockEntity>> TURBINE_ROTOR =

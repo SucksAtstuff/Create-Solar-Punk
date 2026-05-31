@@ -116,17 +116,11 @@ public class SolarPunk {
                     return be.combinedFluidHandler;
                 }
         );
-        // Pipes on any outer casing face proxy to the master rotor's fluid handler.
-        event.registerBlock(Capabilities.FluidHandler.BLOCK,
-                (level, pos, state, be, side) -> {
-                    for (int dy = -23; dy <= 23; dy++)
-                        for (int dx = -3; dx <= 3; dx++)
-                            for (int dz = -3; dz <= 3; dz++)
-                                if (level.getBlockEntity(pos.offset(dx, dy, dz)) instanceof TurbineRotorBlockEntity r && r.isMaster)
-                                    return r.combinedFluidHandler;
-                    return null;
-                },
-                ModBlocks.TURBINE_CASING.get(), ModBlocks.TURBINE_CASING_GLASS.get());
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.TURBINE_CASING.get(),
+                (be, side) -> be.getFluidHandler()
+        );
     }
 
     private static void commonSetup(FMLCommonSetupEvent event) {
@@ -164,7 +158,7 @@ public class SolarPunk {
                 new GeneratedRpm(Config.kineticBatteryRpm, false));
 
             BlockStressValues.CAPACITIES.register(ModBlocks.TURBINE_ROTOR.get(),
-                () -> (double) Config.turbineSuPerLayer * 20);
+                () -> (double) Config.turbineSuPerLayer * 21);
             BlockStressValues.RPM.register(ModBlocks.TURBINE_ROTOR.get(),
                 new GeneratedRpm(Config.turbineMaxRpm, false));
 
