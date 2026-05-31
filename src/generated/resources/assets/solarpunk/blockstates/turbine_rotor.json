@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "solarpunk:block/turbine_rotor"
+    },
+    "lit=true": {
+      "model": "solarpunk:block/turbine_rotor_lit"
+    }
+  }
+}

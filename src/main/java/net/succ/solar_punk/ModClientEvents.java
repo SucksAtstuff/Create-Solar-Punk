@@ -1,20 +1,13 @@
 package net.succ.solar_punk;
 
-import com.simibubi.create.AllPartialModels;
-import com.simibubi.create.content.kinetics.base.OrientedRotatingVisual;
-import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
 import com.simibubi.create.foundation.item.TooltipModifier;
-import dev.engine_room.flywheel.api.visualization.VisualizerRegistry;
-import dev.engine_room.flywheel.lib.model.Models;
-import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import net.createmod.catnip.lang.FontHelper.Palette;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.neoforged.api.distmarker.Dist;
@@ -33,10 +26,14 @@ import net.succ.solar_punk.client.model.FermentationVatModel;
 import net.succ.solar_punk.client.model.ModSpriteShifts;
 import net.succ.solar_punk.client.model.SolarPowerTowerModel;
 import net.succ.solar_punk.client.model.TurbineCasingModel;
+import net.succ.solar_punk.client.renderer.AndesiteSolarPanelRenderer;
+import net.succ.solar_punk.client.renderer.BiofilterRenderer;
 import net.succ.solar_punk.client.renderer.FermentationVatRenderer;
 import net.succ.solar_punk.client.renderer.GeyserCapRenderer;
+import net.succ.solar_punk.client.renderer.KineticBatteryRenderer;
 import net.succ.solar_punk.client.renderer.KineticSprinklerRenderer;
 import net.succ.solar_punk.client.renderer.SolarPowerTowerRenderer;
+import net.succ.solar_punk.client.renderer.TurbineRotorRenderer;
 import net.succ.solar_punk.compat.ponder.SolarPunkPonderPlugin;
 
 import java.util.ArrayList;
@@ -94,6 +91,10 @@ public class ModClientEvents {
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntities.GEYSER_CAP.get(), GeyserCapRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.TURBINE_ROTOR.get(), TurbineRotorRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.ANDESITE_SOLAR_PANEL.get(), AndesiteSolarPanelRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.KINETIC_BATTERY.get(), KineticBatteryRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.BIOFILTER.get(), BiofilterRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.FERMENTATION_VAT.get(), FermentationVatRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_POWER_TOWER.get(), SolarPowerTowerRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.KINETIC_SPRINKLER.get(), KineticSprinklerRenderer::new);
@@ -106,32 +107,6 @@ public class ModClientEvents {
             PonderIndex.addPlugin(new SolarPunkPonderPlugin());
             registerTooltips();
 
-            VisualizerRegistry.setVisualizer(
-                ModBlockEntities.ANDESITE_SOLAR_PANEL.get(),
-                new SimpleBlockEntityVisualizer<>(
-                    (context, blockEntity, partialTick) -> new OrientedRotatingVisual<>(
-                        context, blockEntity, partialTick,
-                        Direction.SOUTH, Direction.DOWN,
-                        Models.partial(AllPartialModels.SHAFT_HALF)
-                    ),
-                    be -> false
-                )
-            );
-            VisualizerRegistry.setVisualizer(
-                ModBlockEntities.KINETIC_BATTERY.get(),
-                new SimpleBlockEntityVisualizer<>(SingleAxisRotatingVisual::shaft, be -> false)
-            );
-            VisualizerRegistry.setVisualizer(
-                ModBlockEntities.BIOFILTER.get(),
-                new SimpleBlockEntityVisualizer<>(
-                    (context, blockEntity, partialTick) -> new OrientedRotatingVisual<>(
-                        context, blockEntity, partialTick,
-                        Direction.SOUTH, Direction.DOWN,
-                        Models.partial(AllPartialModels.SHAFT_HALF)
-                    ),
-                    be -> false
-                )
-            );
         });
     }
 
@@ -149,6 +124,7 @@ public class ModClientEvents {
         tip(ModBlocks.SOLAR_MIRROR::get);
         tip(ModBlocks.BIOFILTER::get);
         tip(ModBlocks.KINETIC_SPRINKLER::get);
+        tip(ModBlocks.TURBINE_ROTOR::get);
     }
 
     private static void tip(Supplier<? extends net.minecraft.world.level.block.Block> block) {

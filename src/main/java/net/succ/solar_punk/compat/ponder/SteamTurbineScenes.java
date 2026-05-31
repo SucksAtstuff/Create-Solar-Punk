@@ -1,7 +1,9 @@
 package net.succ.solar_punk.compat.ponder;
 
+import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
@@ -12,7 +14,7 @@ public class SteamTurbineScenes {
     private static final BlockPos CAP_ROTOR_5 = new BlockPos(3, 5, 3);
 
     // Show the 24 border positions of the 7x7 ring at a given y level
-    private static void showRing(SceneBuilder scene, SceneBuildingUtil util, int y) {
+    private static void showRing(CreateSceneBuilder scene, SceneBuildingUtil util, int y) {
         for (int x = 0; x <= 6; x++)
             for (int z = 0; z <= 6; z++)
                 if (x == 0 || x == 6 || z == 0 || z == 6)
@@ -20,7 +22,7 @@ public class SteamTurbineScenes {
     }
 
     // Show the 8 blade positions at a given y level (+ pattern, 2 blades per arm)
-    private static void showBlades(SceneBuilder scene, SceneBuildingUtil util, int y) {
+    private static void showBlades(CreateSceneBuilder scene, SceneBuildingUtil util, int y) {
         scene.world().showSection(util.select().position(new BlockPos(4, y, 3)), Direction.DOWN);
         scene.world().showSection(util.select().position(new BlockPos(5, y, 3)), Direction.DOWN);
         scene.world().showSection(util.select().position(new BlockPos(2, y, 3)), Direction.DOWN);
@@ -32,7 +34,7 @@ public class SteamTurbineScenes {
     }
 
     // Show the sealed interior of the cap layer (5x5 minus center rotor)
-    private static void showCapInterior(SceneBuilder scene, SceneBuildingUtil util, int y) {
+    private static void showCapInterior(CreateSceneBuilder scene, SceneBuildingUtil util, int y) {
         for (int x = 1; x <= 5; x++)
             for (int z = 1; z <= 5; z++)
                 if (x != 3 || z != 3)
@@ -40,7 +42,7 @@ public class SteamTurbineScenes {
     }
 
     // Show the full sealed interior of the floor layer (5x5 including center - all casing, no rotor)
-    private static void showFloorInterior(SceneBuilder scene, SceneBuildingUtil util, int y) {
+    private static void showFloorInterior(CreateSceneBuilder scene, SceneBuildingUtil util, int y) {
         for (int x = 1; x <= 5; x++)
             for (int z = 1; z <= 5; z++)
                 scene.world().showSection(util.select().position(new BlockPos(x, y, z)), Direction.DOWN);
@@ -50,7 +52,8 @@ public class SteamTurbineScenes {
      * Scene 1 - walks through building a minimum turbine component by component.
      * Layout: floor(y=1) + blades(y=2,3,4) + cap(y=5).
      */
-    public static void structure(SceneBuilder scene, SceneBuildingUtil util) {
+    public static void structure(SceneBuilder builder, SceneBuildingUtil util) {
+        CreateSceneBuilder scene = new CreateSceneBuilder(builder);
         scene.title("turbine_structure", "Building the Steam Turbine");
         scene.configureBasePlate(0, 0, 7);
 
@@ -122,6 +125,7 @@ public class SteamTurbineScenes {
                 .attachKeyFrame();
         scene.idle(90);
 
+        scene.world().setKineticSpeed(util.select().fromTo(ROTOR_3, CAP_ROTOR_5), 16f);
         scene.overlay().showText(60)
                 .text("Rotational power exits from the top face of the cap rotor - connect a shaft directly above")
                 .pointAt(util.vector().topOf(CAP_ROTOR_5))
@@ -135,7 +139,8 @@ public class SteamTurbineScenes {
      * Scene 2 - shows a full 7-blade-layer, all-brass turbine.
      * Layout: floor(y=1) + blades(y=2-8) + cap(y=9).
      */
-    public static void maxTurbine(SceneBuilder scene, SceneBuildingUtil util) {
+    public static void maxTurbine(SceneBuilder builder, SceneBuildingUtil util) {
+        CreateSceneBuilder scene = new CreateSceneBuilder(builder);
         scene.title("turbine_max", "Maximum Efficiency Turbine");
         scene.configureBasePlate(0, 0, 7);
 
@@ -175,6 +180,7 @@ public class SteamTurbineScenes {
         scene.world().showSection(util.select().layer(9), Direction.DOWN);
         scene.idle(10);
 
+        scene.world().setKineticSpeed(util.select().fromTo(new BlockPos(3, 2, 3), new BlockPos(3, 9, 3)), 16f);
         scene.overlay().showText(80)
                 .text("Cap the top identically to the floor - full 7x7 Casing with the Rotor at center. Power exits from the top of this rotor")
                 .pointAt(util.vector().topOf(new BlockPos(3, 9, 3)))

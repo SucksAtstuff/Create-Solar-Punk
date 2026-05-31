@@ -47,7 +47,6 @@ public class ModCreativeModeTabs {
                         output.accept(ModBlocks.TURBINE_CASING.get());
                         output.accept(ModBlocks.TURBINE_CASING_GLASS.get());
                         output.accept(ModBlocks.TURBINE_ROTOR.get());
-                        output.accept(ModBlocks.TURBINE_ROTOR.get());
                         output.accept(ModBlocks.ANDESITE_TURBINE_BLADE.get());
                         output.accept(ModBlocks.BRASS_TURBINE_BLADE.get());
                         output.accept(ModFluids.MOLTEN_SALT_BUCKET.get());

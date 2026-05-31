@@ -185,6 +185,12 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.biofuel_engine_header", "Biofuel Engine");
         add("create.solar_punk.tooltip.consumption", "Consumption: ");
 
+        add("create.solar_punk.tooltip.steam_turbine_header", "Steam Turbine");
+        add("create.solar_punk.tooltip.turbine_invalid", "Structure invalid - check build");
+        add("create.solar_punk.tooltip.turbine_not_master", "Not the base rotor");
+        add("create.solar_punk.tooltip.turbine_height", "Height: ");
+        add("create.solar_punk.tooltip.turbine_blades", "Blades: ");
+
         add("create.solar_punk.tooltip.solar_power_tower_header", "Solar Power Tower");
         add("create.solar_punk.tooltip.mirrors", "Mirrors: ");
         add("create.solar_punk.tooltip.efficiency", "Efficiency: ");
@@ -248,6 +254,10 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.kinetic_sprinkler.tooltip.summary", "Hydrates _farmland_ and accelerates _crop growth_ in a 5x5 area below it.");
         add("block.solarpunk.kinetic_sprinkler.tooltip.condition1", "When supplied with Fertilizer instead of water");
         add("block.solarpunk.kinetic_sprinkler.tooltip.behaviour1", "Forces _instant growth_ on every crop in range each cycle.");
+
+        add("block.solarpunk.turbine_rotor.tooltip.summary", "The power output block of the _Steam Turbine_ multiblock. Pipe _Steam_ into the casing walls and collect _Rotational Force_ from the top face.");
+        add("block.solarpunk.turbine_rotor.tooltip.condition1", "Valid 7x7 structure with Turbine Blades");
+        add("block.solarpunk.turbine_rotor.tooltip.behaviour1", "Generates power proportional to height and blade efficiency. Drains condensate water from the bottom.");
 
         ModBlocks.BLOCKS.getEntries().forEach(entry ->
                 add(entry.get(), toTitleCase(entry.getId().getPath())));

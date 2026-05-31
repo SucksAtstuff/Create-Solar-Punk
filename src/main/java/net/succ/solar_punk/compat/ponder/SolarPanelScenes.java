@@ -38,6 +38,7 @@ public class SolarPanelScenes {
         scene.idle(80);
 
         scene.world().setKineticSpeed(util.select().position(shaftPos), 8f);
+        scene.world().setKineticSpeed(util.select().position(panelPos), 8f);
         scene.world().modifyBlock(panelPos,
                 state -> state.setValue(AndesiteSolarPanelBlock.LIT, true), false);
         scene.overlay().showText(70)
@@ -47,6 +48,7 @@ public class SolarPanelScenes {
         scene.idle(80);
 
         scene.world().setKineticSpeed(util.select().position(shaftPos), 16f);
+        scene.world().setKineticSpeed(util.select().position(panelPos), 16f);
         scene.overlay().showText(70)
                 .text("At noon in clear weather: 16 RPM with 4096 SU of stress capacity")
                 .pointAt(util.vector().topOf(panelPos))

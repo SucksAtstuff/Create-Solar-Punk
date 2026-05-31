@@ -193,7 +193,8 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
             () -> new TurbineRotorBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
-                    .strength(3.5f, 6.0f)));
+                    .strength(3.5f, 6.0f)
+                    .noOcclusion()));
 
     public static final DeferredBlock<AndesiteTurbineBladeBlock> ANDESITE_TURBINE_BLADE = registerBlock("andesite_turbine_blade",
             () -> new AndesiteTurbineBladeBlock(BlockBehaviour.Properties.of()
