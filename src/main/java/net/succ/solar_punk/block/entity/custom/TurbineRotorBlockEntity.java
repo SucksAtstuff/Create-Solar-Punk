@@ -17,6 +17,8 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.block.custom.AndesiteTurbineBladeBlock;
+import net.succ.solar_punk.block.custom.BrassTurbineBladeBlock;
 import net.succ.solar_punk.block.custom.TurbineRotorBlock;
 import net.succ.solar_punk.fluid.ModFluids;
 
@@ -29,11 +31,21 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
     private static final int MAX_HEIGHT = 20;
     private static final float BASE_EFFICIENCY = 0.1f;
 
-    private boolean structureValid = false;
+    // Arm order matches TurbineRotorRenderer: 0=East, 1=South, 2=West, 3=North.
+    // Each entry lists the two blade positions (dx,dz) for that arm.
+    public static final int[][][] ARM_OFFSETS = {
+        {{ 1, 0}, { 2, 0}},  // East
+        {{ 0, 1}, { 0, 2}},  // South
+        {{-1, 0}, {-2, 0}},  // West
+        {{ 0,-1}, { 0,-2}},  // North
+    };
+
+    public boolean structureValid = false;
     public boolean isMaster = false;
-    private int turbineHeight = 0;
-    private int andesiteBladeCount = 0;
-    private int brassBladeCount = 0;
+    public int turbineHeight = 0;
+    public int andesiteBladeCount = 0;
+    public int brassBladeCount = 0;
+    public int[] layerBladeMask = new int[0]; // 4-bit mask per blade layer; bit n = arm n present
     private float bladeEfficiency = BASE_EFFICIENCY;
     private int scanCooldown = 1;
     private boolean needsCapabilityRefresh = true; // not persisted - fires once after each load
@@ -173,11 +185,31 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
 
     private void setActive(boolean active) {
         BlockState state = getBlockState();
-        if (state.getBlock() instanceof TurbineRotorBlock && state.getValue(TurbineRotorBlock.ACTIVE) != active)
+        if (state.getBlock() instanceof TurbineRotorBlock && state.getValue(TurbineRotorBlock.ACTIVE) != active) {
             level.setBlock(worldPosition, state.setValue(TurbineRotorBlock.ACTIVE, active), 3);
+            setBladeHidden(active);
+        }
+    }
+
+    private static final int[][] BLADE_OFFSETS = {{0,-2},{0,-1},{0,1},{0,2},{-2,0},{-1,0},{1,0},{2,0}};
+
+    private void setBladeHidden(boolean hidden) {
+        if (level == null || level.isClientSide || turbineHeight < 2) return;
+        int rx = worldPosition.getX(), ry = worldPosition.getY(), rz = worldPosition.getZ();
+        for (int dy = 0; dy < turbineHeight - 1; dy++) {
+            for (int[] off : BLADE_OFFSETS) {
+                BlockPos pos = new BlockPos(rx + off[0], ry + dy, rz + off[1]);
+                BlockState bs = level.getBlockState(pos);
+                if (bs.is(ModBlocks.ANDESITE_TURBINE_BLADE.get()))
+                    level.setBlock(pos, bs.setValue(AndesiteTurbineBladeBlock.HIDDEN, hidden), 2);
+                else if (bs.is(ModBlocks.BRASS_TURBINE_BLADE.get()))
+                    level.setBlock(pos, bs.setValue(BrassTurbineBladeBlock.HIDDEN, hidden), 2);
+            }
+        }
     }
 
     public void invalidateStructure() {
+        if (isMaster && structureValid) setBladeHidden(false);
         structureValid = false;
         isMaster = false;
         scanCooldown = 0;
@@ -256,15 +288,20 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         int height = topY - ry + 1; // blade layers + cap
         if (height < 2) return false; // minimum: 1 blade layer + cap
 
-        // Count blades in all layers except the top cap.
+        // Count blades and build per-layer arm presence mask (4 bits: East/South/West/North).
         int andesite = 0, brass = 0;
-        int[][] bladeOffsets = {{0,-2},{0,-1},{0,1},{0,2},{-2,0},{-1,0},{1,0},{2,0}};
+        int[] newMask = new int[height - 1];
         for (int y = ry; y < topY; y++) {
-            for (int[] off : bladeOffsets) {
-                BlockState bs = level.getBlockState(new BlockPos(rx + off[0], y, rz + off[1]));
-                if (bs.is(ModBlocks.ANDESITE_TURBINE_BLADE.get())) andesite++;
-                else if (bs.is(ModBlocks.BRASS_TURBINE_BLADE.get())) brass++;
+            int dy = y - ry;
+            int mask = 0;
+            for (int arm = 0; arm < 4; arm++) {
+                for (int[] off : ARM_OFFSETS[arm]) {
+                    BlockState bs = level.getBlockState(new BlockPos(rx + off[0], y, rz + off[1]));
+                    if (bs.is(ModBlocks.ANDESITE_TURBINE_BLADE.get())) { andesite++; mask |= (1 << arm); }
+                    else if (bs.is(ModBlocks.BRASS_TURBINE_BLADE.get())) { brass++; mask |= (1 << arm); }
+                }
             }
+            newMask[dy] = mask;
         }
 
         int maxBlades = (height - 1) * 8; // only cap has no blades
@@ -274,6 +311,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         this.turbineHeight = height;
         this.andesiteBladeCount = andesite;
         this.brassBladeCount = brass;
+        this.layerBladeMask = newMask;
         this.bladeEfficiency = BASE_EFFICIENCY + (1f - BASE_EFFICIENCY) * bladeRatio;
         return true;
     }
@@ -399,6 +437,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         tag.putInt("AndesiteBlades", andesiteBladeCount);
         tag.putInt("BrassBlades", brassBladeCount);
         tag.putFloat("BladeEfficiency", bladeEfficiency);
+        tag.putIntArray("LayerBladeMask", layerBladeMask);
         FluidTankNBTHelper.save(tag, "SteamTank", steamTank);
         FluidTankNBTHelper.save(tag, "CondensateTank", condensateTank);
     }
@@ -413,6 +452,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         brassBladeCount = tag.getInt("BrassBlades");
         bladeEfficiency = tag.getFloat("BladeEfficiency");
         if (bladeEfficiency < BASE_EFFICIENCY) bladeEfficiency = BASE_EFFICIENCY;
+        layerBladeMask = tag.getIntArray("LayerBladeMask");
         FluidTankNBTHelper.load(tag, "SteamTank", steamTank);
         FluidTankNBTHelper.load(tag, "CondensateTank", condensateTank);
     }
