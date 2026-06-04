@@ -54,7 +54,7 @@ public class HeatBatteryScenes {
         scene.idle(80);
 
         scene.overlay().showText(60)
-                .text("The block's glow indicates heat level — brighter means hotter")
+                .text("The block's glow indicates heat level - brighter means hotter")
                 .pointAt(util.vector().centerOf(batteryPos))
                 .attachKeyFrame();
         scene.idle(70);
@@ -85,7 +85,7 @@ public class HeatBatteryScenes {
         scene.idle(80);
 
         scene.overlay().showText(70)
-                .text("Place it directly below a Boiler to supply heat — no fuel required")
+                .text("Place it directly below a Boiler to supply heat - no fuel required")
                 .pointAt(util.vector().centerOf(batteryPos))
                 .attachKeyFrame();
         scene.idle(80);
@@ -97,7 +97,7 @@ public class HeatBatteryScenes {
         scene.idle(70);
 
         scene.overlay().showText(60)
-                .text("Stored heat dissipates slowly over time — keep it topped up with the Solar Heater")
+                .text("Stored heat dissipates slowly over time - keep it topped up with the Solar Heater")
                 .pointAt(util.vector().centerOf(batteryPos))
                 .attachKeyFrame();
         scene.world().modifyBlock(batteryPos,

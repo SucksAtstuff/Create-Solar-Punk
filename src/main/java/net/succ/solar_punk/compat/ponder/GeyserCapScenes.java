@@ -56,7 +56,7 @@ public class GeyserCapScenes {
         scene.idle(10);
 
         scene.overlay().showText(70)
-                .text("Rotation is output along the cap's sides — connect shafts or machines to collect the power")
+                .text("Rotation is output along the cap's sides - connect shafts or machines to collect the power")
                 .pointAt(util.vector().centerOf(capPos))
                 .attachKeyFrame();
         scene.idle(80);

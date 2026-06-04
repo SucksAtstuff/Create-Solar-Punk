@@ -97,6 +97,14 @@ public class ModPonderProvider implements DataProvider {
         // 3×3×3 larger vat to show scaling
         SCHEMATICS.put("fermentation_vat/scaling", addVatLayers(new SceneStructure().withBasePlate(), 3, 3));
 
+        // floor + 3 blade layers + cap = 5 total layers; 7x7x7 schematic
+        SCHEMATICS.put("turbine_rotor/structure",
+                addTurbineLayers(new SceneStructure(7, 7, 7).withBasePlate(), 3, false));
+
+        // floor + 7 blade layers + cap = 9 total layers; 7x11x7 schematic
+        SCHEMATICS.put("turbine_rotor/max_turbine",
+                addTurbineLayers(new SceneStructure(7, 11, 7).withBasePlate(), 7, true));
+
         // Tower + mirrors on west (x=0) and east (x=4) faces — used by both scenes
         SceneStructure towerWithMirrors = addTowerLayers(new SceneStructure().withBasePlate());
         for (int y = 1; y <= 3; y++)
@@ -162,6 +170,35 @@ public class ModPonderProvider implements DataProvider {
         return s;
     }
 
+    // Adds a floor (y=1), `bladeLayers` blade layers (y=2..bladeLayers+1), then a top cap (y=bladeLayers+2).
+    // Floor and cap are full 7x7 of casings with the rotor at center. Blade layers have the ring + blades.
+    private static SceneStructure addTurbineLayers(SceneStructure s, int bladeLayers, boolean allBrass) {
+        String blade = allBrass ? "solarpunk:brass_turbine_blade" : "solarpunk:andesite_turbine_blade";
+        // Floor layer (y=1): full 7x7 casings, no rotor.
+        for (int x = 0; x <= 6; x++)
+            for (int z = 0; z <= 6; z++)
+                s.addBlock(x, 1, z, "solarpunk:turbine_casing");
+        // Blade layers (y=2 to y=bladeLayers+1).
+        for (int y = 2; y <= bladeLayers + 1; y++) {
+            for (int x = 0; x <= 6; x++)
+                for (int z = 0; z <= 6; z++)
+                    if (x == 0 || x == 6 || z == 0 || z == 6)
+                        s.addBlock(x, y, z, "solarpunk:turbine_casing");
+            s.addBlock(3, y, 3, "solarpunk:turbine_rotor", "lit", "false");
+            s.addBlock(4, y, 3, blade); s.addBlock(5, y, 3, blade);
+            s.addBlock(2, y, 3, blade); s.addBlock(1, y, 3, blade);
+            s.addBlock(3, y, 4, blade); s.addBlock(3, y, 5, blade);
+            s.addBlock(3, y, 2, blade); s.addBlock(3, y, 1, blade);
+        }
+        // Top cap (y=bladeLayers+2): full 7x7 casings + rotor at center.
+        int cap = bladeLayers + 2;
+        for (int x = 0; x <= 6; x++)
+            for (int z = 0; z <= 6; z++)
+                if (x == 3 && z == 3) s.addBlock(3, cap, 3, "solarpunk:turbine_rotor", "lit", "false");
+                else                   s.addBlock(x, cap, z, "solarpunk:turbine_casing");
+        return s;
+    }
+
     // Adds a 3×3×3 tower footprint (x=1-3, z=1-3, y=1-3) with correct position states.
     private static SceneStructure addTowerLayers(SceneStructure s) {
         for (int x = 1; x <= 3; x++)
@@ -181,11 +218,20 @@ public class ModPonderProvider implements DataProvider {
         private final List<CompoundTag> palette = new ArrayList<>();
         private final List<CompoundTag> blocks = new ArrayList<>();
         private final Map<String, Integer> paletteIndex = new LinkedHashMap<>();
+        private final int sizeX, sizeY, sizeZ;
+
+        SceneStructure() { this(5, 8, 5); }
+
+        SceneStructure(int sizeX, int sizeY, int sizeZ) {
+            this.sizeX = sizeX;
+            this.sizeY = sizeY;
+            this.sizeZ = sizeZ;
+        }
 
         SceneStructure withBasePlate() {
             int idx = getOrAddPalette("minecraft:smooth_stone", Map.of());
-            for (int x = 0; x < 5; x++)
-                for (int z = 0; z < 5; z++)
+            for (int x = 0; x < sizeX; x++)
+                for (int z = 0; z < sizeZ; z++)
                     placeBlock(idx, x, 0, z);
             return this;
         }
@@ -230,9 +276,9 @@ public class ModPonderProvider implements DataProvider {
             tag.putInt("DataVersion", 3955);
 
             ListTag size = new ListTag();
-            size.add(IntTag.valueOf(5));
-            size.add(IntTag.valueOf(8));
-            size.add(IntTag.valueOf(5));
+            size.add(IntTag.valueOf(sizeX));
+            size.add(IntTag.valueOf(sizeY));
+            size.add(IntTag.valueOf(sizeZ));
             tag.put("size", size);
 
             ListTag paletteList = new ListTag();

@@ -1,0 +1,54 @@
+{
+  "credit": "Made with Blockbench",
+  "render_type": "minecraft:cutout",
+  "parent": "block/block",
+  "texture_size": [32, 32],
+  "textures": {
+    "particle": "create:block/industrial_iron_block",
+    "1": "solarpunk:block/steam_turbine/steam_rotor/steam_rotor_front",
+    "2": "solarpunk:block/steam_turbine/steam_rotor/steam_rotor_front_frame",
+    "5": "solarpunk:block/steam_turbine/steam_rotor/axis_top",
+    "6": "solarpunk:block/steam_turbine/steam_rotor/axis",
+    "7": "create:block/industrial_iron_block",
+    "8": "create:block/industrial_iron_block_top"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+      "faces": {
+        "north": {"uv": [0, 0, 16, 16], "rotation": 270, "texture": "#8"},
+        "east": {"uv": [0, 0, 16, 16], "rotation": 270, "texture": "#7"},
+        "south": {"uv": [0, 0, 16, 16], "rotation": 270, "texture": "#8"},
+        "west": {"uv": [0, 0, 16, 16], "rotation": 270, "texture": "#7"},
+        "up": {"uv": [0, 0, 16, 16], "rotation": 180, "texture": "#2"},
+        "down": {"uv": [0, 0, 16, 16], "texture": "#2"}
+      }
+    },
+    {
+      "from": [1.95, 16, 1.95],
+      "to": [14.05, 15, 14.05],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+      "faces": {
+        "north": {"uv": [2, 15, 14, 16], "texture": "#1"},
+        "east": {"uv": [0, 2, 1, 14], "rotation": 270, "texture": "#1"},
+        "south": {"uv": [2, 0, 14, 1], "rotation": 180, "texture": "#1"},
+        "west": {"uv": [15, 2, 16, 14], "rotation": 90, "texture": "#1"},
+        "up": {"uv": [2, 2, 14, 14], "rotation": 180, "texture": "#1"}
+      }
+    },
+    {
+      "from": [1.95, 1, 1.95],
+      "to": [14.05, 0, 14.05],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+      "faces": {
+        "north": {"uv": [2, 15, 14, 16], "rotation": 180, "texture": "#1"},
+        "east": {"uv": [15, 2, 16, 14], "rotation": 270, "texture": "#1"},
+        "south": {"uv": [2, 0, 14, 1], "texture": "#1"},
+        "west": {"uv": [0, 2, 1, 14], "rotation": 90, "texture": "#1"},
+        "down": {"uv": [2, 2, 14, 14], "texture": "#1"}
+      }
+    }
+  ]
+}

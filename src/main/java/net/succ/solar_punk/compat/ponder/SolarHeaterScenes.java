@@ -55,7 +55,7 @@ public class SolarHeaterScenes {
         scene.idle(70);
 
         scene.overlay().showText(60)
-                .text("The resulting fluid fills the output tank — drain it with a pipe or bucket")
+                .text("The resulting fluid fills the output tank - drain it with a pipe or bucket")
                 .pointAt(util.vector().topOf(heaterPos))
                 .attachKeyFrame();
         scene.idle(70);

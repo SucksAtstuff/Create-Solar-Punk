@@ -1,9 +1,12 @@
 package net.succ.solar_punk.compat.ponder;
 
+import com.simibubi.create.AllItems;
+import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -38,7 +41,7 @@ public class SolarPowerTowerScenes {
         scene.idle(20);
 
         scene.overlay().showText(70)
-                .text("Stack Solar Power Tower blocks vertically — they merge into a single multiblock")
+                .text("Stack Solar Power Tower blocks vertically - they merge into a single multiblock")
                 .pointAt(util.vector().topOf(TOP))
                 .attachKeyFrame();
         scene.idle(80);
@@ -58,7 +61,7 @@ public class SolarPowerTowerScenes {
         scene.idle(70);
 
         scene.overlay().showText(80)
-                .text("During the day with a clear sky, the tower converts water into Molten Salt — rain and night stop production")
+                .text("During the day with a clear sky, the tower converts water into Molten Salt - rain and night stop production")
                 .pointAt(util.vector().topOf(TOP))
                 .attachKeyFrame();
         scene.world().modifyBlock(BOT,    s -> s.setValue(SolarPowerTowerBlock.LIT, true), false);
@@ -77,13 +80,39 @@ public class SolarPowerTowerScenes {
         scene.idle(20);
 
         scene.overlay().showText(70)
-                .text("Place Solar Mirrors on the tower's side faces to boost output — see the Solar Mirrors scene for details")
+                .text("Place Solar Mirrors on the tower's side faces to boost output - see the Solar Mirrors scene for details")
                 .pointAt(util.vector().centerOf(CENTER))
                 .attachKeyFrame();
         scene.idle(80);
 
         scene.overlay().showText(60)
                 .text("Drain the Molten Salt from the output and pipe it to a Heat Battery")
+                .pointAt(util.vector().centerOf(BOT))
+                .attachKeyFrame();
+        scene.idle(70);
+
+        // --- Mode switch ---
+        scene.overlay().showControls(util.vector().centerOf(CENTER), Pointing.RIGHT, 40)
+                .rightClick()
+                .withItem(new ItemStack(AllItems.WRENCH.get()));
+        scene.idle(10);
+        scene.world().modifyBlockEntity(CONTROLLER, SolarPowerTowerBlockEntity.class, be -> {
+            be.steamMode = true;
+            be.saltTank.setFluid(FluidStack.EMPTY);
+        });
+        scene.idle(30);
+
+        scene.overlay().showText(70)
+                .text("Right-click the tower with a Wrench to switch it to Steam mode - the stored fluid is cleared on switch")
+                .pointAt(util.vector().centerOf(CENTER))
+                .attachKeyFrame();
+        scene.world().modifyBlockEntity(CONTROLLER, SolarPowerTowerBlockEntity.class, be ->
+                be.steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), 8000),
+                        IFluidHandler.FluidAction.EXECUTE));
+        scene.idle(80);
+
+        scene.overlay().showText(60)
+                .text("In Steam mode the tower produces Steam directly - pipe it to a Steam Turbine or other consumer")
                 .pointAt(util.vector().centerOf(BOT))
                 .attachKeyFrame();
         scene.idle(70);
@@ -114,13 +143,13 @@ public class SolarPowerTowerScenes {
         scene.idle(80);
 
         scene.overlay().showText(80)
-                .text("Mirror efficiency follows a triangle curve — it peaks when roughly half the available side faces are covered")
+                .text("Mirror efficiency follows a triangle curve - it peaks when roughly half the available side faces are covered")
                 .pointAt(util.vector().centerOf(CENTER))
                 .attachKeyFrame();
         scene.idle(90);
 
         scene.overlay().showText(70)
-                .text("Adding mirrors past twice the optimal count reduces efficiency to zero — do not over-mirror")
+                .text("Adding mirrors past twice the optimal count reduces efficiency to zero - do not over-mirror")
                 .pointAt(util.vector().centerOf(CENTER))
                 .attachKeyFrame();
         scene.idle(80);

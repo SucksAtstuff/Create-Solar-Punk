@@ -28,6 +28,7 @@ public class DataGenerators {
         generator.addProvider(event.includeServer(), new ModMillingRecipeGen(output, lookupProvider));
         generator.addProvider(event.includeServer(), new ModMixingRecipeGen(output, lookupProvider));
         generator.addProvider(event.includeServer(), new ModCompactingRecipeGen(output, lookupProvider));
+        generator.addProvider(event.includeServer(), new ModItemApplicationRecipeGen(output, lookupProvider));
         ModBlockTagProvider blockTagProvider = generator.addProvider(event.includeServer(),
                 new ModBlockTagProvider(output, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(),

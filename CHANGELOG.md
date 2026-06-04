@@ -1,3 +1,25 @@
+# 0.3.0-1.21.1
+
+### Steam Turbine
+
+Added the **Steam Turbine** multiblock. Build a 7x7 shell of **Turbine Casing** (or **Turbine Casing Glass**) around a column of **Turbine Rotors**, then fill each interior layer with **Turbine Blades** in a plus pattern - two blades per arm, four arms. Pipe steam in from any side face and rotational power exits from the top of the rotor column.
+
+Blade type determines efficiency: **Andesite Blades** are cheaper but waste more steam, **Brass Blades** squeeze the most power out of every bucket. Mixing types is fine - efficiency scales smoothly. Taller turbines consume more steam and produce more SU, with condensate water draining from the bottom.
+
+### Steam
+
+Added **Steam** as a new fluid. It is the fuel source for the Steam Turbine and can be bucketed and piped like any other fluid.
+
+### Solar Power Tower Steam Mode
+
+The **Solar Power Tower** can now produce **Steam** in addition to Molten Salt. Right-click the tower with a **Wrench** to toggle between the two modes. Switching clears the stored fluid, so you cannot accumulate both at once. Steam can be piped directly to a Steam Turbine, making the tower a self-contained solar-to-power chain without needing a Heat Battery and boiler.
+
+### Turbine Casing Crafting
+
+**Turbine Casing** is crafted by right-clicking a Block of Industrial Iron with a Zinc Ingot, or by running it through a Deployer holding zinc. Right-click a Turbine Casing with Glass to get the glass variant. Both work in-world and in a Deployer contraption.
+
+---
+
 # 0.2.1-1.21.1
 
 ### Create: Aeronautics Compat

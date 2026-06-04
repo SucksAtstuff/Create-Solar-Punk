@@ -4,7 +4,6 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.succ.solar_punk.client.renderer.KineticSprinklerItemRenderer;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
@@ -34,16 +33,6 @@ public class KineticSprinklerItem extends BlockItem implements GeoItem {
                 if (this.renderer == null)
                     this.renderer = new KineticSprinklerItemRenderer();
                 return this.renderer;
-            }
-        });
-    }
-
-    @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(new IClientItemExtensions() {
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return GeoRenderProvider.of(KineticSprinklerItem.this).getGeoItemRenderer();
             }
         });
     }

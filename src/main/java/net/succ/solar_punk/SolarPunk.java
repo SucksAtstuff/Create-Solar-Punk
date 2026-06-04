@@ -17,6 +17,7 @@ import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.FermentationVatBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
+import net.succ.solar_punk.block.entity.custom.TurbineRotorBlockEntity;
 import net.succ.solar_punk.datagen.DataGenerators;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.fluid.ModFluidTypes;
@@ -106,6 +107,20 @@ public class SolarPunk {
                 ModBlockEntities.KINETIC_SPRINKLER.get(),
                 (be, side) -> be.fluidTank
         );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.TURBINE_ROTOR.get(),
+                (be, side) -> {
+                    if (!be.isMaster) return null;
+                    if (side == Direction.UP) return null; // shaft face
+                    return be.combinedFluidHandler;
+                }
+        );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.TURBINE_CASING.get(),
+                (be, side) -> be.getFluidHandler()
+        );
     }
 
     private static void commonSetup(FMLCommonSetupEvent event) {
@@ -141,6 +156,11 @@ public class SolarPunk {
                 () -> (double) Config.kineticBatterySu);
             BlockStressValues.RPM.register(ModBlocks.KINETIC_BATTERY.get(),
                 new GeneratedRpm(Config.kineticBatteryRpm, false));
+
+            BlockStressValues.CAPACITIES.register(ModBlocks.TURBINE_ROTOR.get(),
+                () -> (double) Config.turbineSuPerLayer * 21);
+            BlockStressValues.RPM.register(ModBlocks.TURBINE_ROTOR.get(),
+                new GeneratedRpm(Config.turbineMaxRpm, false));
 
             // Consumer — stress impact for tooltip
             BlockStressValues.IMPACTS.register(ModBlocks.BIOFILTER.get(),

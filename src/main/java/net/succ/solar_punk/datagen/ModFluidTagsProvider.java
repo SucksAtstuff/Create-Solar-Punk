@@ -25,6 +25,8 @@ public class ModFluidTagsProvider extends FluidTagsProvider {
             TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "biofuel"));
     private static final TagKey<Fluid> FERTILIZER =
             TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "fertilizer"));
+    private static final TagKey<Fluid> STEAM =
+            TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "steam"));
 
     public ModFluidTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider,
                                 @Nullable ExistingFileHelper existingFileHelper) {
@@ -51,5 +53,9 @@ public class ModFluidTagsProvider extends FluidTagsProvider {
         tag(FERTILIZER)
                 .add(ModFluids.FERTILIZER_SOURCE.get())
                 .add(ModFluids.FERTILIZER_FLOWING.get());
+
+        tag(STEAM)
+                .add(ModFluids.STEAM_SOURCE.get())
+                .add(ModFluids.STEAM_FLOWING.get());
     }
 }

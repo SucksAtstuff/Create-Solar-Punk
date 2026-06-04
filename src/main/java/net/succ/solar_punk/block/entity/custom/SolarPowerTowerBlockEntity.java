@@ -29,7 +29,9 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
     // Max height per footprint width: index 1→5, 2→10, 3→20
     private static final int[] MAX_HEIGHTS = {0, 5, 10, 20};
 
+    public  boolean steamMode        = false;
     private float saltAccumulator   = 0f;
+    private float steamAccumulator  = 0f;
     private int   cachedMirrorCount = 0;
     private int   mirrorScanCooldown = 0;
 
@@ -45,21 +47,38 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         @Override protected void onContentsChanged() { setChanged(); sync(); }
     };
 
+    public final FluidTank steamTank = new FluidTank(Config.solarPowerTowerTankPerBlock) {
+        @Override public boolean isFluidValid(FluidStack stack) {
+            return stack.getFluid().isSame(ModFluids.STEAM_SOURCE.get());
+        }
+        @Override protected void onContentsChanged() { setChanged(); sync(); }
+    };
+
     public final IFluidHandler combinedFluidHandler = new IFluidHandler() {
         private SolarPowerTowerBlockEntity ctrl() { return getControllerBE(); }
 
-        @Override public int getTanks() { return 2; }
+        @Override public int getTanks() { return 3; }
 
         @Override public FluidStack getFluidInTank(int tank) {
             SolarPowerTowerBlockEntity c = ctrl();
             if (c == null) return FluidStack.EMPTY;
-            return tank == 0 ? c.waterTank.getFluid() : c.saltTank.getFluid();
+            return switch (tank) {
+                case 0 -> c.waterTank.getFluid();
+                case 1 -> c.saltTank.getFluid();
+                case 2 -> c.steamTank.getFluid();
+                default -> FluidStack.EMPTY;
+            };
         }
 
         @Override public int getTankCapacity(int tank) {
             SolarPowerTowerBlockEntity c = ctrl();
             if (c == null) return 0;
-            return tank == 0 ? c.waterTank.getCapacity() : c.saltTank.getCapacity();
+            return switch (tank) {
+                case 0 -> c.waterTank.getCapacity();
+                case 1 -> c.saltTank.getCapacity();
+                case 2 -> c.steamTank.getCapacity();
+                default -> 0;
+            };
         }
 
         @Override public boolean isFluidValid(int tank, FluidStack stack) {
@@ -74,12 +93,18 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
 
         @Override public FluidStack drain(FluidStack resource, FluidAction action) {
             SolarPowerTowerBlockEntity c = ctrl();
-            return c != null ? c.saltTank.drain(resource, action) : FluidStack.EMPTY;
+            if (c == null) return FluidStack.EMPTY;
+            if (c.steamMode && resource.getFluid().isSame(ModFluids.STEAM_SOURCE.get()))
+                return c.steamTank.drain(resource, action);
+            if (!c.steamMode && resource.getFluid().isSame(ModFluids.MOLTEN_SALT_SOURCE.get()))
+                return c.saltTank.drain(resource, action);
+            return FluidStack.EMPTY;
         }
 
         @Override public FluidStack drain(int maxDrain, FluidAction action) {
             SolarPowerTowerBlockEntity c = ctrl();
-            return c != null ? c.saltTank.drain(maxDrain, action) : FluidStack.EMPTY;
+            if (c == null) return FluidStack.EMPTY;
+            return c.steamMode ? c.steamTank.drain(maxDrain, action) : c.saltTank.drain(maxDrain, action);
         }
     };
 
@@ -125,8 +150,10 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         int newCap = Config.solarPowerTowerTankPerBlock * Math.max(blocks, 1);
         waterTank.setCapacity(newCap);
         saltTank.setCapacity(newCap);
+        steamTank.setCapacity(newCap);
         if (waterTank.getFluidAmount() > newCap) waterTank.setFluid(new FluidStack(waterTank.getFluid().getFluid(), newCap));
         if (saltTank.getFluidAmount()  > newCap) saltTank.setFluid(new FluidStack(saltTank.getFluid().getFluid(), newCap));
+        if (steamTank.getFluidAmount() > newCap) steamTank.setFluid(new FluidStack(steamTank.getFluid().getFluid(), newCap));
     }
 
     @Override public IFluidTank getTank(int tank) { return waterTank; }
@@ -153,12 +180,14 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
 
         if (width < Config.solarPowerTowerMinWidth || height < Config.solarPowerTowerMinHeight) {
             saltAccumulator = 0f;
+            steamAccumulator = 0f;
             setLit(false);
             return;
         }
 
         if (!isSunActive()) {
             saltAccumulator = 0f;
+            steamAccumulator = 0f;
             setLit(false);
             return;
         }
@@ -166,22 +195,36 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         float efficiency = mirrorEfficiency();
         // Rate scales super-linearly with height (exponent 1.5) so taller towers are
         // always more block-efficient than multiple short ones.
-        // At max size (3×3×20) and 100% mirrors: 9 mB/tick.
+        // The 7/3 multiplier scales the base formula so a max-size tower (3×3×20) at
+        // full sun produces 21 mB/t of steam, matching the default max-turbine consumption.
         int maxH = switch (width) { case 2 -> MAX_HEIGHTS[2]; case 3 -> MAX_HEIGHTS[3]; default -> MAX_HEIGHTS[1]; };
         float heightFraction = (float) height / maxH;
-        float rate = (width * width) * (float) Math.pow(heightFraction, 1.5) * efficiency;
-        saltAccumulator += rate;
-
-        int saltToAdd = (int) saltAccumulator;
-        if (saltToAdd >= 1) {
-            int waterToDrain = saltToAdd * width * width;
-            if (waterTank.getFluidAmount() >= waterToDrain &&
-                saltTank.fill(new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), saltToAdd),
-                        IFluidHandler.FluidAction.SIMULATE) == saltToAdd) {
-                waterTank.drain(waterToDrain, IFluidHandler.FluidAction.EXECUTE);
-                saltTank.fill(new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), saltToAdd),
+        float rate = (width * width) * (float) Math.pow(heightFraction, 1.5) * efficiency * (7f / 3f);
+        if (steamMode) {
+            steamAccumulator += rate;
+            saltAccumulator = 0f;
+            int steamToAdd = (int) steamAccumulator;
+            if (steamToAdd >= 1 &&
+                steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), steamToAdd),
+                        IFluidHandler.FluidAction.SIMULATE) == steamToAdd) {
+                steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), steamToAdd),
                         IFluidHandler.FluidAction.EXECUTE);
-                saltAccumulator -= saltToAdd;
+                steamAccumulator -= steamToAdd;
+            }
+        } else {
+            saltAccumulator += rate;
+            steamAccumulator = 0f;
+            int saltToAdd = (int) saltAccumulator;
+            if (saltToAdd >= 1) {
+                int waterToDrain = saltToAdd * width * width;
+                if (waterTank.getFluidAmount() >= waterToDrain &&
+                    saltTank.fill(new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), saltToAdd),
+                            IFluidHandler.FluidAction.SIMULATE) == saltToAdd) {
+                    waterTank.drain(waterToDrain, IFluidHandler.FluidAction.EXECUTE);
+                    saltTank.fill(new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), saltToAdd),
+                            IFluidHandler.FluidAction.EXECUTE);
+                    saltAccumulator -= saltToAdd;
+                }
             }
         }
 
@@ -224,6 +267,8 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         return ratio <= 1f ? ratio : Math.max(0f, 2f - ratio);
     }
 
+    public void syncToClients() { sync(); }
+
     private void setLit(boolean lit) {
         if (level == null) return;
         BlockState state = getBlockState();
@@ -239,25 +284,33 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         saveMultiblockNBT(tag);
+        tag.putBoolean("SteamMode", steamMode);
         tag.putFloat("SaltAccumulator", saltAccumulator);
+        tag.putFloat("SteamAccumulator", steamAccumulator);
         tag.putInt("CachedMirrors", cachedMirrorCount);
         FluidTankNBTHelper.save(tag, "WaterTank", waterTank);
         FluidTankNBTHelper.save(tag, "SaltTank",  saltTank);
+        FluidTankNBTHelper.save(tag, "SteamTank", steamTank);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         loadMultiblockNBT(tag);
-        saltAccumulator   = tag.getFloat("SaltAccumulator");
+        steamMode        = tag.getBoolean("SteamMode");
+        saltAccumulator  = tag.getFloat("SaltAccumulator");
+        steamAccumulator = tag.getFloat("SteamAccumulator");
         cachedMirrorCount = tag.getInt("CachedMirrors");
         if (isController()) {
             int totalBlocks = width * width * height;
-            waterTank.setCapacity(Config.solarPowerTowerTankPerBlock * totalBlocks);
-            saltTank.setCapacity(Config.solarPowerTowerTankPerBlock * totalBlocks);
+            int cap = Config.solarPowerTowerTankPerBlock * totalBlocks;
+            waterTank.setCapacity(cap);
+            saltTank.setCapacity(cap);
+            steamTank.setCapacity(cap);
         }
         FluidTankNBTHelper.load(tag, "WaterTank", waterTank);
         FluidTankNBTHelper.load(tag, "SaltTank",  saltTank);
+        FluidTankNBTHelper.load(tag, "SteamTank", steamTank);
     }
 
     // -------------------------------------------------------------------------
@@ -279,10 +332,26 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
                         .text(" / " + cap + " mB").style(ChatFormatting.AQUA).component())
                 .forGoggles(tooltip, 1);
 
-        CreateLang.translate("solar_punk.tooltip.molten_salt")
+        if (ctrl.steamMode) {
+            CreateLang.translate("solar_punk.tooltip.steam")
+                    .style(ChatFormatting.GRAY)
+                    .add(CreateLang.number(steamTank.getFluidAmount())
+                            .text(" / " + cap + " mB").style(ChatFormatting.WHITE).component())
+                    .forGoggles(tooltip, 1);
+        } else {
+            CreateLang.translate("solar_punk.tooltip.molten_salt")
+                    .style(ChatFormatting.GRAY)
+                    .add(CreateLang.number(saltTank.getFluidAmount())
+                            .text(" / " + cap + " mB").style(ChatFormatting.GOLD).component())
+                    .forGoggles(tooltip, 1);
+        }
+
+        CreateLang.translate("solar_punk.tooltip.tower_mode")
                 .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(saltTank.getFluidAmount())
-                        .text(" / " + cap + " mB").style(ChatFormatting.GOLD).component())
+                .add(Component.translatable(ctrl.steamMode
+                        ? "solarpunk.tooltip.tower_mode_steam"
+                        : "solarpunk.tooltip.tower_mode_salt")
+                        .withStyle(ctrl.steamMode ? ChatFormatting.AQUA : ChatFormatting.GOLD))
                 .forGoggles(tooltip, 1);
 
         CreateLang.translate("solar_punk.tooltip.mirrors")

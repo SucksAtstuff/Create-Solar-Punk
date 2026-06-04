@@ -61,8 +61,6 @@ public class BrassSolarPanelBlock extends BaseEntityBlock implements IWrenchable
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (type == ModBlockEntities.BRASS_SOLAR_PANEL.get())
-            return (BlockEntityTicker<T>) (BlockEntityTicker<BrassSolarPanelBlockEntity>) (l, p, s, be) -> be.tick();
-        return null;
+        return createTickerHelper(type, ModBlockEntities.BRASS_SOLAR_PANEL.get(), (l, p, s, be) -> be.tick());
     }
 }

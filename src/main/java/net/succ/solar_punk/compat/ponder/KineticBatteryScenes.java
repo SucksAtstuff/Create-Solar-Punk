@@ -57,11 +57,11 @@ public class KineticBatteryScenes {
         // set battery LIT to show it is now discharging
         scene.world().modifyBlock(batteryPos,
                 state -> state.setValue(KineticBatteryBlock.LIT, true), false);
-        // drive the press at discharge speed
-        scene.world().setKineticSpeed(util.select().position(pressPos), -16f);
+        // drive battery, discharge shaft, and press at discharge speed
+        scene.world().setKineticSpeed(util.select().fromTo(batteryPos, pressPos), -16f);
 
         scene.overlay().showText(70)
-                .text("Apply a Redstone signal to discharge — it outputs rotation along its axis")
+                .text("Apply a Redstone signal to discharge - it outputs rotation along its axis")
                 .pointAt(util.vector().centerOf(batteryPos))
                 .attachKeyFrame();
         scene.idle(80);

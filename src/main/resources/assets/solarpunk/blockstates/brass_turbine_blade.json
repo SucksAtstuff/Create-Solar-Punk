@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "hidden=false": { "model": "solarpunk:block/andesite_turbine_blade" },
+    "hidden=true":  { "model": "solarpunk:block/turbine_blade_hidden" }
+  }
+}

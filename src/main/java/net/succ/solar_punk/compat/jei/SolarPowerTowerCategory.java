@@ -19,12 +19,13 @@ import net.succ.solar_punk.fluid.ModFluids;
 
 public class SolarPowerTowerCategory implements IRecipeCategory<SolarPowerTowerCategory.DisplayRecipe> {
 
-    public record DisplayRecipe() {}
+    public record DisplayRecipe(boolean steamMode) {}
 
     public static final RecipeType<DisplayRecipe> RECIPE_TYPE =
             RecipeType.create(SolarPunk.MODID, "solar_power_tower", DisplayRecipe.class);
 
-    public static final DisplayRecipe INSTANCE = new DisplayRecipe();
+    public static final DisplayRecipe SALT_INSTANCE  = new DisplayRecipe(false);
+    public static final DisplayRecipe STEAM_INSTANCE = new DisplayRecipe(true);
 
     private static final int WIDTH  = 100;
     private static final int HEIGHT = 40;
@@ -63,7 +64,9 @@ public class SolarPowerTowerCategory implements IRecipeCategory<SolarPowerTowerC
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 61, 12)
                 .setFluidRenderer(1000, false, 16, 16)
-                .addFluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 1000);
+                .addFluidStack(recipe.steamMode()
+                        ? ModFluids.STEAM_SOURCE.get()
+                        : ModFluids.MOLTEN_SALT_SOURCE.get(), 1000);
     }
 
     @Override

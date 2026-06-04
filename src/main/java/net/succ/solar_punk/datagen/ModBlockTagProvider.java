@@ -45,7 +45,13 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.SOLAR_MIRROR.get())
                 .add(ModBlocks.GEYSER_VENT.get())
                 .add(ModBlocks.BIOFILTER.get())
-                .add(ModBlocks.KINETIC_SPRINKLER.get());
+                .add(ModBlocks.KINETIC_SPRINKLER.get())
+                .add(ModBlocks.TURBINE_CASING.get())
+                .add(ModBlocks.TURBINE_CASING_GLASS.get())
+                .add(ModBlocks.TURBINE_ROTOR.get())
+                .add(ModBlocks.ANDESITE_TURBINE_BLADE.get())
+                .add(ModBlocks.BRASS_TURBINE_BLADE.get())
+                .add(ModBlocks.TURBINE_ROTOR.get());
 
         tag(BlockTags.MINEABLE_WITH_SHOVEL)
                 .add(ModBlocks.ASH_BLOCK.get())

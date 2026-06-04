@@ -36,7 +36,7 @@ public class BiomassGasifierScenes {
         scene.world().modifyBlockEntity(MACHINE, BiomassGasifierBlockEntity.class, be ->
                 be.itemHandler.setStackInSlot(0, new ItemStack(ModItems.BIOMASS.get(), 8)));
         scene.overlay().showText(60)
-                .text("Add Biomass into the top slot — each piece burns for 15 seconds")
+                .text("Add Biomass into the top slot - each piece burns for 15 seconds")
                 .pointAt(util.vector().topOf(MACHINE))
                 .attachKeyFrame();
         scene.idle(70);
@@ -51,13 +51,13 @@ public class BiomassGasifierScenes {
         scene.idle(80);
 
         scene.overlay().showText(60)
-                .text("Rotation exits downward — connect a shaft or machine directly below")
+                .text("Rotation exits downward - connect a shaft or machine directly below")
                 .pointAt(util.vector().centerOf(SHAFT))
                 .attachKeyFrame();
         scene.idle(70);
 
         scene.overlay().showText(70)
-                .text("Output is intermittent — use a Kinetic Battery to buffer power between refills")
+                .text("Output is intermittent - use a Kinetic Battery to buffer power between refills")
                 .pointAt(util.vector().centerOf(MACHINE))
                 .attachKeyFrame();
         scene.idle(80);

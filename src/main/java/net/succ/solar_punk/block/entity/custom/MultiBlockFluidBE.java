@@ -36,11 +36,11 @@ public abstract class MultiBlockFluidBE<T extends MultiBlockFluidBE<T>> extends 
 
     @SuppressWarnings("unchecked")
     @Override
-    public T getControllerBE() {
-        if (isController()) return (T) this;
+    public <C extends BlockEntity & IMultiBlockEntityContainer> C getControllerBE() {
+        if (isController()) return (C) this;
         if (level == null) return null;
         BlockEntity be = level.getBlockEntity(controller);
-        return selfType.isInstance(be) ? selfType.cast(be) : null;
+        return selfType.isInstance(be) ? (C) selfType.cast(be) : null;
     }
 
     @Override

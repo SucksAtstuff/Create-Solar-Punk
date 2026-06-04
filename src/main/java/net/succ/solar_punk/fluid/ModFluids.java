@@ -84,6 +84,26 @@ public class ModFluids {
             .block(FERTILIZER_BLOCK)
             .bucket(FERTILIZER_BUCKET);
 
+    public static final Supplier<FlowingFluid> STEAM_SOURCE = FLUIDS.register("steam",
+            () -> new BaseFlowingFluid.Source(ModFluids.STEAM_PROPERTIES));
+    public static final Supplier<FlowingFluid> STEAM_FLOWING = FLUIDS.register("steam_flowing",
+            () -> new BaseFlowingFluid.Flowing(ModFluids.STEAM_PROPERTIES));
+
+    public static final DeferredBlock<LiquidBlock> STEAM_BLOCK = ModBlocks.BLOCKS.register("steam",
+            () -> new LiquidBlock(STEAM_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.WATER)
+                    .mapColor(MapColor.SNOW)));
+
+    public static final DeferredItem<BucketItem> STEAM_BUCKET = ModItems.ITEMS.registerItem("steam_bucket",
+            properties -> new BucketItem(STEAM_SOURCE.get(), properties.stacksTo(1).craftRemainder(Items.BUCKET)));
+
+    public static final BaseFlowingFluid.Properties STEAM_PROPERTIES = new BaseFlowingFluid.Properties(
+            ModFluidTypes.STEAM_TYPE, STEAM_SOURCE, STEAM_FLOWING)
+            .tickRate(5)
+            .slopeFindDistance(1)
+            .levelDecreasePerBlock(4)
+            .block(STEAM_BLOCK)
+            .bucket(STEAM_BUCKET);
+
     public static void register(IEventBus eventBus) {
         FLUIDS.register(eventBus);
     }

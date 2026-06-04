@@ -53,7 +53,7 @@ public class BiofuelEngineScenes {
         scene.idle(80);
 
         scene.overlay().showText(60)
-                .text("Rotation exits downward — connect a shaft or machine directly below")
+                .text("Rotation exits downward - connect a shaft or machine directly below")
                 .pointAt(util.vector().centerOf(SHAFT))
                 .attachKeyFrame();
         scene.idle(70);
