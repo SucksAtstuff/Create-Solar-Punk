@@ -89,6 +89,7 @@ public class Config {
     // -------------------------------------------------------------------------
 
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_VAT_MIN_WIDTH;
+    private static final ModConfigSpec.IntValue CFG_FERMENTATION_VAT_MIN_HEIGHT;
     private static final ModConfigSpec.IntValue CFG_SOLAR_POWER_TOWER_MIN_WIDTH;
     private static final ModConfigSpec.IntValue CFG_SOLAR_POWER_TOWER_MIN_HEIGHT;
 
@@ -224,6 +225,7 @@ public class Config {
 
         BUILDER.push("multiblocks");
         CFG_FERMENTATION_VAT_MIN_WIDTH    = BUILDER.comment("Fermentation Vat: minimum footprint width (2 = 2x2, 3 = 3x3) needed to ferment").defineInRange("fermentation_vat_min_width", 2, 2, 3);
+        CFG_FERMENTATION_VAT_MIN_HEIGHT   = BUILDER.comment("Fermentation Vat: minimum height needed to ferment").defineInRange("fermentation_vat_min_height", 4, 1, 16);
         CFG_SOLAR_POWER_TOWER_MIN_WIDTH   = BUILDER.comment("Solar Power Tower: minimum footprint width needed to produce Molten Salt").defineInRange("solar_power_tower_min_width", 3, 1, 3);
         CFG_SOLAR_POWER_TOWER_MIN_HEIGHT  = BUILDER.comment("Solar Power Tower: minimum block height needed to produce Molten Salt").defineInRange("solar_power_tower_min_height", 3, 1, 20);
         BUILDER.pop();
@@ -320,7 +322,7 @@ public class Config {
     public static int fermentationVatTankPerBlock, solarPowerTowerTankPerBlock;
     public static int sprinklerTank, solarHeaterTank;
 
-    public static int fermentationVatMinWidth;
+    public static int fermentationVatMinWidth, fermentationVatMinHeight;
     public static int solarPowerTowerMinWidth, solarPowerTowerMinHeight;
 
     public static int geyserSpawnChance;
@@ -399,6 +401,7 @@ public class Config {
         solarHeaterTank              = CFG_SOLAR_HEATER_TANK.get();
 
         fermentationVatMinWidth     = CFG_FERMENTATION_VAT_MIN_WIDTH.get();
+        fermentationVatMinHeight    = CFG_FERMENTATION_VAT_MIN_HEIGHT.get();
         solarPowerTowerMinWidth     = CFG_SOLAR_POWER_TOWER_MIN_WIDTH.get();
         solarPowerTowerMinHeight    = CFG_SOLAR_POWER_TOWER_MIN_HEIGHT.get();
 

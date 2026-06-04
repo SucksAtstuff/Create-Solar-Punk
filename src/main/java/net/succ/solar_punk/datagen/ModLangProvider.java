@@ -143,7 +143,7 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.fermentation_vat_scaling.header", "Scaling the Fermentation Vat");
         add("solarpunk.ponder.fermentation_vat_scaling.text_1", "A larger footprint increases the batch size - a 2x2 vat processes 4 Biomass at once, a 3x3 processes 9");
         add("solarpunk.ponder.fermentation_vat_scaling.text_2", "Water consumed and Biofuel produced per batch scale with the footprint area");
-        add("solarpunk.ponder.fermentation_vat_scaling.text_3", "Tank capacity grows with each block added - taller vats hold more fluid");
+        add("solarpunk.ponder.fermentation_vat_scaling.text_3", "Taller vats produce super-linearly more Biofuel per batch - the same way a taller Solar Power Tower produces more. Tank capacity also grows with each block added");
 
         add("create.solar_punk.tooltip.biofilter_header", "Biofilter");
         add("create.solar_punk.tooltip.biofilter_status", "Status: ");
@@ -172,7 +172,9 @@ public class ModLangProvider extends LanguageProvider {
 
         add("create.solar_punk.tooltip.fermentation_vat_header", "Fermentation Vat");
         add("create.solar_punk.tooltip.vat_too_small", "Needs at least 2x2 footprint");
+        add("create.solar_punk.tooltip.vat_too_short", "Needs at least 4 blocks tall");
         add("create.solar_punk.tooltip.vat_batch_scale", "Batch size: ");
+        add("create.solar_punk.tooltip.vat_biofuel_output", "Output: ");
         add("create.solar_punk.tooltip.fermenting", "Fermenting: ");
         add("create.solar_punk.tooltip.biofuel", "Biofuel: ");
 
@@ -227,9 +229,9 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.kinetic_battery.tooltip.condition2", "When a Redstone signal is applied");
         add("block.solarpunk.kinetic_battery.tooltip.behaviour2", "Discharges at 16 RPM with 256 SU of stress capacity until empty.");
 
-        add("block.solarpunk.fermentation_vat.tooltip.summary", "Ferments _Biomass_ and water into _Biofuel_. Requires at least a _2x2 footprint_ to operate.");
+        add("block.solarpunk.fermentation_vat.tooltip.summary", "Ferments _Biomass_ and water into _Biofuel_. Requires at least a _2x2 footprint_ and _4 blocks tall_ to operate.");
         add("block.solarpunk.fermentation_vat.tooltip.condition1", "Larger footprint");
-        add("block.solarpunk.fermentation_vat.tooltip.behaviour1", "Increases batch size and tank capacity. A 3x3 footprint processes 9 Biomass per batch.");
+        add("block.solarpunk.fermentation_vat.tooltip.behaviour1", "Increases batch size and output. A 3x3 footprint processes 9 Biomass per batch. Taller vats produce super-linearly more Biofuel per batch.");
 
         add("block.solarpunk.biomass_gasifier.tooltip.summary", "Burns _Biomass_ to generate _Rotational Force_. Produces _Biochar_ as a byproduct.");
         add("block.solarpunk.biomass_gasifier.tooltip.condition1", "While burning");

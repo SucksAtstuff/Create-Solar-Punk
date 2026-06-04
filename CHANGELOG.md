@@ -1,4 +1,4 @@
-# 0.3.0-1.21.1
+# 0.4.0-1.21.1
 
 ### Steam Turbine
 
@@ -17,6 +17,15 @@ The **Solar Power Tower** can now produce **Steam** in addition to Molten Salt. 
 ### Turbine Casing Crafting
 
 **Turbine Casing** is crafted by right-clicking a Block of Industrial Iron with a Zinc Ingot, or by running it through a Deployer holding zinc. Right-click a Turbine Casing with Glass to get the glass variant. Both work in-world and in a Deployer contraption.
+
+---
+
+# 0.2.2-1.21.1
+
+### Bug Fixes
+
+- Fixed the Solar Heater not producing salt from water evaporation. Water buckets were filling the wrong internal tank, so evaporation never started.
+- Fermentation Vat biofuel output now scales super-linearly with height, using the same curve as the Solar Power Tower. A minimum-height vat produces very little; building taller is now the main way to scale up biofuel production. Goggle overlay now shows the actual mB output per batch.
 
 ---
 

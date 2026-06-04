@@ -158,15 +158,16 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
 
         if (!isController()) return;
 
-        if (width < Config.fermentationVatMinWidth) {
+        if (width < Config.fermentationVatMinWidth || height < Config.fermentationVatMinHeight) {
             if (progress > 0) { progress = 0; setChanged(); sync(); }
             setLit(false);
             return;
         }
 
         int batchScale    = width * width;
-        int waterNeeded   = Config.fermentationWaterPerBatch  * batchScale;
-        int biofuelOutput = Config.fermentationBiofuelPerBatch * batchScale;
+        float heightMultiplier = (float) Math.pow((double) height / MAX_HEIGHT, 1.5);
+        int waterNeeded   = Math.max(1, (int)(Config.fermentationWaterPerBatch  * batchScale * heightMultiplier));
+        int biofuelOutput = Math.max(1, (int)(Config.fermentationBiofuelPerBatch * batchScale * heightMultiplier));
 
         boolean hasInput   = itemHandler.getStackInSlot(0).getCount() >= batchScale;
         boolean hasWater   = waterTank.getFluidAmount() >= waterNeeded;
@@ -249,11 +250,23 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
                     .forGoggles(tooltip, 1);
             return true;
         }
+        if (ctrl.height < Config.fermentationVatMinHeight) {
+            CreateLang.translate("solar_punk.tooltip.vat_too_short")
+                    .style(ChatFormatting.RED)
+                    .forGoggles(tooltip, 1);
+            return true;
+        }
 
         int batchScale = ctrl.width * ctrl.width;
+        float heightMultiplier = (float) Math.pow((double) ctrl.height / MAX_HEIGHT, 1.5);
+        int biofuelPerBatch = Math.max(1, (int)(Config.fermentationBiofuelPerBatch * batchScale * heightMultiplier));
         CreateLang.translate("solar_punk.tooltip.vat_batch_scale")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(batchScale).style(ChatFormatting.WHITE).component())
+                .forGoggles(tooltip, 1);
+        CreateLang.translate("solar_punk.tooltip.vat_biofuel_output")
+                .style(ChatFormatting.GRAY)
+                .add(CreateLang.number(biofuelPerBatch).text(" mB").style(ChatFormatting.GREEN).component())
                 .forGoggles(tooltip, 1);
 
         ItemStack input = itemHandler.getStackInSlot(0);
