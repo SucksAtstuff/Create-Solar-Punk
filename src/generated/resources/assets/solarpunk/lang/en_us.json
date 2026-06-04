@@ -20,7 +20,6 @@
   "block.solarpunk.brass_solar_panel.tooltip.behaviour1": "40-80 FE/t. Stops in _rain_ and at _night_.",
   "block.solarpunk.brass_solar_panel.tooltip.condition1": "During the day with a clear sky",
   "block.solarpunk.brass_solar_panel.tooltip.summary": "Generates _Forge Energy_ from sunlight. Output scales with sun angle and weather.",
-  "block.solarpunk.brass_turbine_blade": "Brass Turbine Blade",
   "block.solarpunk.dead_grass": "Dead Grass",
   "block.solarpunk.dead_grass_block": "Dead Grass Block",
   "block.solarpunk.fermentation_vat": "Fermentation Vat",
