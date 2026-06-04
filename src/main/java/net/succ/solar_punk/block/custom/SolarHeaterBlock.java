@@ -75,7 +75,7 @@ public class SolarHeaterBlock extends Block implements IBE<SolarHeaterBlockEntit
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
         // Bucket fill/empty
-        if (FluidUtil.interactWithFluidHandler(player, hand, be.fluidTank)) {
+        if (FluidUtil.interactWithFluidHandler(player, hand, be.combinedFluidHandler)) {
             return ItemInteractionResult.SUCCESS;
         }
 
