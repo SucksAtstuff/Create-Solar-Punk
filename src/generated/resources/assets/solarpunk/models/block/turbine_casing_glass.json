@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:block/cube_all",
+  "render_type": "minecraft:cutout",
   "textures": {
-    "all": "solarpunk:block/industrial_iron_casing/industrial_iron_casing"
+    "all": "solarpunk:block/industrial_iron_casing/industrial_iron_glass_casing"
   }
 }

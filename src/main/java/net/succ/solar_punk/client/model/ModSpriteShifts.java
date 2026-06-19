@@ -19,7 +19,8 @@ public class ModSpriteShifts {
         SOLAR_POWER_TOWER       = shift(TOWER,  "solar_power_tower"),
         SOLAR_POWER_TOWER_TOP   = shift(TOWER,  "solar_power_tower_top"),
         SOLAR_POWER_TOWER_INNER = shift(TOWER,  "solar_power_tower_inner"),
-        TURBINE_CASING          = shiftOmni(CASING, "industrial_iron_casing");
+        TURBINE_CASING          = shiftOmni(CASING, "industrial_iron_casing"),
+        TURBINE_CASING_GLASS    = shiftOmni(CASING, "industrial_iron_glass_casing");
 
     private static CTSpriteShiftEntry shift(String folder, String name) {
         return CTSpriteShifter.getCT(

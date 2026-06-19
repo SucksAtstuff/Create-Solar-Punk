@@ -1,7 +1,6 @@
 package net.succ.solar_punk.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import net.createmod.catnip.render.CachedBuffers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -24,12 +23,6 @@ public class TurbineRotorRenderer extends KineticBlockEntityRenderer<TurbineRoto
                                MultiBufferSource buffer, int light, int overlay) {
         BlockState state = be.getBlockState();
         var vb = buffer.getBuffer(RenderType.cutoutMipped());
-
-        for (Direction d : new Direction[]{ Direction.UP, Direction.DOWN }) {
-            standardKineticRotationTransform(
-                CachedBuffers.partialFacing(AllPartialModels.SHAFT_HALF, state, d), be, light
-            ).renderInto(ms, vb);
-        }
 
         if (!be.isMaster || !be.structureValid || be.turbineHeight < 2) return;
         if (!state.getValue(TurbineRotorBlock.ACTIVE)) return;

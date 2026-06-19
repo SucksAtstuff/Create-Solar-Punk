@@ -54,10 +54,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
         litCustomModelBlock(ModBlocks.TURBINE_ROTOR, false);
 
         ResourceLocation casingTex = modLoc("block/industrial_iron_casing/industrial_iron_casing");
+        ResourceLocation glassCasingTex = modLoc("block/industrial_iron_casing/industrial_iron_glass_casing");
         simpleBlockWithItem(ModBlocks.TURBINE_CASING.get(),
                 models().cubeAll("turbine_casing", casingTex));
         simpleBlockWithItem(ModBlocks.TURBINE_CASING_GLASS.get(),
-                models().cubeAll("turbine_casing_glass", casingTex));
+                models().cubeAll("turbine_casing_glass", glassCasingTex)
+                        .renderType("minecraft:cutout"));
     }
 
     // For blocks whose models are hand-crafted (Blockbench).
