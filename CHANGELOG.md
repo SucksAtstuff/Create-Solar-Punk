@@ -1,4 +1,4 @@
-# 0.4.0-1.21.1
+# 0.3.0-1.21.1
 
 ### Steam Turbine
 
@@ -18,22 +18,25 @@ The **Solar Power Tower** can now produce **Steam** in addition to Molten Salt. 
 
 **Turbine Casing** is crafted by right-clicking a Block of Industrial Iron with a Zinc Ingot, or by running it through a Deployer holding zinc. Right-click a Turbine Casing with Glass to get the glass variant. Both work in-world and in a Deployer contraption.
 
----
+### Solar Mirror
 
-# 0.2.2-1.21.1
+The **Solar Mirror** has a new model and texture, replacing the old glass-and-stone design with a single dedicated texture.
 
-### Bug Fixes
+### Balance
 
-- Fixed the Solar Heater not producing salt from water evaporation. Water buckets were filling the wrong internal tank, so evaporation never started.
-- Fermentation Vat biofuel output now scales super-linearly with height, using the same curve as the Solar Power Tower. A minimum-height vat produces very little; building taller is now the main way to scale up biofuel production. Goggle overlay now shows the actual mB output per batch.
-
----
+- **Solar Power Tower (Salt Mode)**: Molten Salt output has been substantially reduced. The previous rate was tuned for steam production and left the salt chain with far more capacity than a Heat Battery setup could ever use. A max-size tower now produces enough to run 9 Heat Batteries continuously.
+- **Fermentation Vat**: Now requires a minimum height of 4 blocks to operate in addition to the existing 2x2 footprint requirement. This is configurable.
 
 # 0.2.1-1.21.1
 
 ### Create: Aeronautics Compat
 
 Pollution sources inside Aeronautics sublevels (engines on airships) now correctly accumulate pollution in the real-world chunk where the airship is located. Previously they had no effect on the pollution system at all. Requires Sable/Aeronautics to be installed; has no effect otherwise.
+
+### Bug Fixes
+
+- Fixed the Solar Heater not producing salt from water evaporation. Water buckets were filling the wrong internal tank, so evaporation never started.
+- Fermentation Vat biofuel output now scales super-linearly with height, using the same curve as the Solar Power Tower. A minimum-height vat produces very little; building taller is now the main way to scale up biofuel production. Goggle overlay now shows the actual mB output per batch.
 
 ---
 
