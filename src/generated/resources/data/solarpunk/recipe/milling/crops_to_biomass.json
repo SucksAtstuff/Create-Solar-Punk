@@ -5,6 +5,7 @@
       "tag": "c:crops"
     }
   ],
+  "processing_time": 100,
   "results": [
     {
       "id": "solarpunk:biomass"

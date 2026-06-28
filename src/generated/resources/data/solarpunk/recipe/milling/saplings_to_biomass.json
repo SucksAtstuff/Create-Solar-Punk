@@ -5,6 +5,7 @@
       "tag": "minecraft:saplings"
     }
   ],
+  "processing_time": 100,
   "results": [
     {
       "chance": 0.5,

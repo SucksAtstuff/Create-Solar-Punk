@@ -19,14 +19,17 @@ public class ModMillingRecipeGen extends MillingRecipeGen {
     private static final TagKey<Item> CROPS    = tag("c", "crops");
 
     GeneratedRecipe MILL_LEAVES = create("leaves_to_biomass", b -> b
+        .duration(150)
         .require(LEAVES)
         .output(ModItems.BIOMASS.get(), 1));
 
     GeneratedRecipe MILL_SAPLINGS = create("saplings_to_biomass", b -> b
+        .duration(100)
         .require(SAPLINGS)
         .output(0.5f, ModItems.BIOMASS.get(), 1));
 
     GeneratedRecipe MILL_CROPS = create("crops_to_biomass", b -> b
+        .duration(100)
         .require(CROPS)
         .output(ModItems.BIOMASS.get(), 1));
 

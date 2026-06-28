@@ -5,6 +5,7 @@
       "tag": "minecraft:leaves"
     }
   ],
+  "processing_time": 150,
   "results": [
     {
       "id": "solarpunk:biomass"
