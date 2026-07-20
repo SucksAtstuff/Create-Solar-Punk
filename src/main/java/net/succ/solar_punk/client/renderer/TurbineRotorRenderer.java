@@ -31,13 +31,16 @@ public class TurbineRotorRenderer extends KineticBlockEntityRenderer<TurbineRoto
         float angleDeg = (float) Math.toDegrees(angle);
         int bladeLayers = be.turbineHeight - 1;
 
-        BlockState bladeState = ModBlocks.ANDESITE_TURBINE_BLADE.get().defaultBlockState();
+        BlockState andesiteState = ModBlocks.ANDESITE_TURBINE_BLADE.get().defaultBlockState();
+        BlockState brassState = ModBlocks.BRASS_TURBINE_BLADE.get().defaultBlockState();
 
         for (int dy = 0; dy < bladeLayers; dy++) {
-            int mask = (be.layerBladeMask.length > dy) ? be.layerBladeMask[dy] : 0xF;
+            int mask     = (be.layerBladeMask.length > dy)     ? be.layerBladeMask[dy]     : 0xF;
+            int typeMask = (be.layerBladeTypeMask.length > dy) ? be.layerBladeTypeMask[dy] : 0;
             for (int arm = 0; arm < 4; arm++) {
                 if ((mask & (1 << arm)) == 0) continue;
                 float totalAngleDeg = angleDeg + arm * 90f;
+                BlockState bladeState = (typeMask & (1 << arm)) != 0 ? brassState : andesiteState;
 
                 CachedBuffers.block(KINETIC_BLOCK, bladeState)
                         .translate(0.5f, 0f, 0.5f)

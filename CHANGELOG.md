@@ -22,6 +22,10 @@ The **Solar Power Tower** can now produce **Steam** in addition to Molten Salt. 
 
 The **Solar Mirror** has a new model and texture, replacing the old glass-and-stone design with a single dedicated texture.
 
+### Bug Fixes
+
+- Fixed milling crops, leaves, and saplings in the Millstone producing nothing. The recipes were missing a processing time, so the mill would spin forever without completing.
+
 ### Balance
 
 - **Solar Power Tower (Salt Mode)**: Molten Salt output has been substantially reduced. The previous rate was tuned for steam production and left the salt chain with far more capacity than a Heat Battery setup could ever use. A max-size tower now produces enough to run 9 Heat Batteries continuously.

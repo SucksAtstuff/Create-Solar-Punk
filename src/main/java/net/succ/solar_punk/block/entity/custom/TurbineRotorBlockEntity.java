@@ -45,7 +45,8 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
     public int turbineHeight = 0;
     public int andesiteBladeCount = 0;
     public int brassBladeCount = 0;
-    public int[] layerBladeMask = new int[0]; // 4-bit mask per blade layer; bit n = arm n present
+    public int[] layerBladeMask = new int[0];     // 4-bit mask per blade layer; bit n = arm n present
+    public int[] layerBladeTypeMask = new int[0]; // 4-bit mask per blade layer; bit n = arm n is brass
     private float bladeEfficiency = BASE_EFFICIENCY;
     private int scanCooldown = 1;
     private boolean needsCapabilityRefresh = true; // not persisted - fires once after each load
@@ -291,17 +292,19 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         // Count blades and build per-layer arm presence mask (4 bits: East/South/West/North).
         int andesite = 0, brass = 0;
         int[] newMask = new int[height - 1];
+        int[] newTypeMask = new int[height - 1];
         for (int y = ry; y < topY; y++) {
             int dy = y - ry;
-            int mask = 0;
+            int mask = 0, typeMask = 0;
             for (int arm = 0; arm < 4; arm++) {
                 for (int[] off : ARM_OFFSETS[arm]) {
                     BlockState bs = level.getBlockState(new BlockPos(rx + off[0], y, rz + off[1]));
                     if (bs.is(ModBlocks.ANDESITE_TURBINE_BLADE.get())) { andesite++; mask |= (1 << arm); }
-                    else if (bs.is(ModBlocks.BRASS_TURBINE_BLADE.get())) { brass++; mask |= (1 << arm); }
+                    else if (bs.is(ModBlocks.BRASS_TURBINE_BLADE.get())) { brass++; mask |= (1 << arm); typeMask |= (1 << arm); }
                 }
             }
             newMask[dy] = mask;
+            newTypeMask[dy] = typeMask;
         }
 
         int maxBlades = (height - 1) * 8; // only cap has no blades
@@ -312,6 +315,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         this.andesiteBladeCount = andesite;
         this.brassBladeCount = brass;
         this.layerBladeMask = newMask;
+        this.layerBladeTypeMask = newTypeMask;
         this.bladeEfficiency = BASE_EFFICIENCY + (1f - BASE_EFFICIENCY) * bladeRatio;
         return true;
     }
@@ -438,6 +442,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         tag.putInt("BrassBlades", brassBladeCount);
         tag.putFloat("BladeEfficiency", bladeEfficiency);
         tag.putIntArray("LayerBladeMask", layerBladeMask);
+        tag.putIntArray("LayerBladeTypeMask", layerBladeTypeMask);
         FluidTankNBTHelper.save(tag, "SteamTank", steamTank);
         FluidTankNBTHelper.save(tag, "CondensateTank", condensateTank);
     }
@@ -453,6 +458,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         bladeEfficiency = tag.getFloat("BladeEfficiency");
         if (bladeEfficiency < BASE_EFFICIENCY) bladeEfficiency = BASE_EFFICIENCY;
         layerBladeMask = tag.getIntArray("LayerBladeMask");
+        layerBladeTypeMask = tag.getIntArray("LayerBladeTypeMask");
         FluidTankNBTHelper.load(tag, "SteamTank", steamTank);
         FluidTankNBTHelper.load(tag, "CondensateTank", condensateTank);
     }
