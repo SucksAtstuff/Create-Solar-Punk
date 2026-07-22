@@ -1,6 +1,12 @@
 {
   "variants": {
-    "hidden=false": { "model": "solarpunk:block/brass_turbine_blade" },
-    "hidden=true":  { "model": "solarpunk:block/turbine_blade_hidden" }
+    "facing=east,hidden=false":  { "model": "solarpunk:block/brass_turbine_blade" },
+    "facing=south,hidden=false": { "model": "solarpunk:block/brass_turbine_blade", "y": 90 },
+    "facing=west,hidden=false":  { "model": "solarpunk:block/brass_turbine_blade", "y": 180 },
+    "facing=north,hidden=false": { "model": "solarpunk:block/brass_turbine_blade", "y": 270 },
+    "facing=east,hidden=true":   { "model": "solarpunk:block/turbine_blade_hidden" },
+    "facing=south,hidden=true":  { "model": "solarpunk:block/turbine_blade_hidden" },
+    "facing=west,hidden=true":   { "model": "solarpunk:block/turbine_blade_hidden" },
+    "facing=north,hidden=true":  { "model": "solarpunk:block/turbine_blade_hidden" }
   }
 }
