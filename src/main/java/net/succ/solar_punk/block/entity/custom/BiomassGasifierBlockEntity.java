@@ -1,11 +1,18 @@
 package net.succ.solar_punk.block.entity.custom;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity.RotationDirection;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
+import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
 import com.simibubi.create.foundation.utility.CreateLang;
+import net.createmod.catnip.math.VecHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.core.registries.Registries;
@@ -23,6 +30,8 @@ import net.succ.solar_punk.item.ModItems;
 import java.util.List;
 
 public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity implements IHaveGoggleInformation {
+
+    ScrollOptionBehaviour<RotationDirection> rotationDirection;
 
     private static final TagKey<Item> BIO_FUELS =
             TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "bio_fuels"));
@@ -50,6 +59,27 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
         super(type, pos, state);
     }
 
+    @Override
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+        super.addBehaviours(behaviours);
+        rotationDirection = new ScrollOptionBehaviour<>(RotationDirection.class,
+                CreateLang.translateDirect("contraptions.windmill.rotation_direction"),
+                this,
+                new ValueBoxTransform.Sided() {
+                    @Override
+                    protected Vec3 getSouthLocation() {
+                        return VecHelper.voxelSpace(8, 8, 15.5);
+                    }
+                    @Override
+                    protected boolean isSideActive(BlockState state, Direction direction) {
+                        return direction.getAxis() != state.getValue(BiomassGasifierBlock.FACING).getAxis();
+                    }
+                }
+        );
+        rotationDirection.withCallback($ -> this.updateGeneratedRotation());
+        behaviours.add(rotationDirection);
+    }
+
     private static int getBurnTicks(ItemStack stack) {
         if (stack.is(ModItems.BIOMASS_PELLET.get())) return Config.pelletBurnTicks;
         return Config.gasifierBurnTicks;
@@ -62,7 +92,10 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
 
     @Override
     public float getGeneratedSpeed() {
-        return burnTimeRemaining > 0 ? Config.gasifierRpm : 0;
+        if (burnTimeRemaining <= 0) return 0;
+        float speed = Config.gasifierRpm;
+        if (rotationDirection.get() == RotationDirection.COUNTER_CLOCKWISE) speed = -speed;
+        return speed;
     }
 
     @Override
