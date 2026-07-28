@@ -88,6 +88,15 @@ public class AllSolarpunkAdvancements implements DataProvider {
             .special(TaskType.EXPERT)
     );
 
+    public static final SolarpunkAdvancement TURBINE_FLOODED = SolarpunkAdvancement.create("turbine_flooded", b -> b
+            .icon(ModBlocks.TURBINE_CASING.get())
+            .title("Waterlogged")
+            .description("Let the condensate tank fill up and shut the turbine down. Pipe out the water next time.")
+            .withCustomTrigger(ModTriggers.TURBINE_FLOODED)
+            .after(STEAM_TURBINE)
+            .special(TaskType.SECRET)
+    );
+
     // -------------------------------------------------------------------------
     // Geothermal branch
     // -------------------------------------------------------------------------

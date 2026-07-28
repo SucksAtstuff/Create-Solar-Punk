@@ -21,16 +21,12 @@ public class SteamTurbineScenes {
                     scene.world().showSection(util.select().position(new BlockPos(x, y, z)), Direction.DOWN);
     }
 
-    // Show the 8 blade positions at a given y level (+ pattern, 2 blades per arm)
+    // Show the 4 blade positions at a given y level (+ pattern, 1 blade per arm)
     private static void showBlades(CreateSceneBuilder scene, SceneBuildingUtil util, int y) {
         scene.world().showSection(util.select().position(new BlockPos(4, y, 3)), Direction.DOWN);
-        scene.world().showSection(util.select().position(new BlockPos(5, y, 3)), Direction.DOWN);
         scene.world().showSection(util.select().position(new BlockPos(2, y, 3)), Direction.DOWN);
-        scene.world().showSection(util.select().position(new BlockPos(1, y, 3)), Direction.DOWN);
         scene.world().showSection(util.select().position(new BlockPos(3, y, 4)), Direction.DOWN);
-        scene.world().showSection(util.select().position(new BlockPos(3, y, 5)), Direction.DOWN);
         scene.world().showSection(util.select().position(new BlockPos(3, y, 2)), Direction.DOWN);
-        scene.world().showSection(util.select().position(new BlockPos(3, y, 1)), Direction.DOWN);
     }
 
     // Show the sealed interior of the cap layer (5x5 minus center rotor)
@@ -85,8 +81,8 @@ public class SteamTurbineScenes {
         scene.idle(90);
 
         scene.overlay().showText(70)
-                .text("Two blades per arm, four arms - eight blades total per layer. Andesite is cheaper; Brass is more efficient")
-                .pointAt(util.vector().centerOf(new BlockPos(5, 2, 3)))
+                .text("One blade per arm, four arms - four blades total per layer. Andesite is cheaper; Brass is more efficient")
+                .pointAt(util.vector().centerOf(new BlockPos(4, 2, 3)))
                 .attachKeyFrame();
         scene.idle(80);
 
@@ -136,13 +132,72 @@ public class SteamTurbineScenes {
     }
 
     /**
-     * Scene 2 - shows a full 7-blade-layer, all-brass turbine.
+     * Scene 2 - explains steam condensation and the condensate drain mechanic.
+     * Uses same structure layout as scene 1.
+     */
+    public static void condensate(SceneBuilder builder, SceneBuildingUtil util) {
+        CreateSceneBuilder scene = new CreateSceneBuilder(builder);
+        scene.title("turbine_condensate", "Steam Condensation");
+        scene.configureBasePlate(0, 0, 7);
+
+        scene.world().showSection(util.select().layer(0), Direction.UP);
+        scene.idle(5);
+
+        // Reveal the turbine quickly
+        showRing(scene, util, 1);
+        showFloorInterior(scene, util, 1);
+        scene.idle(3);
+        for (int y = 2; y <= 4; y++) {
+            showRing(scene, util, y);
+            scene.world().showSection(util.select().position(new BlockPos(3, y, 3)), Direction.DOWN);
+            showBlades(scene, util, y);
+            scene.idle(2);
+        }
+        showRing(scene, util, 5);
+        showCapInterior(scene, util, 5);
+        scene.idle(2);
+        scene.world().showSection(util.select().position(CAP_ROTOR_5), Direction.DOWN);
+        scene.idle(10);
+
+        scene.world().setKineticSpeed(util.select().fromTo(ROTOR_3, CAP_ROTOR_5), 16f);
+
+        scene.overlay().showText(80)
+                .text("As steam drives the rotor it condenses back into water - this condensate collects inside the turbine")
+                .pointAt(util.vector().centerOf(ROTOR_3))
+                .attachKeyFrame();
+        scene.idle(90);
+
+        scene.overlay().showText(70)
+                .text("Check the condensate water level at any time using Engineer's Goggles on any Rotor block")
+                .pointAt(util.vector().centerOf(ROTOR_3))
+                .attachKeyFrame();
+        scene.idle(80);
+
+        scene.world().setKineticSpeed(util.select().fromTo(ROTOR_3, CAP_ROTOR_5), 0f);
+
+        scene.overlay().showText(80)
+                .text("When the condensate tank is full the turbine shuts down automatically - no more steam is consumed until the water is drained")
+                .pointAt(util.vector().centerOf(ROTOR_3))
+                .attachKeyFrame();
+        scene.idle(90);
+
+        scene.overlay().showText(70)
+                .text("Pipe the condensate water out of any casing face to drain it - the turbine restarts as soon as there is room")
+                .pointAt(util.vector().centerOf(new BlockPos(0, 2, 3)))
+                .attachKeyFrame();
+        scene.idle(80);
+
+        scene.markAsFinished();
+    }
+
+    /**
+     * Scene 3 - shows a full 7-blade-layer, all-brass turbine.
      * Layout: floor(y=1) + blades(y=2-8) + cap(y=9).
      */
     public static void maxTurbine(SceneBuilder builder, SceneBuildingUtil util) {
         CreateSceneBuilder scene = new CreateSceneBuilder(builder);
         scene.title("turbine_max", "Maximum Efficiency Turbine");
-        scene.configureBasePlate(0, 0, 7);
+        scene.configureBasePlate(0, 0, 11);
 
         scene.world().showSection(util.select().layer(0), Direction.UP);
         scene.idle(10);

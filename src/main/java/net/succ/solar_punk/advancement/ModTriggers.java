@@ -30,6 +30,8 @@ public class ModTriggers {
             TRIGGERS.register("tower_built", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> TURBINE_BUILT =
             TRIGGERS.register("turbine_built", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> TURBINE_FLOODED =
+            TRIGGERS.register("turbine_flooded", SolarpunkTrigger::new);
 
     public static void register(IEventBus bus) {
         TRIGGERS.register(bus);
