@@ -21,3 +21,4 @@ hs_err_pid*
 run
 /src/generated/resources/.cache/
 /CLAUDE.md
+/commit.md

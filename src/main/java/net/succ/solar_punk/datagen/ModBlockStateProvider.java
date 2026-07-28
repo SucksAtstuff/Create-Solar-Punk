@@ -5,6 +5,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
@@ -14,6 +15,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
@@ -52,6 +54,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
         kineticSprinklerBlock();
 
         litCustomModelBlock(ModBlocks.TURBINE_ROTOR, false);
+
+        // Fluid blocks — particle texture only; the fluid renderer handles the actual surface.
+        fluidBlock(ModFluids.MOLTEN_SALT_BLOCK, modLoc("block/molten_salt_still"));
+        fluidBlock(ModFluids.BIOFUEL_BLOCK,     mcLoc("block/water_still"));
+        fluidBlock(ModFluids.FERTILIZER_BLOCK,  mcLoc("block/water_still"));
+        fluidBlock(ModFluids.STEAM_BLOCK,       mcLoc("block/water_still"));
 
         ResourceLocation casingTex = modLoc("block/industrial_iron_casing/industrial_iron_casing");
         ResourceLocation glassCasingTex = modLoc("block/industrial_iron_casing/industrial_iron_glass_casing");
@@ -257,5 +265,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
     private void blockItemOther(DeferredBlock<Block> deferredBlock, String appendix){
         simpleBlockItem(deferredBlock.get(), new ModelFile.UncheckedModelFile("succsessentials:block/" + deferredBlock.getId().getPath() + appendix));
+    }
+
+    private void fluidBlock(DeferredBlock<LiquidBlock> block, ResourceLocation particleTexture) {
+        ModelFile model = models().getBuilder("block/" + block.getId().getPath())
+                .texture("particle", particleTexture);
+        getVariantBuilder(block.get()).forAllStates(state ->
+                ConfiguredModel.builder().modelFile(model).build());
     }
 }

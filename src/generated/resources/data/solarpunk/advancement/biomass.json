@@ -1,0 +1,34 @@
+{
+  "parent": "solarpunk:root",
+  "criteria": {
+    "0": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:biomass"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancement.solarpunk.biomass.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:biomass"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.biomass"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,27 @@
+{
+  "parent": "solarpunk:fermentation",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:biofuel_engine_on"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancement.solarpunk.biofuel_engine.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:biofuel_engine"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.biofuel_engine"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

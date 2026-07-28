@@ -19,6 +19,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.succ.solar_punk.Config;
+import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.fluid.ModFluids;
 
@@ -39,6 +40,7 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
     };
 
     private int heatStored = 0;
+    private boolean advancementFired = false;
 
     public HeatBatteryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -54,6 +56,10 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
             fluidTank.drain(1, IFluidHandler.FluidAction.EXECUTE);
             heatStored = Math.min(Config.heatBatteryMaxHeat, heatStored + Config.heatBatteryHeatPerMb);
             changed = true;
+            if (!advancementFired) {
+                advancementFired = true;
+                ModTriggers.fireNearby(level, worldPosition, ModTriggers.HEAT_STORED);
+            }
         }
 
         // Decay: heat slowly dissipates whether or not a boiler is attached

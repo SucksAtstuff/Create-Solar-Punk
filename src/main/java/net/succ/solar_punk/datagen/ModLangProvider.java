@@ -261,6 +261,8 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.turbine_rotor.tooltip.condition1", "Valid 7x7 structure with Turbine Blades");
         add("block.solarpunk.turbine_rotor.tooltip.behaviour1", "Generates power proportional to height and blade efficiency. Drains condensate water from the bottom.");
 
+        AllSolarpunkAdvancements.provideLang(this::add);
+
         ModBlocks.BLOCKS.getEntries().forEach(entry ->
                 add(entry.get(), toTitleCase(entry.getId().getPath())));
 

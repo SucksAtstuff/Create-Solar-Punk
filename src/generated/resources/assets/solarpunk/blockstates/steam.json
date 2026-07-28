@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "level=0": {
+      "model": "solarpunk:block/steam"
+    },
+    "level=1": {
+      "model": "solarpunk:block/steam"
+    },
+    "level=10": {
+      "model": "solarpunk:block/steam"
+    },
+    "level=11": {
+      "model": "solarpunk:block/steam"
+    },
+    "level=12": {
+      "model": "solarpunk:block/steam"
+    },
+    "level=13": {
+      "model": "solarpunk:block/steam"
+    },
+    "level=14": {
+      "model": "solarpunk:block/steam"
+    },
+    "level=15": {
+      "model": "solarpunk:block/steam"
+    },
+    "level=2": {
+      "model": "solarpunk:block/steam"
+    },
+    "level=3": {
+      "model": "solarpunk:block/steam"
+    },
+    "level=4": {
+      "model": "solarpunk:block/steam"
+    },
+    "level=5": {
+      "model": "solarpunk:block/steam"
+    },
+    "level=6": {
+      "model": "solarpunk:block/steam"
+    },
+    "level=7": {
+      "model": "solarpunk:block/steam"
+    },
+    "level=8": {
+      "model": "solarpunk:block/steam"
+    },
+    "level=9": {
+      "model": "solarpunk:block/steam"
+    }
+  }
+}

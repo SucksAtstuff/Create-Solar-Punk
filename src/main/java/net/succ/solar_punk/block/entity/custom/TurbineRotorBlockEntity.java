@@ -16,6 +16,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.succ.solar_punk.Config;
+import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.AndesiteTurbineBladeBlock;
 import net.succ.solar_punk.block.custom.BrassTurbineBladeBlock;
@@ -146,6 +147,8 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
                 updateGeneratedRotation();
                 setChanged();
                 invalidateStructureCapabilities();
+                if (structureValid && isMaster && !wasValid)
+                    ModTriggers.fireNearby(level, worldPosition, ModTriggers.TURBINE_BUILT);
             }
         }
 

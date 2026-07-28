@@ -1,0 +1,27 @@
+{
+  "parent": "solarpunk:root",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:geyser_active"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancement.solarpunk.geyser.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:geyser_cap"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.geyser"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

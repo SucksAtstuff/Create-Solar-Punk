@@ -17,6 +17,7 @@ import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.succ.solar_punk.Config;
+import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
 import net.succ.solar_punk.fluid.ModFluids;
@@ -29,11 +30,12 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
     // Max height per footprint width: index 1→5, 2→10, 3→20
     private static final int[] MAX_HEIGHTS = {0, 5, 10, 20};
 
-    public  boolean steamMode        = false;
-    private float saltAccumulator   = 0f;
-    private float steamAccumulator  = 0f;
-    private int   cachedMirrorCount = 0;
-    private int   mirrorScanCooldown = 0;
+    public  boolean steamMode           = false;
+    private float saltAccumulator      = 0f;
+    private float steamAccumulator     = 0f;
+    private int   cachedMirrorCount    = 0;
+    private int   mirrorScanCooldown   = 0;
+    private boolean advancementFired   = false;
 
     public final FluidTank waterTank = new FluidTank(Config.solarPowerTowerTankPerBlock) {
         @Override public boolean isFluidValid(FluidStack stack) { return stack.getFluid().isSame(Fluids.WATER); }
@@ -181,8 +183,13 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         if (width < Config.solarPowerTowerMinWidth || height < Config.solarPowerTowerMinHeight) {
             saltAccumulator = 0f;
             steamAccumulator = 0f;
+            advancementFired = false;
             setLit(false);
             return;
+        }
+        if (!advancementFired) {
+            advancementFired = true;
+            ModTriggers.fireNearby(level, worldPosition, ModTriggers.TOWER_BUILT);
         }
 
         if (!isSunActive()) {

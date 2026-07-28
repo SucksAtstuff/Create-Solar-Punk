@@ -40,6 +40,7 @@ public class DataGenerators {
                 new ModWorldGenProvider(output, lookupProvider));
         generator.addProvider(event.includeServer(),
                 new ModBiomeTagProvider(output, worldGenProvider.getRegistryProvider(), existingFileHelper));
+        generator.addProvider(event.includeServer(), new AllSolarpunkAdvancements(output, lookupProvider));
 
         // Client providers
         generator.addProvider(event.includeClient(), new ModBlockStateProvider(output, existingFileHelper));

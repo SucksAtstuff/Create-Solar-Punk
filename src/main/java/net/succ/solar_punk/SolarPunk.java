@@ -25,6 +25,7 @@ import net.succ.solar_punk.item.ModCreativeModeTabs;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
 import net.succ.solar_punk.sound.ModSounds;
+import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.worldgen.ModFeatures;
 
 @Mod(SolarPunk.MODID)
@@ -41,6 +42,7 @@ public class SolarPunk {
         ModRecipeTypes.register(modEventBus);
         ModSounds.register(modEventBus);
         ModFeatures.register(modEventBus);
+        ModTriggers.register(modEventBus);
 
         modEventBus.addListener(DataGenerators::gatherData);
         modEventBus.addListener(Config::onLoad);

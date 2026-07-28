@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.succ.solar_punk.Config;
+import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.GeyserCapBlock;
 import net.succ.solar_punk.sound.ModSounds;
@@ -25,6 +26,7 @@ public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implement
     private static final RawAnimation IDLE   = RawAnimation.begin().thenLoop("animation.geyser_cap.idle");
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+    private boolean advancementFired = false;
 
     public GeyserCapBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -69,6 +71,10 @@ public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implement
             BlockState state = level.getBlockState(worldPosition);
             if (state.getValue(GeyserCapBlock.LIT) != active)
                 level.setBlock(worldPosition, state.setValue(GeyserCapBlock.LIT, active), 3);
+            if (active && !advancementFired) {
+                advancementFired = true;
+                ModTriggers.fireNearby(level, worldPosition, ModTriggers.GEYSER_ACTIVE);
+            }
         }
 
         if (time % 40 == 0 && hasVent()) {
