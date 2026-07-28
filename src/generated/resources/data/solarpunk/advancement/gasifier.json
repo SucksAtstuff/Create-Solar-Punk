@@ -1,0 +1,27 @@
+{
+  "parent": "solarpunk:biomass",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:gasifier_running"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancement.solarpunk.gasifier.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:biomass_gasifier"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.gasifier"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

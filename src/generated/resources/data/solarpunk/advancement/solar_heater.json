@@ -1,0 +1,34 @@
+{
+  "parent": "solarpunk:root",
+  "criteria": {
+    "0": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:solar_heater"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancement.solarpunk.solar_heater.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:solar_heater"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.solar_heater"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
