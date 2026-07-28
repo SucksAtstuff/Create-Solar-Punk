@@ -132,6 +132,12 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.turbine_structure.text_6", "Pipe Steam into any face of the outer casing wall - condensate water drains from any casing face too");
         add("solarpunk.ponder.turbine_structure.text_7", "Rotational power exits from the top face of the cap rotor - connect a shaft directly above");
 
+        add("solarpunk.ponder.turbine_condensate.header", "Steam Condensation");
+        add("solarpunk.ponder.turbine_condensate.text_1", "As steam drives the rotor it condenses back into water - this condensate collects inside the turbine");
+        add("solarpunk.ponder.turbine_condensate.text_2", "Check the condensate water level at any time using Engineer's Goggles on any Rotor block");
+        add("solarpunk.ponder.turbine_condensate.text_3", "When the condensate tank is full the turbine shuts down automatically - no more steam is consumed until the water is drained");
+        add("solarpunk.ponder.turbine_condensate.text_4", "Pipe the condensate water out of any casing face to drain it - the turbine restarts as soon as there is room");
+
         add("solarpunk.ponder.turbine_max.header", "Maximum Efficiency Turbine");
         add("solarpunk.ponder.turbine_max.text_1", "The sealed floor is a full 7x7 of Turbine Casing with no rotor - it anchors the structure from below");
         add("solarpunk.ponder.turbine_max.text_2", "A taller turbine consumes more Steam per tick but produces proportionally more SU - height is the main throughput lever");
@@ -192,6 +198,7 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.turbine_not_master", "Not the base rotor");
         add("create.solar_punk.tooltip.turbine_height", "Height: ");
         add("create.solar_punk.tooltip.turbine_blades", "Blades: ");
+        add("create.solar_punk.tooltip.condensate_full", "Condensate full - drain water to restart");
 
         add("create.solar_punk.tooltip.solar_power_tower_header", "Solar Power Tower");
         add("create.solar_punk.tooltip.mirrors", "Mirrors: ");

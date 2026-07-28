@@ -63,10 +63,12 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
 
     public final FluidTank condensateTank = new FluidTank(Config.turbineCondensateTank) {
         @Override
-        public boolean isFluidValid(FluidStack stack) { return false; }
+        public boolean isFluidValid(FluidStack stack) { return stack.getFluid().isSame(Fluids.WATER); }
         @Override
         protected void onContentsChanged() { setChanged(); }
     };
+
+    private int condensateAccumulator = 0;
 
     public final IFluidHandler combinedFluidHandler = new IFluidHandler() {
         @Override public int getTanks() { return 2; }
@@ -107,15 +109,19 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
     // GeneratingKineticBlockEntity
     // -------------------------------------------------------------------------
 
+    private boolean condensateFull() {
+        return condensateTank.getFluidAmount() >= condensateTank.getCapacity();
+    }
+
     @Override
     public float getGeneratedSpeed() {
-        if (!structureValid || !isMaster || steamTank.isEmpty()) return 0;
+        if (!structureValid || !isMaster || steamTank.isEmpty() || condensateFull()) return 0;
         return Math.min(Config.turbineMaxRpm, Config.turbineRpmPerLayer * turbineHeight);
     }
 
     @Override
     public float calculateAddedStressCapacity() {
-        if (!structureValid || !isMaster || steamTank.isEmpty()) {
+        if (!structureValid || !isMaster || steamTank.isEmpty() || condensateFull()) {
             this.lastCapacityProvided = 0;
             return 0;
         }
@@ -161,6 +167,16 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
             return;
         }
 
+        if (condensateFull()) {
+            if (getBlockState().getBlock() instanceof TurbineRotorBlock b
+                    && getBlockState().getValue(TurbineRotorBlock.ACTIVE)) {
+                setActive(false);
+                updateGeneratedRotation();
+                ModTriggers.fireNearby(level, worldPosition, ModTriggers.TURBINE_FLOODED);
+            }
+            return;
+        }
+
         // Update speed BEFORE draining so getGeneratedSpeed() sees a non-empty tank.
         // Also fire immediately on the first active tick so the kinetic network wakes up.
         boolean wasActive = getBlockState().getBlock() instanceof TurbineRotorBlock
@@ -180,7 +196,9 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
             return;
         }
 
-        int waterProduced = consumed.getAmount() / 10;
+        condensateAccumulator += consumed.getAmount();
+        int waterProduced = condensateAccumulator / Config.turbineCondensateRatio;
+        condensateAccumulator -= waterProduced * Config.turbineCondensateRatio;
         if (waterProduced > 0)
             condensateTank.fill(new FluidStack(Fluids.WATER, waterProduced), IFluidHandler.FluidAction.EXECUTE);
 
@@ -310,7 +328,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
             newTypeMask[dy] = typeMask;
         }
 
-        int maxBlades = (height - 1) * 8; // only cap has no blades
+        int maxBlades = (height - 1) * 4; // 1 blade per arm, 4 arms, cap layer has no blades
         float weighted = andesite * 0.7f + brass;
         float bladeRatio = maxBlades > 0 ? Math.min(1f, weighted / maxBlades) : 0f;
 
@@ -427,6 +445,10 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
                         .style(ChatFormatting.BLUE).component())
                 .forGoggles(tooltip, 1);
 
+        if (condensateFull())
+            CreateLang.translate("solar_punk.tooltip.condensate_full")
+                    .style(ChatFormatting.RED).forGoggles(tooltip, 1);
+
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         return true;
     }
@@ -448,6 +470,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         tag.putIntArray("LayerBladeTypeMask", layerBladeTypeMask);
         FluidTankNBTHelper.save(tag, "SteamTank", steamTank);
         FluidTankNBTHelper.save(tag, "CondensateTank", condensateTank);
+        tag.putInt("CondensateAccumulator", condensateAccumulator);
     }
 
     @Override
@@ -464,5 +487,6 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         layerBladeTypeMask = tag.getIntArray("LayerBladeTypeMask");
         FluidTankNBTHelper.load(tag, "SteamTank", steamTank);
         FluidTankNBTHelper.load(tag, "CondensateTank", condensateTank);
+        condensateAccumulator = tag.getInt("CondensateAccumulator");
     }
 }
