@@ -1,0 +1,28 @@
+{
+  "parent": "solarpunk:steam_turbine",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:turbine_flooded"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.solarpunk.turbine_flooded.desc"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:turbine_casing"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.turbine_flooded"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
