@@ -1,10 +1,17 @@
 package net.succ.solar_punk.block.entity.custom;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
+import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity.RotationDirection;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
+import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
 import com.simibubi.create.foundation.utility.CreateLang;
+import net.createmod.catnip.math.VecHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -30,6 +37,8 @@ import java.util.List;
 
 public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity implements IHaveGoggleInformation {
 
+    ScrollOptionBehaviour<RotationDirection> rotationDirection;
+
     public final FluidTank biofuelTank = new FluidTank(Config.biofuelEngineTank) {
         @Override
         public boolean isFluidValid(FluidStack stack) {
@@ -48,8 +57,32 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
     }
 
     @Override
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+        super.addBehaviours(behaviours);
+        rotationDirection = new ScrollOptionBehaviour<>(RotationDirection.class,
+                CreateLang.translateDirect("contraptions.windmill.rotation_direction"),
+                this,
+                new ValueBoxTransform.Sided() {
+                    @Override
+                    protected Vec3 getSouthLocation() {
+                        return VecHelper.voxelSpace(8, 8, 15.5);
+                    }
+                    @Override
+                    protected boolean isSideActive(BlockState state, Direction direction) {
+                        return direction.getAxis() != state.getValue(BiofuelEngineBlock.FACING).getAxis();
+                    }
+                }
+        );
+        rotationDirection.withCallback($ -> this.updateGeneratedRotation());
+        behaviours.add(rotationDirection);
+    }
+
+    @Override
     public float getGeneratedSpeed() {
-        return biofuelTank.getFluidAmount() > 0 ? Config.biofuelEngineRpm : 0;
+        if (biofuelTank.getFluidAmount() <= 0) return 0;
+        float speed = Config.biofuelEngineRpm;
+        if (rotationDirection.get() == RotationDirection.COUNTER_CLOCKWISE) speed = -speed;
+        return speed;
     }
 
     @Override
