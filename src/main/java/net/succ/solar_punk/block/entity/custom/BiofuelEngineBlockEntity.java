@@ -28,6 +28,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.succ.solar_punk.Config;
+import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.BiofuelEngineBlock;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.pollution.PollutionSavedData;
@@ -103,8 +104,11 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
             updateGeneratedRotation();
             boolean active = biofuelTank.getFluidAmount() > 0;
             BlockState state = level.getBlockState(worldPosition);
-            if (state.getValue(BiofuelEngineBlock.LIT) != active)
+            if (state.getValue(BiofuelEngineBlock.LIT) != active) {
                 level.setBlock(worldPosition, state.setValue(BiofuelEngineBlock.LIT, active), 3);
+                if (active)
+                    ModTriggers.fireNearby(level, worldPosition, ModTriggers.BIOFUEL_ENGINE_ON);
+            }
         }
     }
 

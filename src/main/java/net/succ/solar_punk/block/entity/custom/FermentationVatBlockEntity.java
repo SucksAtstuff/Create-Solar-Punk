@@ -23,6 +23,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.succ.solar_punk.Config;
+import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock.VatPosition;
 import net.succ.solar_punk.fluid.ModFluids;
@@ -190,6 +191,7 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
             waterTank.drain(waterNeeded, IFluidHandler.FluidAction.EXECUTE);
             biofuelTank.fill(new FluidStack(ModFluids.BIOFUEL_SOURCE.get(), biofuelOutput),
                     IFluidHandler.FluidAction.EXECUTE);
+            ModTriggers.fireNearby(level, worldPosition, ModTriggers.FERMENTATION_DONE);
             progress = 0;
             setChanged();
         }

@@ -1,0 +1,27 @@
+{
+  "parent": "solarpunk:turbine_casing",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:turbine_built"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.solarpunk.steam_turbine.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:turbine_rotor"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.steam_turbine"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

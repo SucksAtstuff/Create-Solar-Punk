@@ -1,0 +1,27 @@
+{
+  "parent": "solarpunk:gasifier",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:fermentation_done"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.solarpunk.fermentation.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:fermentation_vat"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.fermentation"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,27 @@
+{
+  "parent": "solarpunk:heat_battery",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:tower_built"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.solarpunk.solar_tower.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:solar_power_tower"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.solar_tower"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

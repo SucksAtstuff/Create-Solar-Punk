@@ -1,5 +1,22 @@
 # 0.3.1-1.21.1
 
+### Achievements
+
+Added a dedicated **Create: Solarpunk** advancement tab with 12 in-game achievements that guide progression through the mod:
+
+- **Powered by Nature** - collect your first Salt
+- **Heat Collector** - craft a Solar Heater
+- **Thermal Reserve** - fill a Heat Battery with Molten Salt
+- **Tower of Light** - build a working Solar Power Tower
+- **Heavy Metal** - craft Turbine Casing
+- **Inspection Window** - craft Turbine Casing Glass
+- **Steam Powered** - assemble a complete Steam Turbine
+- **From the Deep** - cap a Geyser Vent for passive geothermal power
+- **Going Green** - gather Biomass
+- **Burning Clean** - ignite a Biomass Gasifier
+- **The Brewer** - produce Biofuel in a Fermentation Vat
+- **Engines of Tomorrow** - power a Biofuel Engine
+
 ### Bug Fixes
 
 - Fixed Turbine Blades always facing the same direction regardless of placement. They now orient to the direction you're looking when placed, like stairs. Also fixed the hitbox being a full block - it now matches the thin flat shape of the model.
@@ -8,6 +25,7 @@
 ### QoL
 
 - The **Biomass Gasifier**, **Biofuel Engine**, and **Geyser Cap** now support rotation direction control. Scroll on the side of the block (away from the shaft faces) to toggle between clockwise and counter-clockwise output, the same way the Andesite Solar Panel works.
+
 
 # 0.3.0-1.21.1
 

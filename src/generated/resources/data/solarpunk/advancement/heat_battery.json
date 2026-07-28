@@ -1,0 +1,27 @@
+{
+  "parent": "solarpunk:solar_heater",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:heat_stored"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancement.solarpunk.heat_battery.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:heat_battery"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.heat_battery"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
