@@ -16,6 +16,18 @@
       "required": false
     },
     {
+      "id": "createdieselgenerators:diesel_engine",
+      "required": false
+    },
+    {
+      "id": "createdieselgenerators:large_diesel_engine",
+      "required": false
+    },
+    {
+      "id": "createdieselgenerators:huge_diesel_engine",
+      "required": false
+    },
+    {
       "id": "simulated:white_portable_engine",
       "required": false
     },

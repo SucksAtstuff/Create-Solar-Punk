@@ -1,20 +1,33 @@
-# 0.3.1-1.21.1
+# 0.3.2-1.21.1
 
 ### Achievements
 
 Added a dedicated **Create: Solarpunk** advancement tab with achievements that guide you through the mod from your first piece of Salt all the way to a running Steam Turbine.
 
+
+### Compatibility
+
+- Diesel engines from Create: Diesel Generators now count as pollution sources when Global Warming is enabled.
+
 ### Bug Fixes
 
-- Fixed Turbine Blades always facing the same direction regardless of placement. They now orient to the direction you're looking when placed, like stairs. Also fixed the hitbox being a full block - it now matches the thin flat shape of the model.
+- Fixed Create: New Age's Generator Coil incorrectly producing pollution.
 - Fixed the Biomass Gasifier shaft not spinning when the machine was active.
 - Fixed the Steam Turbine efficiency calculation requiring 2 blades per arm for full output. One brass blade per arm (4 per layer) is now enough to reach 100% efficiency.
 
+
 ### QoL
 
+- Added a pollution blacklist config option, letting you exclude specific blocks from ever counting as pollution sources.
 - The **Biomass Gasifier**, **Biofuel Engine**, and **Geyser Cap** now support rotation direction control. Scroll on the side of the block (away from the shaft faces) to toggle between clockwise and counter-clockwise output, the same way the Andesite Solar Panel works.
 - Updated the Steam Turbine Ponder scenes: walls now use Turbine Casing Glass between the corner frame columns, blades are shown facing the correct direction, and the max-size scene zooms out far enough to see the full structure.
 
+
+# 0.3.1-1.21.1
+
+### Bug Fixes
+
+- Fixed Turbine Blades always facing the same direction regardless of placement. They now orient to the direction you're looking when placed, like stairs. Also fixed the hitbox being a full block - it now matches the thin flat shape of the model.
 
 # 0.3.0-1.21.1
 
