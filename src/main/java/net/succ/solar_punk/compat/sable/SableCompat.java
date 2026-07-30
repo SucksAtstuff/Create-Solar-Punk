@@ -101,6 +101,8 @@ public final class SableCompat {
                             if (state.hasProperty(BlockStateProperties.LIT) && !state.getValue(BlockStateProperties.LIT)) continue;
 
                             String blockId = BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
+                            if (Config.pollutionBlacklist.contains(blockId)) continue;
+
                             int amount = inTag
                                     ? Config.perBlockPollution.getOrDefault(blockId, Config.pollutionPerSource)
                                     : Config.autoDetectPollution;

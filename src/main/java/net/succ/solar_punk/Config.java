@@ -7,6 +7,7 @@ import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
@@ -111,6 +112,7 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_AERONAUTICS_ENGINE_POLLUTION;
     private static final ModConfigSpec.ConfigValue<List<? extends String>> CFG_AUTO_DETECT_KEYWORDS;
     private static final ModConfigSpec.IntValue CFG_AUTO_DETECT_POLLUTION;
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> CFG_POLLUTION_BLACKLIST;
     private static final ModConfigSpec.IntValue CFG_POLLUTION_RADIUS_BLOCKS;
     private static final ModConfigSpec.IntValue CFG_POLLUTION_DECAY_RATE;
     private static final ModConfigSpec.IntValue CFG_LEAF_ABSORPTION_PER_INTERVAL;
@@ -261,6 +263,9 @@ public class Config {
                                 "minecraft:smoker=4",
                                 "create:lit_blaze_burner=15",
                                 "create:steam_engine=20",
+                                "createdieselgenerators:diesel_engine=15",
+                                "createdieselgenerators:large_diesel_engine=30",
+                                "createdieselgenerators:huge_diesel_engine=50",
                                 "solarpunk:biofuel_engine=10",
                                 "solarpunk:biomass_gasifier=5"
                         )),
@@ -285,6 +290,15 @@ public class Config {
         CFG_AUTO_DETECT_POLLUTION = BUILDER.comment(
                 "Pollution units per second emitted by auto-detected blocks (keyword match, no explicit tag entry).")
                 .defineInRange("auto_detect_pollution_per_second", 3, 0, 1_000_000);
+        CFG_POLLUTION_BLACKLIST = BUILDER.comment(
+                "Block IDs that never count as pollution sources, even if in #solarpunk:pollution_sources",
+                "or matched by an auto-detect keyword (format: \"modid:path\").")
+                .defineListAllowEmpty("pollution_blacklist",
+                        () -> new ArrayList<>(List.of(
+                                "create_new_age:generator_coil"
+                        )),
+                        () -> "modid:path",
+                        e -> e instanceof String s && s.contains(":"));
         CFG_POLLUTION_RADIUS_BLOCKS = BUILDER.comment("Block radius around each active pollution source that receives pollution (0 = source chunk only).").defineInRange("pollution_radius_blocks", 64, 0, 512);
         CFG_POLLUTION_DECAY_RATE   = BUILDER.comment("Pollution units removed from each chunk per second (0 = pollution never decays).").defineInRange("pollution_decay_rate_per_second", 1, 0, 1_000_000);
         CFG_LEAF_ABSORPTION_PER_INTERVAL = BUILDER.comment("Pollution absorbed per leaf block in a chunk each decay interval. 0 to disable tree absorption.").defineInRange("leaf_absorption_per_interval", 1, 0, 1_000_000);
@@ -339,6 +353,7 @@ public class Config {
     public static List<? extends String> autoDetectKeywords = new ArrayList<>();
     public static int autoDetectPollution;
     public static int aeronauticsEnginePollution;
+    public static Set<String> pollutionBlacklist = new java.util.HashSet<>();
 
     static void onLoad(final ModConfigEvent event) {
         andesiteMorningRpm   = CFG_ANDESITE_MORNING_RPM.get();
@@ -435,6 +450,7 @@ public class Config {
 
         autoDetectKeywords = CFG_AUTO_DETECT_KEYWORDS.get();
         autoDetectPollution = CFG_AUTO_DETECT_POLLUTION.get();
+        pollutionBlacklist = new java.util.HashSet<>(CFG_POLLUTION_BLACKLIST.get());
         GlobalWarmingHandler.invalidateAutoDetectedCache();
 
         aeronauticsEnginePollution = CFG_AERONAUTICS_ENGINE_POLLUTION.get();

@@ -62,6 +62,7 @@ public class GlobalWarmingHandler {
             for (Block block : BuiltInRegistries.BLOCK) {
                 String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
                 if (block.defaultBlockState().is(POLLUTION_SOURCES)) continue;
+                if (Config.pollutionBlacklist.contains(BuiltInRegistries.BLOCK.getKey(block).toString())) continue;
                 for (String keyword : keywords) {
                     if (path.contains(keyword)) {
                         result.add(block);
@@ -126,13 +127,15 @@ public class GlobalWarmingHandler {
                         if (!inTag && !autoDetected) continue;
                         if (!isActive(state)) continue;
 
+                        String blockId = BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
+                        if (Config.pollutionBlacklist.contains(blockId)) continue;
+
                         level.sendParticles(
                             ParticleTypes.LARGE_SMOKE,
                             pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5,
                             2, 0.15, 0.05, 0.15, 0.01
                         );
 
-                        String blockId = BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
                         int amount = inTag
                             ? Config.perBlockPollution.getOrDefault(blockId, Config.pollutionPerSource)
                             : Config.autoDetectPollution;

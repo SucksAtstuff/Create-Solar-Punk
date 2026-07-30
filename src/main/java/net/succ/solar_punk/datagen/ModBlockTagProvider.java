@@ -66,6 +66,10 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                      ModBlocks.BIOFUEL_ENGINE.get(), ModBlocks.BIOMASS_GASIFIER.get())
                 .addOptional(ResourceLocation.fromNamespaceAndPath("create", "lit_blaze_burner"))
                 .addOptional(ResourceLocation.fromNamespaceAndPath("create", "steam_engine"))
+                // Create Diesel Generators
+                .addOptional(ResourceLocation.fromNamespaceAndPath("createdieselgenerators", "diesel_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("createdieselgenerators", "large_diesel_engine"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("createdieselgenerators", "huge_diesel_engine"))
                 // Create Aeronautics portable engines (one per dye colour)
                 .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "white_portable_engine"))
                 .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "orange_portable_engine"))
