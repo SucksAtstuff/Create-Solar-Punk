@@ -3,14 +3,66 @@ package net.succ.solar_punk;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.succ.solar_punk.pollution.GlobalWarmingHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 public class Config {
+    private static final Logger LOGGER = LoggerFactory.getLogger("solarpunk/config");
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
+
+    // "modid:path" - same character set Minecraft's ResourceLocation allows.
+    private static final Pattern MODID_PATH = Pattern.compile("^[a-z0-9_.-]+:[a-z0-9_./-]+$");
+    // "modid:path=amount" as used by per_block_pollution.
+    private static final Pattern MODID_PATH_EQUALS_AMOUNT = Pattern.compile("^[a-z0-9_.-]+:[a-z0-9_./-]+=\\d+$");
+
+    /**
+     * Builds a validator for a list config entry that must look like "modid:path".
+     * Logs a warning naming the offending entry instead of letting it fail silently -
+     * a malformed entry (missing colon, stray quote, wrong case, etc.) is dropped from
+     * the list rather than reverting the whole config to defaults.
+     */
+    private static Predicate<Object> modIdPathValidator(String configKey) {
+        return value -> {
+            if (!(value instanceof String s)) {
+                LOGGER.warn("Config '{}': entry {} is not a string, ignoring it.", configKey, value);
+                return false;
+            }
+            if (!MODID_PATH.matcher(s).matches()) {
+                LOGGER.warn("Config '{}': entry \"{}\" is not a valid \"modid:path\" block ID, ignoring it. " +
+                        "Check for typos, a missing mod-id prefix, or a stray/missing quote in the TOML file.",
+                        configKey, s);
+                return false;
+            }
+            return true;
+        };
+    }
+
+    /**
+     * Same as {@link #modIdPathValidator(String)} but for "modid:path=amount" entries
+     * (per_block_pollution).
+     */
+    private static Predicate<Object> modIdPathAmountValidator(String configKey) {
+        return value -> {
+            if (!(value instanceof String s)) {
+                LOGGER.warn("Config '{}': entry {} is not a string, ignoring it.", configKey, value);
+                return false;
+            }
+            if (!MODID_PATH_EQUALS_AMOUNT.matcher(s).matches()) {
+                LOGGER.warn("Config '{}': entry \"{}\" is not valid \"modid:path=amount\" format, ignoring it. " +
+                        "Check for typos, a missing mod-id prefix, or a stray/missing quote in the TOML file.",
+                        configKey, s);
+                return false;
+            }
+            return true;
+        };
+    }
 
     // -------------------------------------------------------------------------
     // Generators
@@ -242,7 +294,7 @@ public class Config {
                                 "minecraft:wooded_badlands", "minecraft:savanna", "minecraft:savanna_plateau",
                                 "minecraft:windswept_savanna")),
                         () -> "minecraft:plains",
-                        e -> e instanceof String s && s.contains(":"));
+                        modIdPathValidator("geyser_biomes"));
         BUILDER.pop();
 
         BUILDER.push("global_warming");
@@ -270,7 +322,7 @@ public class Config {
                                 "solarpunk:biomass_gasifier=5"
                         )),
                         () -> "block_id=0",
-                        e -> e instanceof String s && s.contains("=") && s.contains(":"));
+                        modIdPathAmountValidator("per_block_pollution"));
         CFG_AERONAUTICS_ENGINE_POLLUTION = BUILDER.comment(
                 "Pollution units per second for each Create Aeronautics portable engine (all 16 dye colours).",
                 "Set to 0 to disable. Has no effect if Create Aeronautics is not installed.")
@@ -298,7 +350,7 @@ public class Config {
                                 "create_new_age:generator_coil"
                         )),
                         () -> "modid:path",
-                        e -> e instanceof String s && s.contains(":"));
+                        modIdPathValidator("pollution_blacklist"));
         CFG_POLLUTION_RADIUS_BLOCKS = BUILDER.comment("Block radius around each active pollution source that receives pollution (0 = source chunk only).").defineInRange("pollution_radius_blocks", 64, 0, 512);
         CFG_POLLUTION_DECAY_RATE   = BUILDER.comment("Pollution units removed from each chunk per second (0 = pollution never decays).").defineInRange("pollution_decay_rate_per_second", 1, 0, 1_000_000);
         CFG_LEAF_ABSORPTION_PER_INTERVAL = BUILDER.comment("Pollution absorbed per leaf block in a chunk each decay interval. 0 to disable tree absorption.").defineInRange("leaf_absorption_per_interval", 1, 0, 1_000_000);

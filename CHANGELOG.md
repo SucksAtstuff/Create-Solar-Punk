@@ -1,3 +1,9 @@
+# 0.3.3-1.21.1
+
+### Bug Fixes
+
+- Fixed list-based config options (pollution blacklist, per-block pollution, geyser biomes) silently reverting to their defaults when a single entry was malformed. A bad entry is now logged and skipped on its own, leaving the rest of your list intact.
+
 # 0.3.2-1.21.1
 
 ### Achievements
