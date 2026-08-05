@@ -4,7 +4,6 @@
 
 Added a dedicated **Create: Solarpunk** advancement tab with achievements that guide you through the mod from your first piece of Salt all the way to a running Steam Turbine.
 
-
 ### Compatibility
 
 - Diesel engines from Create: Diesel Generators now count as pollution sources when Global Warming is enabled.
