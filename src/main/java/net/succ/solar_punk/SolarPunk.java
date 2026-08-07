@@ -27,6 +27,7 @@ import net.succ.solar_punk.recipe.ModRecipeTypes;
 import net.succ.solar_punk.sound.ModSounds;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.worldgen.ModFeatures;
+import net.succ.solar_punk.worldgen.ModBiomeModifierTypes;
 
 @Mod(SolarPunk.MODID)
 public class SolarPunk {
@@ -42,6 +43,7 @@ public class SolarPunk {
         ModRecipeTypes.register(modEventBus);
         ModSounds.register(modEventBus);
         ModFeatures.register(modEventBus);
+        ModBiomeModifierTypes.register(modEventBus);
         ModTriggers.register(modEventBus);
 
         modEventBus.addListener(DataGenerators::gatherData);

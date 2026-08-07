@@ -1,6 +1,5 @@
 {
-  "type": "neoforge:add_features",
-  "biomes": "#solarpunk:has_geysers",
+  "type": "solarpunk:configurable_geyser_biomes",
   "features": "solarpunk:geyser_blob",
   "step": "surface_structures"
 }

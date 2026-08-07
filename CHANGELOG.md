@@ -15,6 +15,7 @@ Added the Firebox Boiler, a cheap early-game way to make Steam. Craft it with ir
 ### Bug Fixes
 
 - Fixed list-based config options (pollution blacklist, per-block pollution, geyser biomes) silently reverting to their defaults when a single entry was malformed. A bad entry is now logged and skipped on its own, leaving the rest of your list intact.
+- Fixed Geyser Vents spawning in mountain biomes instead of the documented desert, badlands, and savanna, and fixed the geyser biomes and geyser spawn chance config options doing nothing at all. Both now actually control where and how often Geyser Vents generate.
 
 # 0.3.2-1.21.1
 

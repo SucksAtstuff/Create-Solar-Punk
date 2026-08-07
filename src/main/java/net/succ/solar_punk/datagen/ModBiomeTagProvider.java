@@ -25,11 +25,8 @@ public class ModBiomeTagProvider extends BiomeTagsProvider {
                 .addTag(BiomeTags.IS_BADLANDS)
                 .addTag(BiomeTags.IS_SAVANNA);
 
-        tag(ModTags.Biomes.HAS_GEYSERS)
-                .addTag(BiomeTags.IS_MOUNTAIN)
-                .add(Biomes.STONY_SHORE)
-                .add(Biomes.WINDSWEPT_HILLS)
-                .add(Biomes.WINDSWEPT_GRAVELLY_HILLS)
-                .add(Biomes.SAVANNA_PLATEAU);
+        // No has_geysers tag: geyser placement biomes come from Config.geyserBiomes at
+        // runtime via ConfigurableGeyserBiomeModifier, not a static datapack tag - see
+        // that class and ModWorldGenProvider#bootstrapBiomeModifiers.
     }
 }

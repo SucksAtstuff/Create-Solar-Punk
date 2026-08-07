@@ -21,11 +21,12 @@ A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation, thermal s
 - **Heat Battery** - stores thermal energy from molten salt and heats Create boilers
 
 ### Steam Turbine
-- **Steam** - a new fluid produced by a Solar Power Tower in Steam mode; piped in to power the turbine
-- **Steam Turbine** - a multiblock built from a 7×7 shell of Turbine Casing around a column of Turbine Rotors, with Turbine Blades filling each interior layer in a plus pattern; converts piped-in steam into rotational force, draining condensate water from the bottom
+- **Steam** - a new fluid produced by a Solar Power Tower in Steam mode or a Firebox Boiler; piped in to power the turbine
+- **Steam Turbine** - a multiblock built from a 7×7 shell of Turbine Casing around a column of Turbine Rotors, with Turbine Blades filling each interior layer in a plus pattern; converts piped-in steam into rotational force, draining condensate water from the bottom; can be built standing up or lying on its side (East/West or North/South axis) - it works exactly the same way either orientation
 - **Turbine Casing / Turbine Casing Glass** - the structural shell blocks of the turbine; craft Turbine Casing by right-clicking a Block of Industrial Iron with a Zinc Ingot (or run it through a Deployer), then right-click a Turbine Casing with Glass for the see-through variant
-- **Turbine Rotor** - the central column the blades attach to; rotational output exits from the top
+- **Turbine Rotor** - the central column the blades attach to; rotational output exits from the top (or the end of the rotor column, for horizontal builds)
 - **Andesite Turbine Blade / Brass Turbine Blade** - Andesite Blades are cheap but waste more steam; Brass Blades squeeze out the most power per bucket and reach 100% efficiency with just one blade per arm; mixing types is fine, efficiency scales smoothly
+- **Firebox Boiler** - a cheap early-game Steam source; craft it with iron, a furnace, and a bucket, feed it any furnace fuel, and pipe water in to get Steam out - no Salt or Solar Power Tower required. Much weaker per block than a fully built Solar Power Tower, but enough to get a Steam Turbine running early
 
 ### Electricity
 - **Andesite Solar Panel** - generates Create rotational force (SU) from sunlight
@@ -93,7 +94,11 @@ The tower is a multiblock built by stacking tower blocks and using the Solar Pow
 
 Build a 7×7 shell of Turbine Casing (or Turbine Casing Glass) around a column of Turbine Rotors, then fill each interior layer with Turbine Blades in a plus pattern - two blades per arm, four arms. Pipe steam in from any side face; rotational power exits from the top of the rotor column, and condensate water drains from the bottom.
 
+The turbine can also be built lying on its side: build the same 7×7 shell along the East/West or North/South axis instead of straight up, and it works exactly the same way.
+
 Blade type determines efficiency: Andesite Blades are cheaper but waste more steam, while Brass Blades reach 100% efficiency with just one blade per arm. Mixing blade types is fine - efficiency scales smoothly. Taller turbines consume more steam and produce more SU.
+
+No Solar Power Tower yet? A **Firebox Boiler** (iron, a furnace, and a bucket, fed with any furnace fuel) makes Steam early on to get a Turbine running before you've scaled up solar production.
 
 ## Thanks
 

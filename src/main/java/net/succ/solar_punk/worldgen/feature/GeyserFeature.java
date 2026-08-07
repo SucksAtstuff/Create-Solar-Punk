@@ -11,6 +11,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.ModBlocks;
 
 import java.util.List;
@@ -31,6 +32,11 @@ public class GeyserFeature extends Feature<NoneFeatureConfiguration> {
         WorldGenLevel level = ctx.level();
         BlockPos origin = ctx.origin();
         RandomSource random = ctx.random();
+
+        // Per-attempt spawn chance from config (0 = never, 100 = always). The biome
+        // this attempt is even happening in is already filtered by geyser_biomes via
+        // ConfigurableGeyserBiomeModifier, so this only thins out placement frequency.
+        if (random.nextInt(100) >= Config.geyserSpawnChance) return false;
 
         // getHeightmapPos returns the first air position above the surface; .below() is the surface block
         BlockPos surface = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, origin).below();

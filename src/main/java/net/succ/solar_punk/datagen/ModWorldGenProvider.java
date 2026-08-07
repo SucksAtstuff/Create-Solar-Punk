@@ -27,6 +27,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.worldgen.ConfigurableGeyserBiomeModifier;
 import net.succ.solar_punk.worldgen.ModFeatures;
 
 import java.util.List;
@@ -113,15 +114,17 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
     }
 
     private static void bootstrapBiomeModifiers(BootstrapContext<BiomeModifier> context) {
-        var biomes = context.lookup(Registries.BIOME);
         var placed = context.lookup(Registries.PLACED_FEATURE);
 
-        context.register(ADD_GEYSERS, new BiomeModifiers.AddFeaturesBiomeModifier(
-                biomes.getOrThrow(ModTags.Biomes.HAS_GEYSERS),
+        // Geyser Vents: biome list comes from Config.geyserBiomes at apply time, not a
+        // static tag, so the geyser_biomes config option actually controls placement.
+        // See ConfigurableGeyserBiomeModifier.
+        context.register(ADD_GEYSERS, new ConfigurableGeyserBiomeModifier(
                 HolderSet.direct(placed.getOrThrow(GEYSER_BLOB_PLACED)),
                 GenerationStep.Decoration.SURFACE_STRUCTURES
         ));
 
+        var biomes = context.lookup(Registries.BIOME);
         context.register(ADD_SALT_DEPOSITS, new BiomeModifiers.AddFeaturesBiomeModifier(
                 biomes.getOrThrow(ModTags.Biomes.HAS_SALT_DEPOSITS),
                 HolderSet.direct(placed.getOrThrow(SALT_DEPOSIT_PLACED)),
