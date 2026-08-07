@@ -11,6 +11,7 @@ import net.succ.solar_punk.block.entity.custom.AndesiteSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BiofuelEngineBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BiomassGasifierBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FermentationVatBlockEntity;
+import net.succ.solar_punk.block.entity.custom.FireboxBoilerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GeyserCapBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BrassSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
@@ -49,6 +50,11 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SolarHeaterBlockEntity>> SOLAR_HEATER =
             BLOCK_ENTITIES.register("solar_heater", () -> BlockEntityType.Builder
                     .of((pos, state) -> new SolarHeaterBlockEntity(ModBlockEntities.SOLAR_HEATER.get(), pos, state), ModBlocks.SOLAR_HEATER.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FireboxBoilerBlockEntity>> FIREBOX_BOILER =
+            BLOCK_ENTITIES.register("firebox_boiler", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new FireboxBoilerBlockEntity(ModBlockEntities.FIREBOX_BOILER.get(), pos, state), ModBlocks.FIREBOX_BOILER.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<KineticBatteryBlockEntity>> KINETIC_BATTERY =
