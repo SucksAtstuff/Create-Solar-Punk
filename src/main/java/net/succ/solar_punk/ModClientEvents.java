@@ -128,6 +128,7 @@ public class ModClientEvents {
 
     private static void registerTooltips() {
         tip(ModBlocks.SOLAR_HEATER::get);
+        tip(ModBlocks.FIREBOX_BOILER::get);
         tip(ModBlocks.ANDESITE_SOLAR_PANEL::get);
         tip(ModBlocks.BRASS_SOLAR_PANEL::get);
         tip(ModBlocks.HEAT_BATTERY::get);

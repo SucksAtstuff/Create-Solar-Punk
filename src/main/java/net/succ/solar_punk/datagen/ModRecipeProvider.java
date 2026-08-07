@@ -60,6 +60,18 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
                 .save(output);
 
+        // Deliberately vanilla-tier (iron + furnace + bucket) - no Create alloys or Salt
+        // needed, so it's reachable before any other machine in the mod's progression.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.FIREBOX_BOILER.get())
+                .pattern("III")
+                .pattern("IFI")
+                .pattern("IBI")
+                .define('I', Items.IRON_INGOT)
+                .define('F', Items.FURNACE)
+                .define('B', Items.BUCKET)
+                .unlockedBy("has_furnace", has(Items.FURNACE))
+                .save(output);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ANDESITE_SOLAR_PANEL.get())
                 .pattern("GGG")
                 .pattern("AAA")

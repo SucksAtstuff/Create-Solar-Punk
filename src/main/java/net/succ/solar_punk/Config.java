@@ -107,6 +107,8 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_SOLAR_HEATER_EVAPORATION_TICKS;
     private static final ModConfigSpec.IntValue CFG_SOLAR_HEATER_WATER_PER_SALT;
 
+    private static final ModConfigSpec.IntValue CFG_FIREBOX_BOILER_STEAM_PER_TICK;
+
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_TICKS;
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_WATER_PER_BATCH;
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_BIOFUEL_PER_BATCH;
@@ -137,6 +139,7 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_SOLAR_POWER_TOWER_TANK_PER_BLOCK;
     private static final ModConfigSpec.IntValue CFG_SPRINKLER_TANK;
     private static final ModConfigSpec.IntValue CFG_SOLAR_HEATER_TANK;
+    private static final ModConfigSpec.IntValue CFG_FIREBOX_BOILER_TANK;
 
     // -------------------------------------------------------------------------
     // Multiblock minimum sizes
@@ -234,6 +237,15 @@ public class Config {
         CFG_SOLAR_HEATER_WATER_PER_SALT   = BUILDER.comment("mB of water consumed per salt produced").defineInRange("water_per_salt_mb", 250, 1, 10_000);
         BUILDER.pop();
 
+        BUILDER.push("firebox_boiler");
+        CFG_FIREBOX_BOILER_STEAM_PER_TICK = BUILDER.comment(
+                "mB of Steam produced (and mB of water consumed, 1:1) per tick while lit.",
+                "Kept low on purpose: a maxed-out Solar Power Tower in steam mode makes 21 mB/t.",
+                "Matching that with Firebox Boilers means a wall of them plus a steady fuel supply -",
+                "meant as an early bootstrap for the Steam Turbine, not a replacement for the tower.")
+                .defineInRange("steam_per_tick", 2, 1, 10_000);
+        BUILDER.pop();
+
         BUILDER.push("fermentation_vat");
         CFG_FERMENTATION_TICKS            = BUILDER.comment("Ticks per fermentation batch").defineInRange("fermentation_ticks", 400, 1, 100_000);
         CFG_FERMENTATION_WATER_PER_BATCH  = BUILDER.comment("mB of water consumed per batch (per footprint block)").defineInRange("water_per_batch_mb", 1000, 1, 100_000);
@@ -277,6 +289,7 @@ public class Config {
         CFG_SOLAR_POWER_TOWER_TANK_PER_BLOCK = BUILDER.comment("Solar Power Tower: fluid capacity per multiblock block (mB)").defineInRange("solar_power_tower_per_block_mb", 8000, 100, 1_000_000);
         CFG_SPRINKLER_TANK                  = BUILDER.comment("Kinetic Sprinkler: fluid tank capacity (mB)").defineInRange("kinetic_sprinkler_mb", 4000, 100, 1_000_000);
         CFG_SOLAR_HEATER_TANK               = BUILDER.comment("Solar Heater: output fluid tank capacity (mB)").defineInRange("solar_heater_mb", 8000, 100, 1_000_000);
+        CFG_FIREBOX_BOILER_TANK             = BUILDER.comment("Firebox Boiler: water and steam tank capacity (mB, each tank)").defineInRange("firebox_boiler_mb", 4000, 100, 1_000_000);
         BUILDER.pop();
 
         BUILDER.push("multiblocks");
@@ -319,7 +332,8 @@ public class Config {
                                 "createdieselgenerators:large_diesel_engine=30",
                                 "createdieselgenerators:huge_diesel_engine=50",
                                 "solarpunk:biofuel_engine=10",
-                                "solarpunk:biomass_gasifier=5"
+                                "solarpunk:biomass_gasifier=5",
+                                "solarpunk:firebox_boiler=6"
                         )),
                         () -> "block_id=0",
                         modIdPathAmountValidator("per_block_pollution"));
@@ -380,6 +394,7 @@ public class Config {
     public static int turbineSteamTank, turbineCondensateTank;
 
     public static int solarHeaterMeltTicks, solarHeaterEvaporationTicks, solarHeaterWaterPerSalt;
+    public static int fireboxBoilerSteamPerTick;
     public static int fermentationTicks, fermentationWaterPerBatch, fermentationBiofuelPerBatch;
     public static int gasifierBurnTicks, pelletBurnTicks, pelletBiocharAmount;
     public static int biofuelConsumeMb, biofuelConsumePeriod;
@@ -388,7 +403,7 @@ public class Config {
 
     public static int heatBatteryTank, biofuelEngineTank;
     public static int fermentationVatTankPerBlock, solarPowerTowerTankPerBlock;
-    public static int sprinklerTank, solarHeaterTank;
+    public static int sprinklerTank, solarHeaterTank, fireboxBoilerTank;
 
     public static int fermentationVatMinWidth, fermentationVatMinHeight;
     public static int solarPowerTowerMinWidth, solarPowerTowerMinHeight;
@@ -443,6 +458,8 @@ public class Config {
         solarHeaterEvaporationTicks = CFG_SOLAR_HEATER_EVAPORATION_TICKS.get();
         solarHeaterWaterPerSalt    = CFG_SOLAR_HEATER_WATER_PER_SALT.get();
 
+        fireboxBoilerSteamPerTick = CFG_FIREBOX_BOILER_STEAM_PER_TICK.get();
+
         fermentationTicks          = CFG_FERMENTATION_TICKS.get();
         fermentationWaterPerBatch  = CFG_FERMENTATION_WATER_PER_BATCH.get();
         fermentationBiofuelPerBatch = CFG_FERMENTATION_BIOFUEL_PER_BATCH.get();
@@ -469,6 +486,7 @@ public class Config {
         solarPowerTowerTankPerBlock  = CFG_SOLAR_POWER_TOWER_TANK_PER_BLOCK.get();
         sprinklerTank                = CFG_SPRINKLER_TANK.get();
         solarHeaterTank              = CFG_SOLAR_HEATER_TANK.get();
+        fireboxBoilerTank            = CFG_FIREBOX_BOILER_TANK.get();
 
         fermentationVatMinWidth     = CFG_FERMENTATION_VAT_MIN_WIDTH.get();
         fermentationVatMinHeight    = CFG_FERMENTATION_VAT_MIN_HEIGHT.get();

@@ -34,6 +34,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.ANDESITE_SOLAR_PANEL.get())
                 .add(ModBlocks.BRASS_SOLAR_PANEL.get())
                 .add(ModBlocks.SOLAR_HEATER.get())
+                .add(ModBlocks.FIREBOX_BOILER.get())
                 .add(ModBlocks.SALT_BLOCK.get())
                 .add(ModBlocks.KINETIC_BATTERY.get())
                 .add(ModBlocks.HEAT_BATTERY.get())
@@ -63,7 +64,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
 
         tag(GlobalWarmingHandler.POLLUTION_SOURCES)
                 .add(Blocks.CAMPFIRE, Blocks.SOUL_CAMPFIRE, Blocks.FURNACE, Blocks.BLAST_FURNACE, Blocks.SMOKER,
-                     ModBlocks.BIOFUEL_ENGINE.get(), ModBlocks.BIOMASS_GASIFIER.get())
+                     ModBlocks.BIOFUEL_ENGINE.get(), ModBlocks.BIOMASS_GASIFIER.get(), ModBlocks.FIREBOX_BOILER.get())
                 .addOptional(ResourceLocation.fromNamespaceAndPath("create", "lit_blaze_burner"))
                 .addOptional(ResourceLocation.fromNamespaceAndPath("create", "steam_engine"))
                 // Create Diesel Generators

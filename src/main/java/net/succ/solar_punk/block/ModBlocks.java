@@ -17,6 +17,7 @@ import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.FermentationVatItem;
+import net.succ.solar_punk.block.custom.FireboxBoilerBlock;
 import net.succ.solar_punk.block.custom.GeyserCapBlock;
 import net.succ.solar_punk.block.custom.GeyserVentBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
@@ -116,6 +117,13 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
+
+    public static final DeferredBlock<FireboxBoilerBlock> FIREBOX_BOILER = registerBlock("firebox_boiler",
+            () -> new FireboxBoilerBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)
+                    .lightLevel(state -> state.getValue(FireboxBoilerBlock.LIT) ? 13 : 0)));
 
     public static final DeferredBlock<KineticBatteryBlock> KINETIC_BATTERY = registerBlock("kinetic_battery",
             () -> new KineticBatteryBlock(BlockBehaviour.Properties.of()

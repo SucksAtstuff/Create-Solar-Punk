@@ -72,6 +72,16 @@ public class SolarPunk {
                 (be, side) -> be.energyStorage
         );
         event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.FIREBOX_BOILER.get(),
+                (be, side) -> be.itemHandler
+        );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.FIREBOX_BOILER.get(),
+                (be, side) -> be.combinedFluidHandler
+        );
+        event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 ModBlockEntities.HEAT_BATTERY.get(),
                 (be, side) -> be.fluidTank

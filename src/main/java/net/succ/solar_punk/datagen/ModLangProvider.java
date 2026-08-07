@@ -209,6 +209,8 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.mirrors", "Mirrors: ");
         add("create.solar_punk.tooltip.efficiency", "Efficiency: ");
 
+        add("create.solar_punk.tooltip.firebox_boiler_header", "Firebox Boiler");
+
         add("create.solar_punk.tooltip.heater_header", "Solar Heater");
         add("create.solar_punk.tooltip.melting", "Melting: ");
         add("create.solar_punk.tooltip.progress", "Progress: ");
@@ -222,6 +224,10 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.solar_heater.tooltip.summary", "Uses _sunlight_ to melt items into fluid and passively evaporate water into _Salt_.");
         add("block.solarpunk.solar_heater.tooltip.condition1", "During the day with a clear sky");
         add("block.solarpunk.solar_heater.tooltip.behaviour1", "Processes the loaded item. Slows in _rain_.");
+
+        add("block.solarpunk.firebox_boiler.tooltip.summary", "Burns furnace fuel to boil water into _Steam_ for the _Steam Turbine_. A cheap way to get a turbine running before building a Solar Power Tower - nowhere near as efficient at scale.");
+        add("block.solarpunk.firebox_boiler.tooltip.condition1", "While lit");
+        add("block.solarpunk.firebox_boiler.tooltip.behaviour1", "Converts water to Steam at a fixed rate. Insert fuel by hand or hopper; pipe water in and Steam out of any face.");
 
         add("block.solarpunk.andesite_solar_panel.tooltip.summary", "Generates _Rotational Force_ from sunlight. Output scales with sun angle and weather.");
         add("block.solarpunk.andesite_solar_panel.tooltip.condition1", "During the day with a clear sky");
