@@ -171,6 +171,8 @@ public class FireboxBoilerBlockEntity extends BlockEntity implements IHaveGoggle
             CreateLang.translate("solar_punk.tooltip.fuel")
                     .style(ChatFormatting.GRAY)
                     .add(fuel.getHoverName().copy().withStyle(ChatFormatting.WHITE))
+                    .add(Component.literal(" x").withStyle(ChatFormatting.GRAY))
+                    .add(CreateLang.number(fuel.getCount()).style(ChatFormatting.YELLOW).component())
                     .forGoggles(tooltip, 1);
         }
         if (burnTimeRemaining > 0) {
