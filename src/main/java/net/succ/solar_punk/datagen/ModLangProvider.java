@@ -146,6 +146,11 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.turbine_max.text_5", "Replace any casing with Turbine Casing Glass anywhere in the structure to see inside - still valid");
         add("solarpunk.ponder.turbine_max.text_6", "The maximum is 20 blade layers - at full brass and max height it can power an entire base");
 
+        add("solarpunk.ponder.turbine_horizontal.header", "Building On Its Side");
+        add("solarpunk.ponder.turbine_horizontal.text_1", "The Steam Turbine doesn't have to stand up - the same shell works lying on the East/West or North/South axis");
+        add("solarpunk.ponder.turbine_horizontal.text_2", "Place the first Rotor against the face pointing the way you want it to grow - the whole structure follows that axis");
+        add("solarpunk.ponder.turbine_horizontal.text_3", "It works exactly the same way from there - pipe in Steam, and power exits from the far Rotor");
+
         add("solarpunk.ponder.fermentation_vat_scaling.header", "Scaling the Fermentation Vat");
         add("solarpunk.ponder.fermentation_vat_scaling.text_1", "A larger footprint increases the batch size - a 2x2 vat processes 4 Biomass at once, a 3x3 processes 9");
         add("solarpunk.ponder.fermentation_vat_scaling.text_2", "Water consumed and Biofuel produced per batch scale with the footprint area");

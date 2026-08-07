@@ -27,7 +27,16 @@ public class TurbineRotorRenderer extends KineticBlockEntityRenderer<TurbineRoto
         if (!be.isMaster || !be.structureValid || be.turbineHeight < 2) return;
         if (!state.getValue(TurbineRotorBlock.ACTIVE)) return;
 
-        float angle = getAngleForBe(be, be.getBlockPos(), Direction.Axis.Y);
+        Direction.Axis axis = state.getValue(TurbineRotorBlock.AXIS);
+        // "Positive" direction of the growth axis - matches TurbineRotorBlockEntity's
+        // own growthPositive(), i.e. which way layer index (dy) increases in the real
+        // structure.
+        Direction growthPositive = switch (axis) {
+            case X -> Direction.EAST;
+            case Y -> Direction.UP;
+            case Z -> Direction.SOUTH;
+        };
+        float angle = getAngleForBe(be, be.getBlockPos(), axis);
         float angleDeg = (float) Math.toDegrees(angle);
         int bladeLayers = be.turbineHeight - 1;
 
@@ -42,7 +51,25 @@ public class TurbineRotorRenderer extends KineticBlockEntityRenderer<TurbineRoto
                 float totalAngleDeg = angleDeg + arm * 90f;
                 BlockState bladeState = (typeMask & (1 << arm)) != 0 ? brassState : andesiteState;
 
+                // The blade model is authored thin along (local) Y, extending along
+                // (local) X, and everything below is built and proven around that
+                // (spin around Y, layers stack along Y). Rather than hand-composing
+                // separate X/Y rotations to reorient it for other growth axes (fragile -
+                // a fluent PoseStack-style chain applies rotations in the reverse of
+                // their call order, which is easy to get backwards), wrap the whole
+                // thing in a single rotateTo mapping native "up" onto the real growth
+                // axis. rotateTo pivots on the CURRENT origin, which at this point in
+                // the chain is still the block's corner, not its center - rotating the
+                // already-offset blade position around the wrong pivot is what swung it
+                // a whole block off, so the reorientation is sandwiched between a
+                // translate to the block center and back. That's an identity for
+                // axis=Y (unchanged behaviour) and, for other axes, guarantees the
+                // per-layer spacing lands exactly on the growth axis with no leftover
+                // offset.
                 CachedBuffers.block(KINETIC_BLOCK, bladeState)
+                        .translate(0.5f, 0.5f, 0.5f)
+                        .rotateTo(Direction.UP, growthPositive)
+                        .translate(-0.5f, -0.5f, -0.5f)
                         .translate(0.5f, 0f, 0.5f)
                         .rotateYDegrees(totalAngleDeg)
                         .translate(0.5f, (float) dy, -0.5f)

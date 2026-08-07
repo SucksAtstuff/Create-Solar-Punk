@@ -52,7 +52,8 @@ public class SolarPunkPonderPlugin implements PonderPlugin {
                         ModBlocks.BRASS_TURBINE_BLADE.getId())
                 .addStoryBoard("turbine_rotor/structure",   SteamTurbineScenes::structure,   SolarPunkPonderTags.STEAM_TURBINE)
                 .addStoryBoard("turbine_rotor/condensate",  SteamTurbineScenes::condensate,  SolarPunkPonderTags.STEAM_TURBINE)
-                .addStoryBoard("turbine_rotor/max_turbine", SteamTurbineScenes::maxTurbine, SolarPunkPonderTags.STEAM_TURBINE);
+                .addStoryBoard("turbine_rotor/max_turbine", SteamTurbineScenes::maxTurbine, SolarPunkPonderTags.STEAM_TURBINE)
+                .addStoryBoard("turbine_rotor/horizontal",  SteamTurbineScenes::horizontal, SolarPunkPonderTags.STEAM_TURBINE);
     }
 
     @Override

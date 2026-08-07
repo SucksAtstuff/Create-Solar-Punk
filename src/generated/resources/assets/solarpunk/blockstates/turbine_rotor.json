@@ -1,10 +1,28 @@
 {
   "variants": {
-    "lit=false": {
+    "axis=x,lit=false": {
+      "model": "solarpunk:block/turbine_rotor",
+      "x": 90,
+      "y": 90
+    },
+    "axis=x,lit=true": {
+      "model": "solarpunk:block/turbine_rotor_lit",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y,lit=false": {
       "model": "solarpunk:block/turbine_rotor"
     },
-    "lit=true": {
+    "axis=y,lit=true": {
       "model": "solarpunk:block/turbine_rotor_lit"
+    },
+    "axis=z,lit=false": {
+      "model": "solarpunk:block/turbine_rotor",
+      "x": 90
+    },
+    "axis=z,lit=true": {
+      "model": "solarpunk:block/turbine_rotor_lit",
+      "x": 90
     }
   }
 }
