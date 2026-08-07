@@ -44,6 +44,35 @@ public class SteamTurbineScenes {
                 scene.world().showSection(util.select().position(new BlockPos(x, y, z)), Direction.DOWN);
     }
 
+    // X-axis analogs of the 4 helpers above, for a turbine grown East/West instead of
+    // up - the 7x7 ring now lies in the Y-Z plane at a given x.
+    private static void showRingX(CreateSceneBuilder scene, SceneBuildingUtil util, int x) {
+        for (int y = 0; y <= 6; y++)
+            for (int z = 0; z <= 6; z++)
+                if (y == 0 || y == 6 || z == 0 || z == 6)
+                    scene.world().showSection(util.select().position(new BlockPos(x, y, z)), Direction.EAST);
+    }
+
+    private static void showBladesX(CreateSceneBuilder scene, SceneBuildingUtil util, int x) {
+        scene.world().showSection(util.select().position(new BlockPos(x, 4, 3)), Direction.EAST);
+        scene.world().showSection(util.select().position(new BlockPos(x, 2, 3)), Direction.EAST);
+        scene.world().showSection(util.select().position(new BlockPos(x, 3, 4)), Direction.EAST);
+        scene.world().showSection(util.select().position(new BlockPos(x, 3, 2)), Direction.EAST);
+    }
+
+    private static void showCapInteriorX(CreateSceneBuilder scene, SceneBuildingUtil util, int x) {
+        for (int y = 1; y <= 5; y++)
+            for (int z = 1; z <= 5; z++)
+                if (y != 3 || z != 3)
+                    scene.world().showSection(util.select().position(new BlockPos(x, y, z)), Direction.EAST);
+    }
+
+    private static void showFloorInteriorX(CreateSceneBuilder scene, SceneBuildingUtil util, int x) {
+        for (int y = 1; y <= 5; y++)
+            for (int z = 1; z <= 5; z++)
+                scene.world().showSection(util.select().position(new BlockPos(x, y, z)), Direction.EAST);
+    }
+
     /**
      * Scene 1 - walks through building a minimum turbine component by component.
      * Layout: floor(y=1) + blades(y=2,3,4) + cap(y=5).
@@ -253,6 +282,65 @@ public class SteamTurbineScenes {
                 .pointAt(util.vector().topOf(new BlockPos(3, 9, 3)))
                 .attachKeyFrame();
         scene.idle(80);
+
+        scene.markAsFinished();
+    }
+
+    /**
+     * Scene 4 - shows the exact same minimum structure as scene 1, but grown along the
+     * X axis instead of standing up. Layout: floor(x=1) + 3 blade layers(x=2-4) +
+     * cap(x=5), matching turbine_rotor/structure's size (x=0 left empty like that
+     * scene's unused y=0 ground row).
+     */
+    public static void horizontal(SceneBuilder builder, SceneBuildingUtil util) {
+        CreateSceneBuilder scene = new CreateSceneBuilder(builder);
+        scene.title("turbine_horizontal", "Building On Its Side");
+        scene.configureBasePlate(0, 0, 7);
+
+        BlockPos masterRotor = new BlockPos(2, 3, 3);
+        BlockPos capRotor    = new BlockPos(5, 3, 3);
+
+        scene.world().showSection(util.select().layer(0), Direction.UP);
+        scene.idle(10);
+
+        // --- Floor layer (x=1) ---
+        showRingX(scene, util, 1);
+        showFloorInteriorX(scene, util, 1);
+        scene.idle(10);
+
+        scene.overlay().showText(90)
+                .text("The Steam Turbine doesn't have to stand up - the same shell also works lying on the East/West or North/South axis")
+                .pointAt(util.vector().centerOf(new BlockPos(1, 3, 3)))
+                .attachKeyFrame();
+        scene.idle(100);
+
+        // --- 3 blade layers (x=2,3,4) ---
+        for (int x = 2; x <= 4; x++) {
+            showRingX(scene, util, x);
+            scene.world().showSection(util.select().position(new BlockPos(x, 3, 3)), Direction.EAST);
+            showBladesX(scene, util, x);
+            scene.idle(5);
+        }
+        scene.idle(10);
+
+        scene.overlay().showText(80)
+                .text("Place the first Rotor against the face pointing the way you want it to grow - the whole structure follows that axis")
+                .pointAt(util.vector().centerOf(masterRotor))
+                .attachKeyFrame();
+        scene.idle(90);
+
+        // --- Top cap (x=5) ---
+        showRingX(scene, util, 5);
+        showCapInteriorX(scene, util, 5);
+        scene.world().showSection(util.select().position(capRotor), Direction.EAST);
+        scene.idle(10);
+
+        scene.world().setKineticSpeed(util.select().fromTo(masterRotor, capRotor), 16f);
+        scene.overlay().showText(80)
+                .text("It works exactly the same way from there - pipe in Steam, and power exits from the far Rotor")
+                .pointAt(util.vector().centerOf(capRotor))
+                .attachKeyFrame();
+        scene.idle(90);
 
         scene.markAsFinished();
     }

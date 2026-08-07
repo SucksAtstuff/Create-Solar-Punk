@@ -1,4 +1,8 @@
-# 0.3.3-1.21.1
+# 0.4.0-1.21.1
+
+### Steam Turbine
+
+The Steam Turbine can now be built lying on its side as well as standing up. Build the same 7x7 shell along the East/West or North/South axis instead of straight up, and it works exactly the same way - pipe in steam, collect rotational force from the end of the rotor column.
 
 ### Bug Fixes
 

@@ -5,6 +5,7 @@ import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -32,14 +33,31 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
     private static final int MAX_HEIGHT = 20;
     private static final float BASE_EFFICIENCY = 0.1f;
 
-    // Arm order matches TurbineRotorRenderer: 0=East, 1=South, 2=West, 3=North.
-    // Each entry lists the two blade positions (dx,dz) for that arm.
-    public static final int[][][] ARM_OFFSETS = {
-        {{ 1, 0}, { 2, 0}},  // East
-        {{ 0, 1}, { 0, 2}},  // South
-        {{-1, 0}, {-2, 0}},  // West
-        {{ 0,-1}, { 0,-2}},  // North
-    };
+    // The turbine can be built along any of the 3 axes, not just vertical. "Growth"
+    // is the direction blade layers stack in; the master rotor is the layer closest
+    // to the negative growth direction (the "floor" end), the cap is at the positive
+    // end. The 4 "arms" a layer's blades sit on are always exactly the 4 Direction
+    // values that aren't on the growth axis - Direction.getClockWise(axis) gives the
+    // engine's own canonical cycling order, chosen here to reproduce the original
+    // shipped arm order (East,South,West,North) exactly when axis=Y.
+    private static Direction growthPositive(Direction.Axis axis) {
+        return switch (axis) {
+            case X -> Direction.EAST;
+            case Y -> Direction.UP;
+            case Z -> Direction.SOUTH;
+        };
+    }
+
+    private static Direction[] armDirections(Direction.Axis axis) {
+        Direction base = switch (axis) {
+            case X -> Direction.UP;
+            case Y, Z -> Direction.EAST;
+        };
+        Direction[] arms = new Direction[4];
+        arms[0] = base;
+        for (int i = 1; i < 4; i++) arms[i] = arms[i - 1].getClockWise(axis);
+        return arms;
+    }
 
     public boolean structureValid = false;
     public boolean isMaster = false;
@@ -213,19 +231,22 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         }
     }
 
-    private static final int[][] BLADE_OFFSETS = {{0,-2},{0,-1},{0,1},{0,2},{-2,0},{-1,0},{1,0},{2,0}};
-
     private void setBladeHidden(boolean hidden) {
         if (level == null || level.isClientSide || turbineHeight < 2) return;
-        int rx = worldPosition.getX(), ry = worldPosition.getY(), rz = worldPosition.getZ();
-        for (int dy = 0; dy < turbineHeight - 1; dy++) {
-            for (int[] off : BLADE_OFFSETS) {
-                BlockPos pos = new BlockPos(rx + off[0], ry + dy, rz + off[1]);
-                BlockState bs = level.getBlockState(pos);
-                if (bs.is(ModBlocks.ANDESITE_TURBINE_BLADE.get()))
-                    level.setBlock(pos, bs.setValue(AndesiteTurbineBladeBlock.HIDDEN, hidden), 2);
-                else if (bs.is(ModBlocks.BRASS_TURBINE_BLADE.get()))
-                    level.setBlock(pos, bs.setValue(BrassTurbineBladeBlock.HIDDEN, hidden), 2);
+        Direction.Axis axis = getBlockState().getValue(TurbineRotorBlock.AXIS);
+        Direction growthDir = growthPositive(axis);
+        Direction[] arms = armDirections(axis);
+        for (int s = 0; s < turbineHeight - 1; s++) {
+            BlockPos layerOrigin = worldPosition.relative(growthDir, s);
+            for (Direction armDir : arms) {
+                for (int dist = 1; dist <= 2; dist++) {
+                    BlockPos pos = layerOrigin.relative(armDir, dist);
+                    BlockState bs = level.getBlockState(pos);
+                    if (bs.is(ModBlocks.ANDESITE_TURBINE_BLADE.get()))
+                        level.setBlock(pos, bs.setValue(AndesiteTurbineBladeBlock.HIDDEN, hidden), 2);
+                    else if (bs.is(ModBlocks.BRASS_TURBINE_BLADE.get()))
+                        level.setBlock(pos, bs.setValue(BrassTurbineBladeBlock.HIDDEN, hidden), 2);
+                }
             }
         }
     }
@@ -243,15 +264,19 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
     private void invalidateStructureCapabilities() {
         if (level == null || level.isClientSide) return;
         level.invalidateCapabilities(worldPosition);
-        int rx = worldPosition.getX(), ry = worldPosition.getY(), rz = worldPosition.getZ();
+        Direction.Axis axis = getBlockState().getValue(TurbineRotorBlock.AXIS);
+        Direction growthDir = growthPositive(axis);
+        Direction[] arms = armDirections(axis);
+        Direction uDir = arms[0], vDir = arms[1];
         int height = Math.max(turbineHeight, 2);
-        for (int y = ry - 1; y <= ry + height; y++) {
-            for (int x = rx - 3; x <= rx + 3; x++) {
-                for (int z = rz - 3; z <= rz + 3; z++) {
-                    BlockPos p = new BlockPos(x, y, z);
+        for (int s = -1; s <= height; s++) {
+            BlockPos layerOrigin = worldPosition.relative(growthDir, s);
+            for (int u = -3; u <= 3; u++) {
+                for (int v = -3; v <= 3; v++) {
+                    BlockPos p = layerOrigin.relative(uDir, u).relative(vDir, v);
                     level.invalidateCapabilities(p);
                     // Notify outer ring neighbours so adjacent pipes recheck and auto-connect
-                    if (x == rx - 3 || x == rx + 3 || z == rz - 3 || z == rz + 3)
+                    if (u == -3 || u == 3 || v == -3 || v == 3)
                         level.updateNeighborsAt(p, level.getBlockState(p).getBlock());
                 }
             }
@@ -262,70 +287,79 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
     // Structure scan
     // -------------------------------------------------------------------------
 
-    // The rotor is always at the center of the 5x5 interior, so the 7x7 ring
-    // is always exactly 3 blocks out in each horizontal direction.
+    // The rotor is always at the center of the 5x5 interior, so the 7x7 ring is
+    // always exactly 3 blocks out in the plane perpendicular to the growth axis.
+    // "s" (steps) below always means "how many blocks along growthDir from this
+    // rotor" - negative is toward the floor end, positive toward the cap end.
     private boolean doStructureScan() {
         if (level == null) return false;
+        if (!(getBlockState().getBlock() instanceof TurbineRotorBlock)) return false;
 
-        int rx = worldPosition.getX();
-        int ry = worldPosition.getY();
-        int rz = worldPosition.getZ();
+        Direction.Axis axis = getBlockState().getValue(TurbineRotorBlock.AXIS);
+        Direction growthDir = growthPositive(axis);
+        Direction[] arms = armDirections(axis);
+        Direction uDir = arms[0], vDir = arms[1];
 
-        int rMinX = rx - 3, rMaxX = rx + 3;
-        int rMinZ = rz - 3, rMaxZ = rz + 3;
-
-        if (!validateRing(rMinX, rMaxX, rMinZ, rMaxZ, ry)) {
+        if (!validateRing(growthDir, uDir, vDir, 0)) {
             isMaster = false;
             return false;
         }
 
-        // If there's a lower rotor at the same (x,z) inside a valid ring, it is master.
-        for (int y = ry - 1; y >= ry - MAX_HEIGHT; y--) {
-            if (!level.isLoaded(new BlockPos(rx, y, rz))) break;
-            if (!validateRing(rMinX, rMaxX, rMinZ, rMaxZ, y)) break;
-            if (level.getBlockState(new BlockPos(rx, y, rz)).is(ModBlocks.TURBINE_ROTOR.get())) {
+        // If there's a rotor further toward the floor end inside a valid ring, it is master.
+        for (int s = -1; s >= -MAX_HEIGHT; s--) {
+            BlockPos checkPos = worldPosition.relative(growthDir, s);
+            if (!level.isLoaded(checkPos)) break;
+            if (!validateRing(growthDir, uDir, vDir, s)) break;
+            if (level.getBlockState(checkPos).is(ModBlocks.TURBINE_ROTOR.get())) {
                 isMaster = false;
                 return true; // structure valid, not master
             }
         }
 
-        // This is the master (lowest blade layer). The layer directly below must be the solid floor.
+        // This is the master (the blade layer closest to the floor end). The layer
+        // one further toward the floor end must be the solid floor.
         isMaster = true;
-        if (!validateFloor(rx, ry - 1, rz)) return false;
+        if (!validateFloor(growthDir, uDir, vDir, -1)) return false;
 
-        // Scan upward: find consecutive rotor+ring layers.
-        int topY = ry;
-        for (int y = ry + 1; y <= ry + MAX_HEIGHT; y++) {
-            BlockPos checkPos = new BlockPos(rx, y, rz);
+        // Scan toward the cap end: find consecutive rotor+ring layers.
+        int topS = 0;
+        for (int s = 1; s <= MAX_HEIGHT; s++) {
+            BlockPos checkPos = worldPosition.relative(growthDir, s);
             if (!level.isLoaded(checkPos)) break;
-            if (!validateRing(rMinX, rMaxX, rMinZ, rMaxZ, y)) break;
+            if (!validateRing(growthDir, uDir, vDir, s)) break;
             if (!level.getBlockState(checkPos).is(ModBlocks.TURBINE_ROTOR.get())) break;
-            topY = y;
+            topS = s;
         }
 
         // Top layer must have its interior fully sealed (the cap).
-        if (topY == ry) return false; // no cap found above master
-        if (!validateTopCap(rx, topY, rz)) return false;
+        if (topS == 0) return false; // no cap found beyond master
+        if (!validateTopCap(growthDir, uDir, vDir, topS)) return false;
 
-        int height = topY - ry + 1; // blade layers + cap
+        int height = topS + 1; // blade layers + cap
         if (height < 2) return false; // minimum: 1 blade layer + cap
 
-        // Count blades and build per-layer arm presence mask (4 bits: East/South/West/North).
+        // Count blades and build per-layer arm presence mask (4 bits, one per arm direction).
         int andesite = 0, brass = 0;
         int[] newMask = new int[height - 1];
         int[] newTypeMask = new int[height - 1];
-        for (int y = ry; y < topY; y++) {
-            int dy = y - ry;
+        for (int s = 0; s < topS; s++) {
+            BlockPos layerOrigin = worldPosition.relative(growthDir, s);
             int mask = 0, typeMask = 0;
             for (int arm = 0; arm < 4; arm++) {
-                for (int[] off : ARM_OFFSETS[arm]) {
-                    BlockState bs = level.getBlockState(new BlockPos(rx + off[0], y, rz + off[1]));
-                    if (bs.is(ModBlocks.ANDESITE_TURBINE_BLADE.get())) { andesite++; mask |= (1 << arm); }
-                    else if (bs.is(ModBlocks.BRASS_TURBINE_BLADE.get())) { brass++; mask |= (1 << arm); typeMask |= (1 << arm); }
+                Direction armDir = arms[arm];
+                for (int dist = 1; dist <= 2; dist++) {
+                    BlockPos bladePos = layerOrigin.relative(armDir, dist);
+                    BlockState bs = level.getBlockState(bladePos);
+                    boolean isAndesite = bs.is(ModBlocks.ANDESITE_TURBINE_BLADE.get());
+                    boolean isBrass = !isAndesite && bs.is(ModBlocks.BRASS_TURBINE_BLADE.get());
+                    if (isAndesite) { andesite++; mask |= (1 << arm); }
+                    else if (isBrass) { brass++; mask |= (1 << arm); typeMask |= (1 << arm); }
+                    if (isAndesite || isBrass)
+                        syncBladeOrientation(bladePos, bs, isAndesite, axis, armDir);
                 }
             }
-            newMask[dy] = mask;
-            newTypeMask[dy] = typeMask;
+            newMask[s] = mask;
+            newTypeMask[s] = typeMask;
         }
 
         int maxBlades = (height - 1) * 4; // 1 blade per arm, 4 arms, cap layer has no blades
@@ -341,32 +375,56 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         return true;
     }
 
-    private boolean validateRing(int minX, int maxX, int minZ, int maxZ, int y) {
-        for (int x = minX; x <= maxX; x++) {
-            if (!isCasing(new BlockPos(x, y, minZ))) return false;
-            if (!isCasing(new BlockPos(x, y, maxZ))) return false;
+    // Keeps a discovered blade's cosmetic FACING/AXIS in sync with its actual position
+    // in the structure. Purely visual (the scan above only ever checks block type),
+    // but keeps the idle model looking right regardless of how the blade was placed.
+    // Guarded by an equality check so a correctly-oriented blade isn't rewritten (and
+    // its chunk/light state churned) on every scan interval.
+    private void syncBladeOrientation(BlockPos pos, BlockState bs, boolean isAndesite,
+                                       Direction.Axis wantAxis, Direction wantFacing) {
+        Direction curFacing = isAndesite ? bs.getValue(AndesiteTurbineBladeBlock.FACING) : bs.getValue(BrassTurbineBladeBlock.FACING);
+        Direction.Axis curAxis = isAndesite ? bs.getValue(AndesiteTurbineBladeBlock.AXIS) : bs.getValue(BrassTurbineBladeBlock.AXIS);
+        if (curFacing == wantFacing && curAxis == wantAxis) return;
+        BlockState updated = isAndesite
+                ? bs.setValue(AndesiteTurbineBladeBlock.FACING, wantFacing).setValue(AndesiteTurbineBladeBlock.AXIS, wantAxis)
+                : bs.setValue(BrassTurbineBladeBlock.FACING, wantFacing).setValue(BrassTurbineBladeBlock.AXIS, wantAxis);
+        level.setBlock(pos, updated, 2);
+    }
+
+    // The perpendicular plane offset helper: growthDir/uDir/vDir form a 3-axis basis
+    // (u,v span the ring/floor/cap plane), so this is a strict generalization of the
+    // old literal x/y/z arithmetic - it reduces to exactly that when axis=Y (uDir=East,
+    // vDir=South, matching the original x/z offsets one-for-one).
+    private BlockPos offset(Direction growthDir, Direction uDir, Direction vDir, int alongGrowth, int u, int v) {
+        return worldPosition.relative(growthDir, alongGrowth).relative(uDir, u).relative(vDir, v);
+    }
+
+    private boolean validateRing(Direction growthDir, Direction uDir, Direction vDir, int alongGrowth) {
+        for (int u = -3; u <= 3; u++) {
+            if (!isCasing(offset(growthDir, uDir, vDir, alongGrowth, u, -3))) return false;
+            if (!isCasing(offset(growthDir, uDir, vDir, alongGrowth, u, 3))) return false;
         }
-        for (int z = minZ + 1; z < maxZ; z++) {
-            if (!isCasing(new BlockPos(minX, y, z))) return false;
-            if (!isCasing(new BlockPos(maxX, y, z))) return false;
+        for (int v = -2; v <= 2; v++) {
+            if (!isCasing(offset(growthDir, uDir, vDir, alongGrowth, -3, v))) return false;
+            if (!isCasing(offset(growthDir, uDir, vDir, alongGrowth, 3, v))) return false;
         }
         return true;
     }
 
     // Every position in the full 7×7 footprint must be casing — no rotor, no air.
-    private boolean validateFloor(int rx, int y, int rz) {
-        for (int x = rx - 3; x <= rx + 3; x++)
-            for (int z = rz - 3; z <= rz + 3; z++)
-                if (!isCasing(new BlockPos(x, y, z))) return false;
+    private boolean validateFloor(Direction growthDir, Direction uDir, Direction vDir, int alongGrowth) {
+        for (int u = -3; u <= 3; u++)
+            for (int v = -3; v <= 3; v++)
+                if (!isCasing(offset(growthDir, uDir, vDir, alongGrowth, u, v))) return false;
         return true;
     }
 
     // Every position in the 5×5 interior (excluding outer ring and center rotor) must be casing.
-    private boolean validateTopCap(int rx, int y, int rz) {
-        for (int dx = -2; dx <= 2; dx++)
-            for (int dz = -2; dz <= 2; dz++) {
-                if (dx == 0 && dz == 0) continue;
-                if (!isCasing(new BlockPos(rx + dx, y, rz + dz))) return false;
+    private boolean validateTopCap(Direction growthDir, Direction uDir, Direction vDir, int alongGrowth) {
+        for (int u = -2; u <= 2; u++)
+            for (int v = -2; v <= 2; v++) {
+                if (u == 0 && v == 0) continue;
+                if (!isCasing(offset(growthDir, uDir, vDir, alongGrowth, u, v))) return false;
             }
         return true;
     }
@@ -383,8 +441,11 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
 
     private TurbineRotorBlockEntity findMaster() {
         if (level == null) return null;
-        for (int dy = 1; dy <= MAX_HEIGHT; dy++) {
-            BlockPos check = worldPosition.below(dy);
+        if (!(getBlockState().getBlock() instanceof TurbineRotorBlock)) return null;
+        Direction.Axis axis = getBlockState().getValue(TurbineRotorBlock.AXIS);
+        Direction towardFloor = growthPositive(axis).getOpposite();
+        for (int s = 1; s <= MAX_HEIGHT; s++) {
+            BlockPos check = worldPosition.relative(towardFloor, s);
             if (!level.isLoaded(check)) break;
             if (!level.getBlockState(check).is(ModBlocks.TURBINE_ROTOR.get())) break;
             BlockEntity be = level.getBlockEntity(check);

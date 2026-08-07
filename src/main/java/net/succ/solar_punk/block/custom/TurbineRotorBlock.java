@@ -5,6 +5,7 @@ import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.TurbineRotorBlockEntity;
 import org.jetbrains.annotations.Nullable;
@@ -22,26 +24,35 @@ import org.jetbrains.annotations.Nullable;
 public class TurbineRotorBlock extends KineticBlock implements IBE<TurbineRotorBlockEntity>, IWrenchable {
 
     public static final BooleanProperty ACTIVE = BlockStateProperties.LIT;
+    // Which axis the turbine spins on - set once at placement from the clicked face,
+    // same convention as KineticBatteryBlock. No wrench-cycling: rewrenching a fully
+    // built multiblock's axis would silently invalidate the whole structure.
+    public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
 
     public TurbineRotorBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(ACTIVE, false));
+        registerDefaultState(defaultBlockState().setValue(ACTIVE, false).setValue(AXIS, Direction.Axis.Y));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(ACTIVE);
+        builder.add(ACTIVE, AXIS);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return defaultBlockState().setValue(AXIS, context.getClickedFace().getAxis());
     }
 
     @Override
     public Direction.Axis getRotationAxis(BlockState state) {
-        return Direction.Axis.Y;
+        return state.getValue(AXIS);
     }
 
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-        return face == Direction.UP || face == Direction.DOWN;
+        return face.getAxis() == state.getValue(AXIS);
     }
 
     @Override

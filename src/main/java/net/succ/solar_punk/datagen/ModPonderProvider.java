@@ -107,6 +107,11 @@ public class ModPonderProvider implements DataProvider {
         SCHEMATICS.put("turbine_rotor/max_turbine",
                 addTurbineLayers(new SceneStructure(7, 11, 7).withBasePlate(), 7, true));
 
+        // Same size as turbine_rotor/structure, but grown along the X axis instead of Y:
+        // floor(x=1) + 3 blade layers(x=2-4) + cap(x=5); 7x7x7 schematic.
+        SCHEMATICS.put("turbine_rotor/horizontal",
+                addHorizontalTurbineLayers(new SceneStructure(7, 7, 7).withBasePlate(), 3, false));
+
         // Tower + mirrors on west (x=0) and east (x=4) faces — used by both scenes
         SceneStructure towerWithMirrors = addTowerLayers(new SceneStructure().withBasePlate());
         for (int y = 1; y <= 3; y++)
@@ -202,6 +207,42 @@ public class ModPonderProvider implements DataProvider {
             for (int z = 0; z <= 6; z++)
                 if (x == 3 && z == 3) s.addBlock(3, cap, 3, "solarpunk:turbine_rotor", "lit", "false");
                 else                   s.addBlock(x, cap, z, "solarpunk:turbine_casing");
+        return s;
+    }
+
+    // Same idea as addTurbineLayers, but grown along the X axis (East/West) instead of
+    // Y: x=0 is left empty (matching the reserved y=0 ground row the vertical schematics
+    // use), floor at x=1, `bladeLayers` blade layers (x=2..bladeLayers+1), cap at
+    // x=bladeLayers+2. The 7x7 ring now lies in the Y-Z plane at each X layer, and blades
+    // sit on the Up/Down/North/South arms (the 4 directions perpendicular to X) instead
+    // of East/South/West/North.
+    private static SceneStructure addHorizontalTurbineLayers(SceneStructure s, int bladeLayers, boolean allBrass) {
+        String blade = allBrass ? "solarpunk:brass_turbine_blade" : "solarpunk:andesite_turbine_blade";
+        // Floor layer (x=1): full 7x7 (y,z) casings, no rotor.
+        for (int y = 0; y <= 6; y++)
+            for (int z = 0; z <= 6; z++)
+                s.addBlock(1, y, z, "solarpunk:turbine_casing");
+        // Blade layers (x=2 to x=bladeLayers+1).
+        for (int x = 2; x <= bladeLayers + 1; x++) {
+            for (int y = 0; y <= 6; y++)
+                for (int z = 0; z <= 6; z++)
+                    if (y == 0 || y == 6 || z == 0 || z == 6) {
+                        boolean isCorner = (y == 0 || y == 6) && (z == 0 || z == 6);
+                        String wall = isCorner ? "solarpunk:turbine_casing" : "solarpunk:turbine_casing_glass";
+                        s.addBlock(x, y, z, wall);
+                    }
+            s.addBlock(x, 3, 3, "solarpunk:turbine_rotor", "lit", "false", "axis", "x");
+            s.addBlock(x, 4, 3, blade, "facing", "up",    "hidden", "false", "axis", "x");
+            s.addBlock(x, 2, 3, blade, "facing", "down",  "hidden", "false", "axis", "x");
+            s.addBlock(x, 3, 4, blade, "facing", "south", "hidden", "false", "axis", "x");
+            s.addBlock(x, 3, 2, blade, "facing", "north", "hidden", "false", "axis", "x");
+        }
+        // Top cap (x=bladeLayers+2): full 7x7 casings + rotor at center.
+        int cap = bladeLayers + 2;
+        for (int y = 0; y <= 6; y++)
+            for (int z = 0; z <= 6; z++)
+                if (y == 3 && z == 3) s.addBlock(cap, y, z, "solarpunk:turbine_rotor", "lit", "false", "axis", "x");
+                else                   s.addBlock(cap, y, z, "solarpunk:turbine_casing");
         return s;
     }
 

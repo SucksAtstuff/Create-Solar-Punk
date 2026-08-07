@@ -7,6 +7,9 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
@@ -16,6 +19,8 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.fluid.ModFluids;
+import net.succ.solar_punk.block.custom.AndesiteTurbineBladeBlock;
+import net.succ.solar_punk.block.custom.BrassTurbineBladeBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
@@ -53,7 +58,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
         solarMirrorBlock();
         kineticSprinklerBlock();
 
-        litCustomModelBlock(ModBlocks.TURBINE_ROTOR, false);
+        litAxisCustomModelBlock(ModBlocks.TURBINE_ROTOR, false);
+        turbineBladeBlock(ModBlocks.ANDESITE_TURBINE_BLADE,
+                AndesiteTurbineBladeBlock.FACING, AndesiteTurbineBladeBlock.AXIS, AndesiteTurbineBladeBlock.HIDDEN);
+        turbineBladeBlock(ModBlocks.BRASS_TURBINE_BLADE,
+                BrassTurbineBladeBlock.FACING, BrassTurbineBladeBlock.AXIS, BrassTurbineBladeBlock.HIDDEN);
 
         // Fluid blocks — particle texture only; the fluid renderer handles the actual surface.
         fluidBlock(ModFluids.MOLTEN_SALT_BLOCK, modLoc("block/molten_salt_still"));
@@ -131,6 +140,72 @@ public class ModBlockStateProvider extends BlockStateProvider {
         });
 
         if (generateItem) simpleBlockItem(block.get(), unlit);
+    }
+
+    // Like litCustomModelBlock but also handles an AXIS property (X/Y/Z) by rotating
+    // the model - same x/y rotation values as litAxisModelBlock, just combined with a
+    // separate LIT model swap (used by the Turbine Rotor, which needs both).
+    private void litAxisCustomModelBlock(DeferredBlock<? extends Block> block, boolean generateItem) {
+        String path     = block.getId().getPath();
+        ModelFile unlit = new UncheckedModelFile(modLoc("block/" + path));
+        ModelFile lit   = new UncheckedModelFile(modLoc("block/" + path + "_lit"));
+
+        getVariantBuilder(block.get()).forAllStates(state -> {
+            boolean isLit = state.getValue(BlockStateProperties.LIT);
+            Direction.Axis axis = state.getValue(BlockStateProperties.AXIS);
+
+            int xRot = 0, yRot = 0;
+            if (axis == Direction.Axis.X) { xRot = 90; yRot = 90; }
+            else if (axis == Direction.Axis.Z) { xRot = 90; }
+
+            return ConfiguredModel.builder()
+                    .modelFile(isLit ? lit : unlit)
+                    .rotationX(xRot)
+                    .rotationY(yRot)
+                    .build();
+        });
+
+        if (generateItem) simpleBlockItem(block.get(), unlit);
+    }
+
+    // Turbine blades can sit on any of the 3 rotor axes. The blade model is authored
+    // thin along Y, extending along X (the original, still-shipped vertical-turbine
+    // orientation): for axis=Y we keep the exact original per-facing spin (yRot only).
+    // For axis=X/Z we reuse the same x/y values already proven for the rotor's own
+    // cube model (litAxisModelBlock) to correctly reorient the thin axis - this
+    // deliberately does not attempt a fully independent 4-way idle facing rotation
+    // for the X/Z cases (a single fixed idle orientation per axis instead): the
+    // structure scan never checks FACING for validity, and the visually-important
+    // case (the blades actively spinning) is handled separately and correctly by
+    // TurbineRotorRenderer, which reorients+spins the same base mesh at render time.
+    private void turbineBladeBlock(DeferredBlock<? extends Block> block, DirectionProperty facingProp,
+                                    EnumProperty<Direction.Axis> axisProp, BooleanProperty hiddenProp) {
+        String path = block.getId().getPath();
+        ModelFile visible = new UncheckedModelFile(modLoc("block/" + path));
+        ModelFile hidden  = new UncheckedModelFile(modLoc("block/turbine_blade_hidden"));
+
+        getVariantBuilder(block.get()).forAllStates(state -> {
+            if (state.getValue(hiddenProp))
+                return ConfiguredModel.builder().modelFile(hidden).build();
+
+            Direction.Axis axis = state.getValue(axisProp);
+            int xRot, yRot;
+            if (axis == Direction.Axis.X) {
+                xRot = 90; yRot = 90;
+            } else if (axis == Direction.Axis.Z) {
+                xRot = 90; yRot = 0;
+            } else {
+                xRot = 0;
+                yRot = switch (state.getValue(facingProp)) {
+                    case SOUTH -> 90;
+                    case WEST -> 180;
+                    case NORTH -> 270;
+                    default -> 0; // EAST, and the unreachable UP/DOWN facings
+                };
+            }
+
+            return ConfiguredModel.builder().modelFile(visible).rotationX(xRot).rotationY(yRot).build();
+        });
     }
 
     // For simple cube-all blocks. Generates the block model, blockstate, and item model.
