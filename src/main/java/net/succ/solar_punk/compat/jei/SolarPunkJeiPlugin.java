@@ -12,9 +12,9 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
-import net.succ.solar_punk.recipe.SolarHeaterRecipe;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @JeiPlugin
 public class SolarPunkJeiPlugin implements IModPlugin {
@@ -39,13 +39,16 @@ public class SolarPunkJeiPlugin implements IModPlugin {
         var level = Minecraft.getInstance().level;
         if (level == null) return;
 
-        List<SolarHeaterRecipe> recipes = level.getRecipeManager()
-                .getAllRecipesFor(ModRecipeTypes.SOLAR_HEATING.get())
-                .stream()
-                .map(RecipeHolder::value)
-                .toList();
+        List<SolarHeaterCategory.Entry> solarHeaterEntries = Stream.<SolarHeaterCategory.Entry>concat(
+                level.getRecipeManager()
+                        .getAllRecipesFor(ModRecipeTypes.SOLAR_HEATING.get())
+                        .stream()
+                        .map(RecipeHolder::value)
+                        .map(SolarHeaterCategory.Entry.ItemMelt::new),
+                Stream.of(SolarHeaterCategory.WATER_EVAPORATION_INSTANCE)
+        ).toList();
 
-        registration.addRecipes(SolarHeaterCategory.RECIPE_TYPE, recipes);
+        registration.addRecipes(SolarHeaterCategory.RECIPE_TYPE, solarHeaterEntries);
         registration.addRecipes(SolarPowerTowerCategory.RECIPE_TYPE, List.of(SolarPowerTowerCategory.SALT_INSTANCE, SolarPowerTowerCategory.STEAM_INSTANCE));
         registration.addRecipes(FermentationVatCategory.RECIPE_TYPE, List.of(FermentationVatCategory.INSTANCE));
     }

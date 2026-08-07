@@ -8,6 +8,10 @@ The Steam Turbine can now be built lying on its side as well as standing up. Bui
 
 Added the Firebox Boiler, a cheap early-game way to make Steam. Craft it with iron, a furnace, and a bucket, feed it any furnace fuel, and pipe water in to get Steam out - no Salt or Solar Power Tower required. It's much weaker per block than a fully built Solar Power Tower, so it's meant to get a Steam Turbine running early rather than replace the tower later on.
 
+### QoL
+
+- The Solar Heater's JEI page now also shows its Water-to-Salt evaporation, alongside the existing item-melting recipes.
+
 ### Bug Fixes
 
 - Fixed list-based config options (pollution blacklist, per-block pollution, geyser biomes) silently reverting to their defaults when a single entry was malformed. A bad entry is now logged and skipped on its own, leaving the rest of your list intact.
