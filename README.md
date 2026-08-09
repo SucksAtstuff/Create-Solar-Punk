@@ -17,7 +17,7 @@ A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation, thermal s
 - **Salt** - a new material found as underground deposits in desert, badlands, and savanna biomes; the core fuel of the solar heat chain
 - **Solar Heater** - concentrates sunlight to melt salt into molten salt or evaporate water into salt crystals; requires a clear view of the sky
 - **Solar Power Tower** - large multiblock structure (1×1 up to 3×3 footprint, up to 20 blocks tall) that concentrates reflected sunlight to produce molten salt or steam at scale; right-click with a Wrench to toggle between Molten Salt mode and Steam mode; pair with Solar Mirrors for maximum efficiency
-- **Solar Mirror** - reflects sunlight toward a Solar Power Tower; place directly against the tower's side faces; can be mounted on floors, walls, and ceilings
+- **Solar Mirror** - a freestanding heliostat; place it on the ground anywhere near a Solar Power Tower and it links up automatically as long as it has open sky above it and a clear line of sight to the tower. Linked mirrors continuously turn and tilt to track the sun and reflect it toward the tower
 - **Heat Battery** - stores thermal energy from molten salt and heats Create boilers
 
 ### Steam Turbine
@@ -74,21 +74,23 @@ A dedicated **Create: Solarpunk** advancement tab guides you through the mod, fr
 4. Pipe the molten salt into a **Heat Battery**
 5. Place the Heat Battery adjacent to a Create boiler to heat it
 
-For high-volume molten salt production, build a **Solar Power Tower** and surround its sides with **Solar Mirrors**.
+For high-volume molten salt production, build a **Solar Power Tower** and surround it with a field of **Solar Mirrors**.
 
 ## Solar Power Tower Guide
 
 The tower is a multiblock built by stacking tower blocks and using the Solar Power Tower item to place multiple in a row (like fluid tanks). It operates only in direct sunlight and stops during rain or thunderstorms.
 
-| Footprint | Max height | Optimal mirrors | Water demand (per mB salt) |
-|-----------|-----------|-----------------|---------------------------|
-| 1×1       | 5         | 10              | 1× (1:1)                  |
-| 2×2       | 10        | 40              | 4× (4:1)                  |
-| 3×3       | 20        | 180             | 9× (9:1)                  |
+| Footprint | Max height | Mirror search radius | Optimal mirrors (100% eff.) | Water demand (per mB salt) |
+|-----------|-----------|-----------------------|-------------------------------|---------------------------|
+| 1×1       | 5         | 14 blocks             | 75                             | 1× (1:1)                  |
+| 2×2       | 10        | 24 blocks (capped)    | 128                            | 4× (4:1)                  |
+| 3×3       | 20        | 24 blocks (capped)    | 128                            | 9× (9:1)                  |
 
-**Mirror efficiency** follows a triangle curve: efficiency rises linearly from 0 mirrors to the optimal count (100%), then falls back to 0% at twice the optimal. Over-mirroring shuts the tower down.
+Solar Mirrors are freestanding - place them on the ground anywhere within the tower's search radius (a circle scaling with tower height, capped at 24 blocks by default). A mirror links automatically if it has open sky above it and a clear line of sight to the tower; once linked, it continuously turns and tilts to track the sun and reflect it toward the tower, like a real heliostat.
 
-**Minimum size:** the tower requires at least a 3×3 footprint to produce anything.
+**Mirror efficiency** follows a triangle curve: efficiency rises linearly from 0 mirrors to the optimal count (100%), then falls back to 0% at twice the optimal. Over-mirroring shuts the tower down. A tower will never track more than 128 mirrors total by default (configurable) - for any tower with a search radius at the 24-block cap (height 10+), that limit lands right at the optimal count, so over-mirroring isn't reachable at max size.
+
+**Minimum size:** the tower requires at least a 3×3 footprint and 3 blocks of height to produce anything.
 
 ## Steam Turbine Guide
 
