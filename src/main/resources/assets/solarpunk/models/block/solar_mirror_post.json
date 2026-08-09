@@ -1,0 +1,23 @@
+{
+  "credit": "Made with Blockbench",
+  "texture_size": [32, 32],
+  "textures": {
+    "1": "solarpunk:block/solar_power_tower/solar_power_tower_mirror/solar_power_tower_mirror",
+    "particle": "solarpunk:block/solar_power_tower/solar_power_tower_mirror/solar_power_tower_mirror"
+  },
+  "elements": [
+    {
+      "name": "post",
+      "from": [7, 2, 7],
+      "to": [9, 22, 9],
+      "faces": {
+        "north": {"uv": [14.5, 0, 15.5, 10], "texture": "#1"},
+        "east":  {"uv": [14.5, 0, 15.5, 10], "texture": "#1"},
+        "south": {"uv": [14.5, 0, 15.5, 10], "texture": "#1"},
+        "west":  {"uv": [14.5, 0, 15.5, 10], "texture": "#1"},
+        "up":    {"uv": [15, 3.5, 16, 4.5], "texture": "#1"},
+        "down":  {"uv": [14, 3.5, 15, 4.5], "texture": "#1"}
+      }
+    }
+  ]
+}

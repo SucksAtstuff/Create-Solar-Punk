@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
@@ -243,11 +244,23 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private void solarMirrorBlock() {
-        ModelFile model = new UncheckedModelFile(modLoc("block/solar_mirror"));
+        // The lower half shows the static base/mount - the reflective plate is rendered
+        // separately (SolarMirrorRenderer) so it can continuously track the sun. The post
+        // and plate poke up into the cell above, so the upper half is a bare, invisible
+        // placeholder that exists only to reserve that space (see SolarMirrorBlock).
+        // The held item still uses the full, statically-tilted assembly for a nicer icon.
+        ModelFile model = new UncheckedModelFile(modLoc("block/solar_mirror_block"));
+        ModelFile topModel = new UncheckedModelFile(modLoc("block/solar_mirror_top"));
+        ModelFile itemModel = new UncheckedModelFile(modLoc("block/solar_mirror"));
         getVariantBuilder(ModBlocks.SOLAR_MIRROR.get()).forAllStates(state -> {
+            if (state.getValue(SolarMirrorBlock.HALF) == DoubleBlockHalf.UPPER)
+                return ConfiguredModel.builder().modelFile(topModel).build();
+
             Direction facing = state.getValue(SolarMirrorBlock.FACING);
             // X/Y rotations so the model's base (bottom face) attaches to the clicked surface.
             // rotationX=90 tips the model so its base points toward local-North; Y then spins that.
+            // Only FACING=UP is placeable going forward, but old saves may still have
+            // wall/ceiling-mounted mirrors from before that restriction - keep those working.
             int xRot = switch (facing) {
                 case UP    -> 0;   // floor: base sits on the ground, no rotation
                 case DOWN  -> 180; // ceiling: base against ceiling, upside down
@@ -265,7 +278,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     .rotationY(yRot)
                     .build();
         });
-        simpleBlockItem(ModBlocks.SOLAR_MIRROR.get(), model);
+        simpleBlockItem(ModBlocks.SOLAR_MIRROR.get(), itemModel);
     }
 
     // For blocks whose model is hand-crafted with no state variants.

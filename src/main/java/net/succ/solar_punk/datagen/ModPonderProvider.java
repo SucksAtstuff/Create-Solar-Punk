@@ -112,13 +112,20 @@ public class ModPonderProvider implements DataProvider {
         SCHEMATICS.put("turbine_rotor/horizontal",
                 addHorizontalTurbineLayers(new SceneStructure(7, 7, 7).withBasePlate(), 3, false));
 
-        // Tower + mirrors on west (x=0) and east (x=4) faces — used by both scenes
-        SceneStructure towerWithMirrors = addTowerLayers(new SceneStructure().withBasePlate());
-        for (int y = 1; y <= 3; y++)
-            for (int z = 1; z <= 3; z++) {
-                towerWithMirrors.addBlock(0, y, z, "solarpunk:solar_mirror", "facing", "west");
-                towerWithMirrors.addBlock(4, y, z, "solarpunk:solar_mirror", "facing", "east");
-            }
+        // Tower pushed to the back corner (x=5-7/z=5-7/y=1-3) with a heliostat field
+        // spread out on the ground toward the camera, to its west and north - mirrors
+        // sit in front of the tower instead of behind it so the tower doesn't block
+        // them from view. Mirrors are freestanding two-cell blocks (lower/upper), not
+        // attached to the tower's faces.
+        SceneStructure towerWithMirrors = addTowerLayers(new SceneStructure(9, 8, 9).withBasePlate());
+        addGroundMirror(towerWithMirrors, 3, 5); // west side, near
+        addGroundMirror(towerWithMirrors, 3, 7);
+        addGroundMirror(towerWithMirrors, 0, 5); // west side, far
+        addGroundMirror(towerWithMirrors, 0, 7);
+        addGroundMirror(towerWithMirrors, 5, 3); // north side, near
+        addGroundMirror(towerWithMirrors, 7, 3);
+        addGroundMirror(towerWithMirrors, 5, 0); // north side, far
+        addGroundMirror(towerWithMirrors, 7, 0);
         SCHEMATICS.put("solar_power_tower/usage",   towerWithMirrors);
         SCHEMATICS.put("solar_power_tower/mirrors", towerWithMirrors);
     }
@@ -247,13 +254,24 @@ public class ModPonderProvider implements DataProvider {
     }
 
     // Adds a 3×3×3 tower footprint (x=1-3, z=1-3, y=1-3) with correct position states.
+    // Footprint x=5-7/z=5-7/y=1-3 - pushed to the back corner of the plate so the
+    // mirror field (in front, toward lower x/z) isn't hidden behind it.
     private static SceneStructure addTowerLayers(SceneStructure s) {
-        for (int x = 1; x <= 3; x++)
-            for (int z = 1; z <= 3; z++) {
+        for (int x = 5; x <= 7; x++)
+            for (int z = 5; z <= 7; z++) {
                 s.addBlock(x, 1, z, "solarpunk:solar_power_tower", "lit", "false", "position", "bottom");
                 s.addBlock(x, 2, z, "solarpunk:solar_power_tower", "lit", "false", "position", "middle");
                 s.addBlock(x, 3, z, "solarpunk:solar_power_tower", "lit", "false", "position", "top");
             }
+        return s;
+    }
+
+    // A ground-mounted Solar Mirror is two cells tall: a lower half (base/post/plate,
+    // facing=up) and a bare upper half (see SolarMirrorBlock) reserving the space the
+    // post and plate poke up into.
+    private static SceneStructure addGroundMirror(SceneStructure s, int x, int z) {
+        s.addBlock(x, 1, z, "solarpunk:solar_mirror", "facing", "up", "half", "lower");
+        s.addBlock(x, 2, z, "solarpunk:solar_mirror", "facing", "up", "half", "upper");
         return s;
     }
 

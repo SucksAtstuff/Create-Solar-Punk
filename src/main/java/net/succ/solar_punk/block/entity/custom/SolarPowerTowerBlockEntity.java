@@ -9,9 +9,14 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -22,7 +27,9 @@ import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
 import net.succ.solar_punk.fluid.ModFluids;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowerBlockEntity>
         implements IHaveGoggleInformation {
@@ -36,6 +43,10 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
     private int   cachedMirrorCount    = 0;
     private int   mirrorScanCooldown   = 0;
     private boolean advancementFired   = false;
+
+    // Mirrors that have linked themselves to this tower controller. Membership is
+    // decided by this tower (see updateMirrors()), not by the mirrors scanning outward.
+    private final Set<BlockPos> registeredMirrors = new LinkedHashSet<>();
 
     public final FluidTank waterTank = new FluidTank(Config.solarPowerTowerTankPerBlock) {
         @Override public boolean isFluidValid(FluidStack stack) { return stack.getFluid().isSame(Fluids.WATER); }
@@ -177,7 +188,7 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
 
         if (--mirrorScanCooldown <= 0) {
             mirrorScanCooldown = 40;
-            cachedMirrorCount = isSunActive() ? scanMirrors() : 0;
+            updateMirrors();
         }
 
         if (width < Config.solarPowerTowerMinWidth || height < Config.solarPowerTowerMinHeight) {
@@ -248,30 +259,155 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         return level.canSeeSky(worldPosition.above(height));
     }
 
-    private int scanMirrors() {
-        if (level == null) return 0;
-        int count = 0;
-        for (int dy = 0; dy < height; dy++) {
-            for (int d = 0; d < width; d++) {
-                if (isMirrorAt(worldPosition.offset(-1,    dy, d     ))) count++;
-                if (isMirrorAt(worldPosition.offset(width, dy, d     ))) count++;
-                if (isMirrorAt(worldPosition.offset(d,     dy, -1    ))) count++;
-                if (isMirrorAt(worldPosition.offset(d,     dy, width ))) count++;
-            }
-        }
-        return count;
+    // -------------------------------------------------------------------------
+    // Mirror field: registration, occlusion checks, efficiency
+    // -------------------------------------------------------------------------
+
+    // How far out this tower will look for mirrors to link, scaling with its own height
+    // like a real heliostat field scales with receiver height.
+    private int mirrorRadius() {
+        int radius = Config.solarPowerTowerMirrorBaseRadius + height * Config.solarPowerTowerMirrorRadiusPerHeight;
+        return Math.min(radius, Config.solarPowerTowerMirrorMaxRadius);
     }
 
-    private boolean isMirrorAt(BlockPos p) {
-        return level.isLoaded(p) && level.getBlockState(p).is(ModBlocks.SOLAR_MIRROR.get());
+    private void updateMirrors() {
+        registeredMirrors.removeIf(pos -> !isMirrorStillValid(pos));
+
+        if (registeredMirrors.size() < Config.solarPowerTowerMaxTrackedMirrors) {
+            int radius = mirrorRadius();
+            int minY = worldPosition.getY() - 4;
+            int maxY = worldPosition.getY() + 4;
+            BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+            outer:
+            for (int dx = -radius; dx <= radius; dx++) {
+                for (int dz = -radius; dz <= radius; dz++) {
+                    if (dx * dx + dz * dz > radius * radius) continue;
+                    for (int y = minY; y <= maxY; y++) {
+                        if (registeredMirrors.size() >= Config.solarPowerTowerMaxTrackedMirrors) break outer;
+                        cursor.set(worldPosition.getX() + dx, y, worldPosition.getZ() + dz);
+                        if (registeredMirrors.contains(cursor)) continue;
+                        tryRegisterMirror(cursor);
+                    }
+                }
+            }
+        }
+
+        cachedMirrorCount = registeredMirrors.size();
+        setChanged();
+        sync(); // goggle tooltip reads the client's synced copy, not the server BE directly
+    }
+
+    private void tryRegisterMirror(BlockPos pos) {
+        if (level == null || !level.isLoaded(pos)) return;
+        if (!level.getBlockState(pos).is(ModBlocks.SOLAR_MIRROR.get())) return;
+        if (!(level.getBlockEntity(pos) instanceof SolarMirrorBlockEntity mirrorBE)) return;
+        BlockPos existingLink = mirrorBE.getLinkedTower();
+        if (existingLink != null && !existingLink.equals(worldPosition)) {
+            // Only respect the existing claim if that tower still actually exists and is
+            // still a controller there - otherwise it's a stale link left over from a
+            // tower that was rebuilt/removed, and this tower should be free to take it.
+            if (level.isLoaded(existingLink)
+                    && level.getBlockEntity(existingLink) instanceof SolarPowerTowerBlockEntity otherTower
+                    && otherTower.isController())
+                return;
+        }
+        if (!hasSkyAndLineOfSight(pos)) return;
+        registeredMirrors.add(pos.immutable());
+        mirrorBE.setLinkedTower(worldPosition);
+    }
+
+    private boolean isMirrorStillValid(BlockPos pos) {
+        if (level == null || !level.isLoaded(pos)) return true; // unloaded: keep it, recheck once it loads again
+        if (!level.getBlockState(pos).is(ModBlocks.SOLAR_MIRROR.get())) return false;
+        if (!(level.getBlockEntity(pos) instanceof SolarMirrorBlockEntity mirrorBE)) return false;
+        if (!worldPosition.equals(mirrorBE.getLinkedTower())) return false;
+        if (!hasSkyAndLineOfSight(pos)) {
+            mirrorBE.setLinkedTower(null);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean hasSkyAndLineOfSight(BlockPos mirrorPos) {
+        // canSeeSky checks the sky light value AT the given position. The mirror now
+        // occupies two cells (see SolarMirrorBlock's lower/upper halves) and, like any
+        // non-fully-transparent block, each one absorbs a point of its own incoming
+        // skylight - so genuinely open air only starts two cells above the mirror's base.
+        if (!level.canSeeSky(mirrorPos.above().above())) return false;
+
+        BlockPos receiverPos = worldPosition.above(Math.max(height - 1, 0));
+        BlockPos mirrorTopPos = mirrorPos.above();
+        Vec3 from = Vec3.atCenterOf(mirrorPos).add(0, 0.75, 0); // roughly the panel/hinge height
+        Vec3 to = Vec3.atCenterOf(receiverPos);
+
+        // The mirror's collision shape now closely follows its model (post + a wide box
+        // approximating the panel's swing), which means a ray leaving from anywhere near
+        // the panel is very likely to start inside its own hitbox. Rather than hunting for
+        // an origin point that dodges it, just skip past hits on the mirror's own two
+        // cells and keep casting from there.
+        for (int i = 0; i < 4; i++) {
+            ClipContext ctx = new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty());
+            HitResult result = level.clip(ctx);
+            if (result.getType() == HitResult.Type.MISS) return true;
+            if (!(result instanceof BlockHitResult blockHit)) return false;
+            BlockPos hitPos = blockHit.getBlockPos();
+            if (hitPos.equals(mirrorPos) || hitPos.equals(mirrorTopPos)) {
+                from = blockHit.getLocation().add(to.subtract(from).normalize().scale(0.05));
+                continue;
+            }
+            // A BLOCK hit is only fine if it landed on this same tower - the ray is aimed
+            // at one specific column of the tower's face, but on a footprint wider than 1
+            // it will often clip a *different* block of the same structure first.
+            // Anything belonging to a different tower or the world is a real obstruction.
+            if (!level.getBlockState(hitPos).is(ModBlocks.SOLAR_POWER_TOWER.get())) return false;
+            return level.getBlockEntity(hitPos) instanceof SolarPowerTowerBlockEntity hitTower
+                    && worldPosition.equals(hitTower.getController());
+        }
+        return false;
+    }
+
+    /** Called by a mirror block when it breaks, so this tower's count updates immediately. */
+    public void unregisterMirror(BlockPos pos) {
+        if (registeredMirrors.remove(pos)) {
+            cachedMirrorCount = registeredMirrors.size();
+            setChanged();
+            sync();
+        }
+    }
+
+    private void clearMirrorRegistrations() {
+        if (level == null) return;
+        for (BlockPos pos : registeredMirrors) {
+            if (level.isLoaded(pos) && level.getBlockEntity(pos) instanceof SolarMirrorBlockEntity mirrorBE)
+                mirrorBE.setLinkedTower(null);
+        }
+        registeredMirrors.clear();
+        cachedMirrorCount = 0;
+        setChanged();
+        sync();
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        if (level != null && !level.isClientSide && isController())
+            clearMirrorRegistrations();
+    }
+
+    @Override
+    public void removeController(boolean keepContents) {
+        if (level != null && !level.isClientSide && isController())
+            clearMirrorRegistrations();
+        super.removeController(keepContents);
     }
 
     // Triangle curve: ramps 0→100% up to the optimal mirror count, then falls back to 0% at 2× optimal.
-    // Optimal = 2 × width × height (~half the directly-adjacent wall faces).
-    // Filling every adjacent face tips into over-mirroring territory.
+    // Optimal is estimated from the field's circumference (one mirror roughly every 2 blocks around the
+    // ring), capped at the tracked-mirror limit - a maxed-out field is by design the 100% point.
     private float mirrorEfficiency() {
         if (cachedMirrorCount == 0) return 0f;
-        int optimal = 2 * width * height;
+        int optimal = Math.min(Config.solarPowerTowerMaxTrackedMirrors,
+                Math.max(1, Math.round((float) (Math.PI * mirrorRadius()))));
         float ratio = cachedMirrorCount / (float) optimal;
         return ratio <= 1f ? ratio : Math.max(0f, 2f - ratio);
     }
@@ -297,6 +433,12 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         tag.putFloat("SaltAccumulator", saltAccumulator);
         tag.putFloat("SteamAccumulator", steamAccumulator);
         tag.putInt("CachedMirrors", cachedMirrorCount);
+        if (!registeredMirrors.isEmpty()) {
+            long[] mirrors = new long[registeredMirrors.size()];
+            int i = 0;
+            for (BlockPos pos : registeredMirrors) mirrors[i++] = pos.asLong();
+            tag.putLongArray("RegisteredMirrors", mirrors);
+        }
         FluidTankNBTHelper.save(tag, "WaterTank", waterTank);
         FluidTankNBTHelper.save(tag, "SaltTank",  saltTank);
         FluidTankNBTHelper.save(tag, "SteamTank", steamTank);
@@ -310,6 +452,10 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         saltAccumulator  = tag.getFloat("SaltAccumulator");
         steamAccumulator = tag.getFloat("SteamAccumulator");
         cachedMirrorCount = tag.getInt("CachedMirrors");
+        registeredMirrors.clear();
+        if (tag.contains("RegisteredMirrors")) {
+            for (long l : tag.getLongArray("RegisteredMirrors")) registeredMirrors.add(BlockPos.of(l));
+        }
         if (isController()) {
             int totalBlocks = width * width * height;
             int cap = Config.solarPowerTowerTankPerBlock * totalBlocks;

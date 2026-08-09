@@ -1,0 +1,36 @@
+{
+  "credit": "Made with Blockbench",
+  "texture_size": [32, 32],
+  "textures": {
+    "1": "solarpunk:block/solar_power_tower/solar_power_tower_mirror/solar_power_tower_mirror",
+    "particle": "solarpunk:block/solar_power_tower/solar_power_tower_mirror/solar_power_tower_mirror"
+  },
+  "elements": [
+    {
+      "name": "mirror_left",
+      "from": [-7, 19, 1],
+      "to": [7, 21, 15],
+      "faces": {
+        "north": {"uv": [8, 7, 9, 0], "rotation": 90, "texture": "#1"},
+        "east":  {"uv": [7, 0, 8, 7], "rotation": 90, "texture": "#1"},
+        "south": {"uv": [9, 7, 10, 0], "rotation": 90, "texture": "#1"},
+        "west":  {"uv": [7, 7, 8, 0], "rotation": 90, "texture": "#1"},
+        "up":    {"uv": [7, 7, 0, 0], "texture": "#1"},
+        "down":  {"uv": [7, 7, 0, 14], "texture": "#1"}
+      }
+    },
+    {
+      "name": "mirror_right",
+      "from": [9, 19, 1],
+      "to": [23, 21, 15],
+      "faces": {
+        "north": {"uv": [8, 0, 9, 7], "rotation": 90, "texture": "#1"},
+        "east":  {"uv": [7, 0, 8, 7], "rotation": 90, "texture": "#1"},
+        "south": {"uv": [9, 0, 10, 7], "rotation": 90, "texture": "#1"},
+        "west":  {"uv": [7, 7, 8, 0], "rotation": 90, "texture": "#1"},
+        "up":    {"uv": [0, 7, 7, 0], "texture": "#1"},
+        "down":  {"uv": [0, 7, 7, 14], "texture": "#1"}
+      }
+    }
+  ]
+}
