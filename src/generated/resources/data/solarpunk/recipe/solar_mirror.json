@@ -8,13 +8,16 @@
     "G": {
       "item": "minecraft:glass_pane"
     },
+    "R": {
+      "item": "minecraft:redstone"
+    },
     "S": {
       "item": "minecraft:smooth_stone"
     }
   },
   "pattern": [
     "GGG",
-    " A ",
+    "RAR",
     "SAS"
   ],
   "result": {

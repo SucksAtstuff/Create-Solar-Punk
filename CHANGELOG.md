@@ -10,7 +10,7 @@ Added the Firebox Boiler, a cheap early-game way to make Steam. Craft it with ir
 
 ### Solar Mirrors
 
-Solar Mirrors have been reworked into a proper heliostat field. Instead of bolting onto the tower's walls, place them on the ground nearby and they'll link to a Solar Power Tower automatically, as long as they have open sky above them and a clear view of it. Linked mirrors turn and tilt throughout the day to track the sun and reflect it toward the tower - taller towers can reach farther and track more mirrors at once.
+Solar Mirrors have been reworked into a proper heliostat field. Instead of bolting onto the tower's walls, place them on the ground nearby and they'll link to a Solar Power Tower automatically, as long as they have open sky above them and a clear view of it. Linked mirrors turn and tilt throughout the day to track the sun and reflect it toward the tower - taller towers can reach farther and track more mirrors at once. A tower can now track up to 128 mirrors at once (up from 64), and Solar Mirrors cost a bit more to craft to match - 2 Redstone Dust alongside their existing materials.
 
 ### QoL
 
@@ -21,6 +21,7 @@ Solar Mirrors have been reworked into a proper heliostat field. Instead of bolti
 
 - Fixed list-based config options (pollution blacklist, per-block pollution, geyser biomes) silently reverting to their defaults when a single entry was malformed. A bad entry is now logged and skipped on its own, leaving the rest of your list intact.
 - Fixed Geyser Vents spawning in mountain biomes instead of the documented desert, badlands, and savanna, and fixed the geyser biomes and geyser spawn chance config options doing nothing at all. Both now actually control where and how often Geyser Vents generate.
+- Fixed Solar Mirrors sometimes failing to link to any tower at all.
 
 # 0.3.2-1.21.1
 

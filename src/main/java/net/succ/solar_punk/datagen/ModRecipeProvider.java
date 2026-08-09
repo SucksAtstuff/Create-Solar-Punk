@@ -155,9 +155,10 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SOLAR_MIRROR.get())
                 .pattern("GGG")
-                .pattern(" A ")
+                .pattern("RAR")
                 .pattern("SAS")
                 .define('G', Items.GLASS_PANE)
+                .define('R', Items.REDSTONE)
                 .define('S', Blocks.SMOOTH_STONE)
                 .define('A', createItem("andesite_alloy"))
                 .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))

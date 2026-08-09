@@ -344,15 +344,17 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         // approximating the panel's swing), which means a ray leaving from anywhere near
         // the panel is very likely to start inside its own hitbox. Rather than hunting for
         // an origin point that dodges it, just skip past hits on the mirror's own two
-        // cells and keep casting from there.
-        for (int i = 0; i < 4; i++) {
+        // cells and keep casting from there. The upper half's panel-sweep box is nearly a
+        // full block wide, so the nudge needs enough distance and attempts to actually
+        // clear it - a couple of tiny steps isn't enough and silently fails every mirror.
+        for (int i = 0; i < 16; i++) {
             ClipContext ctx = new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty());
             HitResult result = level.clip(ctx);
             if (result.getType() == HitResult.Type.MISS) return true;
             if (!(result instanceof BlockHitResult blockHit)) return false;
             BlockPos hitPos = blockHit.getBlockPos();
             if (hitPos.equals(mirrorPos) || hitPos.equals(mirrorTopPos)) {
-                from = blockHit.getLocation().add(to.subtract(from).normalize().scale(0.05));
+                from = blockHit.getLocation().add(to.subtract(from).normalize().scale(0.2));
                 continue;
             }
             // A BLOCK hit is only fine if it landed on this same tower - the ray is aimed
@@ -402,12 +404,14 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
     }
 
     // Triangle curve: ramps 0→100% up to the optimal mirror count, then falls back to 0% at 2× optimal.
-    // Optimal is estimated from the field's circumference (one mirror roughly every 2 blocks around the
-    // ring), capped at the tracked-mirror limit - a maxed-out field is by design the 100% point.
+    // Optimal scales linearly from 0 up to the tracked-mirror cap as this tower's own field radius
+    // approaches the configured max radius - a maxed-out tower's field is by design the 100% point.
+    // (Scaling off the field's circumference instead would peak well under the cap for any tower,
+    // since mirrorRadius() is itself capped independently of the tracked-mirror limit.)
     private float mirrorEfficiency() {
         if (cachedMirrorCount == 0) return 0f;
-        int optimal = Math.min(Config.solarPowerTowerMaxTrackedMirrors,
-                Math.max(1, Math.round((float) (Math.PI * mirrorRadius()))));
+        float radiusFraction = (float) mirrorRadius() / Config.solarPowerTowerMirrorMaxRadius;
+        int optimal = Math.max(1, Math.round(Config.solarPowerTowerMaxTrackedMirrors * radiusFraction));
         float ratio = cachedMirrorCount / (float) optimal;
         return ratio <= 1f ? ratio : Math.max(0f, 2f - ratio);
     }
