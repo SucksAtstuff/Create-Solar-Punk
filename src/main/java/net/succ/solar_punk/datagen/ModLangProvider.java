@@ -104,16 +104,18 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.solar_power_tower_usage.text_2", "The tower requires at least a 3x3 footprint and 3 blocks tall to produce anything");
         add("solarpunk.ponder.solar_power_tower_usage.text_3", "Pipe water in through any side face to fill the water tank");
         add("solarpunk.ponder.solar_power_tower_usage.text_4", "During the day with a clear sky, the tower converts water into Molten Salt - rain and night stop production");
-        add("solarpunk.ponder.solar_power_tower_usage.text_5", "Place Solar Mirrors on the tower's side faces to boost output - see the Solar Mirrors scene for details");
+        add("solarpunk.ponder.solar_power_tower_usage.text_5", "Solar Mirrors placed nearby link to the tower automatically and boost output - see the Solar Mirrors scene for details");
         add("solarpunk.ponder.solar_power_tower_usage.text_6", "Drain the Molten Salt from the output and pipe it to a Heat Battery");
         add("solarpunk.ponder.solar_power_tower_usage.text_7", "Right-click the tower with a Wrench to switch it to Steam mode - the stored fluid is cleared on switch");
         add("solarpunk.ponder.solar_power_tower_usage.text_8", "In Steam mode the tower produces Steam directly - pipe it to a Steam Turbine or other consumer");
 
         add("solarpunk.ponder.solar_power_tower_mirrors.header", "Solar Mirrors");
-        add("solarpunk.ponder.solar_power_tower_mirrors.text_1", "Place Solar Mirrors directly against the tower's side faces to increase output");
-        add("solarpunk.ponder.solar_power_tower_mirrors.text_2", "Mirror efficiency follows a triangle curve - it peaks when roughly half the available side faces are covered");
-        add("solarpunk.ponder.solar_power_tower_mirrors.text_3", "Adding mirrors past twice the optimal count reduces efficiency to zero - do not over-mirror");
-        add("solarpunk.ponder.solar_power_tower_mirrors.text_4", "Taller and wider towers have more wall space for mirrors and a higher maximum output rate");
+        add("solarpunk.ponder.solar_power_tower_mirrors.text_1", "Solar Mirrors are freestanding - place them on the ground, they don't attach to the tower");
+        add("solarpunk.ponder.solar_power_tower_mirrors.text_2", "A mirror links automatically if it has open sky above it and a clear line of sight to the tower");
+        add("solarpunk.ponder.solar_power_tower_mirrors.text_3", "The search radius scales with the tower's height, and taller towers can track more mirrors at once");
+        add("solarpunk.ponder.solar_power_tower_mirrors.text_4", "Each linked mirror's post turns to face the tower, and its plate tilts to bisect the sun and the tower - tracking the sun all day");
+        add("solarpunk.ponder.solar_power_tower_mirrors.text_5", "Efficiency follows a triangle curve peaking at an optimal mirror count for the field - doubling past that drops it back to zero");
+        add("solarpunk.ponder.solar_power_tower_mirrors.text_6", "Check a linked tower with Goggles to see its mirror count and current efficiency");
 
         add("solarpunk.ponder.fermentation_vat_usage.header", "Using the Fermentation Vat");
         add("solarpunk.ponder.fermentation_vat_usage.text_1", "Stack Fermentation Vat blocks - they merge into a single multiblock");

@@ -8,9 +8,14 @@ The Steam Turbine can now be built lying on its side as well as standing up. Bui
 
 Added the Firebox Boiler, a cheap early-game way to make Steam. Craft it with iron, a furnace, and a bucket, feed it any furnace fuel, and pipe water in to get Steam out - no Salt or Solar Power Tower required. It's much weaker per block than a fully built Solar Power Tower, so it's meant to get a Steam Turbine running early rather than replace the tower later on.
 
+### Solar Mirrors
+
+Solar Mirrors have been reworked into a proper heliostat field. Instead of bolting onto the tower's walls, place them on the ground nearby and they'll link to a Solar Power Tower automatically, as long as they have open sky above them and a clear view of it. Linked mirrors turn and tilt throughout the day to track the sun and reflect it toward the tower - taller towers can reach farther and track more mirrors at once.
+
 ### QoL
 
 - The Solar Heater's JEI page now also shows its Water-to-Salt evaporation, alongside the existing item-melting recipes.
+- Updated the Solar Power Tower's Ponder scenes to show the new mirror field and sun-tracking behavior.
 
 ### Bug Fixes
 

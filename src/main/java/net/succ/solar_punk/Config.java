@@ -151,6 +151,15 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_SOLAR_POWER_TOWER_MIN_HEIGHT;
 
     // -------------------------------------------------------------------------
+    // Solar Power Tower — mirror array
+    // -------------------------------------------------------------------------
+
+    private static final ModConfigSpec.IntValue CFG_SOLAR_POWER_TOWER_MIRROR_BASE_RADIUS;
+    private static final ModConfigSpec.IntValue CFG_SOLAR_POWER_TOWER_MIRROR_RADIUS_PER_HEIGHT;
+    private static final ModConfigSpec.IntValue CFG_SOLAR_POWER_TOWER_MIRROR_MAX_RADIUS;
+    private static final ModConfigSpec.IntValue CFG_SOLAR_POWER_TOWER_MAX_TRACKED_MIRRORS;
+
+    // -------------------------------------------------------------------------
     // World gen — geysers
     // -------------------------------------------------------------------------
 
@@ -299,6 +308,13 @@ public class Config {
         CFG_SOLAR_POWER_TOWER_MIN_HEIGHT  = BUILDER.comment("Solar Power Tower: minimum block height needed to produce Molten Salt").defineInRange("solar_power_tower_min_height", 3, 1, 20);
         BUILDER.pop();
 
+        BUILDER.push("solar_power_tower_mirrors");
+        CFG_SOLAR_POWER_TOWER_MIRROR_BASE_RADIUS = BUILDER.comment("Solar Power Tower: base radius (blocks) of the heliostat mirror field search, before height scaling").defineInRange("solar_power_tower_mirror_base_radius", 4, 0, 64);
+        CFG_SOLAR_POWER_TOWER_MIRROR_RADIUS_PER_HEIGHT = BUILDER.comment("Solar Power Tower: extra mirror field radius (blocks) added per block of tower height").defineInRange("solar_power_tower_mirror_radius_per_height", 2, 0, 16);
+        CFG_SOLAR_POWER_TOWER_MIRROR_MAX_RADIUS = BUILDER.comment("Solar Power Tower: hard cap on the mirror field search radius (blocks), regardless of height").defineInRange("solar_power_tower_mirror_max_radius", 24, 1, 128);
+        CFG_SOLAR_POWER_TOWER_MAX_TRACKED_MIRRORS = BUILDER.comment("Solar Power Tower: maximum number of mirrors a single tower will track/count").defineInRange("solar_power_tower_max_tracked_mirrors", 64, 1, 512);
+        BUILDER.pop();
+
         BUILDER.push("world_gen");
         CFG_GEYSER_SPAWN_CHANCE = BUILDER.comment("Per-attempt spawn chance for Geyser Vents (0 = never, 100 = always)").defineInRange("geyser_spawn_chance", 100, 0, 100);
         CFG_GEYSER_BIOMES       = BUILDER.comment("Biomes where Geyser Vents can spawn (resource location format, e.g. minecraft:desert)")
@@ -408,6 +424,9 @@ public class Config {
     public static int fermentationVatMinWidth, fermentationVatMinHeight;
     public static int solarPowerTowerMinWidth, solarPowerTowerMinHeight;
 
+    public static int solarPowerTowerMirrorBaseRadius, solarPowerTowerMirrorRadiusPerHeight;
+    public static int solarPowerTowerMirrorMaxRadius, solarPowerTowerMaxTrackedMirrors;
+
     public static int geyserSpawnChance;
     public static List<? extends String> geyserBiomes;
 
@@ -492,6 +511,11 @@ public class Config {
         fermentationVatMinHeight    = CFG_FERMENTATION_VAT_MIN_HEIGHT.get();
         solarPowerTowerMinWidth     = CFG_SOLAR_POWER_TOWER_MIN_WIDTH.get();
         solarPowerTowerMinHeight    = CFG_SOLAR_POWER_TOWER_MIN_HEIGHT.get();
+
+        solarPowerTowerMirrorBaseRadius      = CFG_SOLAR_POWER_TOWER_MIRROR_BASE_RADIUS.get();
+        solarPowerTowerMirrorRadiusPerHeight = CFG_SOLAR_POWER_TOWER_MIRROR_RADIUS_PER_HEIGHT.get();
+        solarPowerTowerMirrorMaxRadius       = CFG_SOLAR_POWER_TOWER_MIRROR_MAX_RADIUS.get();
+        solarPowerTowerMaxTrackedMirrors     = CFG_SOLAR_POWER_TOWER_MAX_TRACKED_MIRRORS.get();
 
         geyserSpawnChance = CFG_GEYSER_SPAWN_CHANCE.get();
         geyserBiomes      = CFG_GEYSER_BIOMES.get();

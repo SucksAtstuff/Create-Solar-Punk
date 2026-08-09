@@ -6,7 +6,9 @@ import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 
 import java.util.Set;
 
@@ -34,7 +36,10 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.KINETIC_BATTERY.get());
         dropSelf(ModBlocks.HEAT_BATTERY.get());
         dropSelf(ModBlocks.SOLAR_POWER_TOWER.get());
-        dropSelf(ModBlocks.SOLAR_MIRROR.get());
+        // Solar mirrors are two cells tall (see SolarMirrorBlock); only the lower half
+        // should ever produce a drop, same as vanilla's tall-flower loot tables.
+        add(ModBlocks.SOLAR_MIRROR.get(), block ->
+                createSinglePropConditionTable(block, SolarMirrorBlock.HALF, DoubleBlockHalf.LOWER));
         dropSelf(ModBlocks.BIOFILTER.get());
         dropSelf(ModBlocks.KINETIC_SPRINKLER.get());
         dropSelf(ModBlocks.TURBINE_CASING.get());

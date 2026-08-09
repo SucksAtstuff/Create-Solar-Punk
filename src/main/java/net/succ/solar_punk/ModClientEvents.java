@@ -36,6 +36,7 @@ import net.succ.solar_punk.client.renderer.FermentationVatRenderer;
 import net.succ.solar_punk.client.renderer.GeyserCapRenderer;
 import net.succ.solar_punk.client.renderer.KineticBatteryRenderer;
 import net.succ.solar_punk.client.renderer.KineticSprinklerRenderer;
+import net.succ.solar_punk.client.renderer.SolarMirrorRenderer;
 import net.succ.solar_punk.client.renderer.SolarPowerTowerRenderer;
 import net.succ.solar_punk.client.renderer.TurbineRotorRenderer;
 import net.succ.solar_punk.compat.ponder.SolarPunkPonderPlugin;
@@ -68,6 +69,8 @@ public class ModClientEvents {
         event.register(ModelResourceLocation.standalone(FermentationVatRenderer.GAUGE_DIAL.modelLocation()));
         event.register(ModelResourceLocation.standalone(SolarPowerTowerRenderer.GAUGE.modelLocation()));
         event.register(ModelResourceLocation.standalone(SolarPowerTowerRenderer.GAUGE_DIAL.modelLocation()));
+        event.register(ModelResourceLocation.standalone(SolarMirrorRenderer.POST.modelLocation()));
+        event.register(ModelResourceLocation.standalone(SolarMirrorRenderer.PLATE.modelLocation()));
     }
 
     @SubscribeEvent
@@ -105,6 +108,7 @@ public class ModClientEvents {
         event.registerBlockEntityRenderer(ModBlockEntities.BIOFILTER.get(), BiofilterRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.FERMENTATION_VAT.get(), FermentationVatRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_POWER_TOWER.get(), SolarPowerTowerRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_MIRROR.get(), SolarMirrorRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.KINETIC_SPRINKLER.get(), KineticSprinklerRenderer::new);
     }
 
