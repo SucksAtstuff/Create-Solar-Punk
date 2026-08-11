@@ -21,6 +21,7 @@ import net.succ.solar_punk.block.custom.FireboxBoilerBlock;
 import net.succ.solar_punk.block.custom.GeyserCapBlock;
 import net.succ.solar_punk.block.custom.GeyserVentBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
+import net.succ.solar_punk.block.custom.CrystallizerBlock;
 import net.succ.solar_punk.block.custom.KineticBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarHeaterBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
@@ -117,6 +118,12 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
+
+    public static final DeferredBlock<CrystallizerBlock> CRYSTALLIZER = registerBlock("crystallizer",
+            () -> new CrystallizerBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_BLUE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)));
 
     public static final DeferredBlock<FireboxBoilerBlock> FIREBOX_BOILER = registerBlock("firebox_boiler",
             () -> new FireboxBoilerBlock(BlockBehaviour.Properties.of()

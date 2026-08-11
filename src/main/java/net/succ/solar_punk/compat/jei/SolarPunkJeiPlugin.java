@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.recipe.CrystallizerRecipe;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
 
 import java.util.List;
@@ -30,7 +31,8 @@ public class SolarPunkJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(
                 new SolarHeaterCategory(guiHelper),
                 new SolarPowerTowerCategory(guiHelper),
-                new FermentationVatCategory(guiHelper)
+                new FermentationVatCategory(guiHelper),
+                new CrystallizerCategory(guiHelper)
         );
     }
 
@@ -51,6 +53,13 @@ public class SolarPunkJeiPlugin implements IModPlugin {
         registration.addRecipes(SolarHeaterCategory.RECIPE_TYPE, solarHeaterEntries);
         registration.addRecipes(SolarPowerTowerCategory.RECIPE_TYPE, List.of(SolarPowerTowerCategory.SALT_INSTANCE, SolarPowerTowerCategory.STEAM_INSTANCE));
         registration.addRecipes(FermentationVatCategory.RECIPE_TYPE, List.of(FermentationVatCategory.INSTANCE));
+
+        List<CrystallizerRecipe> crystallizerRecipes = level.getRecipeManager()
+                .getAllRecipesFor(ModRecipeTypes.CRYSTALLIZING.get())
+                .stream()
+                .map(RecipeHolder::value)
+                .toList();
+        registration.addRecipes(CrystallizerCategory.RECIPE_TYPE, crystallizerRecipes);
     }
 
     @Override
@@ -66,6 +75,10 @@ public class SolarPunkJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(
                 new ItemStack(ModBlocks.FERMENTATION_VAT.get()),
                 FermentationVatCategory.RECIPE_TYPE
+        );
+        registration.addRecipeCatalyst(
+                new ItemStack(ModBlocks.CRYSTALLIZER.get()),
+                CrystallizerCategory.RECIPE_TYPE
         );
     }
 }

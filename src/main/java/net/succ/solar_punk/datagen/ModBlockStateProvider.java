@@ -46,6 +46,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
         litCustomModelBlock(ModBlocks.BRASS_SOLAR_PANEL, true);
         litAxisModelBlock(ModBlocks.KINETIC_BATTERY, false);
         litFacingCustomModelBlock(ModBlocks.SOLAR_HEATER, true);
+        furnaceStyleBlock(ModBlocks.CRYSTALLIZER,
+                modLoc("block/crystallizer/crystallizer_side"),
+                modLoc("block/crystallizer/crystallizer_front"),
+                modLoc("block/crystallizer/crystallizer_front_on"),
+                modLoc("block/crystallizer/crystallizer_top"));
         litFacingCustomModelBlock(ModBlocks.FIREBOX_BOILER, true);
         litFacingCustomModelBlock(ModBlocks.BIOMASS_GASIFIER, true);
         litFacingCustomModelBlock(ModBlocks.BIOFUEL_ENGINE, true);
@@ -215,6 +220,33 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(block.get(), models().cubeAll(block.getId().getPath(), texture));
     }
 
+    // Furnace-style: an oriented block whose front face swaps texture when lit, same
+    // template vanilla's own Furnace uses (block/orientable - top/bottom share one
+    // texture, front is distinct, the other 3 sides share "side").
+    private void furnaceStyleBlock(DeferredBlock<? extends Block> block, ResourceLocation side,
+                                    ResourceLocation front, ResourceLocation frontOn, ResourceLocation top) {
+        String path = block.getId().getPath();
+        ModelFile unlit = models().orientable(path, side, front, top);
+        ModelFile lit   = models().orientable(path + "_lit", side, frontOn, top);
+
+        getVariantBuilder(block.get()).forAllStates(state -> {
+            boolean isLit = state.getValue(BlockStateProperties.LIT);
+            Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+            int yRot = switch (facing) {
+                case EAST  ->  90;
+                case SOUTH -> 180;
+                case WEST  -> 270;
+                default    ->   0; // NORTH
+            };
+            return ConfiguredModel.builder()
+                    .modelFile(isLit ? lit : unlit)
+                    .rotationY(yRot)
+                    .build();
+        });
+
+        simpleBlockItem(block.get(), unlit);
+    }
+
     // For the heat battery: 3 custom models keyed by heat=0/1/2.
     private void heatStateModelBlock(DeferredBlock<? extends Block> block) {
         String path = block.getId().getPath();
@@ -229,18 +261,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     .build();
         });
         simpleBlockItem(block.get(), off);
-    }
-
-    // For cube-all blocks with a LIT property, generating two models (unlit and lit).
-    private void litCubeAllBlock(DeferredBlock<? extends Block> block, ResourceLocation unlitTex, ResourceLocation litTex) {
-        String path = block.getId().getPath();
-        ModelFile unlit = models().cubeAll(path, unlitTex);
-        ModelFile lit = models().cubeAll(path + "_lit", litTex);
-        getVariantBuilder(block.get()).forAllStates(state ->
-                ConfiguredModel.builder()
-                        .modelFile(state.getValue(BlockStateProperties.LIT) ? lit : unlit)
-                        .build());
-        simpleBlockItem(block.get(), unlit);
     }
 
     private void solarMirrorBlock() {

@@ -33,7 +33,8 @@ public class SolarPunkPonderTags {
                 .add(ModBlocks.BRASS_SOLAR_PANEL.getId())
                 .add(ModBlocks.HEAT_BATTERY.getId())
                 .add(ModBlocks.KINETIC_BATTERY.getId())
-                .add(ModBlocks.GEYSER_CAP.getId());
+                .add(ModBlocks.GEYSER_CAP.getId())
+                .add(ModBlocks.CRYSTALLIZER.getId());
 
         helper.registerTag(BIO_MACHINES)
                 .addToIndex()

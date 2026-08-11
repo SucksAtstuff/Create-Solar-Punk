@@ -21,6 +21,7 @@ public class ModLangProvider extends LanguageProvider {
         add("jei.solarpunk.category.solar_heating", "Solar Heating");
         add("jei.solarpunk.category.solar_power_tower", "Solar Power Tower");
         add("jei.solarpunk.category.fermentation_vat", "Fermentation Vat");
+        add("jei.solarpunk.category.crystallizing", "Crystallizer");
 
         // Ponder tag - format: <namespace>.ponder.tag.<path>
         add("solarpunk.ponder.tag.solar_machines", "Solar Machines");
@@ -52,6 +53,13 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.solar_heater_usage.text_3", "During the day with clear skies, the heater slowly processes the item");
         add("solarpunk.ponder.solar_heater_usage.text_4", "Rain halves the processing speed");
         add("solarpunk.ponder.solar_heater_usage.text_5", "The resulting fluid fills the output tank - drain it with a pipe or bucket");
+
+        add("solarpunk.ponder.crystallizer_usage.header", "Using the Crystallizer");
+        add("solarpunk.ponder.crystallizer_usage.text_1", "The Crystallizer runs data-driven recipes: two fluids in, an item out, plus an optional fluid byproduct");
+        add("solarpunk.ponder.crystallizer_usage.text_2", "By default it quenches Molten Salt with Water to produce Salt");
+        add("solarpunk.ponder.crystallizer_usage.text_3", "Unlike the Solar Heater, it works day or night - cooling doesn't need sunlight");
+        add("solarpunk.ponder.crystallizer_usage.text_4", "The result collects in the block's output slot - grab it by hand or pull it out with a hopper");
+        add("solarpunk.ponder.crystallizer_usage.text_5", "Quenching Molten Salt also flashes off some Steam as a byproduct, ready for a Steam Turbine");
 
         add("solarpunk.ponder.solar_heater_evaporation.header", "Evaporating Salt");
         add("solarpunk.ponder.solar_heater_evaporation.text_1", "The Solar Heater can also evaporate water into Salt");
@@ -222,10 +230,21 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.output_fluid", "Output: ");
         add("create.solar_punk.tooltip.salt_output", "Salt: ");
 
+        add("create.solar_punk.tooltip.crystallizer_header", "Crystallizer");
+        add("create.solar_punk.tooltip.crystallizer_progress", "Progress: ");
+        add("create.solar_punk.tooltip.crystallizer_input_a", "Input A: ");
+        add("create.solar_punk.tooltip.crystallizer_input_b", "Input B: ");
+        add("create.solar_punk.tooltip.crystallizer_byproduct", "Byproduct: ");
+        add("create.solar_punk.tooltip.crystallizer_item_output", "Output: ");
+
         // Inventory hover tooltips
         add("block.solarpunk.solar_heater.tooltip.summary", "Uses _sunlight_ to melt items into fluid and passively evaporate water into _Salt_.");
         add("block.solarpunk.solar_heater.tooltip.condition1", "During the day with a clear sky");
         add("block.solarpunk.solar_heater.tooltip.behaviour1", "Processes the loaded item. Slows in _rain_.");
+
+        add("block.solarpunk.crystallizer.tooltip.summary", "Runs data-driven recipes that turn up to two fluids into an item, plus an optional fluid byproduct. By default, quenches _Molten Salt_ with _Water_ into _Salt_ and some _Steam_ - the fast/bulk counterpart to the Solar Heater's slow evaporation trickle.");
+        add("block.solarpunk.crystallizer.tooltip.condition1", "Any time - no sunlight needed");
+        add("block.solarpunk.crystallizer.tooltip.behaviour1", "Pipe both input fluids in from any face; collect the result from the block or a hopper below, and any byproduct fluid from any face.");
 
         add("block.solarpunk.firebox_boiler.tooltip.summary", "Burns furnace fuel to boil water into _Steam_ for the _Steam Turbine_. A cheap way to get a turbine running before building a Solar Power Tower - nowhere near as efficient at scale.");
         add("block.solarpunk.firebox_boiler.tooltip.condition1", "While lit");

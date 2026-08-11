@@ -24,6 +24,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModBlocks.ANDESITE_SOLAR_PANEL.get());
                         output.accept(ModBlocks.BRASS_SOLAR_PANEL.get());
                         output.accept(ModBlocks.SOLAR_HEATER.get());
+                        output.accept(ModBlocks.CRYSTALLIZER.get());
                         output.accept(ModBlocks.FIREBOX_BOILER.get());
                         output.accept(ModBlocks.KINETIC_BATTERY.get());
                         output.accept(ModBlocks.HEAT_BATTERY.get());
