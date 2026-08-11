@@ -20,7 +20,9 @@ import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.item.ModItems;
+import net.succ.solar_punk.recipe.CrystallizerRecipe;
 import net.succ.solar_punk.recipe.SolarHeaterRecipe;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -36,6 +38,17 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         // Salt item gives 100 mB; block gives 1000 mB (vs 900 mB for 9 items — ~11% bonus for bulk)
         solarHeating(output, "salt_item_to_molten_salt", Ingredient.of(ModItems.SALT.get()), new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 100));
         solarHeating(output, "salt_to_molten_salt", Ingredient.of(ModBlocks.SALT_BLOCK.get().asItem()), new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 1000));
+
+        // Default Crystallizer recipe - just one datapack entry among however many a pack
+        // author adds. Deliberately much faster per-mB-of-input than the Solar Heater's
+        // evaporation trickle: this is the bulk/fast path once you have a real Molten Salt
+        // supply, not a replacement for the Heater's early-game trickle.
+        crystallizing(output, "molten_salt_to_salt",
+                new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 100),
+                new FluidStack(Fluids.WATER, 50),
+                new ItemStack(ModItems.SALT.get(), 4),
+                new FluidStack(ModFluids.STEAM_SOURCE.get(), 25),
+                100);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SALT_BLOCK.get())
                 .pattern("SSS")
@@ -58,6 +71,19 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('C', Items.COPPER_INGOT)
                 .define('A', createItem("andesite_alloy"))
                 .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
+                .save(output);
+
+        // Brass-tier - the Crystallizer is the Solar Heater's more expensive, higher-throughput
+        // counterpart, so it's gated a tier up rather than reachable at the same point.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CRYSTALLIZER.get())
+                .pattern("BGB")
+                .pattern("CIC")
+                .pattern("BGB")
+                .define('B', createItem("brass_ingot"))
+                .define('G', Items.GLASS_PANE)
+                .define('C', createItem("brass_casing"))
+                .define('I', createItem("fluid_tank"))
+                .unlockedBy("has_brass_casing", has(createItem("brass_casing")))
                 .save(output);
 
         // Deliberately vanilla-tier (iron + furnace + bucket) - no Create alloys or Salt
@@ -205,6 +231,15 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         output.accept(
                 ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "solar_heating/" + name),
                 new SolarHeaterRecipe(ingredient, result),
+                null
+        );
+    }
+
+    private static void crystallizing(RecipeOutput output, String name, FluidStack inputA, FluidStack inputB,
+                                       ItemStack result, FluidStack byproduct, int processingTime) {
+        output.accept(
+                ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "crystallizing/" + name),
+                new CrystallizerRecipe(inputA, inputB, result, byproduct, processingTime),
                 null
         );
     }

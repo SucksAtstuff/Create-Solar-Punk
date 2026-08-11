@@ -140,6 +140,7 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_SPRINKLER_TANK;
     private static final ModConfigSpec.IntValue CFG_SOLAR_HEATER_TANK;
     private static final ModConfigSpec.IntValue CFG_FIREBOX_BOILER_TANK;
+    private static final ModConfigSpec.IntValue CFG_CRYSTALLIZER_TANK;
 
     // -------------------------------------------------------------------------
     // Multiblock minimum sizes
@@ -299,6 +300,7 @@ public class Config {
         CFG_SPRINKLER_TANK                  = BUILDER.comment("Kinetic Sprinkler: fluid tank capacity (mB)").defineInRange("kinetic_sprinkler_mb", 4000, 100, 1_000_000);
         CFG_SOLAR_HEATER_TANK               = BUILDER.comment("Solar Heater: output fluid tank capacity (mB)").defineInRange("solar_heater_mb", 8000, 100, 1_000_000);
         CFG_FIREBOX_BOILER_TANK             = BUILDER.comment("Firebox Boiler: water and steam tank capacity (mB, each tank)").defineInRange("firebox_boiler_mb", 4000, 100, 1_000_000);
+        CFG_CRYSTALLIZER_TANK                = BUILDER.comment("Crystallizer: input A, input B, and byproduct output tank capacity (mB, each tank)").defineInRange("crystallizer_mb", 4000, 100, 1_000_000);
         BUILDER.pop();
 
         BUILDER.push("multiblocks");
@@ -419,7 +421,7 @@ public class Config {
 
     public static int heatBatteryTank, biofuelEngineTank;
     public static int fermentationVatTankPerBlock, solarPowerTowerTankPerBlock;
-    public static int sprinklerTank, solarHeaterTank, fireboxBoilerTank;
+    public static int sprinklerTank, solarHeaterTank, fireboxBoilerTank, crystallizerTank;
 
     public static int fermentationVatMinWidth, fermentationVatMinHeight;
     public static int solarPowerTowerMinWidth, solarPowerTowerMinHeight;
@@ -506,6 +508,7 @@ public class Config {
         sprinklerTank                = CFG_SPRINKLER_TANK.get();
         solarHeaterTank              = CFG_SOLAR_HEATER_TANK.get();
         fireboxBoilerTank            = CFG_FIREBOX_BOILER_TANK.get();
+        crystallizerTank             = CFG_CRYSTALLIZER_TANK.get();
 
         fermentationVatMinWidth     = CFG_FERMENTATION_VAT_MIN_WIDTH.get();
         fermentationVatMinHeight    = CFG_FERMENTATION_VAT_MIN_HEIGHT.get();

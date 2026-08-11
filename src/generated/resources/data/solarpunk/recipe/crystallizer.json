@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "create:brass_ingot"
+    },
+    "C": {
+      "item": "create:brass_casing"
+    },
+    "G": {
+      "item": "minecraft:glass_pane"
+    },
+    "I": {
+      "item": "create:fluid_tank"
+    }
+  },
+  "pattern": [
+    "BGB",
+    "CIC",
+    "BGB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "solarpunk:crystallizer"
+  }
+}

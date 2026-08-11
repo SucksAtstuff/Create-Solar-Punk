@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "solarpunk:block/crystallizer/crystallizer_front_on",
+    "side": "solarpunk:block/crystallizer/crystallizer_side",
+    "top": "solarpunk:block/crystallizer/crystallizer_top"
+  }
+}

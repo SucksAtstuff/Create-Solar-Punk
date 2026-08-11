@@ -73,6 +73,17 @@ public class SolarPunk {
                 ModBlockEntities.BRASS_SOLAR_PANEL.get(),
                 (be, side) -> be.energyStorage
         );
+        // No sun-visibility requirement here (unlike the Solar Heater) — every face is safe.
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.CRYSTALLIZER.get(),
+                (be, side) -> be.itemHandler
+        );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.CRYSTALLIZER.get(),
+                (be, side) -> be.combinedFluidHandler
+        );
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 ModBlockEntities.FIREBOX_BOILER.get(),

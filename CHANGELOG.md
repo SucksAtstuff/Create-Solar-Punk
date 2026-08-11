@@ -1,3 +1,9 @@
+# 0.5.0-1.21.1
+
+### Crystallizer
+
+Added the Crystallizer, a brass-tier machine that quenches Molten Salt with Water to crystallize it back into Salt, releasing a bit of Steam as a byproduct - a much faster bulk alternative to the Solar Heater's slow evaporation trickle. Pipe both fluids in from any side, and collect Salt from the output slot (or a hopper underneath) and Steam from any face. It's recipe-driven, so modpacks and datapacks can add their own custom conversions to the same machine.
+
 # 0.4.0-1.21.1
 
 ### Steam Turbine

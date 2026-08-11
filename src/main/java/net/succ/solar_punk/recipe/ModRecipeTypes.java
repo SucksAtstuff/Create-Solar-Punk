@@ -35,6 +35,23 @@ public class ModRecipeTypes {
                 }
             });
 
+    public static final DeferredHolder<RecipeType<?>, RecipeType<CrystallizerRecipe>> CRYSTALLIZING =
+            RECIPE_TYPES.register("crystallizing", () ->
+                    RecipeType.simple(ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "crystallizing")));
+
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CrystallizerRecipe>> CRYSTALLIZING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("crystallizing", () -> new RecipeSerializer<>() {
+                @Override
+                public MapCodec<CrystallizerRecipe> codec() {
+                    return CrystallizerRecipe.CODEC;
+                }
+
+                @Override
+                public StreamCodec<RegistryFriendlyByteBuf, CrystallizerRecipe> streamCodec() {
+                    return CrystallizerRecipe.STREAM_CODEC;
+                }
+            });
+
     public static void register(IEventBus eventBus) {
         RECIPE_TYPES.register(eventBus);
         RECIPE_SERIALIZERS.register(eventBus);

@@ -1,0 +1,20 @@
+{
+  "type": "solarpunk:crystallizing",
+  "byproduct": {
+    "amount": 25,
+    "id": "solarpunk:steam"
+  },
+  "input_a": {
+    "amount": 100,
+    "id": "solarpunk:molten_salt"
+  },
+  "input_b": {
+    "amount": 50,
+    "id": "minecraft:water"
+  },
+  "processing_time": 100,
+  "result": {
+    "count": 4,
+    "id": "solarpunk:salt"
+  }
+}
