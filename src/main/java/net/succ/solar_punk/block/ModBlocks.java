@@ -85,6 +85,44 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .requiresCorrectToolForDrops()
                     .strength(1.5f, 3.0f)));
 
+    // Hard-rock pegmatite ore (unlike Salt's surface evaporite) - generates underground
+    // everywhere, no biome gate. Drops Raw Lithium; see ModBlockLootTablesProvider.
+    public static final DeferredBlock<Block> LITHIUM_ORE = registerBlock("lithium_ore",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.0f, 3.0f)));
+
+    // Deepslate variant for the portion of the ore's Y range below the stone/deepslate
+    // transition - same +1.5 hardness / DEEPSLATE sound bump vanilla applies to its own
+    // ore pairs (iron_ore -> deepslate_iron_ore etc). Not yet wired into the ore feature
+    // (which currently targets LITHIUM_ORE for both mediums) - registered ready for when
+    // the worldgen split is turned on.
+    public static final DeferredBlock<Block> DEEPSLATE_LITHIUM_ORE = registerBlock("deepslate_lithium_ore",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.DEEPSLATE)
+                    .requiresCorrectToolForDrops()
+                    .strength(4.5f, 3.0f)
+                    .sound(SoundType.DEEPSLATE)));
+
+    // Storage blocks - id/naming matches vanilla's own block-of-metal convention
+    // (registry name "lithium_block"/"beryllium_block", display name "Block of ___",
+    // same as minecraft:iron_block -> "Block of Iron"). Same hardness/resistance/sound
+    // as vanilla's own metal storage blocks (iron_block etc). No textures yet.
+    public static final DeferredBlock<Block> LITHIUM_BLOCK = registerBlock("lithium_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .requiresCorrectToolForDrops()
+                    .strength(5.0f, 6.0f)
+                    .sound(SoundType.METAL)));
+
+    public static final DeferredBlock<Block> BERYLLIUM_BLOCK = registerBlock("beryllium_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .requiresCorrectToolForDrops()
+                    .strength(5.0f, 6.0f)
+                    .sound(SoundType.METAL)));
+
     public static final DeferredBlock<Block> DEAD_GRASS_BLOCK = registerBlock("dead_grass_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_BROWN)

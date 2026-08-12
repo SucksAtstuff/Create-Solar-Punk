@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
+import net.succ.solar_punk.item.ModItems;
 
 import java.util.Set;
 
@@ -30,6 +31,10 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.CRYSTALLIZER.get());
         dropSelf(ModBlocks.FIREBOX_BOILER.get());
         dropSelf(ModBlocks.SALT_BLOCK.get());
+        add(ModBlocks.LITHIUM_ORE.get(), block -> createOreDrop(block, ModItems.RAW_LITHIUM.get()));
+        add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get(), block -> createOreDrop(block, ModItems.RAW_LITHIUM.get()));
+        dropSelf(ModBlocks.LITHIUM_BLOCK.get());
+        dropSelf(ModBlocks.BERYLLIUM_BLOCK.get());
         dropSelf(ModBlocks.DEAD_GRASS_BLOCK.get());
         add(ModBlocks.DEAD_GRASS.get(), noDrop());
         dropSelf(ModBlocks.RUINED_DIRT.get());

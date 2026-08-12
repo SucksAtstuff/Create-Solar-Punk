@@ -40,6 +40,15 @@ public class ModCrushingRecipeGen extends CrushingRecipeGen {
         .require(SEEDS)
         .output(0.75f, ModItems.BIOMASS.get(), 1));
 
+    // Beryllium has no ore of its own - this crushing bonus (and eventually a rarer one
+    // on the Lithium Brine Extractor) is its only source, piggybacking on Lithium
+    // infrastructure instead of adding a third independent resource loop.
+    GeneratedRecipe CRUSH_RAW_LITHIUM = create("raw_lithium_to_dust", b -> b
+        .duration(200)
+        .require(ModItems.RAW_LITHIUM.get())
+        .output(ModItems.LITHIUM_DUST.get(), 1)
+        .output(0.15f, ModItems.BERYLLIUM_DUST.get(), 1));
+
     public ModCrushingRecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, SolarPunk.MODID);
     }

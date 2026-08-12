@@ -8,6 +8,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -66,6 +67,21 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
             ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "add_salt_deposits")
     );
 
+    public static final ResourceKey<ConfiguredFeature<?, ?>> LITHIUM_ORE_CONFIGURED = ResourceKey.create(
+            Registries.CONFIGURED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "lithium_ore")
+    );
+
+    public static final ResourceKey<PlacedFeature> LITHIUM_ORE_PLACED = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "lithium_ore")
+    );
+
+    public static final ResourceKey<BiomeModifier> ADD_LITHIUM_ORE = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "add_lithium_ore")
+    );
+
     public static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
             .add(Registries.CONFIGURED_FEATURE, ModWorldGenProvider::bootstrapConfiguredFeatures)
             .add(Registries.PLACED_FEATURE, ModWorldGenProvider::bootstrapPlacedFeatures)
@@ -93,6 +109,20 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
                 ),
                 20, 0.0f
         )));
+
+        // Hard-rock ore, not an evaporite - normal (2-arg, discard-chance-0-by-default)
+        // OreConfiguration like vanilla's ordinary underground ores (iron, gold), not the
+        // explicit 0.0f Salt uses for its surface-exposed evaporite deposits. Targets both
+        // stone- and deepslate-replaceable blocks since the Y range straddles the transition.
+        context.register(LITHIUM_ORE_CONFIGURED, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(
+                List.of(
+                        OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
+                                ModBlocks.LITHIUM_ORE.get().defaultBlockState()),
+                        OreConfiguration.target(new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES),
+                                ModBlocks.LITHIUM_ORE.get().defaultBlockState())
+                ),
+                7
+        )));
     }
 
     private static void bootstrapPlacedFeatures(BootstrapContext<PlacedFeature> context) {
@@ -109,6 +139,14 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
                 CountPlacement.of(4),
                 InSquarePlacement.spread(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(48), VerticalAnchor.absolute(90)),
+                BiomeFilter.biome()
+        )));
+
+        var lithiumConfigured = context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(LITHIUM_ORE_CONFIGURED);
+        context.register(LITHIUM_ORE_PLACED, new PlacedFeature(lithiumConfigured, List.of(
+                CountPlacement.of(2),
+                InSquarePlacement.spread(),
+                HeightRangePlacement.uniform(VerticalAnchor.absolute(-32), VerticalAnchor.absolute(32)),
                 BiomeFilter.biome()
         )));
     }
@@ -128,6 +166,16 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
         context.register(ADD_SALT_DEPOSITS, new BiomeModifiers.AddFeaturesBiomeModifier(
                 biomes.getOrThrow(ModTags.Biomes.HAS_SALT_DEPOSITS),
                 HolderSet.direct(placed.getOrThrow(SALT_DEPOSIT_PLACED)),
+                GenerationStep.Decoration.UNDERGROUND_ORES
+        ));
+
+        // Universal underground ore, no custom biome tag - targets vanilla's own
+        // IS_OVERWORLD tag (every overworld biome, Nether/End excluded) instead of a
+        // mod-specific "has_lithium_deposits" tag, since Lithium represents a hard-rock
+        // pegmatite deposit, not a surface-climate-linked one like Salt.
+        context.register(ADD_LITHIUM_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(
+                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
+                HolderSet.direct(placed.getOrThrow(LITHIUM_ORE_PLACED)),
                 GenerationStep.Decoration.UNDERGROUND_ORES
         ));
     }

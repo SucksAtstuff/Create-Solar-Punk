@@ -8,6 +8,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -62,6 +63,29 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .requires(ModBlocks.SALT_BLOCK.get())
                 .unlockedBy("has_salt_block", has(ModBlocks.SALT_BLOCK.get()))
                 .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "salt_from_salt_block"));
+
+        // Lithium ore chain — both Raw Lithium (mined) and Lithium Dust (crushed, see
+        // ModCrushingRecipeGen) smelt to the same ingot, matching the modded convention
+        // that dust is an equal-value alternate path, not a downgrade.
+        // Not using vanilla RecipeProvider's oreSmelting/oreBlasting helpers here — their
+        // .save() call passes an unnamespaced string, which lands in data/minecraft/recipe
+        // instead of data/solarpunk/recipe. Building the cooking recipes directly instead,
+        // same as every other recipe in this file, so they get properly namespaced IDs.
+        lithiumSmelting(output, ModItems.RAW_LITHIUM.get(), "raw_lithium");
+        lithiumSmelting(output, ModItems.LITHIUM_DUST.get(), "lithium_dust");
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.LITHIUM_INGOT.get())
+                .pattern("NNN")
+                .pattern("NNN")
+                .pattern("NNN")
+                .define('N', ModItems.LITHIUM_NUGGET.get())
+                .unlockedBy("has_lithium_nugget", has(ModItems.LITHIUM_NUGGET.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.LITHIUM_NUGGET.get(), 9)
+                .requires(ModItems.LITHIUM_INGOT.get())
+                .unlockedBy("has_lithium_ingot", has(ModItems.LITHIUM_INGOT.get()))
+                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "lithium_nugget_from_ingot"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SOLAR_HEATER.get())
                 .pattern("GGG")
@@ -233,6 +257,20 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 new SolarHeaterRecipe(ingredient, result),
                 null
         );
+    }
+
+    private static void lithiumSmelting(RecipeOutput output, Item input, String inputName) {
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.MISC,
+                        ModItems.LITHIUM_INGOT.get(), 0.7f, 200)
+                .unlockedBy("has_" + inputName, has(input))
+                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID,
+                        "lithium_ingot_from_smelting_" + inputName));
+
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(input), RecipeCategory.MISC,
+                        ModItems.LITHIUM_INGOT.get(), 0.7f, 100)
+                .unlockedBy("has_" + inputName, has(input))
+                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID,
+                        "lithium_ingot_from_blasting_" + inputName));
     }
 
     private static void crystallizing(RecipeOutput output, String name, FluidStack inputA, FluidStack inputB,

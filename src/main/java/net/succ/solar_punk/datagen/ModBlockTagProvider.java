@@ -22,6 +22,12 @@ public class ModBlockTagProvider extends BlockTagsProvider {
 
     private static final TagKey<Block> STORAGE_BLOCKS_SALT =
             TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/salt"));
+    private static final TagKey<Block> ORES_LITHIUM =
+            TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "ores/lithium"));
+    private static final TagKey<Block> STORAGE_BLOCKS_LITHIUM =
+            TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/lithium"));
+    private static final TagKey<Block> STORAGE_BLOCKS_BERYLLIUM =
+            TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/beryllium"));
 
     public ModBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
                                @Nullable ExistingFileHelper existingFileHelper) {
@@ -36,6 +42,10 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.SOLAR_HEATER.get())
                 .add(ModBlocks.FIREBOX_BOILER.get())
                 .add(ModBlocks.SALT_BLOCK.get())
+                .add(ModBlocks.LITHIUM_ORE.get())
+                .add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get())
+                .add(ModBlocks.LITHIUM_BLOCK.get())
+                .add(ModBlocks.BERYLLIUM_BLOCK.get())
                 .add(ModBlocks.KINETIC_BATTERY.get())
                 .add(ModBlocks.HEAT_BATTERY.get())
                 .add(ModBlocks.FERMENTATION_VAT.get())
@@ -59,8 +69,21 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.DEAD_GRASS_BLOCK.get())
                 .add(ModBlocks.RUINED_DIRT.get());
 
-        tag(Tags.Blocks.STORAGE_BLOCKS).add(ModBlocks.SALT_BLOCK.get());
+        tag(Tags.Blocks.STORAGE_BLOCKS).add(ModBlocks.SALT_BLOCK.get())
+                .add(ModBlocks.LITHIUM_BLOCK.get())
+                .add(ModBlocks.BERYLLIUM_BLOCK.get());
         tag(STORAGE_BLOCKS_SALT).add(ModBlocks.SALT_BLOCK.get());
+        tag(STORAGE_BLOCKS_LITHIUM).add(ModBlocks.LITHIUM_BLOCK.get());
+        tag(STORAGE_BLOCKS_BERYLLIUM).add(ModBlocks.BERYLLIUM_BLOCK.get());
+
+        // Mid-late-game hard-rock ore - gated behind iron tools, unlike Salt which needs
+        // no tool tier at all.
+        tag(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.LITHIUM_ORE.get()).add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get());
+        tag(Tags.Blocks.ORES).add(ModBlocks.LITHIUM_ORE.get()).add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get());
+        tag(ORES_LITHIUM).add(ModBlocks.LITHIUM_ORE.get()).add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get());
+        tag(Tags.Blocks.ORES_IN_GROUND_STONE).add(ModBlocks.LITHIUM_ORE.get());
+        tag(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE).add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get());
+        tag(Tags.Blocks.ORE_RATES_SINGULAR).add(ModBlocks.LITHIUM_ORE.get()).add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get());
 
         tag(GlobalWarmingHandler.POLLUTION_SOURCES)
                 .add(Blocks.CAMPFIRE, Blocks.SOUL_CAMPFIRE, Blocks.FURNACE, Blocks.BLAST_FURNACE, Blocks.SMOKER,

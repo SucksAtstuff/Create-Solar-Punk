@@ -1,0 +1,18 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "solarpunk:raw_lithium"
+    }
+  ],
+  "processing_time": 200,
+  "results": [
+    {
+      "id": "solarpunk:lithium_dust"
+    },
+    {
+      "chance": 0.15,
+      "id": "solarpunk:beryllium_dust"
+    }
+  ]
+}

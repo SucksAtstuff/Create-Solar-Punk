@@ -56,6 +56,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
         litFacingCustomModelBlock(ModBlocks.BIOFUEL_ENGINE, true);
         fermentationVatBlock();
         blockWithItem(ModBlocks.SALT_BLOCK);
+        blockWithItem(ModBlocks.LITHIUM_ORE);
+        blockWithItem(ModBlocks.DEEPSLATE_LITHIUM_ORE);
+        blockWithItem(ModBlocks.LITHIUM_BLOCK);
+        blockWithItem(ModBlocks.BERYLLIUM_BLOCK);
         simpleBlockWithItem(ModBlocks.DEAD_GRASS_BLOCK.get(), new ModelFile.UncheckedModelFile(modLoc("block/dead_grass_block")));
         simpleBlockWithItem(ModBlocks.RUINED_DIRT.get(), new ModelFile.UncheckedModelFile(modLoc("block/ruined_dirt")));
         simpleBlockWithItem(ModBlocks.ASH_BLOCK.get(), new ModelFile.UncheckedModelFile(modLoc("block/ash_block")));

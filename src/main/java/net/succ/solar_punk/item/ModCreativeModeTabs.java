@@ -32,6 +32,15 @@ public class ModCreativeModeTabs {
                         output.accept(ModBlocks.BIOMASS_GASIFIER.get());
                         output.accept(ModBlocks.BIOFUEL_ENGINE.get());
                         output.accept(ModBlocks.SALT_BLOCK.get());
+                        output.accept(ModBlocks.LITHIUM_ORE.get());
+                        output.accept(ModBlocks.DEEPSLATE_LITHIUM_ORE.get());
+                        output.accept(ModBlocks.LITHIUM_BLOCK.get());
+                        output.accept(ModBlocks.BERYLLIUM_BLOCK.get());
+                        output.accept(ModItems.RAW_LITHIUM.get());
+                        output.accept(ModItems.LITHIUM_INGOT.get());
+                        output.accept(ModItems.LITHIUM_NUGGET.get());
+                        output.accept(ModItems.LITHIUM_DUST.get());
+                        output.accept(ModItems.BERYLLIUM_DUST.get());
                         output.accept(ModBlocks.DEAD_GRASS_BLOCK.get());
                         output.accept(ModBlocks.DEAD_GRASS.get());
                         output.accept(ModBlocks.RUINED_DIRT.get());

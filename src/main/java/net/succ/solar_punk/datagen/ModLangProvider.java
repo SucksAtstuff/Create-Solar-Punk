@@ -302,8 +302,17 @@ public class ModLangProvider extends LanguageProvider {
 
         AllSolarpunkAdvancements.provideLang(this::add);
 
-        ModBlocks.BLOCKS.getEntries().forEach(entry ->
-                add(entry.get(), toTitleCase(entry.getId().getPath())));
+        // "Block of ___" naming, matching vanilla's own metal storage blocks
+        // (minecraft:iron_block -> "Block of Iron") rather than the generic
+        // title-cased "Lithium Block" the auto-generation loop below would produce -
+        // excluded from that loop so it doesn't collide with these.
+        add(ModBlocks.LITHIUM_BLOCK.get(), "Block of Lithium");
+        add(ModBlocks.BERYLLIUM_BLOCK.get(), "Block of Beryllium");
+
+        ModBlocks.BLOCKS.getEntries().stream()
+                .filter(entry -> entry.get() != ModBlocks.LITHIUM_BLOCK.get()
+                        && entry.get() != ModBlocks.BERYLLIUM_BLOCK.get())
+                .forEach(entry -> add(entry.get(), toTitleCase(entry.getId().getPath())));
 
         ModItems.ITEMS.getEntries().stream()
                 .filter(entry -> !(entry.get() instanceof BlockItem))
