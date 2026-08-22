@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
+import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
 import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
 import net.succ.solar_punk.item.ModItems;
 
@@ -143,6 +144,7 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
         if (active != wasActive) {
             updateGeneratedRotation();
             BlockState state = level.getBlockState(worldPosition);
+            if (!(state.getBlock() instanceof BiomassGasifierBlock)) return;
             if (state.getValue(BiomassGasifierBlock.LIT) != active)
                 level.setBlock(worldPosition, state.setValue(BiomassGasifierBlock.LIT, active), 3);
             if (active)
