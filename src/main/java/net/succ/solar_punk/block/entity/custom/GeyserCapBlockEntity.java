@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
 import net.succ.solar_punk.block.custom.GeyserCapBlock;
 import net.succ.solar_punk.sound.ModSounds;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
@@ -105,6 +106,7 @@ public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implement
             updateGeneratedRotation();
             boolean active = hasVent();
             BlockState state = level.getBlockState(worldPosition);
+            if (!(state.getBlock() instanceof GeyserCapBlock)) return;
             if (state.getValue(GeyserCapBlock.LIT) != active)
                 level.setBlock(worldPosition, state.setValue(GeyserCapBlock.LIT, active), 3);
             if (active && !advancementFired) {
