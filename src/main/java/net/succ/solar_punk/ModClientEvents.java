@@ -29,6 +29,8 @@ import net.succ.solar_punk.client.model.ModSpriteShifts;
 import net.succ.solar_punk.client.model.SolarPowerTowerModel;
 import net.succ.solar_punk.client.model.TurbineCasingGlassModel;
 import net.succ.solar_punk.client.model.TurbineCasingModel;
+import net.succ.solar_punk.client.model.FusionReactorCasingGlassModel;
+import net.succ.solar_punk.client.model.FusionReactorCasingModel;
 import net.succ.solar_punk.client.renderer.AndesiteSolarPanelRenderer;
 import net.succ.solar_punk.client.renderer.BiomassGasifierRenderer;
 import net.succ.solar_punk.client.renderer.BiofilterRenderer;
@@ -39,6 +41,7 @@ import net.succ.solar_punk.client.renderer.KineticSprinklerRenderer;
 import net.succ.solar_punk.client.renderer.SolarMirrorRenderer;
 import net.succ.solar_punk.client.renderer.SolarPowerTowerRenderer;
 import net.succ.solar_punk.client.renderer.TurbineRotorRenderer;
+import net.succ.solar_punk.client.renderer.FusionReactorCoreRenderer;
 import net.succ.solar_punk.compat.ponder.SolarPunkPonderPlugin;
 
 import java.util.ArrayList;
@@ -80,6 +83,8 @@ public class ModClientEvents {
         List<ModelResourceLocation> towerKeys  = new ArrayList<>();
         List<ModelResourceLocation> casingKeys = new ArrayList<>();
         List<ModelResourceLocation> glassKeys  = new ArrayList<>();
+        List<ModelResourceLocation> reactorCasingKeys      = new ArrayList<>();
+        List<ModelResourceLocation> reactorCasingGlassKeys = new ArrayList<>();
         for (ModelResourceLocation key : models.keySet()) {
             ResourceLocation id = key.id();
             if (!id.getNamespace().equals(SolarPunk.MODID)) continue;
@@ -87,6 +92,8 @@ public class ModClientEvents {
             if (id.getPath().equals("solar_power_tower"))  towerKeys.add(key);
             if (id.getPath().equals("turbine_casing"))       casingKeys.add(key);
             if (id.getPath().equals("turbine_casing_glass")) glassKeys.add(key);
+            if (id.getPath().equals("fusion_reactor_casing"))       reactorCasingKeys.add(key);
+            if (id.getPath().equals("fusion_reactor_casing_glass")) reactorCasingGlassKeys.add(key);
         }
         for (ModelResourceLocation key : vatKeys)
             models.put(key, new FermentationVatModel(models.get(key)));
@@ -96,6 +103,10 @@ public class ModClientEvents {
             models.put(key, new TurbineCasingModel(models.get(key)));
         for (ModelResourceLocation key : glassKeys)
             models.put(key, new TurbineCasingGlassModel(models.get(key)));
+        for (ModelResourceLocation key : reactorCasingKeys)
+            models.put(key, new FusionReactorCasingModel(models.get(key)));
+        for (ModelResourceLocation key : reactorCasingGlassKeys)
+            models.put(key, new FusionReactorCasingGlassModel(models.get(key)));
     }
 
     @SubscribeEvent
@@ -110,6 +121,7 @@ public class ModClientEvents {
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_POWER_TOWER.get(), SolarPowerTowerRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_MIRROR.get(), SolarMirrorRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.KINETIC_SPRINKLER.get(), KineticSprinklerRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.FUSION_REACTOR_CORE.get(), FusionReactorCoreRenderer::new);
     }
 
     @SubscribeEvent

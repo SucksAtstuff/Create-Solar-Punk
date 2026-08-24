@@ -8,5 +8,29 @@
         "sounds": [
             "solarpunk:geyser_puff"
         ]
+    },
+    "fusion_reactor_startup": {
+        "sounds": [
+            {
+                "name": "solarpunk:fusion_reactor_startup",
+                "stream": true
+            }
+        ]
+    },
+    "fusion_reactor_shutdown": {
+        "sounds": [
+            {
+                "name": "solarpunk:fusion_reactor_shutdown",
+                "stream": true
+            }
+        ]
+    },
+    "reactor_on_loop": {
+        "sounds": [
+            {
+                "name": "solarpunk:reactor_on_loop",
+                "stream": true
+            }
+        ]
     }
 }

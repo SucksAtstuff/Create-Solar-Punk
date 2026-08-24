@@ -41,6 +41,10 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.LITHIUM_NUGGET.get());
                         output.accept(ModItems.LITHIUM_DUST.get());
                         output.accept(ModItems.BERYLLIUM_DUST.get());
+                        output.accept(ModItems.BERYLLIUM_INGOT.get());
+                        output.accept(ModItems.BERYLLIUM_NUGGET.get());
+                        output.accept(ModBlocks.DEUTERIUM_EXTRACTOR.get());
+                        output.accept(ModBlocks.LITHIUM_BRINE_EXTRACTOR.get());
                         output.accept(ModBlocks.DEAD_GRASS_BLOCK.get());
                         output.accept(ModBlocks.DEAD_GRASS.get());
                         output.accept(ModBlocks.RUINED_DIRT.get());
@@ -60,10 +64,16 @@ public class ModCreativeModeTabs {
                         output.accept(ModBlocks.TURBINE_ROTOR.get());
                         output.accept(ModBlocks.ANDESITE_TURBINE_BLADE.get());
                         output.accept(ModBlocks.BRASS_TURBINE_BLADE.get());
+                        output.accept(ModBlocks.FUSION_REACTOR_CASING.get());
+                        output.accept(ModBlocks.FUSION_REACTOR_CASING_GLASS.get());
+                        output.accept(ModBlocks.LITHIUM_BREEDER_MODULE.get());
+                        output.accept(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get());
+                        output.accept(ModBlocks.FUSION_REACTOR_CORE.get());
                         output.accept(ModFluids.MOLTEN_SALT_BUCKET.get());
                         output.accept(ModFluids.BIOFUEL_BUCKET.get());
                         output.accept(ModFluids.FERTILIZER_BUCKET.get());
                         output.accept(ModFluids.STEAM_BUCKET.get());
+                        output.accept(ModFluids.DEUTERIUM_BUCKET.get());
                     })
                     .build());
 

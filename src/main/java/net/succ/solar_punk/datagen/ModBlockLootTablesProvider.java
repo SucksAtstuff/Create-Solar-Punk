@@ -29,6 +29,8 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.BRASS_SOLAR_PANEL.get());
         dropSelf(ModBlocks.SOLAR_HEATER.get());
         dropSelf(ModBlocks.CRYSTALLIZER.get());
+        dropSelf(ModBlocks.DEUTERIUM_EXTRACTOR.get());
+        dropSelf(ModBlocks.LITHIUM_BRINE_EXTRACTOR.get());
         dropSelf(ModBlocks.FIREBOX_BOILER.get());
         dropSelf(ModBlocks.SALT_BLOCK.get());
         add(ModBlocks.LITHIUM_ORE.get(), block -> createOreDrop(block, ModItems.RAW_LITHIUM.get()));
@@ -53,7 +55,11 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.TURBINE_ROTOR.get());
         dropSelf(ModBlocks.ANDESITE_TURBINE_BLADE.get());
         dropSelf(ModBlocks.BRASS_TURBINE_BLADE.get());
-        dropSelf(ModBlocks.TURBINE_ROTOR.get());
+        dropSelf(ModBlocks.FUSION_REACTOR_CASING.get());
+        dropSelf(ModBlocks.FUSION_REACTOR_CASING_GLASS.get());
+        dropSelf(ModBlocks.LITHIUM_BREEDER_MODULE.get());
+        dropSelf(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get());
+        dropSelf(ModBlocks.FUSION_REACTOR_CORE.get());
     }
 
     @Override

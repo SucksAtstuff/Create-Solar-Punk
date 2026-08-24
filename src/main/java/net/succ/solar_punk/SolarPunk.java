@@ -146,6 +146,21 @@ public class SolarPunk {
                 ModBlockEntities.TURBINE_CASING.get(),
                 (be, side) -> be.getFluidHandler()
         );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.DEUTERIUM_EXTRACTOR.get(),
+                (be, side) -> be.combinedFluidHandler
+        );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.LITHIUM_BRINE_EXTRACTOR.get(),
+                (be, side) -> be.waterTank
+        );
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.LITHIUM_BRINE_EXTRACTOR.get(),
+                (be, side) -> be.itemHandler
+        );
     }
 
     private static void commonSetup(FMLCommonSetupEvent event) {
@@ -190,6 +205,10 @@ public class SolarPunk {
             // Consumer — stress impact for tooltip
             BlockStressValues.IMPACTS.register(ModBlocks.BIOFILTER.get(),
                 () -> (double) Config.biofilterSu);
+            BlockStressValues.IMPACTS.register(ModBlocks.DEUTERIUM_EXTRACTOR.get(),
+                () -> (double) Config.deuteriumExtractorSu);
+            BlockStressValues.IMPACTS.register(ModBlocks.LITHIUM_BRINE_EXTRACTOR.get(),
+                () -> (double) Config.lithiumBrineExtractorSu);
         });
     }
 }

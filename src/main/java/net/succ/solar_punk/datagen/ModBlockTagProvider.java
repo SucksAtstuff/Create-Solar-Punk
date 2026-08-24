@@ -12,6 +12,7 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.succ.solar_punk.SolarPunk;
+import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +41,9 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.ANDESITE_SOLAR_PANEL.get())
                 .add(ModBlocks.BRASS_SOLAR_PANEL.get())
                 .add(ModBlocks.SOLAR_HEATER.get())
+                .add(ModBlocks.CRYSTALLIZER.get())
+                .add(ModBlocks.DEUTERIUM_EXTRACTOR.get())
+                .add(ModBlocks.LITHIUM_BRINE_EXTRACTOR.get())
                 .add(ModBlocks.FIREBOX_BOILER.get())
                 .add(ModBlocks.SALT_BLOCK.get())
                 .add(ModBlocks.LITHIUM_ORE.get())
@@ -62,7 +66,12 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.TURBINE_ROTOR.get())
                 .add(ModBlocks.ANDESITE_TURBINE_BLADE.get())
                 .add(ModBlocks.BRASS_TURBINE_BLADE.get())
-                .add(ModBlocks.TURBINE_ROTOR.get());
+                .add(ModBlocks.TURBINE_ROTOR.get())
+                .add(ModBlocks.FUSION_REACTOR_CASING.get())
+                .add(ModBlocks.FUSION_REACTOR_CASING_GLASS.get())
+                .add(ModBlocks.LITHIUM_BREEDER_MODULE.get())
+                .add(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get())
+                .add(ModBlocks.FUSION_REACTOR_CORE.get());
 
         tag(BlockTags.MINEABLE_WITH_SHOVEL)
                 .add(ModBlocks.ASH_BLOCK.get())
@@ -84,6 +93,13 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         tag(Tags.Blocks.ORES_IN_GROUND_STONE).add(ModBlocks.LITHIUM_ORE.get());
         tag(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE).add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get());
         tag(Tags.Blocks.ORE_RATES_SINGULAR).add(ModBlocks.LITHIUM_ORE.get()).add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get());
+
+        // Fusion Reactor multiblock membership - see ModTags and plan_for_fusion.md.
+        tag(ModTags.Blocks.REACTOR_CASING)
+                .add(ModBlocks.FUSION_REACTOR_CASING.get())
+                .add(ModBlocks.FUSION_REACTOR_CASING_GLASS.get());
+        tag(ModTags.Blocks.REACTOR_BLANKET_LITHIUM).add(ModBlocks.LITHIUM_BREEDER_MODULE.get());
+        tag(ModTags.Blocks.REACTOR_BLANKET_BERYLLIUM).add(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get());
 
         tag(GlobalWarmingHandler.POLLUTION_SOURCES)
                 .add(Blocks.CAMPFIRE, Blocks.SOUL_CAMPFIRE, Blocks.FURNACE, Blocks.BLAST_FURNACE, Blocks.SMOKER,

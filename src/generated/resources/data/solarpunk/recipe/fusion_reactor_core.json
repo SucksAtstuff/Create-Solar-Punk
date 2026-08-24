@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "solarpunk:beryllium_ingot"
+    },
+    "L": {
+      "item": "solarpunk:lithium_ingot"
+    },
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    }
+  },
+  "pattern": [
+    "LBL",
+    "BNB",
+    "LBL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "solarpunk:fusion_reactor_core"
+  }
+}

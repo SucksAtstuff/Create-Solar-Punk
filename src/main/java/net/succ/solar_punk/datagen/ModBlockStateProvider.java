@@ -23,6 +23,7 @@ import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.block.custom.AndesiteTurbineBladeBlock;
 import net.succ.solar_punk.block.custom.BrassTurbineBladeBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
+import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
@@ -51,6 +52,16 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 modLoc("block/crystallizer/crystallizer_front"),
                 modLoc("block/crystallizer/crystallizer_front_on"),
                 modLoc("block/crystallizer/crystallizer_top"));
+        furnaceStyleBlock(ModBlocks.DEUTERIUM_EXTRACTOR,
+                modLoc("block/deuterium_extractor/deuterium_extractor_side"),
+                modLoc("block/deuterium_extractor/deuterium_extractor_front"),
+                modLoc("block/deuterium_extractor/deuterium_extractor_front_on"),
+                modLoc("block/deuterium_extractor/deuterium_extractor_top"));
+        furnaceStyleBlock(ModBlocks.LITHIUM_BRINE_EXTRACTOR,
+                modLoc("block/lithium_brine_extractor/lithium_brine_extractor_side"),
+                modLoc("block/lithium_brine_extractor/lithium_brine_extractor_front"),
+                modLoc("block/lithium_brine_extractor/lithium_brine_extractor_front_on"),
+                modLoc("block/lithium_brine_extractor/lithium_brine_extractor_top"));
         litFacingCustomModelBlock(ModBlocks.FIREBOX_BOILER, true);
         litFacingCustomModelBlock(ModBlocks.BIOMASS_GASIFIER, true);
         litFacingCustomModelBlock(ModBlocks.BIOFUEL_ENGINE, true);
@@ -88,6 +99,40 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(ModBlocks.TURBINE_CASING_GLASS.get(),
                 models().cubeAll("turbine_casing_glass", glassCasingTex)
                         .renderType("minecraft:cutout"));
+
+        ResourceLocation reactorCasingTex = modLoc("block/fusion_reactor_casing/fusion_reactor_casing");
+        ResourceLocation reactorCasingGlassTex = modLoc("block/fusion_reactor_casing/fusion_reactor_casing_glass");
+        simpleBlockWithItem(ModBlocks.FUSION_REACTOR_CASING.get(),
+                models().cubeAll("fusion_reactor_casing", reactorCasingTex));
+        simpleBlockWithItem(ModBlocks.FUSION_REACTOR_CASING_GLASS.get(),
+                models().cubeAll("fusion_reactor_casing_glass", reactorCasingGlassTex)
+                        .renderType("minecraft:cutout"));
+
+        // Blanket modules - fill the band between the Core and the Casing shell. Hand-crafted
+        // Blockbench models (custom per-face UV swatches out of the 64x64 texture), not a
+        // generated cube_all - the model files live in src/main/resources, not src/generated.
+        simpleBlockWithItem(ModBlocks.LITHIUM_BREEDER_MODULE.get(),
+                new UncheckedModelFile(modLoc("block/lithium_breeder_module")));
+        simpleBlockWithItem(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get(),
+                new UncheckedModelFile(modLoc("block/beryllium_reflector_module")));
+
+        // Two states, driven by FusionReactorCoreBlock.FORMED: a plain visible cube
+        // while the structure is incomplete (formed=false, generated cube_all, same as
+        // any other placeholder block), and no geometry at all once formed=true (same
+        // trick as GeyserCap above - minecraft:block/block has no elements, hand-crafted
+        // model only supplies the particle texture) so the block doesn't entomb
+        // FusionReactorCoreRenderer's glowing sphere + rings inside a solid box once
+        // they start rendering. The item still gets its own flat icon (temp placeholder
+        // art) instead of inheriting either block render - see dead_grass above for the
+        // same "distinct item texture" pattern.
+        ModelFile fusionReactorCoreCube = cubeAll(ModBlocks.FUSION_REACTOR_CORE.get());
+        ModelFile fusionReactorCoreFormed = new UncheckedModelFile(modLoc("block/fusion_reactor_core_formed"));
+        getVariantBuilder(ModBlocks.FUSION_REACTOR_CORE.get()).forAllStates(state ->
+                ConfiguredModel.builder()
+                        .modelFile(state.getValue(FusionReactorCoreBlock.FORMED) ? fusionReactorCoreFormed : fusionReactorCoreCube)
+                        .build());
+        itemModels().withExistingParent("fusion_reactor_core", "minecraft:item/generated")
+                .texture("layer0", modLoc("item/fusion_reactor_core"));
     }
 
     // For blocks whose models are hand-crafted (Blockbench).

@@ -53,6 +53,10 @@ public class ModItemTagProvider extends ItemTagsProvider {
             TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "dusts/lithium"));
     private static final TagKey<Item> DUSTS_BERYLLIUM =
             TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "dusts/beryllium"));
+    private static final TagKey<Item> INGOTS_BERYLLIUM =
+            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/beryllium"));
+    private static final TagKey<Item> NUGGETS_BERYLLIUM =
+            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "nuggets/beryllium"));
 
     public ModItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
                               CompletableFuture<TagLookup<Block>> blockTagProvider,
@@ -86,6 +90,10 @@ public class ModItemTagProvider extends ItemTagsProvider {
         // Beryllium — no ore of its own (see ModItems), just the dust byproduct
         tag(Tags.Items.DUSTS).add(ModItems.BERYLLIUM_DUST.get());
         tag(DUSTS_BERYLLIUM).add(ModItems.BERYLLIUM_DUST.get());
+        tag(Tags.Items.INGOTS).add(ModItems.BERYLLIUM_INGOT.get());
+        tag(INGOTS_BERYLLIUM).add(ModItems.BERYLLIUM_INGOT.get());
+        tag(Tags.Items.NUGGETS).add(ModItems.BERYLLIUM_NUGGET.get());
+        tag(NUGGETS_BERYLLIUM).add(ModItems.BERYLLIUM_NUGGET.get());
 
         // Storage blocks
         tag(Tags.Items.STORAGE_BLOCKS).add(ModBlocks.LITHIUM_BLOCK.get().asItem())

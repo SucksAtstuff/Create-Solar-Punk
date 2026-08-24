@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
@@ -32,6 +33,27 @@ public class ModMechanicalCraftingRecipeGen extends MechanicalCraftingRecipeGen 
                     .patternLine("BBBB")
                     .patternLine("BB  ")
                     .key('B', createItem("brass_casing")));
+
+    // Fusion Reactor blanket modules - same L-shape as the turbine blades above, one
+    // tier up: Lithium/Beryllium Ingots instead of Create casings, matching the
+    // reactor's capstone status. See plan_for_fusion.md's Tunable knob section.
+    //   L L L L
+    //   L L
+    GeneratedRecipe LITHIUM_BREEDER_MODULE = create(() -> ModBlocks.LITHIUM_BREEDER_MODULE.get())
+            .returns(2)
+            .recipe(b -> b
+                    .patternLine("LLLL")
+                    .patternLine("LL  ")
+                    .key('L', ModItems.LITHIUM_INGOT.get()));
+
+    //   B B B B
+    //   B B
+    GeneratedRecipe BERYLLIUM_REFLECTOR_MODULE = create(() -> ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get())
+            .returns(2)
+            .recipe(b -> b
+                    .patternLine("BBBB")
+                    .patternLine("BB  ")
+                    .key('B', ModItems.BERYLLIUM_INGOT.get()));
 
     public ModMechanicalCraftingRecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, SolarPunk.MODID);

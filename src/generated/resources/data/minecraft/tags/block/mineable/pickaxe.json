@@ -3,6 +3,9 @@
     "solarpunk:andesite_solar_panel",
     "solarpunk:brass_solar_panel",
     "solarpunk:solar_heater",
+    "solarpunk:crystallizer",
+    "solarpunk:deuterium_extractor",
+    "solarpunk:lithium_brine_extractor",
     "solarpunk:firebox_boiler",
     "solarpunk:salt_block",
     "solarpunk:lithium_ore",
@@ -25,6 +28,11 @@
     "solarpunk:turbine_rotor",
     "solarpunk:andesite_turbine_blade",
     "solarpunk:brass_turbine_blade",
-    "solarpunk:turbine_rotor"
+    "solarpunk:turbine_rotor",
+    "solarpunk:fusion_reactor_casing",
+    "solarpunk:fusion_reactor_casing_glass",
+    "solarpunk:lithium_breeder_module",
+    "solarpunk:beryllium_reflector_module",
+    "solarpunk:fusion_reactor_core"
   ]
 }

@@ -19,6 +19,9 @@ public class SolarPunkPonderTags {
     public static final ResourceLocation STEAM_TURBINE =
             ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "steam_turbine");
 
+    public static final ResourceLocation FUSION_REACTOR =
+            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "fusion_reactor");
+
     public static void register(PonderTagRegistrationHelper<ResourceLocation> helper) {
         helper.registerTag(SOLAR_MACHINES)
                 .addToIndex()
@@ -72,5 +75,21 @@ public class SolarPunkPonderTags {
                 .add(ModBlocks.TURBINE_CASING_GLASS.getId())
                 .add(ModBlocks.ANDESITE_TURBINE_BLADE.getId())
                 .add(ModBlocks.BRASS_TURBINE_BLADE.getId());
+
+        helper.registerTag(FUSION_REACTOR)
+                .addToIndex()
+                .item(ModBlocks.FUSION_REACTOR_CORE.get(), true, false)
+                .title("Fusion Reactor")
+                .description("Endgame direct-steam fusion power, fed by Deuterium and Lithium")
+                .register();
+
+        helper.addToTag(FUSION_REACTOR)
+                .add(ModBlocks.FUSION_REACTOR_CORE.getId())
+                .add(ModBlocks.FUSION_REACTOR_CASING.getId())
+                .add(ModBlocks.FUSION_REACTOR_CASING_GLASS.getId())
+                .add(ModBlocks.LITHIUM_BREEDER_MODULE.getId())
+                .add(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.getId())
+                .add(ModBlocks.DEUTERIUM_EXTRACTOR.getId())
+                .add(ModBlocks.LITHIUM_BRINE_EXTRACTOR.getId());
     }
 }

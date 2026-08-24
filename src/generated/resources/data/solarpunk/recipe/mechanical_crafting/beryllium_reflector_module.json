@@ -1,0 +1,18 @@
+{
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "solarpunk:beryllium_ingot"
+    }
+  },
+  "pattern": [
+    "BBBB",
+    "BB  "
+  ],
+  "result": {
+    "count": 2,
+    "id": "solarpunk:beryllium_reflector_module"
+  }
+}

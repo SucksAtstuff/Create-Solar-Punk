@@ -36,6 +36,13 @@ import net.succ.solar_punk.block.custom.TurbineCasingGlassBlock;
 import net.succ.solar_punk.block.custom.TurbineRotorBlock;
 import net.succ.solar_punk.block.custom.AndesiteTurbineBladeBlock;
 import net.succ.solar_punk.block.custom.BrassTurbineBladeBlock;
+import net.succ.solar_punk.block.custom.FusionReactorCasingBlock;
+import net.succ.solar_punk.block.custom.FusionReactorCasingGlassBlock;
+import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
+import net.succ.solar_punk.block.custom.LithiumBreederModuleBlock;
+import net.succ.solar_punk.block.custom.BerylliumReflectorModuleBlock;
+import net.succ.solar_punk.block.custom.DeuteriumExtractorBlock;
+import net.succ.solar_punk.block.custom.LithiumBrineExtractorBlock;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.function.Supplier;
@@ -122,6 +129,20 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .requiresCorrectToolForDrops()
                     .strength(5.0f, 6.0f)
                     .sound(SoundType.METAL)));
+
+    // Fuel chain supply side (see plan_for_fusion.md) - passive single-block machines,
+    // neither needs sunlight so no noOcclusion() sky-check concern like the Solar Heater.
+    public static final DeferredBlock<DeuteriumExtractorBlock> DEUTERIUM_EXTRACTOR = registerBlock("deuterium_extractor",
+            () -> new DeuteriumExtractorBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLUE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)));
+
+    public static final DeferredBlock<LithiumBrineExtractorBlock> LITHIUM_BRINE_EXTRACTOR = registerBlock("lithium_brine_extractor",
+            () -> new LithiumBrineExtractorBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)));
 
     public static final DeferredBlock<Block> DEAD_GRASS_BLOCK = registerBlock("dead_grass_block",
             () -> new Block(BlockBehaviour.Properties.of()
@@ -262,6 +283,48 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
+
+    // Fusion Reactor - Netherite-reinforced Copper containment shell, one tier past the
+    // Turbine's industrial iron casing to match the reactor's capstone status.
+    public static final DeferredBlock<FusionReactorCasingBlock> FUSION_REACTOR_CASING = registerBlock("fusion_reactor_casing",
+            () -> new FusionReactorCasingBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .requiresCorrectToolForDrops()
+                    .strength(6.0f, 12.0f)
+                    .sound(SoundType.NETHERITE_BLOCK)));
+
+    public static final DeferredBlock<FusionReactorCasingGlassBlock> FUSION_REACTOR_CASING_GLASS = registerBlock("fusion_reactor_casing_glass",
+            () -> new FusionReactorCasingGlassBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .requiresCorrectToolForDrops()
+                    .strength(4.5f, 9.0f)
+                    .noOcclusion()
+                    .sound(SoundType.NETHERITE_BLOCK)));
+
+    // Blanket modules - fill the band between the Core and the Casing shell (see
+    // plan_for_fusion.md's Tunable knob section). Plain non-BE blocks; the ratio math
+    // lives entirely in FusionReactorCoreBlockEntity's scan.
+    public static final DeferredBlock<LithiumBreederModuleBlock> LITHIUM_BREEDER_MODULE = registerBlock("lithium_breeder_module",
+            () -> new LithiumBreederModuleBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_BLUE)
+                    .requiresCorrectToolForDrops()
+                    .strength(4.0f, 8.0f)));
+
+    public static final DeferredBlock<BerylliumReflectorModuleBlock> BERYLLIUM_REFLECTOR_MODULE = registerBlock("beryllium_reflector_module",
+            () -> new BerylliumReflectorModuleBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_GREEN)
+                    .requiresCorrectToolForDrops()
+                    .strength(4.0f, 8.0f)));
+
+    // Reactor centerpiece - minimal placeholder, see FusionReactorCoreBlock. Plain
+    // auto-registered BlockItem, no custom placer logic.
+    public static final DeferredBlock<FusionReactorCoreBlock> FUSION_REACTOR_CORE = registerBlock("fusion_reactor_core",
+            () -> new FusionReactorCoreBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLACK)
+                    .requiresCorrectToolForDrops()
+                    .strength(6.0f, 1200.0f)
+                    .noOcclusion()
+                    .pushReaction(PushReaction.BLOCK)));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

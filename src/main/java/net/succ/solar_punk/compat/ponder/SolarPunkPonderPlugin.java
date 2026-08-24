@@ -57,6 +57,18 @@ public class SolarPunkPonderPlugin implements PonderPlugin {
                 .addStoryBoard("turbine_rotor/condensate",  SteamTurbineScenes::condensate,  SolarPunkPonderTags.STEAM_TURBINE)
                 .addStoryBoard("turbine_rotor/max_turbine", SteamTurbineScenes::maxTurbine, SolarPunkPonderTags.STEAM_TURBINE)
                 .addStoryBoard("turbine_rotor/horizontal",  SteamTurbineScenes::horizontal, SolarPunkPonderTags.STEAM_TURBINE);
+
+        helper.addStoryBoard(ModBlocks.DEUTERIUM_EXTRACTOR.getId(), "deuterium_extractor/usage",
+                FusionReactorScenes::deuteriumExtractor, SolarPunkPonderTags.FUSION_REACTOR);
+
+        helper.addStoryBoard(ModBlocks.LITHIUM_BRINE_EXTRACTOR.getId(), "lithium_brine_extractor/usage",
+                FusionReactorScenes::lithiumBrineExtractor, SolarPunkPonderTags.FUSION_REACTOR);
+
+        helper.forComponents(
+                        ModBlocks.FUSION_REACTOR_CORE.getId(), ModBlocks.FUSION_REACTOR_CASING.getId(),
+                        ModBlocks.FUSION_REACTOR_CASING_GLASS.getId(), ModBlocks.LITHIUM_BREEDER_MODULE.getId(),
+                        ModBlocks.BERYLLIUM_REFLECTOR_MODULE.getId())
+                .addStoryBoard("fusion_reactor/structure", FusionReactorScenes::structure, SolarPunkPonderTags.FUSION_REACTOR);
     }
 
     @Override

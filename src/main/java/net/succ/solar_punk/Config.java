@@ -127,6 +127,16 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_SPRINKLER_FLUID_PER_CYCLE;
     private static final ModConfigSpec.IntValue CFG_SPRINKLER_RANGE;
 
+    private static final ModConfigSpec.IntValue CFG_DEUTERIUM_EXTRACTOR_CYCLE_TICKS;
+    private static final ModConfigSpec.IntValue CFG_DEUTERIUM_EXTRACTOR_WATER_PER_CYCLE;
+    private static final ModConfigSpec.IntValue CFG_DEUTERIUM_EXTRACTOR_DEUTERIUM_PER_CYCLE;
+    private static final ModConfigSpec.IntValue CFG_DEUTERIUM_EXTRACTOR_SU;
+
+    private static final ModConfigSpec.IntValue CFG_LITHIUM_BRINE_EXTRACTOR_CYCLE_TICKS;
+    private static final ModConfigSpec.IntValue CFG_LITHIUM_BRINE_EXTRACTOR_WATER_PER_CYCLE;
+    private static final ModConfigSpec.IntValue CFG_LITHIUM_BRINE_EXTRACTOR_BERYLLIUM_CHANCE;
+    private static final ModConfigSpec.IntValue CFG_LITHIUM_BRINE_EXTRACTOR_SU;
+
     // -------------------------------------------------------------------------
     // Tanks
     // -------------------------------------------------------------------------
@@ -141,6 +151,8 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_SOLAR_HEATER_TANK;
     private static final ModConfigSpec.IntValue CFG_FIREBOX_BOILER_TANK;
     private static final ModConfigSpec.IntValue CFG_CRYSTALLIZER_TANK;
+    private static final ModConfigSpec.IntValue CFG_DEUTERIUM_EXTRACTOR_TANK;
+    private static final ModConfigSpec.IntValue CFG_LITHIUM_BRINE_EXTRACTOR_TANK;
 
     // -------------------------------------------------------------------------
     // Multiblock minimum sizes
@@ -288,6 +300,20 @@ public class Config {
         CFG_BIOFILTER_SU = BUILDER.comment("Stress units consumed while the Biofilter is running").defineInRange("su", 256, 1, 1_000_000);
         BUILDER.pop();
 
+        BUILDER.push("deuterium_extractor");
+        CFG_DEUTERIUM_EXTRACTOR_CYCLE_TICKS = BUILDER.comment("Ticks per extraction cycle").defineInRange("cycle_ticks", 100, 1, 100_000);
+        CFG_DEUTERIUM_EXTRACTOR_WATER_PER_CYCLE = BUILDER.comment("mB of water consumed per cycle").defineInRange("water_per_cycle_mb", 50, 1, 10_000);
+        CFG_DEUTERIUM_EXTRACTOR_DEUTERIUM_PER_CYCLE = BUILDER.comment("mB of Deuterium produced per cycle").defineInRange("deuterium_per_cycle_mb", 50, 1, 10_000);
+        CFG_DEUTERIUM_EXTRACTOR_SU = BUILDER.comment("Stress units consumed while a shaft drives the extractor. Idle (unpowered) it produces nothing.").defineInRange("su", 64, 1, 1_000_000);
+        BUILDER.pop();
+
+        BUILDER.push("lithium_brine_extractor");
+        CFG_LITHIUM_BRINE_EXTRACTOR_CYCLE_TICKS = BUILDER.comment("Ticks per extraction cycle").defineInRange("cycle_ticks", 600, 1, 100_000);
+        CFG_LITHIUM_BRINE_EXTRACTOR_WATER_PER_CYCLE = BUILDER.comment("mB of water consumed per cycle (alongside 1 Salt item)").defineInRange("water_per_cycle_mb", 250, 1, 10_000);
+        CFG_LITHIUM_BRINE_EXTRACTOR_BERYLLIUM_CHANCE = BUILDER.comment("Percent chance each cycle to also produce 1 Beryllium Dust alongside the guaranteed Lithium Dust").defineInRange("beryllium_bonus_chance_percent", 5, 0, 100);
+        CFG_LITHIUM_BRINE_EXTRACTOR_SU = BUILDER.comment("Stress units consumed while a shaft drives the extractor. Idle (unpowered) it produces nothing.").defineInRange("su", 128, 1, 1_000_000);
+        BUILDER.pop();
+
         BUILDER.pop(); // machines
 
         BUILDER.push("tanks");
@@ -301,6 +327,8 @@ public class Config {
         CFG_SOLAR_HEATER_TANK               = BUILDER.comment("Solar Heater: output fluid tank capacity (mB)").defineInRange("solar_heater_mb", 8000, 100, 1_000_000);
         CFG_FIREBOX_BOILER_TANK             = BUILDER.comment("Firebox Boiler: water and steam tank capacity (mB, each tank)").defineInRange("firebox_boiler_mb", 4000, 100, 1_000_000);
         CFG_CRYSTALLIZER_TANK                = BUILDER.comment("Crystallizer: input A, input B, and byproduct output tank capacity (mB, each tank)").defineInRange("crystallizer_mb", 4000, 100, 1_000_000);
+        CFG_DEUTERIUM_EXTRACTOR_TANK         = BUILDER.comment("Deuterium Extractor: water and Deuterium tank capacity (mB, each tank)").defineInRange("deuterium_extractor_mb", 4000, 100, 1_000_000);
+        CFG_LITHIUM_BRINE_EXTRACTOR_TANK     = BUILDER.comment("Lithium Brine Extractor: water tank capacity (mB)").defineInRange("lithium_brine_extractor_mb", 4000, 100, 1_000_000);
         BUILDER.pop();
 
         BUILDER.push("multiblocks");
@@ -419,9 +447,13 @@ public class Config {
     public static int heatBatteryMaxHeat, heatBatteryHeatPerMb, heatBatteryHeatDecay;
     public static int sprinklerFluidPerCycle, sprinklerRange;
 
+    public static int deuteriumExtractorCycleTicks, deuteriumExtractorWaterPerCycle, deuteriumExtractorDeuteriumPerCycle, deuteriumExtractorSu;
+    public static int lithiumBrineExtractorCycleTicks, lithiumBrineExtractorWaterPerCycle, lithiumBrineExtractorBerylliumChance, lithiumBrineExtractorSu;
+
     public static int heatBatteryTank, biofuelEngineTank;
     public static int fermentationVatTankPerBlock, solarPowerTowerTankPerBlock;
     public static int sprinklerTank, solarHeaterTank, fireboxBoilerTank, crystallizerTank;
+    public static int deuteriumExtractorTank, lithiumBrineExtractorTank;
 
     public static int fermentationVatMinWidth, fermentationVatMinHeight;
     public static int solarPowerTowerMinWidth, solarPowerTowerMinHeight;
@@ -499,6 +531,16 @@ public class Config {
         sprinklerFluidPerCycle = CFG_SPRINKLER_FLUID_PER_CYCLE.get();
         sprinklerRange         = CFG_SPRINKLER_RANGE.get();
 
+        deuteriumExtractorCycleTicks        = CFG_DEUTERIUM_EXTRACTOR_CYCLE_TICKS.get();
+        deuteriumExtractorWaterPerCycle     = CFG_DEUTERIUM_EXTRACTOR_WATER_PER_CYCLE.get();
+        deuteriumExtractorDeuteriumPerCycle = CFG_DEUTERIUM_EXTRACTOR_DEUTERIUM_PER_CYCLE.get();
+        deuteriumExtractorSu                = CFG_DEUTERIUM_EXTRACTOR_SU.get();
+
+        lithiumBrineExtractorCycleTicks     = CFG_LITHIUM_BRINE_EXTRACTOR_CYCLE_TICKS.get();
+        lithiumBrineExtractorWaterPerCycle  = CFG_LITHIUM_BRINE_EXTRACTOR_WATER_PER_CYCLE.get();
+        lithiumBrineExtractorBerylliumChance = CFG_LITHIUM_BRINE_EXTRACTOR_BERYLLIUM_CHANCE.get();
+        lithiumBrineExtractorSu              = CFG_LITHIUM_BRINE_EXTRACTOR_SU.get();
+
         turbineSteamTank        = CFG_TURBINE_STEAM_TANK.get();
         turbineCondensateTank   = CFG_TURBINE_CONDENSATE_TANK.get();
         heatBatteryTank              = CFG_HEAT_BATTERY_TANK.get();
@@ -509,6 +551,8 @@ public class Config {
         solarHeaterTank              = CFG_SOLAR_HEATER_TANK.get();
         fireboxBoilerTank            = CFG_FIREBOX_BOILER_TANK.get();
         crystallizerTank             = CFG_CRYSTALLIZER_TANK.get();
+        deuteriumExtractorTank       = CFG_DEUTERIUM_EXTRACTOR_TANK.get();
+        lithiumBrineExtractorTank    = CFG_LITHIUM_BRINE_EXTRACTOR_TANK.get();
 
         fermentationVatMinWidth     = CFG_FERMENTATION_VAT_MIN_WIDTH.get();
         fermentationVatMinHeight    = CFG_FERMENTATION_VAT_MIN_HEIGHT.get();

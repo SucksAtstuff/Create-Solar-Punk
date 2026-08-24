@@ -41,6 +41,12 @@ public class ModItems {
     public static final DeferredItem<Item> BERYLLIUM_DUST = ITEMS.register("beryllium_dust",
             () -> new Item(new Item.Properties()));
 
+    public static final DeferredItem<Item> BERYLLIUM_INGOT = ITEMS.register("beryllium_ingot",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> BERYLLIUM_NUGGET = ITEMS.register("beryllium_nugget",
+            () -> new Item(new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

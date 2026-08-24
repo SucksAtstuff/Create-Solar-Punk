@@ -24,6 +24,9 @@ import net.succ.solar_punk.block.entity.custom.BiofilterBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticSprinklerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineCasingBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineRotorBlockEntity;
+import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
+import net.succ.solar_punk.block.entity.custom.DeuteriumExtractorBlockEntity;
+import net.succ.solar_punk.block.entity.custom.LithiumBrineExtractorBlockEntity;
 
 public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
@@ -113,6 +116,21 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TurbineRotorBlockEntity>> TURBINE_ROTOR =
             BLOCK_ENTITIES.register("turbine_rotor", () -> BlockEntityType.Builder
                     .of((pos, state) -> new TurbineRotorBlockEntity(ModBlockEntities.TURBINE_ROTOR.get(), pos, state), ModBlocks.TURBINE_ROTOR.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FusionReactorCoreBlockEntity>> FUSION_REACTOR_CORE =
+            BLOCK_ENTITIES.register("fusion_reactor_core", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new FusionReactorCoreBlockEntity(ModBlockEntities.FUSION_REACTOR_CORE.get(), pos, state), ModBlocks.FUSION_REACTOR_CORE.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DeuteriumExtractorBlockEntity>> DEUTERIUM_EXTRACTOR =
+            BLOCK_ENTITIES.register("deuterium_extractor", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new DeuteriumExtractorBlockEntity(ModBlockEntities.DEUTERIUM_EXTRACTOR.get(), pos, state), ModBlocks.DEUTERIUM_EXTRACTOR.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LithiumBrineExtractorBlockEntity>> LITHIUM_BRINE_EXTRACTOR =
+            BLOCK_ENTITIES.register("lithium_brine_extractor", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new LithiumBrineExtractorBlockEntity(ModBlockEntities.LITHIUM_BRINE_EXTRACTOR.get(), pos, state), ModBlocks.LITHIUM_BRINE_EXTRACTOR.get())
                     .build(null));
 
     public static void register(IEventBus eventBus) {

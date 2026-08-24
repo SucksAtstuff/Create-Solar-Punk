@@ -24,6 +24,19 @@ public class ModItemApplicationRecipeGen extends ItemApplicationRecipeGen {
         .require(Items.GLASS)
         .output(ModBlocks.TURBINE_CASING_GLASS.get()));
 
+    // Fusion Reactor Casing - Netherite Ingot applied to a Copper Block, same
+    // item-application convention as the Turbine Casing above but one tier up: copper
+    // distributes the heat, Netherite reinforces/hardens the shell on top of it.
+    GeneratedRecipe FUSION_REACTOR_CASING = create("fusion_reactor_casing", b -> b
+        .require(Items.COPPER_BLOCK)
+        .require(Items.NETHERITE_INGOT)
+        .output(ModBlocks.FUSION_REACTOR_CASING.get()));
+
+    GeneratedRecipe FUSION_REACTOR_CASING_GLASS = create("fusion_reactor_casing_glass", b -> b
+        .require(ModBlocks.FUSION_REACTOR_CASING.get())
+        .require(Items.GLASS)
+        .output(ModBlocks.FUSION_REACTOR_CASING_GLASS.get()));
+
     public ModItemApplicationRecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, SolarPunk.MODID);
     }

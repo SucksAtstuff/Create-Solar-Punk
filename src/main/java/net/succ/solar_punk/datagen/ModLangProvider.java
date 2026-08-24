@@ -32,6 +32,8 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.tag.solar_tower.description", "Concentrated solar power for producing Molten Salt");
         add("solarpunk.ponder.tag.steam_turbine", "Steam Turbine");
         add("solarpunk.ponder.tag.steam_turbine.description", "High-throughput steam-powered rotational force generator");
+        add("solarpunk.ponder.tag.fusion_reactor", "Fusion Reactor");
+        add("solarpunk.ponder.tag.fusion_reactor.description", "Endgame direct-steam fusion power, fed by Deuterium and Lithium");
 
         // Ponder scene text - format: <namespace>.ponder.<sceneId>.header / .text_N
         add("solarpunk.ponder.biomass_gasifier_usage.header", "Using the Biomass Gasifier");
@@ -166,6 +168,29 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.fermentation_vat_scaling.text_2", "Water consumed and Biofuel produced per batch scale with the footprint area");
         add("solarpunk.ponder.fermentation_vat_scaling.text_3", "Taller vats produce super-linearly more Biofuel per batch - the same way a taller Solar Power Tower produces more. Tank capacity also grows with each block added");
 
+        add("solarpunk.ponder.deuterium_extractor_usage.header", "Using the Deuterium Extractor");
+        add("solarpunk.ponder.deuterium_extractor_usage.text_1", "The Deuterium Extractor slowly pulls Deuterium out of Water - the cheap half of the Fusion Reactor's fuel pair");
+        add("solarpunk.ponder.deuterium_extractor_usage.text_2", "Pipe Water into any face - unlike the Solar Heater, it needs no sunlight");
+        add("solarpunk.ponder.deuterium_extractor_usage.text_3", "Drive it with a shaft from below - it stalls without Rotational Force");
+        add("solarpunk.ponder.deuterium_extractor_usage.text_4", "Deuterium collects in its own tank - drain it from any face and pipe it to the Fusion Reactor");
+
+        add("solarpunk.ponder.lithium_brine_extractor_usage.header", "Using the Lithium Brine Extractor");
+        add("solarpunk.ponder.lithium_brine_extractor_usage.text_1", "The Lithium Brine Extractor turns Water and Salt into Lithium Dust - a slow, renewable floor for the Fusion Reactor's second fuel");
+        add("solarpunk.ponder.lithium_brine_extractor_usage.text_2", "Pipe Water in and feed it Salt by hand - each cycle consumes both together");
+        add("solarpunk.ponder.lithium_brine_extractor_usage.text_3", "Like the Deuterium Extractor, it needs a shaft driving it from below to run");
+        add("solarpunk.ponder.lithium_brine_extractor_usage.text_4", "Lithium Dust collects in the output slot - grab it by hand or pull it out with a hopper");
+        add("solarpunk.ponder.lithium_brine_extractor_usage.text_5", "Each cycle also has a small chance to produce bonus Beryllium Dust in a separate slot");
+        add("solarpunk.ponder.lithium_brine_extractor_usage.text_6", "It's deliberately much slower than mining Lithium Ore - a floor for when every vein nearby is stripped, not a replacement for it");
+
+        add("solarpunk.ponder.fusion_reactor_structure.header", "Building the Fusion Reactor");
+        add("solarpunk.ponder.fusion_reactor_structure.text_1", "The Fusion Reactor Core sits at the exact center of a fixed spherical shell - it doesn't grow taller like the Steam Turbine, it's always this one size");
+        add("solarpunk.ponder.fusion_reactor_structure.text_2", "Fill the inner ring band with Blanket Modules - it's an open gyroscope skeleton, not a sealed ball, so the Core stays visible through the gaps. Lithium Breeder for efficient fuel use, Beryllium Reflector for raw output, mixed in whatever ratio you want");
+        add("solarpunk.ponder.fusion_reactor_structure.text_3", "Enclose the whole shell in Fusion Reactor Casing - swap in Casing Glass anywhere for a clear view straight through to the open Blanket band underneath");
+        add("solarpunk.ponder.fusion_reactor_structure.text_4", "Once the shell and blanket band are complete, the reactor lights up - check it with Goggles to see its status and blanket mix");
+        add("solarpunk.ponder.fusion_reactor_structure.text_5", "The Core itself disappears once the reactor is fully formed - all that's left floating here is the glowing rings and crackling energy");
+        add("solarpunk.ponder.fusion_reactor_structure.text_6", "More Beryllium in the blanket burns fuel faster for more steam output; more Lithium breeds Tritium more efficiently for a lower, steadier output");
+        add("solarpunk.ponder.fusion_reactor_structure.text_7", "Feed it with Deuterium and Lithium - a Deuterium Extractor and Lithium Brine Extractor farm keeps it running");
+
         add("create.solar_punk.tooltip.biofilter_header", "Biofilter");
         add("create.solar_punk.tooltip.biofilter_status", "Status: ");
         add("create.solar_punk.tooltip.biofilter_pollution", "Chunk Pollution: ");
@@ -215,6 +240,11 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.turbine_blades", "Blades: ");
         add("create.solar_punk.tooltip.condensate_full", "Condensate full - drain water to restart");
 
+        add("create.solar_punk.tooltip.fusion_reactor_core_header", "Fusion Reactor Core");
+        add("create.solar_punk.tooltip.reactor_status", "Status: ");
+        add("create.solar_punk.tooltip.reactor_blanket", "Blanket: ");
+        add("solarpunk.message.reactor_core_obstructed", "Warning: %s positions in the reactor's shell are blocked by unbreakable or out-of-world terrain");
+
         add("create.solar_punk.tooltip.solar_power_tower_header", "Solar Power Tower");
         add("create.solar_punk.tooltip.mirrors", "Mirrors: ");
         add("create.solar_punk.tooltip.efficiency", "Efficiency: ");
@@ -237,6 +267,18 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.crystallizer_byproduct", "Byproduct: ");
         add("create.solar_punk.tooltip.crystallizer_item_output", "Output: ");
 
+        add("create.solar_punk.tooltip.deuterium_extractor_header", "Deuterium Extractor");
+        add("create.solar_punk.tooltip.deuterium_extractor_progress", "Progress: ");
+        add("create.solar_punk.tooltip.deuterium_extractor_water", "Water: ");
+        add("create.solar_punk.tooltip.deuterium_extractor_output", "Deuterium: ");
+
+        add("create.solar_punk.tooltip.lithium_brine_extractor_header", "Lithium Brine Extractor");
+        add("create.solar_punk.tooltip.lithium_brine_extractor_progress", "Progress: ");
+        add("create.solar_punk.tooltip.lithium_brine_extractor_water", "Water: ");
+        add("create.solar_punk.tooltip.lithium_brine_extractor_salt", "Salt: ");
+        add("create.solar_punk.tooltip.lithium_brine_extractor_output", "Lithium Dust: ");
+        add("create.solar_punk.tooltip.lithium_brine_extractor_bonus", "Beryllium Dust: ");
+
         // Inventory hover tooltips
         add("block.solarpunk.solar_heater.tooltip.summary", "Uses _sunlight_ to melt items into fluid and passively evaporate water into _Salt_.");
         add("block.solarpunk.solar_heater.tooltip.condition1", "During the day with a clear sky");
@@ -249,6 +291,14 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.firebox_boiler.tooltip.summary", "Burns furnace fuel to boil water into _Steam_ for the _Steam Turbine_. A cheap way to get a turbine running before building a Solar Power Tower - nowhere near as efficient at scale.");
         add("block.solarpunk.firebox_boiler.tooltip.condition1", "While lit");
         add("block.solarpunk.firebox_boiler.tooltip.behaviour1", "Converts water to Steam at a fixed rate. Insert fuel by hand or hopper; pipe water in and Steam out of any face.");
+
+        add("block.solarpunk.deuterium_extractor.tooltip.summary", "Slowly extracts _Deuterium_ from _Water_ - the cheap half of the Fusion Reactor's fuel pair.");
+        add("block.solarpunk.deuterium_extractor.tooltip.condition1", "While driven by a shaft");
+        add("block.solarpunk.deuterium_extractor.tooltip.behaviour1", "Needs Rotational Force from below to run. Pipe water in and Deuterium out of any face, or fill/drain by hand with a bucket.");
+
+        add("block.solarpunk.lithium_brine_extractor.tooltip.summary", "Slowly converts _Water_ and _Salt_ into _Lithium Dust_, with a small chance of _Beryllium Dust_ alongside it - a renewable floor for the Fusion Reactor's fuel chain, much slower than mining Lithium Ore.");
+        add("block.solarpunk.lithium_brine_extractor.tooltip.condition1", "While driven by a shaft");
+        add("block.solarpunk.lithium_brine_extractor.tooltip.behaviour1", "Needs Rotational Force from below to run. Insert Salt by hand, pipe water in from any face, collect Dust from the block or a hopper.");
 
         add("block.solarpunk.andesite_solar_panel.tooltip.summary", "Generates _Rotational Force_ from sunlight. Output scales with sun angle and weather.");
         add("block.solarpunk.andesite_solar_panel.tooltip.condition1", "During the day with a clear sky");

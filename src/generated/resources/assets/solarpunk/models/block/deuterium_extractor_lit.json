@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "solarpunk:block/deuterium_extractor/deuterium_extractor_front_on",
+    "side": "solarpunk:block/deuterium_extractor/deuterium_extractor_side",
+    "top": "solarpunk:block/deuterium_extractor/deuterium_extractor_top"
+  }
+}
