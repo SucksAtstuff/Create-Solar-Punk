@@ -41,8 +41,6 @@ import net.succ.solar_punk.block.custom.FusionReactorCasingGlassBlock;
 import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
 import net.succ.solar_punk.block.custom.LithiumBreederModuleBlock;
 import net.succ.solar_punk.block.custom.BerylliumReflectorModuleBlock;
-import net.succ.solar_punk.block.custom.DeuteriumExtractorBlock;
-import net.succ.solar_punk.block.custom.LithiumBrineExtractorBlock;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.function.Supplier;
@@ -130,19 +128,10 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .strength(5.0f, 6.0f)
                     .sound(SoundType.METAL)));
 
-    // Fuel chain supply side (see plan_for_fusion.md) - passive single-block machines,
-    // neither needs sunlight so no noOcclusion() sky-check concern like the Solar Heater.
-    public static final DeferredBlock<DeuteriumExtractorBlock> DEUTERIUM_EXTRACTOR = registerBlock("deuterium_extractor",
-            () -> new DeuteriumExtractorBlock(BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.COLOR_BLUE)
-                    .requiresCorrectToolForDrops()
-                    .strength(3.5f, 6.0f)));
-
-    public static final DeferredBlock<LithiumBrineExtractorBlock> LITHIUM_BRINE_EXTRACTOR = registerBlock("lithium_brine_extractor",
-            () -> new LithiumBrineExtractorBlock(BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.COLOR_PURPLE)
-                    .requiresCorrectToolForDrops()
-                    .strength(3.5f, 6.0f)));
+    // Fuel chain supply side (see plan_for_fusion.md) - both extractor blocks that used
+    // to live here (DeuteriumExtractorBlock, LithiumBrineExtractorBlock) have been
+    // replaced by Create Mixing recipes instead of bespoke single-purpose blocks - see
+    // ModMixingRecipeGen.WATER_TO_DEUTERIUM and .SALT_BRINE_TO_LITHIUM.
 
     public static final DeferredBlock<Block> DEAD_GRASS_BLOCK = registerBlock("dead_grass_block",
             () -> new Block(BlockBehaviour.Properties.of()

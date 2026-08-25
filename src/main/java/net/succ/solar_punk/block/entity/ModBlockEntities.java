@@ -25,8 +25,7 @@ import net.succ.solar_punk.block.entity.custom.KineticSprinklerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineCasingBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineRotorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
-import net.succ.solar_punk.block.entity.custom.DeuteriumExtractorBlockEntity;
-import net.succ.solar_punk.block.entity.custom.LithiumBrineExtractorBlockEntity;
+import net.succ.solar_punk.block.entity.custom.FusionReactorCasingBlockEntity;
 
 public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
@@ -123,14 +122,10 @@ public class ModBlockEntities {
                     .of((pos, state) -> new FusionReactorCoreBlockEntity(ModBlockEntities.FUSION_REACTOR_CORE.get(), pos, state), ModBlocks.FUSION_REACTOR_CORE.get())
                     .build(null));
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DeuteriumExtractorBlockEntity>> DEUTERIUM_EXTRACTOR =
-            BLOCK_ENTITIES.register("deuterium_extractor", () -> BlockEntityType.Builder
-                    .of((pos, state) -> new DeuteriumExtractorBlockEntity(ModBlockEntities.DEUTERIUM_EXTRACTOR.get(), pos, state), ModBlocks.DEUTERIUM_EXTRACTOR.get())
-                    .build(null));
-
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LithiumBrineExtractorBlockEntity>> LITHIUM_BRINE_EXTRACTOR =
-            BLOCK_ENTITIES.register("lithium_brine_extractor", () -> BlockEntityType.Builder
-                    .of((pos, state) -> new LithiumBrineExtractorBlockEntity(ModBlockEntities.LITHIUM_BRINE_EXTRACTOR.get(), pos, state), ModBlocks.LITHIUM_BRINE_EXTRACTOR.get())
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FusionReactorCasingBlockEntity>> FUSION_REACTOR_CASING =
+            BLOCK_ENTITIES.register("fusion_reactor_casing", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new FusionReactorCasingBlockEntity(ModBlockEntities.FUSION_REACTOR_CASING.get(), pos, state),
+                            ModBlocks.FUSION_REACTOR_CASING.get(), ModBlocks.FUSION_REACTOR_CASING_GLASS.get())
                     .build(null));
 
     public static void register(IEventBus eventBus) {

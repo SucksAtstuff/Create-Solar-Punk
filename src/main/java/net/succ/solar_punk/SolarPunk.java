@@ -148,18 +148,27 @@ public class SolarPunk {
         );
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
-                ModBlockEntities.DEUTERIUM_EXTRACTOR.get(),
+                ModBlockEntities.FUSION_REACTOR_CORE.get(),
                 (be, side) -> be.combinedFluidHandler
         );
         event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.FUSION_REACTOR_CORE.get(),
+                (be, side) -> be.itemHandler
+        );
+        // The Core itself is buried at dead center of the sealed Casing sphere and
+        // unreachable by any pipe/hopper once the reactor is built - the direct Core
+        // registrations above only ever matter mid-construction, before the shell
+        // closes. Every exterior Casing block proxies through to the same tanks/slot.
+        event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
-                ModBlockEntities.LITHIUM_BRINE_EXTRACTOR.get(),
-                (be, side) -> be.waterTank
+                ModBlockEntities.FUSION_REACTOR_CASING.get(),
+                (be, side) -> be.getFluidHandler()
         );
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
-                ModBlockEntities.LITHIUM_BRINE_EXTRACTOR.get(),
-                (be, side) -> be.itemHandler
+                ModBlockEntities.FUSION_REACTOR_CASING.get(),
+                (be, side) -> be.getItemHandler()
         );
     }
 
@@ -205,10 +214,6 @@ public class SolarPunk {
             // Consumer — stress impact for tooltip
             BlockStressValues.IMPACTS.register(ModBlocks.BIOFILTER.get(),
                 () -> (double) Config.biofilterSu);
-            BlockStressValues.IMPACTS.register(ModBlocks.DEUTERIUM_EXTRACTOR.get(),
-                () -> (double) Config.deuteriumExtractorSu);
-            BlockStressValues.IMPACTS.register(ModBlocks.LITHIUM_BRINE_EXTRACTOR.get(),
-                () -> (double) Config.lithiumBrineExtractorSu);
         });
     }
 }

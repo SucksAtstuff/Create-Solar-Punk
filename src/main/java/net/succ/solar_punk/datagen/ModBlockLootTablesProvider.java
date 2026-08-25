@@ -29,8 +29,6 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.BRASS_SOLAR_PANEL.get());
         dropSelf(ModBlocks.SOLAR_HEATER.get());
         dropSelf(ModBlocks.CRYSTALLIZER.get());
-        dropSelf(ModBlocks.DEUTERIUM_EXTRACTOR.get());
-        dropSelf(ModBlocks.LITHIUM_BRINE_EXTRACTOR.get());
         dropSelf(ModBlocks.FIREBOX_BOILER.get());
         dropSelf(ModBlocks.SALT_BLOCK.get());
         add(ModBlocks.LITHIUM_ORE.get(), block -> createOreDrop(block, ModItems.RAW_LITHIUM.get()));

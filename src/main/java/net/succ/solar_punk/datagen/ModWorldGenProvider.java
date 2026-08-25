@@ -110,10 +110,15 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
                 20, 0.0f
         )));
 
-        // Hard-rock ore, not an evaporite - normal (2-arg, discard-chance-0-by-default)
-        // OreConfiguration like vanilla's ordinary underground ores (iron, gold), not the
-        // explicit 0.0f Salt uses for its surface-exposed evaporite deposits. Targets both
-        // stone- and deepslate-replaceable blocks since the Y range straddles the transition.
+        // Hard-rock ore, not an evaporite. Uses the 2-arg OreConfiguration, which
+        // defaults discardOnAirExposureChance to 0.0f - same "never discard near air"
+        // behavior as Salt's explicit 0.0f below, just spelled the terse way since
+        // there's no other target list to line up against. Targets both stone- and
+        // deepslate-replaceable blocks since the Y range straddles the transition (both
+        // targets currently resolve to the same LITHIUM_ORE block state - a dedicated
+        // LITHIUM_DEEPSLATE_ORE block exists but isn't wired in here on purpose, left as
+        // a config/addon hook for anyone who wants a distinct deepslate variant or
+        // different Y-level tuning without touching this provider).
         context.register(LITHIUM_ORE_CONFIGURED, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(
                 List.of(
                         OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),

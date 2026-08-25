@@ -52,16 +52,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 modLoc("block/crystallizer/crystallizer_front"),
                 modLoc("block/crystallizer/crystallizer_front_on"),
                 modLoc("block/crystallizer/crystallizer_top"));
-        furnaceStyleBlock(ModBlocks.DEUTERIUM_EXTRACTOR,
-                modLoc("block/deuterium_extractor/deuterium_extractor_side"),
-                modLoc("block/deuterium_extractor/deuterium_extractor_front"),
-                modLoc("block/deuterium_extractor/deuterium_extractor_front_on"),
-                modLoc("block/deuterium_extractor/deuterium_extractor_top"));
-        furnaceStyleBlock(ModBlocks.LITHIUM_BRINE_EXTRACTOR,
-                modLoc("block/lithium_brine_extractor/lithium_brine_extractor_side"),
-                modLoc("block/lithium_brine_extractor/lithium_brine_extractor_front"),
-                modLoc("block/lithium_brine_extractor/lithium_brine_extractor_front_on"),
-                modLoc("block/lithium_brine_extractor/lithium_brine_extractor_top"));
         litFacingCustomModelBlock(ModBlocks.FIREBOX_BOILER, true);
         litFacingCustomModelBlock(ModBlocks.BIOMASS_GASIFIER, true);
         litFacingCustomModelBlock(ModBlocks.BIOFUEL_ENGINE, true);
@@ -116,23 +106,21 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get(),
                 new UncheckedModelFile(modLoc("block/beryllium_reflector_module")));
 
-        // Two states, driven by FusionReactorCoreBlock.FORMED: a plain visible cube
-        // while the structure is incomplete (formed=false, generated cube_all, same as
-        // any other placeholder block), and no geometry at all once formed=true (same
-        // trick as GeyserCap above - minecraft:block/block has no elements, hand-crafted
-        // model only supplies the particle texture) so the block doesn't entomb
-        // FusionReactorCoreRenderer's glowing sphere + rings inside a solid box once
-        // they start rendering. The item still gets its own flat icon (temp placeholder
-        // art) instead of inheriting either block render - see dead_grass above for the
-        // same "distinct item texture" pattern.
-        ModelFile fusionReactorCoreCube = cubeAll(ModBlocks.FUSION_REACTOR_CORE.get());
+        // Two states, driven by FusionReactorCoreBlock.FORMED: a hand-crafted Blockbench
+        // model (custom per-face UV swatches, same convention as the blanket modules
+        // above) while the structure is incomplete (formed=false), and no geometry at
+        // all once formed=true (same trick as GeyserCap above - minecraft:block/block
+        // has no elements, hand-crafted model only supplies the particle texture) so the
+        // block doesn't entomb FusionReactorCoreRenderer's glowing sphere + rings inside
+        // a solid box once they start rendering. The item just parents onto the
+        // formed=false block model, like a regular block's item - no separate flat icon.
+        ModelFile fusionReactorCoreCube = new UncheckedModelFile(modLoc("block/fusion_reactor_core"));
         ModelFile fusionReactorCoreFormed = new UncheckedModelFile(modLoc("block/fusion_reactor_core_formed"));
         getVariantBuilder(ModBlocks.FUSION_REACTOR_CORE.get()).forAllStates(state ->
                 ConfiguredModel.builder()
                         .modelFile(state.getValue(FusionReactorCoreBlock.FORMED) ? fusionReactorCoreFormed : fusionReactorCoreCube)
                         .build());
-        itemModels().withExistingParent("fusion_reactor_core", "minecraft:item/generated")
-                .texture("layer0", modLoc("item/fusion_reactor_core"));
+        itemModels().withExistingParent("fusion_reactor_core", modLoc("block/fusion_reactor_core"));
     }
 
     // For blocks whose models are hand-crafted (Blockbench).

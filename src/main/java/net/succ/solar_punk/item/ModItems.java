@@ -21,9 +21,10 @@ public class ModItems {
     public static final DeferredItem<BiocharItem> BIOCHAR = ITEMS.register("biochar",
             () -> new BiocharItem(new Item.Properties()));
 
-    // Lithium ore chain: mined from Lithium Ore (drops Raw Lithium) or Lithium Brine
-    // Extractor (drops Lithium Dust directly). Raw Lithium and Lithium Dust both smelt
-    // to Lithium Ingot; crushing Raw Lithium is also the source of Beryllium Dust.
+    // Lithium ore chain: mined from Lithium Ore (drops Raw Lithium) or produced
+    // directly as Lithium Dust via ModMixingRecipeGen.SALT_BRINE_TO_LITHIUM (Water +
+    // Salt, Superheated Basin). Raw Lithium and Lithium Dust both smelt to Lithium
+    // Ingot; crushing Raw Lithium is also the source of Beryllium Dust.
     public static final DeferredItem<Item> RAW_LITHIUM = ITEMS.register("raw_lithium",
             () -> new Item(new Item.Properties()));
 
@@ -37,7 +38,7 @@ public class ModItems {
             () -> new Item(new Item.Properties()));
 
     // Fusion reactor blanket material - no ore of its own, sourced only as a bonus
-    // byproduct of crushing Raw Lithium (and later, the Lithium Brine Extractor).
+    // byproduct of crushing Raw Lithium and of the SALT_BRINE_TO_LITHIUM Mixing recipe.
     public static final DeferredItem<Item> BERYLLIUM_DUST = ITEMS.register("beryllium_dust",
             () -> new Item(new Item.Properties()));
 

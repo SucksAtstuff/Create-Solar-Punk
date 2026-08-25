@@ -134,16 +134,6 @@ public class ModPonderProvider implements DataProvider {
         SCHEMATICS.put("solar_power_tower/usage",   towerWithMirrors);
         SCHEMATICS.put("solar_power_tower/mirrors", towerWithMirrors);
 
-        SCHEMATICS.put("deuterium_extractor/usage", new SceneStructure()
-                .withBasePlate()
-                .addBlock(2, 1, 2, "create:shaft", "axis", "y")
-                .addBlock(2, 2, 2, "solarpunk:deuterium_extractor", "facing", "north", "lit", "false"));
-
-        SCHEMATICS.put("lithium_brine_extractor/usage", new SceneStructure()
-                .withBasePlate()
-                .addBlock(2, 1, 2, "create:shaft", "axis", "y")
-                .addBlock(2, 2, 2, "solarpunk:lithium_brine_extractor", "facing", "north", "lit", "false"));
-
         // Fixed voxel-sphere shell centered at (4,5,4) - 9x9x9 bounding box (0-8 on each
         // axis, y=0 reserved for the ground row). Casing shell at rounded distance 4,
         // Blanket band at rounded distance 3, Core at dead center - mirrors

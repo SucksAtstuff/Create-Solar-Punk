@@ -42,8 +42,6 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.BRASS_SOLAR_PANEL.get())
                 .add(ModBlocks.SOLAR_HEATER.get())
                 .add(ModBlocks.CRYSTALLIZER.get())
-                .add(ModBlocks.DEUTERIUM_EXTRACTOR.get())
-                .add(ModBlocks.LITHIUM_BRINE_EXTRACTOR.get())
                 .add(ModBlocks.FIREBOX_BOILER.get())
                 .add(ModBlocks.SALT_BLOCK.get())
                 .add(ModBlocks.LITHIUM_ORE.get())

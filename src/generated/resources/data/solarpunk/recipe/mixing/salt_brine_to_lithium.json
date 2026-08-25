@@ -1,0 +1,24 @@
+{
+  "type": "create:mixing",
+  "heat_requirement": "superheated",
+  "ingredients": [
+    {
+      "item": "solarpunk:salt"
+    },
+    {
+      "type": "neoforge:single",
+      "amount": 250,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "processing_time": 600,
+  "results": [
+    {
+      "id": "solarpunk:lithium_dust"
+    },
+    {
+      "chance": 0.05,
+      "id": "solarpunk:beryllium_dust"
+    }
+  ]
+}

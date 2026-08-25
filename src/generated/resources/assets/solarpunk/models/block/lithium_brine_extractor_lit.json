@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "front": "solarpunk:block/lithium_brine_extractor/lithium_brine_extractor_front_on",
-    "side": "solarpunk:block/lithium_brine_extractor/lithium_brine_extractor_side",
-    "top": "solarpunk:block/lithium_brine_extractor/lithium_brine_extractor_top"
-  }
-}

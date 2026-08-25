@@ -127,15 +127,11 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_SPRINKLER_FLUID_PER_CYCLE;
     private static final ModConfigSpec.IntValue CFG_SPRINKLER_RANGE;
 
-    private static final ModConfigSpec.IntValue CFG_DEUTERIUM_EXTRACTOR_CYCLE_TICKS;
-    private static final ModConfigSpec.IntValue CFG_DEUTERIUM_EXTRACTOR_WATER_PER_CYCLE;
-    private static final ModConfigSpec.IntValue CFG_DEUTERIUM_EXTRACTOR_DEUTERIUM_PER_CYCLE;
-    private static final ModConfigSpec.IntValue CFG_DEUTERIUM_EXTRACTOR_SU;
-
-    private static final ModConfigSpec.IntValue CFG_LITHIUM_BRINE_EXTRACTOR_CYCLE_TICKS;
-    private static final ModConfigSpec.IntValue CFG_LITHIUM_BRINE_EXTRACTOR_WATER_PER_CYCLE;
-    private static final ModConfigSpec.IntValue CFG_LITHIUM_BRINE_EXTRACTOR_BERYLLIUM_CHANCE;
-    private static final ModConfigSpec.IntValue CFG_LITHIUM_BRINE_EXTRACTOR_SU;
+    private static final ModConfigSpec.IntValue CFG_REACTOR_STEAM_PER_LAYER_PER_TICK;
+    private static final ModConfigSpec.DoubleValue CFG_REACTOR_LITHIUM_OUTPUT_RATIO;
+    private static final ModConfigSpec.IntValue CFG_REACTOR_FUEL_PER_STEAM_MB;
+    private static final ModConfigSpec.DoubleValue CFG_REACTOR_BERYLLIUM_FUEL_WASTE_MULTIPLIER;
+    private static final ModConfigSpec.DoubleValue CFG_REACTOR_BREEDER_FLOOR_RATIO;
 
     // -------------------------------------------------------------------------
     // Tanks
@@ -151,8 +147,8 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_SOLAR_HEATER_TANK;
     private static final ModConfigSpec.IntValue CFG_FIREBOX_BOILER_TANK;
     private static final ModConfigSpec.IntValue CFG_CRYSTALLIZER_TANK;
-    private static final ModConfigSpec.IntValue CFG_DEUTERIUM_EXTRACTOR_TANK;
-    private static final ModConfigSpec.IntValue CFG_LITHIUM_BRINE_EXTRACTOR_TANK;
+    private static final ModConfigSpec.IntValue CFG_FUSION_REACTOR_STEAM_TANK;
+    private static final ModConfigSpec.IntValue CFG_FUSION_REACTOR_DEUTERIUM_TANK;
 
     // -------------------------------------------------------------------------
     // Multiblock minimum sizes
@@ -300,18 +296,32 @@ public class Config {
         CFG_BIOFILTER_SU = BUILDER.comment("Stress units consumed while the Biofilter is running").defineInRange("su", 256, 1, 1_000_000);
         BUILDER.pop();
 
-        BUILDER.push("deuterium_extractor");
-        CFG_DEUTERIUM_EXTRACTOR_CYCLE_TICKS = BUILDER.comment("Ticks per extraction cycle").defineInRange("cycle_ticks", 100, 1, 100_000);
-        CFG_DEUTERIUM_EXTRACTOR_WATER_PER_CYCLE = BUILDER.comment("mB of water consumed per cycle").defineInRange("water_per_cycle_mb", 50, 1, 10_000);
-        CFG_DEUTERIUM_EXTRACTOR_DEUTERIUM_PER_CYCLE = BUILDER.comment("mB of Deuterium produced per cycle").defineInRange("deuterium_per_cycle_mb", 50, 1, 10_000);
-        CFG_DEUTERIUM_EXTRACTOR_SU = BUILDER.comment("Stress units consumed while a shaft drives the extractor. Idle (unpowered) it produces nothing.").defineInRange("su", 64, 1, 1_000_000);
-        BUILDER.pop();
-
-        BUILDER.push("lithium_brine_extractor");
-        CFG_LITHIUM_BRINE_EXTRACTOR_CYCLE_TICKS = BUILDER.comment("Ticks per extraction cycle").defineInRange("cycle_ticks", 600, 1, 100_000);
-        CFG_LITHIUM_BRINE_EXTRACTOR_WATER_PER_CYCLE = BUILDER.comment("mB of water consumed per cycle (alongside 1 Salt item)").defineInRange("water_per_cycle_mb", 250, 1, 10_000);
-        CFG_LITHIUM_BRINE_EXTRACTOR_BERYLLIUM_CHANCE = BUILDER.comment("Percent chance each cycle to also produce 1 Beryllium Dust alongside the guaranteed Lithium Dust").defineInRange("beryllium_bonus_chance_percent", 5, 0, 100);
-        CFG_LITHIUM_BRINE_EXTRACTOR_SU = BUILDER.comment("Stress units consumed while a shaft drives the extractor. Idle (unpowered) it produces nothing.").defineInRange("su", 128, 1, 1_000_000);
+        // Five knobs mirroring the Steam Turbine's own economy, interpolated by blanket
+        // ratio (blanketEfficiency: 0 = pure Lithium, 1 = pure Beryllium) the same way
+        // bladeEfficiency scales the turbine. See plan_for_fusion.md's Config knobs
+        // section for the worked-example math this is based on.
+        BUILDER.push("fusion_reactor");
+        CFG_REACTOR_STEAM_PER_LAYER_PER_TICK = BUILDER.comment(
+                "mB of steam produced per Blanket module per tick at pure-Beryllium (max output) composition.",
+                "Default 4 with the reactor's fixed 42-module Blanket band means ~168 mB/t steam at pure Beryllium.")
+                .defineInRange("reactor_steam_per_layer_per_tick", 4, 1, 10_000);
+        CFG_REACTOR_LITHIUM_OUTPUT_RATIO = BUILDER.comment(
+                "Steam output multiplier at pure-Lithium composition, relative to Beryllium's 1.0.",
+                "Default 0.4 means pure Lithium produces 40% of the steam pure Beryllium does per module.")
+                .defineInRange("reactor_lithium_output_ratio", 0.4, 0.01, 2.0);
+        CFG_REACTOR_FUEL_PER_STEAM_MB = BUILDER.comment(
+                "Combined Deuterium + Lithium mB consumed per mB of steam at the pure-Lithium (efficient) extreme.")
+                .defineInRange("reactor_fuel_per_steam_mb", 2, 1, 10_000);
+        CFG_REACTOR_BERYLLIUM_FUEL_WASTE_MULTIPLIER = BUILDER.comment(
+                "Multiplies fuel-per-steam at the pure-Beryllium extreme. Default 3.0 means 6 mB combined",
+                "fuel per mB steam there - Beryllium burns fuel faster AND produces more, compounding its",
+                "'devour fuel, maximize output' identity.")
+                .defineInRange("reactor_beryllium_fuel_waste_multiplier", 3.0, 1.0, 100.0);
+        CFG_REACTOR_BREEDER_FLOOR_RATIO = BUILDER.comment(
+                "Fraction of drawn Lithium that actually breeds into usable Tritium at pure-Beryllium",
+                "composition (1.0 = no waste at pure-Lithium). Default 0.5 widens the Deuterium:Lithium",
+                "draw ratio from 1:1 at pure-Lithium to 1:2 at pure-Beryllium.")
+                .defineInRange("reactor_breeder_floor_ratio", 0.5, 0.01, 1.0);
         BUILDER.pop();
 
         BUILDER.pop(); // machines
@@ -327,8 +337,8 @@ public class Config {
         CFG_SOLAR_HEATER_TANK               = BUILDER.comment("Solar Heater: output fluid tank capacity (mB)").defineInRange("solar_heater_mb", 8000, 100, 1_000_000);
         CFG_FIREBOX_BOILER_TANK             = BUILDER.comment("Firebox Boiler: water and steam tank capacity (mB, each tank)").defineInRange("firebox_boiler_mb", 4000, 100, 1_000_000);
         CFG_CRYSTALLIZER_TANK                = BUILDER.comment("Crystallizer: input A, input B, and byproduct output tank capacity (mB, each tank)").defineInRange("crystallizer_mb", 4000, 100, 1_000_000);
-        CFG_DEUTERIUM_EXTRACTOR_TANK         = BUILDER.comment("Deuterium Extractor: water and Deuterium tank capacity (mB, each tank)").defineInRange("deuterium_extractor_mb", 4000, 100, 1_000_000);
-        CFG_LITHIUM_BRINE_EXTRACTOR_TANK     = BUILDER.comment("Lithium Brine Extractor: water tank capacity (mB)").defineInRange("lithium_brine_extractor_mb", 4000, 100, 1_000_000);
+        CFG_FUSION_REACTOR_STEAM_TANK        = BUILDER.comment("Fusion Reactor: steam output tank capacity (mB)").defineInRange("fusion_reactor_steam_mb", 16000, 100, 1_000_000);
+        CFG_FUSION_REACTOR_DEUTERIUM_TANK    = BUILDER.comment("Fusion Reactor: Deuterium input tank capacity (mB)").defineInRange("fusion_reactor_deuterium_mb", 8000, 100, 1_000_000);
         BUILDER.pop();
 
         BUILDER.push("multiblocks");
@@ -447,13 +457,13 @@ public class Config {
     public static int heatBatteryMaxHeat, heatBatteryHeatPerMb, heatBatteryHeatDecay;
     public static int sprinklerFluidPerCycle, sprinklerRange;
 
-    public static int deuteriumExtractorCycleTicks, deuteriumExtractorWaterPerCycle, deuteriumExtractorDeuteriumPerCycle, deuteriumExtractorSu;
-    public static int lithiumBrineExtractorCycleTicks, lithiumBrineExtractorWaterPerCycle, lithiumBrineExtractorBerylliumChance, lithiumBrineExtractorSu;
+    public static int reactorSteamPerLayerPerTick, reactorFuelPerSteamMb;
+    public static double reactorLithiumOutputRatio, reactorBerylliumFuelWasteMultiplier, reactorBreederFloorRatio;
 
     public static int heatBatteryTank, biofuelEngineTank;
     public static int fermentationVatTankPerBlock, solarPowerTowerTankPerBlock;
     public static int sprinklerTank, solarHeaterTank, fireboxBoilerTank, crystallizerTank;
-    public static int deuteriumExtractorTank, lithiumBrineExtractorTank;
+    public static int fusionReactorSteamTank, fusionReactorDeuteriumTank;
 
     public static int fermentationVatMinWidth, fermentationVatMinHeight;
     public static int solarPowerTowerMinWidth, solarPowerTowerMinHeight;
@@ -531,15 +541,11 @@ public class Config {
         sprinklerFluidPerCycle = CFG_SPRINKLER_FLUID_PER_CYCLE.get();
         sprinklerRange         = CFG_SPRINKLER_RANGE.get();
 
-        deuteriumExtractorCycleTicks        = CFG_DEUTERIUM_EXTRACTOR_CYCLE_TICKS.get();
-        deuteriumExtractorWaterPerCycle     = CFG_DEUTERIUM_EXTRACTOR_WATER_PER_CYCLE.get();
-        deuteriumExtractorDeuteriumPerCycle = CFG_DEUTERIUM_EXTRACTOR_DEUTERIUM_PER_CYCLE.get();
-        deuteriumExtractorSu                = CFG_DEUTERIUM_EXTRACTOR_SU.get();
-
-        lithiumBrineExtractorCycleTicks     = CFG_LITHIUM_BRINE_EXTRACTOR_CYCLE_TICKS.get();
-        lithiumBrineExtractorWaterPerCycle  = CFG_LITHIUM_BRINE_EXTRACTOR_WATER_PER_CYCLE.get();
-        lithiumBrineExtractorBerylliumChance = CFG_LITHIUM_BRINE_EXTRACTOR_BERYLLIUM_CHANCE.get();
-        lithiumBrineExtractorSu              = CFG_LITHIUM_BRINE_EXTRACTOR_SU.get();
+        reactorSteamPerLayerPerTick          = CFG_REACTOR_STEAM_PER_LAYER_PER_TICK.get();
+        reactorLithiumOutputRatio            = CFG_REACTOR_LITHIUM_OUTPUT_RATIO.get();
+        reactorFuelPerSteamMb                = CFG_REACTOR_FUEL_PER_STEAM_MB.get();
+        reactorBerylliumFuelWasteMultiplier  = CFG_REACTOR_BERYLLIUM_FUEL_WASTE_MULTIPLIER.get();
+        reactorBreederFloorRatio             = CFG_REACTOR_BREEDER_FLOOR_RATIO.get();
 
         turbineSteamTank        = CFG_TURBINE_STEAM_TANK.get();
         turbineCondensateTank   = CFG_TURBINE_CONDENSATE_TANK.get();
@@ -551,8 +557,8 @@ public class Config {
         solarHeaterTank              = CFG_SOLAR_HEATER_TANK.get();
         fireboxBoilerTank            = CFG_FIREBOX_BOILER_TANK.get();
         crystallizerTank             = CFG_CRYSTALLIZER_TANK.get();
-        deuteriumExtractorTank       = CFG_DEUTERIUM_EXTRACTOR_TANK.get();
-        lithiumBrineExtractorTank    = CFG_LITHIUM_BRINE_EXTRACTOR_TANK.get();
+        fusionReactorSteamTank       = CFG_FUSION_REACTOR_STEAM_TANK.get();
+        fusionReactorDeuteriumTank   = CFG_FUSION_REACTOR_DEUTERIUM_TANK.get();
 
         fermentationVatMinWidth     = CFG_FERMENTATION_VAT_MIN_WIDTH.get();
         fermentationVatMinHeight    = CFG_FERMENTATION_VAT_MIN_HEIGHT.get();

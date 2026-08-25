@@ -43,8 +43,6 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.BERYLLIUM_DUST.get());
                         output.accept(ModItems.BERYLLIUM_INGOT.get());
                         output.accept(ModItems.BERYLLIUM_NUGGET.get());
-                        output.accept(ModBlocks.DEUTERIUM_EXTRACTOR.get());
-                        output.accept(ModBlocks.LITHIUM_BRINE_EXTRACTOR.get());
                         output.accept(ModBlocks.DEAD_GRASS_BLOCK.get());
                         output.accept(ModBlocks.DEAD_GRASS.get());
                         output.accept(ModBlocks.RUINED_DIRT.get());

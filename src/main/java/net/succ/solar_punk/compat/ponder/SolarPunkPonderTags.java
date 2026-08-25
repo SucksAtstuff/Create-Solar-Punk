@@ -88,8 +88,6 @@ public class SolarPunkPonderTags {
                 .add(ModBlocks.FUSION_REACTOR_CASING.getId())
                 .add(ModBlocks.FUSION_REACTOR_CASING_GLASS.getId())
                 .add(ModBlocks.LITHIUM_BREEDER_MODULE.getId())
-                .add(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.getId())
-                .add(ModBlocks.DEUTERIUM_EXTRACTOR.getId())
-                .add(ModBlocks.LITHIUM_BRINE_EXTRACTOR.getId());
+                .add(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.getId());
     }
 }

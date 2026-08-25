@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "solarpunk:item/fusion_reactor_core"
-  }
+  "parent": "solarpunk:block/fusion_reactor_core"
 }

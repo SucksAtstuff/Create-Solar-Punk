@@ -144,32 +144,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_brass_casing", has(createItem("brass_casing")))
                 .save(output);
 
-        // Fuel chain supply side (see plan_for_fusion.md) - Deuterium Extractor needs no
-        // Lithium tech to bootstrap, unlike the Brine Extractor below.
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.DEUTERIUM_EXTRACTOR.get())
-                .pattern("GGG")
-                .pattern("C C")
-                .pattern("III")
-                .define('G', Items.GLASS_PANE)
-                .define('C', Items.COPPER_INGOT)
-                .define('I', Items.IRON_INGOT)
-                .unlockedBy("has_copper_ingot", has(Items.COPPER_INGOT))
-                .save(output);
-
-        // Bootstrapped with Lithium Ingots - you need some Lithium mined already to build
-        // the machine that gives you more, matching the "renewable floor, not a shortcut"
-        // framing in plan_for_fusion.md.
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.LITHIUM_BRINE_EXTRACTOR.get())
-                .pattern("GLG")
-                .pattern("ICI")
-                .pattern("GLG")
-                .define('G', Items.GLASS_PANE)
-                .define('L', ModItems.LITHIUM_INGOT.get())
-                .define('I', Items.IRON_INGOT)
-                .define('C', Items.COPPER_INGOT)
-                .unlockedBy("has_lithium_ingot", has(ModItems.LITHIUM_INGOT.get()))
-                .save(output);
-
         // Deliberately vanilla-tier (iron + furnace + bucket) - no Create alloys or Salt
         // needed, so it's reachable before any other machine in the mod's progression.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.FIREBOX_BOILER.get())
