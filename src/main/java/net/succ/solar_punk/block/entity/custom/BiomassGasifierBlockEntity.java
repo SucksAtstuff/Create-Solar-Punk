@@ -74,7 +74,12 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
                     }
                     @Override
                     protected boolean isSideActive(BlockState state, Direction direction) {
-                        return direction.getAxis() != state.getValue(BiomassGasifierBlock.FACING).getAxis();
+                        // Everywhere except the front (matches FACING - reserved for the
+                        // lit/output face) and the bottom (reserved for the input shaft,
+                        // see hasShaftTowards) - leaves back, top, and both sides. Matches
+                        // the Biofuel Engine's own scroll box placement.
+                        return direction != state.getValue(BiomassGasifierBlock.FACING)
+                                && direction != Direction.DOWN;
                     }
                 }
         );

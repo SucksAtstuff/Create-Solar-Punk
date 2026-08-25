@@ -56,7 +56,11 @@ public class BiofilterBlockEntity extends KineticBlockEntity implements IHaveGog
         int radiusChunks = radius > 0 ? (int) Math.ceil(radius / 16.0) : 0;
         double radiusSq = (double) radius * radius;
         ChunkPos sourceChunk = new ChunkPos(worldPosition);
-        long absorb = Config.biofilterAbsorptionPerSecond;
+        // Scales with actual rotational speed rather than a flat rate - a cheap 16 RPM
+        // feed and a maxed-out network shouldn't clean at the same rate for wildly
+        // different SU cost, same reasoning the Turbine's height/blade-ratio knobs use
+        // for scaling steam output.
+        long absorb = Math.round(Math.abs(getSpeed()) * Config.biofilterAbsorptionPerRpm);
 
         for (int dx = -radiusChunks; dx <= radiusChunks; dx++) {
             for (int dz = -radiusChunks; dz <= radiusChunks; dz++) {
@@ -94,9 +98,10 @@ public class BiofilterBlockEntity extends KineticBlockEntity implements IHaveGog
                 .forGoggles(tooltip, 1);
 
         if (powered) {
+            long absorb = Math.round(Math.abs(getSpeed()) * Config.biofilterAbsorptionPerRpm);
             CreateLang.translate("solar_punk.tooltip.biofilter_removing")
                     .style(ChatFormatting.GRAY)
-                    .add(CreateLang.number(Config.biofilterAbsorptionPerSecond).text("/s")
+                    .add(CreateLang.number(absorb).text("/s")
                             .style(ChatFormatting.GREEN).component())
                     .forGoggles(tooltip, 1);
         }

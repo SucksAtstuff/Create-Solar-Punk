@@ -73,17 +73,26 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
         }
 
         if (energyStorage.getEnergyStored() > 0) {
+            // Config.brassMaxExtract is a total-per-tick cap, not a per-face one - track
+            // the remaining budget across the whole loop so a panel touching several FE
+            // receivers at once can't multiply its output by however many faces are
+            // connected. Without this, each face got its own full extractEnergy() budget
+            // and the panel would happily drain its 100 000 FE buffer several times over
+            // the tooltip's stated rate for as long as that buffer lasted.
+            int remainingBudget = Config.brassMaxExtract;
             for (Direction dir : Direction.values()) {
+                if (remainingBudget <= 0) break;
                 IEnergyStorage neighbor = level.getCapability(
                         Capabilities.EnergyStorage.BLOCK,
                         worldPosition.relative(dir),
                         dir.getOpposite()
                 );
                 if (neighbor != null && neighbor.canReceive()) {
-                    int toSend = energyStorage.extractEnergy(Config.brassMaxExtract, true);
+                    int toSend = energyStorage.extractEnergy(remainingBudget, true);
                     int accepted = neighbor.receiveEnergy(toSend, false);
                     if (accepted > 0) {
                         energyStorage.extractEnergy(accepted, false);
+                        remainingBudget -= accepted;
                         setChanged();
                     }
                 }

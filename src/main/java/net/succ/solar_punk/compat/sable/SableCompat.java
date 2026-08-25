@@ -31,6 +31,8 @@ public final class SableCompat {
     private static Method mGetPlot;
     private static Method mGetChunkMin;
     private static Method mGetChunkMax;
+    private static Method mGetChunk;
+    private static Method mToLocal;
 
     private static synchronized void init() {
         if (initialized) return;
@@ -51,6 +53,16 @@ public final class SableCompat {
             Class<?> levelPlotClass = Class.forName("dev.ryanhcode.sable.sublevel.plot.LevelPlot");
             mGetChunkMin = levelPlotClass.getMethod("getChunkMin");
             mGetChunkMax = levelPlotClass.getMethod("getChunkMax");
+            // LevelPlot keeps its own PlotChunkHolder[] storage, entirely separate from
+            // the host ServerLevel's own ChunkSource - a sublevel's actual block data
+            // never lives in the host level's chunks at the plot's coordinates, so it
+            // has to be read through the plot itself, not through `level`.
+            mGetChunk = levelPlotClass.getMethod("getChunk", ChunkPos.class);
+            // getChunk() takes a *local*, plot-relative ChunkPos (validated against
+            // [0, 2^logSize) internally by getChunkHolder) - getChunkMin/getChunkMax
+            // above return *global* dimension coordinates, so every getChunk call needs
+            // to go through toLocal() first or it always misses (out of range -> null).
+            mToLocal = levelPlotClass.getMethod("toLocal", ChunkPos.class);
         } catch (Exception e) {
             // Sable present in ModList but reflection failed - disable quietly
             LOGGER.warn("[SolarPunk] Sable compat failed to initialise: {}", e.getMessage());
@@ -87,11 +99,19 @@ public final class SableCompat {
 
                 for (int cx = plotMin.x; cx <= plotMax.x; cx++) {
                     for (int cz = plotMin.z; cz <= plotMax.z; cz++) {
-                        LevelChunk chunk = level.getChunkSource().getChunkNow(cx, cz);
+                        // Read through the plot, not `level.getChunkSource()` - the host
+                        // level has nothing at these coordinates, the plot's own holder
+                        // array is where the sublevel's actual chunks live. getChunk()
+                        // needs a local pos, so convert the global cx/cz through toLocal
+                        // first - passing the global pos straight through always misses.
+                        ChunkPos localPos = (ChunkPos) mToLocal.invoke(plot, new ChunkPos(cx, cz));
+                        LevelChunk chunk = (LevelChunk) mGetChunk.invoke(plot, localPos);
                         if (chunk == null) continue;
 
                         for (Map.Entry<BlockPos, BlockEntity> entry : chunk.getBlockEntities().entrySet()) {
-                            BlockState state = level.getBlockState(entry.getKey());
+                            // Same reason: the block state at this pos only exists in the
+                            // plot's chunk, not in `level` at these coordinates.
+                            BlockState state = chunk.getBlockState(entry.getKey());
 
                             boolean inTag = state.is(GlobalWarmingHandler.POLLUTION_SOURCES);
                             boolean autoDetected = !inTag && autoSources.contains(state.getBlock());

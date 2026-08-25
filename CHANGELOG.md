@@ -8,9 +8,22 @@ Added the Crystallizer, a brass-tier machine that quenches Molten Salt with Wate
 
 Added Lithium, a new ore found underground worldwide rather than in any specific biome. Mine it for Raw Lithium and smelt that into Lithium Ingots, or crush it for Lithium Dust - which also smelts into ingots - with a small chance of bonus Beryllium Dust. Beryllium Dust can be smelted into Beryllium Ingots too, and both metals' Ingots and Nuggets craft into each other 1:9 the usual way. Both metals can be stored compactly as a Block of Lithium or Block of Beryllium.
 
-### Fuel Extractors
+### Fusion Reactor
 
-Added two new kinetic-powered machines that keep the Lithium/Beryllium chain flowing without a pickaxe. The Deuterium Extractor slowly pulls Deuterium out of Water, and the Lithium Brine Extractor slowly converts Water and Salt into Lithium Dust, with a small chance of bonus Beryllium Dust alongside it. Both need a shaft driving them from below and stall without one - and the Brine Extractor in particular is meant as a slow renewable floor once you've stripped every Lithium vein in reach, not a replacement for mining.
+Added the Fusion Reactor, the mod's endgame capstone. Build a Netherite-and-Copper Casing shell around a Core, ring it with Lithium Breeder and Beryllium Reflector Blanket modules in whatever mix you like (Lithium for efficiency, Beryllium for raw output), then feed it Deuterium and Lithium Dust to produce a huge amount of Steam - far more than any single Steam Turbine can use on its own, so it's meant to feed a whole bank of them. A redstone signal anywhere on the shell throttles it up or down. Comes with its own dedicated advancement, "A Star in a Bottle."
+
+Deuterium is made by Mixing Water with a Copper Ingot overheat, and Lithium Dust by Mixing Water with Salt over superheat (with a small chance of bonus Beryllium Dust alongside it) - both show up in JEI automatically.
+
+
+### Bug Fixes
+
+- Fixed the Brass Solar Panel producing more FE per tick than intended when multiple cables or machines were drawing from it at once.
+- Fixed pollution detection not working correctly for machines placed inside a Sable sublevel.
+- Gave the Biomass Gasifier a proper spinning shaft and fixed it briefly rendering all the way through the block instead of as a short nub at the bottom.
+- The Biofuel Engine's shaft now actually spins while it's running, instead of sitting there as a static texture.
+- Moved the Biomass Gasifier's rotation-direction scroll box off the input shaft face, matching the Biofuel Engine.
+- Fixed some stretched and mismatched textures on the Biomass Gasifier and Biofuel Engine.
+- The Biofilter's pollution absorption now scales with how fast it's spinning, instead of removing the same amount no matter how much Rotational Force you feed it.
 
 # 0.4.0-1.21.1
 

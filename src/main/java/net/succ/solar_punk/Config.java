@@ -190,7 +190,7 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_POLLUTION_DECAY_RATE;
     private static final ModConfigSpec.IntValue CFG_LEAF_ABSORPTION_PER_INTERVAL;
     private static final ModConfigSpec.IntValue CFG_BIOFILTER_SU;
-    private static final ModConfigSpec.IntValue CFG_BIOFILTER_ABSORPTION_PER_SECOND;
+    private static final ModConfigSpec.DoubleValue CFG_BIOFILTER_ABSORPTION_PER_RPM;
     private static final ModConfigSpec.IntValue CFG_BIOFILTER_RADIUS_BLOCKS;
     private static final ModConfigSpec.IntValue CFG_BIOME_DECAY_THRESHOLD;
     private static final ModConfigSpec.IntValue CFG_BIOME_DECAY_INTERVAL;
@@ -424,7 +424,12 @@ public class Config {
         CFG_POLLUTION_RADIUS_BLOCKS = BUILDER.comment("Block radius around each active pollution source that receives pollution (0 = source chunk only).").defineInRange("pollution_radius_blocks", 64, 0, 512);
         CFG_POLLUTION_DECAY_RATE   = BUILDER.comment("Pollution units removed from each chunk per second (0 = pollution never decays).").defineInRange("pollution_decay_rate_per_second", 1, 0, 1_000_000);
         CFG_LEAF_ABSORPTION_PER_INTERVAL = BUILDER.comment("Pollution absorbed per leaf block in a chunk each decay interval. 0 to disable tree absorption.").defineInRange("leaf_absorption_per_interval", 1, 0, 1_000_000);
-        CFG_BIOFILTER_ABSORPTION_PER_SECOND = BUILDER.comment("Pollution units removed per second by each placed Biofilter block.").defineInRange("biofilter_absorption_per_second", 10, 0, 1_000_000);
+        CFG_BIOFILTER_ABSORPTION_PER_RPM = BUILDER.comment(
+                "Pollution units removed per second, per RPM of rotational speed driving the Biofilter.",
+                "Scales with actual speed rather than a flat rate, so a cheap 16 RPM feed and a maxed-out",
+                "network don't clean at the same rate for wildly different SU cost. Default 0.625 keeps a",
+                "16 RPM Biofilter at the old flat-rate baseline (10/s) while a 256 RPM one reaches 160/s.")
+                .defineInRange("biofilter_absorption_per_rpm", 0.625, 0.0, 1_000_000.0);
         CFG_BIOFILTER_RADIUS_BLOCKS = BUILDER.comment("Block radius around a Biofilter in which it reduces pollution (0 = own chunk only).").defineInRange("biofilter_radius_blocks", 32, 0, 512);
         CFG_BIOME_DECAY_THRESHOLD       = BUILDER.comment("Pollution level a chunk must reach before its biome converts.").defineInRange("biome_decay_threshold", 10000, 1, Integer.MAX_VALUE);
         CFG_BIOME_DECAY_INTERVAL        = BUILDER.comment("Ticks between each decay and biome-conversion check (1200 = once per minute).").defineInRange("biome_decay_interval_ticks", 1200, 20, 72000);
@@ -476,7 +481,8 @@ public class Config {
 
     public static boolean globalWarmingEnabled;
     public static int pollutionPerSource, pollutionRadiusBlocks, pollutionDecayRate;
-    public static int leafAbsorptionPerInterval, biofilterSu, biofilterAbsorptionPerSecond, biofilterRadiusBlocks;
+    public static int leafAbsorptionPerInterval, biofilterSu, biofilterRadiusBlocks;
+    public static double biofilterAbsorptionPerRpm;
     public static int biomeDecayThreshold, biomeDecayInterval, blocksDecayedPerInterval;
     public static String deadBiome;
     public static Map<String, Integer> perBlockPollution = new java.util.HashMap<>();
@@ -579,7 +585,7 @@ public class Config {
         pollutionDecayRate    = CFG_POLLUTION_DECAY_RATE.get();
         leafAbsorptionPerInterval       = CFG_LEAF_ABSORPTION_PER_INTERVAL.get();
         biofilterSu                     = CFG_BIOFILTER_SU.get();
-        biofilterAbsorptionPerSecond    = CFG_BIOFILTER_ABSORPTION_PER_SECOND.get();
+        biofilterAbsorptionPerRpm       = CFG_BIOFILTER_ABSORPTION_PER_RPM.get();
         biofilterRadiusBlocks           = CFG_BIOFILTER_RADIUS_BLOCKS.get();
         biomeDecayThreshold       = CFG_BIOME_DECAY_THRESHOLD.get();
         biomeDecayInterval        = CFG_BIOME_DECAY_INTERVAL.get();
