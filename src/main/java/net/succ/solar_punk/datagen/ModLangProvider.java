@@ -32,6 +32,8 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.tag.solar_tower.description", "Concentrated solar power for producing Molten Salt");
         add("solarpunk.ponder.tag.steam_turbine", "Steam Turbine");
         add("solarpunk.ponder.tag.steam_turbine.description", "High-throughput steam-powered rotational force generator");
+        add("solarpunk.ponder.tag.fusion_reactor", "Fusion Reactor");
+        add("solarpunk.ponder.tag.fusion_reactor.description", "Endgame direct-steam fusion power, fed by Deuterium and Lithium");
 
         // Ponder scene text - format: <namespace>.ponder.<sceneId>.header / .text_N
         add("solarpunk.ponder.biomass_gasifier_usage.header", "Using the Biomass Gasifier");
@@ -166,6 +168,16 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.fermentation_vat_scaling.text_2", "Water consumed and Biofuel produced per batch scale with the footprint area");
         add("solarpunk.ponder.fermentation_vat_scaling.text_3", "Taller vats produce super-linearly more Biofuel per batch - the same way a taller Solar Power Tower produces more. Tank capacity also grows with each block added");
 
+
+        add("solarpunk.ponder.fusion_reactor_structure.header", "Building the Fusion Reactor");
+        add("solarpunk.ponder.fusion_reactor_structure.text_1", "The Fusion Reactor Core sits at the exact center of a fixed spherical shell - it doesn't grow taller like the Steam Turbine, it's always this one size");
+        add("solarpunk.ponder.fusion_reactor_structure.text_2", "Fill the inner ring band with Blanket Modules - it's an open gyroscope skeleton, not a sealed ball, so the Core stays visible through the gaps. Lithium Breeder for efficient fuel use, Beryllium Reflector for raw output, mixed in whatever ratio you want");
+        add("solarpunk.ponder.fusion_reactor_structure.text_3", "Enclose the whole shell in Fusion Reactor Casing - swap in Casing Glass anywhere for a clear view straight through to the open Blanket band underneath");
+        add("solarpunk.ponder.fusion_reactor_structure.text_4", "Once the shell and blanket band are complete, the reactor lights up - check it with Goggles to see its status and blanket mix");
+        add("solarpunk.ponder.fusion_reactor_structure.text_5", "The Core itself disappears once the reactor is fully formed - all that's left floating here is the glowing rings and crackling energy");
+        add("solarpunk.ponder.fusion_reactor_structure.text_6", "More Beryllium in the blanket burns fuel faster for more steam output; more Lithium breeds Tritium more efficiently for a lower, steadier output");
+        add("solarpunk.ponder.fusion_reactor_structure.text_7", "Feed it with Deuterium and Lithium - a Deuterium Extractor and Lithium Brine Extractor farm keeps it running");
+
         add("create.solar_punk.tooltip.biofilter_header", "Biofilter");
         add("create.solar_punk.tooltip.biofilter_status", "Status: ");
         add("create.solar_punk.tooltip.biofilter_pollution", "Chunk Pollution: ");
@@ -214,6 +226,14 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.turbine_height", "Height: ");
         add("create.solar_punk.tooltip.turbine_blades", "Blades: ");
         add("create.solar_punk.tooltip.condensate_full", "Condensate full - drain water to restart");
+
+        add("create.solar_punk.tooltip.fusion_reactor_core_header", "Fusion Reactor Core");
+        add("create.solar_punk.tooltip.reactor_status", "Status: ");
+        add("create.solar_punk.tooltip.reactor_blanket", "Blanket: ");
+        add("create.solar_punk.tooltip.reactor_steam_output", "Steam Output: ");
+        add("create.solar_punk.tooltip.reactor_fuel_draw", "Fuel Draw: ");
+        add("create.solar_punk.tooltip.reactor_breeding_efficiency", "Breeding Efficiency: ");
+        add("solarpunk.message.reactor_core_obstructed", "Warning: %s positions in the reactor's shell are blocked by unbreakable or out-of-world terrain");
 
         add("create.solar_punk.tooltip.solar_power_tower_header", "Solar Power Tower");
         add("create.solar_punk.tooltip.mirrors", "Mirrors: ");
@@ -302,8 +322,17 @@ public class ModLangProvider extends LanguageProvider {
 
         AllSolarpunkAdvancements.provideLang(this::add);
 
-        ModBlocks.BLOCKS.getEntries().forEach(entry ->
-                add(entry.get(), toTitleCase(entry.getId().getPath())));
+        // "Block of ___" naming, matching vanilla's own metal storage blocks
+        // (minecraft:iron_block -> "Block of Iron") rather than the generic
+        // title-cased "Lithium Block" the auto-generation loop below would produce -
+        // excluded from that loop so it doesn't collide with these.
+        add(ModBlocks.LITHIUM_BLOCK.get(), "Block of Lithium");
+        add(ModBlocks.BERYLLIUM_BLOCK.get(), "Block of Beryllium");
+
+        ModBlocks.BLOCKS.getEntries().stream()
+                .filter(entry -> entry.get() != ModBlocks.LITHIUM_BLOCK.get()
+                        && entry.get() != ModBlocks.BERYLLIUM_BLOCK.get())
+                .forEach(entry -> add(entry.get(), toTitleCase(entry.getId().getPath())));
 
         ModItems.ITEMS.getEntries().stream()
                 .filter(entry -> !(entry.get() instanceof BlockItem))

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "solarpunk:block/fusion_reactor_core"
+  }
+}

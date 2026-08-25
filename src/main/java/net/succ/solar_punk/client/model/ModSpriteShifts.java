@@ -8,9 +8,10 @@ import net.succ.solar_punk.SolarPunk;
 
 public class ModSpriteShifts {
 
-    private static final String VAT    = "block/fermentation_vat/";
-    private static final String TOWER  = "block/solar_power_tower/";
-    private static final String CASING = "block/industrial_iron_casing/";
+    private static final String VAT             = "block/fermentation_vat/";
+    private static final String TOWER           = "block/solar_power_tower/";
+    private static final String CASING          = "block/industrial_iron_casing/";
+    private static final String REACTOR_CASING  = "block/fusion_reactor_casing/";
 
     public static final CTSpriteShiftEntry
         FERMENTATION_VAT       = shift(VAT,    "fermentation_vat"),
@@ -20,7 +21,9 @@ public class ModSpriteShifts {
         SOLAR_POWER_TOWER_TOP   = shift(TOWER,  "solar_power_tower_top"),
         SOLAR_POWER_TOWER_INNER = shift(TOWER,  "solar_power_tower_inner"),
         TURBINE_CASING          = shiftOmni(CASING, "industrial_iron_casing"),
-        TURBINE_CASING_GLASS    = shiftOmni(CASING, "industrial_iron_glass_casing");
+        TURBINE_CASING_GLASS    = shiftOmni(CASING, "industrial_iron_glass_casing"),
+        FUSION_REACTOR_CASING       = shiftOmni(REACTOR_CASING, "fusion_reactor_casing"),
+        FUSION_REACTOR_CASING_GLASS = shiftOmni(REACTOR_CASING, "fusion_reactor_casing_glass");
 
     private static CTSpriteShiftEntry shift(String folder, String name) {
         return CTSpriteShifter.getCT(

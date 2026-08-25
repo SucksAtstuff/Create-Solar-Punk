@@ -24,6 +24,8 @@ import net.succ.solar_punk.block.entity.custom.BiofilterBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticSprinklerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineCasingBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineRotorBlockEntity;
+import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
+import net.succ.solar_punk.block.entity.custom.FusionReactorCasingBlockEntity;
 
 public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
@@ -113,6 +115,17 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TurbineRotorBlockEntity>> TURBINE_ROTOR =
             BLOCK_ENTITIES.register("turbine_rotor", () -> BlockEntityType.Builder
                     .of((pos, state) -> new TurbineRotorBlockEntity(ModBlockEntities.TURBINE_ROTOR.get(), pos, state), ModBlocks.TURBINE_ROTOR.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FusionReactorCoreBlockEntity>> FUSION_REACTOR_CORE =
+            BLOCK_ENTITIES.register("fusion_reactor_core", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new FusionReactorCoreBlockEntity(ModBlockEntities.FUSION_REACTOR_CORE.get(), pos, state), ModBlocks.FUSION_REACTOR_CORE.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FusionReactorCasingBlockEntity>> FUSION_REACTOR_CASING =
+            BLOCK_ENTITIES.register("fusion_reactor_casing", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new FusionReactorCasingBlockEntity(ModBlockEntities.FUSION_REACTOR_CASING.get(), pos, state),
+                            ModBlocks.FUSION_REACTOR_CASING.get(), ModBlocks.FUSION_REACTOR_CASING_GLASS.get())
                     .build(null));
 
     public static void register(IEventBus eventBus) {

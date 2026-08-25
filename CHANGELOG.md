@@ -1,8 +1,16 @@
-# 0.5.0-1.21.1
+# 1.0.0-1.21.1
 
 ### Crystallizer
 
 Added the Crystallizer, a brass-tier machine that quenches Molten Salt with Water to crystallize it back into Salt, releasing a bit of Steam as a byproduct - a much faster bulk alternative to the Solar Heater's slow evaporation trickle. Pipe both fluids in from any side, and collect Salt from the output slot (or a hopper underneath) and Steam from any face. It's recipe-driven, so modpacks and datapacks can add their own custom conversions to the same machine.
+
+### Lithium & Beryllium
+
+Added Lithium, a new ore found underground worldwide rather than in any specific biome. Mine it for Raw Lithium and smelt that into Lithium Ingots, or crush it for Lithium Dust - which also smelts into ingots - with a small chance of bonus Beryllium Dust. Beryllium Dust can be smelted into Beryllium Ingots too, and both metals' Ingots and Nuggets craft into each other 1:9 the usual way. Both metals can be stored compactly as a Block of Lithium or Block of Beryllium.
+
+### Fuel Extractors
+
+Added two new kinetic-powered machines that keep the Lithium/Beryllium chain flowing without a pickaxe. The Deuterium Extractor slowly pulls Deuterium out of Water, and the Lithium Brine Extractor slowly converts Water and Salt into Lithium Dust, with a small chance of bonus Beryllium Dust alongside it. Both need a shaft driving them from below and stall without one - and the Brine Extractor in particular is meant as a slow renewable floor once you've stripped every Lithium vein in reach, not a replacement for mining.
 
 # 0.4.0-1.21.1
 

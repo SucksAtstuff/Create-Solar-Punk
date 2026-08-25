@@ -104,6 +104,26 @@ public class ModFluids {
             .block(STEAM_BLOCK)
             .bucket(STEAM_BUCKET);
 
+    public static final Supplier<FlowingFluid> DEUTERIUM_SOURCE = FLUIDS.register("deuterium",
+            () -> new BaseFlowingFluid.Source(ModFluids.DEUTERIUM_PROPERTIES));
+    public static final Supplier<FlowingFluid> DEUTERIUM_FLOWING = FLUIDS.register("deuterium_flowing",
+            () -> new BaseFlowingFluid.Flowing(ModFluids.DEUTERIUM_PROPERTIES));
+
+    public static final DeferredBlock<LiquidBlock> DEUTERIUM_BLOCK = ModBlocks.BLOCKS.register("deuterium",
+            () -> new LiquidBlock(DEUTERIUM_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.WATER)
+                    .mapColor(MapColor.COLOR_BLUE)));
+
+    public static final DeferredItem<BucketItem> DEUTERIUM_BUCKET = ModItems.ITEMS.registerItem("deuterium_bucket",
+            properties -> new BucketItem(DEUTERIUM_SOURCE.get(), properties.stacksTo(1).craftRemainder(Items.BUCKET)));
+
+    public static final BaseFlowingFluid.Properties DEUTERIUM_PROPERTIES = new BaseFlowingFluid.Properties(
+            ModFluidTypes.DEUTERIUM_TYPE, DEUTERIUM_SOURCE, DEUTERIUM_FLOWING)
+            .tickRate(5)
+            .slopeFindDistance(4)
+            .levelDecreasePerBlock(1)
+            .block(DEUTERIUM_BLOCK)
+            .bucket(DEUTERIUM_BUCKET);
+
     public static void register(IEventBus eventBus) {
         FLUIDS.register(eventBus);
     }

@@ -23,6 +23,7 @@ import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.block.custom.AndesiteTurbineBladeBlock;
 import net.succ.solar_punk.block.custom.BrassTurbineBladeBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
+import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
@@ -56,6 +57,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
         litFacingCustomModelBlock(ModBlocks.BIOFUEL_ENGINE, true);
         fermentationVatBlock();
         blockWithItem(ModBlocks.SALT_BLOCK);
+        blockWithItem(ModBlocks.LITHIUM_ORE);
+        blockWithItem(ModBlocks.DEEPSLATE_LITHIUM_ORE);
+        blockWithItem(ModBlocks.LITHIUM_BLOCK);
+        blockWithItem(ModBlocks.BERYLLIUM_BLOCK);
         simpleBlockWithItem(ModBlocks.DEAD_GRASS_BLOCK.get(), new ModelFile.UncheckedModelFile(modLoc("block/dead_grass_block")));
         simpleBlockWithItem(ModBlocks.RUINED_DIRT.get(), new ModelFile.UncheckedModelFile(modLoc("block/ruined_dirt")));
         simpleBlockWithItem(ModBlocks.ASH_BLOCK.get(), new ModelFile.UncheckedModelFile(modLoc("block/ash_block")));
@@ -84,6 +89,38 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(ModBlocks.TURBINE_CASING_GLASS.get(),
                 models().cubeAll("turbine_casing_glass", glassCasingTex)
                         .renderType("minecraft:cutout"));
+
+        ResourceLocation reactorCasingTex = modLoc("block/fusion_reactor_casing/fusion_reactor_casing");
+        ResourceLocation reactorCasingGlassTex = modLoc("block/fusion_reactor_casing/fusion_reactor_casing_glass");
+        simpleBlockWithItem(ModBlocks.FUSION_REACTOR_CASING.get(),
+                models().cubeAll("fusion_reactor_casing", reactorCasingTex));
+        simpleBlockWithItem(ModBlocks.FUSION_REACTOR_CASING_GLASS.get(),
+                models().cubeAll("fusion_reactor_casing_glass", reactorCasingGlassTex)
+                        .renderType("minecraft:cutout"));
+
+        // Blanket modules - fill the band between the Core and the Casing shell. Hand-crafted
+        // Blockbench models (custom per-face UV swatches out of the 64x64 texture), not a
+        // generated cube_all - the model files live in src/main/resources, not src/generated.
+        simpleBlockWithItem(ModBlocks.LITHIUM_BREEDER_MODULE.get(),
+                new UncheckedModelFile(modLoc("block/lithium_breeder_module")));
+        simpleBlockWithItem(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get(),
+                new UncheckedModelFile(modLoc("block/beryllium_reflector_module")));
+
+        // Two states, driven by FusionReactorCoreBlock.FORMED: a hand-crafted Blockbench
+        // model (custom per-face UV swatches, same convention as the blanket modules
+        // above) while the structure is incomplete (formed=false), and no geometry at
+        // all once formed=true (same trick as GeyserCap above - minecraft:block/block
+        // has no elements, hand-crafted model only supplies the particle texture) so the
+        // block doesn't entomb FusionReactorCoreRenderer's glowing sphere + rings inside
+        // a solid box once they start rendering. The item just parents onto the
+        // formed=false block model, like a regular block's item - no separate flat icon.
+        ModelFile fusionReactorCoreCube = new UncheckedModelFile(modLoc("block/fusion_reactor_core"));
+        ModelFile fusionReactorCoreFormed = new UncheckedModelFile(modLoc("block/fusion_reactor_core_formed"));
+        getVariantBuilder(ModBlocks.FUSION_REACTOR_CORE.get()).forAllStates(state ->
+                ConfiguredModel.builder()
+                        .modelFile(state.getValue(FusionReactorCoreBlock.FORMED) ? fusionReactorCoreFormed : fusionReactorCoreCube)
+                        .build());
+        itemModels().withExistingParent("fusion_reactor_core", modLoc("block/fusion_reactor_core"));
     }
 
     // For blocks whose models are hand-crafted (Blockbench).

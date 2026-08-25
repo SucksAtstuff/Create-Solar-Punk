@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "solarpunk:lithium_ingot"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "solarpunk:lithium_nugget"
+  }
+}

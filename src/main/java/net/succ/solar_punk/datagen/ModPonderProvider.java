@@ -9,6 +9,7 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
 import net.succ.solar_punk.SolarPunk;
+import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -132,6 +133,13 @@ public class ModPonderProvider implements DataProvider {
         addGroundMirror(towerWithMirrors, 7, 0);
         SCHEMATICS.put("solar_power_tower/usage",   towerWithMirrors);
         SCHEMATICS.put("solar_power_tower/mirrors", towerWithMirrors);
+
+        // Fixed voxel-sphere shell centered at (4,5,4) - 9x9x9 bounding box (0-8 on each
+        // axis, y=0 reserved for the ground row). Casing shell at rounded distance 4,
+        // Blanket band at rounded distance 3, Core at dead center - mirrors
+        // FusionReactorCoreBlockEntity.scanStructure()'s exact rounding rule.
+        SCHEMATICS.put("fusion_reactor/structure",
+                addReactorShell(new SceneStructure(9, 10, 9).withBasePlate()));
     }
 
     // -------------------------------------------------------------------------
@@ -276,6 +284,34 @@ public class ModPonderProvider implements DataProvider {
     private static SceneStructure addGroundMirror(SceneStructure s, int x, int z) {
         s.addBlock(x, 1, z, "solarpunk:solar_mirror", "facing", "up", "half", "lower");
         s.addBlock(x, 2, z, "solarpunk:solar_mirror", "facing", "up", "half", "upper");
+        return s;
+    }
+
+    // Builds the reactor's fixed voxel-sphere shell centered at local (4,5,4) - see
+    // FusionReactorCoreBlockEntity's SCAN_RADIUS/CASING_SHELL_DIST/BLANKET_BAND_DIST/
+    // isRingPosition(). Shell (rounded distance 4, full sphere) alternates solid
+    // Casing with Casing Glass windows in one corner cluster (dx+dz <= -5, i.e. facing
+    // the default ponder camera angle - rotating an object 180 degrees around Y looks
+    // identical to rotating the camera 180 degrees around it, so this is the direct fix
+    // rather than panning the camera); Blanket band (rounded distance 3, ring positions
+    // only) splits by hemisphere, Beryllium Reflector on +X, Lithium Breeder on -X,
+    // just to give the scene a visibly mixed ratio rather than a uniform one.
+    private static SceneStructure addReactorShell(SceneStructure s) {
+        int r = 4;
+        for (int dx = -r; dx <= r; dx++)
+            for (int dy = -r; dy <= r; dy++)
+                for (int dz = -r; dz <= r; dz++) {
+                    int dist = Math.round((float) Math.sqrt(dx * dx + dy * dy + dz * dz));
+                    int x = dx + 4, y = dy + 5, z = dz + 4;
+                    if (dist == 4) {
+                        String block = (dx + dz <= -5) ? "solarpunk:fusion_reactor_casing_glass" : "solarpunk:fusion_reactor_casing";
+                        s.addBlock(x, y, z, block);
+                    } else if (dist == 3 && FusionReactorCoreBlockEntity.isRingPosition(dx, dy, dz)) {
+                        String module = dx >= 0 ? "solarpunk:beryllium_reflector_module" : "solarpunk:lithium_breeder_module";
+                        s.addBlock(x, y, z, module);
+                    }
+                }
+        s.addBlock(4, 5, 4, "solarpunk:fusion_reactor_core");
         return s;
     }
 

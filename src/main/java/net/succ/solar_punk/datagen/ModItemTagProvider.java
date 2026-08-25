@@ -27,6 +27,10 @@ public class ModItemTagProvider extends ItemTagsProvider {
             TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "gems/salt"));
     private static final TagKey<Item> STORAGE_BLOCKS_SALT =
             TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/salt"));
+    private static final TagKey<Item> STORAGE_BLOCKS_LITHIUM =
+            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/lithium"));
+    private static final TagKey<Item> STORAGE_BLOCKS_BERYLLIUM =
+            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/beryllium"));
     private static final TagKey<Item> BUCKETS_BIOFUEL =
             TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "buckets/biofuel"));
     private static final TagKey<Item> BUCKETS_MOLTEN_SALT =
@@ -37,6 +41,22 @@ public class ModItemTagProvider extends ItemTagsProvider {
             TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "bio_fuels"));
     private static final TagKey<Item> BUCKETS_STEAM =
             TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "buckets/steam"));
+    private static final TagKey<Item> ORES_LITHIUM =
+            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ores/lithium"));
+    private static final TagKey<Item> RAW_MATERIALS_LITHIUM =
+            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "raw_materials/lithium"));
+    private static final TagKey<Item> INGOTS_LITHIUM =
+            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/lithium"));
+    private static final TagKey<Item> NUGGETS_LITHIUM =
+            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "nuggets/lithium"));
+    private static final TagKey<Item> DUSTS_LITHIUM =
+            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "dusts/lithium"));
+    private static final TagKey<Item> DUSTS_BERYLLIUM =
+            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "dusts/beryllium"));
+    private static final TagKey<Item> INGOTS_BERYLLIUM =
+            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "ingots/beryllium"));
+    private static final TagKey<Item> NUGGETS_BERYLLIUM =
+            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "nuggets/beryllium"));
 
     public ModItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
                               CompletableFuture<TagLookup<Block>> blockTagProvider,
@@ -53,6 +73,33 @@ public class ModItemTagProvider extends ItemTagsProvider {
         // Salt block item
         tag(Tags.Items.STORAGE_BLOCKS).add(ModBlocks.SALT_BLOCK.get().asItem());
         tag(STORAGE_BLOCKS_SALT).add(ModBlocks.SALT_BLOCK.get().asItem());
+
+        // Lithium ore chain — standard modded cross-compat tags (c:raw_materials, c:ingots,
+        // c:nuggets, c:dusts), same pairing pattern as Salt's c:gems/c:storage_blocks above.
+        tag(Tags.Items.ORES).add(ModBlocks.LITHIUM_ORE.get().asItem());
+        tag(ORES_LITHIUM).add(ModBlocks.LITHIUM_ORE.get().asItem());
+        tag(Tags.Items.RAW_MATERIALS).add(ModItems.RAW_LITHIUM.get());
+        tag(RAW_MATERIALS_LITHIUM).add(ModItems.RAW_LITHIUM.get());
+        tag(Tags.Items.INGOTS).add(ModItems.LITHIUM_INGOT.get());
+        tag(INGOTS_LITHIUM).add(ModItems.LITHIUM_INGOT.get());
+        tag(Tags.Items.NUGGETS).add(ModItems.LITHIUM_NUGGET.get());
+        tag(NUGGETS_LITHIUM).add(ModItems.LITHIUM_NUGGET.get());
+        tag(Tags.Items.DUSTS).add(ModItems.LITHIUM_DUST.get());
+        tag(DUSTS_LITHIUM).add(ModItems.LITHIUM_DUST.get());
+
+        // Beryllium — no ore of its own (see ModItems), just the dust byproduct
+        tag(Tags.Items.DUSTS).add(ModItems.BERYLLIUM_DUST.get());
+        tag(DUSTS_BERYLLIUM).add(ModItems.BERYLLIUM_DUST.get());
+        tag(Tags.Items.INGOTS).add(ModItems.BERYLLIUM_INGOT.get());
+        tag(INGOTS_BERYLLIUM).add(ModItems.BERYLLIUM_INGOT.get());
+        tag(Tags.Items.NUGGETS).add(ModItems.BERYLLIUM_NUGGET.get());
+        tag(NUGGETS_BERYLLIUM).add(ModItems.BERYLLIUM_NUGGET.get());
+
+        // Storage blocks
+        tag(Tags.Items.STORAGE_BLOCKS).add(ModBlocks.LITHIUM_BLOCK.get().asItem())
+                .add(ModBlocks.BERYLLIUM_BLOCK.get().asItem());
+        tag(STORAGE_BLOCKS_LITHIUM).add(ModBlocks.LITHIUM_BLOCK.get().asItem());
+        tag(STORAGE_BLOCKS_BERYLLIUM).add(ModBlocks.BERYLLIUM_BLOCK.get().asItem());
 
         // Biomass — biofuel feedstock
         tag(BIO_FUELS).add(ModItems.BIOMASS.get()).add(ModItems.BIOMASS_PELLET.get());

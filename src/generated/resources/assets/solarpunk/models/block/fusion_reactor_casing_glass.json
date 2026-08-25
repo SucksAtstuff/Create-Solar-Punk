@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "all": "solarpunk:block/fusion_reactor_casing/fusion_reactor_casing_glass"
+  }
+}

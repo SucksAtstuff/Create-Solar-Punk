@@ -36,6 +36,11 @@ import net.succ.solar_punk.block.custom.TurbineCasingGlassBlock;
 import net.succ.solar_punk.block.custom.TurbineRotorBlock;
 import net.succ.solar_punk.block.custom.AndesiteTurbineBladeBlock;
 import net.succ.solar_punk.block.custom.BrassTurbineBladeBlock;
+import net.succ.solar_punk.block.custom.FusionReactorCasingBlock;
+import net.succ.solar_punk.block.custom.FusionReactorCasingGlassBlock;
+import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
+import net.succ.solar_punk.block.custom.LithiumBreederModuleBlock;
+import net.succ.solar_punk.block.custom.BerylliumReflectorModuleBlock;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.function.Supplier;
@@ -84,6 +89,49 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .mapColor(MapColor.SNOW)
                     .requiresCorrectToolForDrops()
                     .strength(1.5f, 3.0f)));
+
+    // Hard-rock pegmatite ore (unlike Salt's surface evaporite) - generates underground
+    // everywhere, no biome gate. Drops Raw Lithium; see ModBlockLootTablesProvider.
+    public static final DeferredBlock<Block> LITHIUM_ORE = registerBlock("lithium_ore",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.0f, 3.0f)));
+
+    // Deepslate variant for the portion of the ore's Y range below the stone/deepslate
+    // transition - same +1.5 hardness / DEEPSLATE sound bump vanilla applies to its own
+    // ore pairs (iron_ore -> deepslate_iron_ore etc). Not yet wired into the ore feature
+    // (which currently targets LITHIUM_ORE for both mediums) - registered ready for when
+    // the worldgen split is turned on.
+    public static final DeferredBlock<Block> DEEPSLATE_LITHIUM_ORE = registerBlock("deepslate_lithium_ore",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.DEEPSLATE)
+                    .requiresCorrectToolForDrops()
+                    .strength(4.5f, 3.0f)
+                    .sound(SoundType.DEEPSLATE)));
+
+    // Storage blocks - id/naming matches vanilla's own block-of-metal convention
+    // (registry name "lithium_block"/"beryllium_block", display name "Block of ___",
+    // same as minecraft:iron_block -> "Block of Iron"). Same hardness/resistance/sound
+    // as vanilla's own metal storage blocks (iron_block etc). No textures yet.
+    public static final DeferredBlock<Block> LITHIUM_BLOCK = registerBlock("lithium_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .requiresCorrectToolForDrops()
+                    .strength(5.0f, 6.0f)
+                    .sound(SoundType.METAL)));
+
+    public static final DeferredBlock<Block> BERYLLIUM_BLOCK = registerBlock("beryllium_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .requiresCorrectToolForDrops()
+                    .strength(5.0f, 6.0f)
+                    .sound(SoundType.METAL)));
+
+    // Fuel chain supply side (see plan_for_fusion.md) - both extractor blocks that used
+    // to live here (DeuteriumExtractorBlock, LithiumBrineExtractorBlock) have been
+    // replaced by Create Mixing recipes instead of bespoke single-purpose blocks - see
+    // ModMixingRecipeGen.WATER_TO_DEUTERIUM and .SALT_BRINE_TO_LITHIUM.
 
     public static final DeferredBlock<Block> DEAD_GRASS_BLOCK = registerBlock("dead_grass_block",
             () -> new Block(BlockBehaviour.Properties.of()
@@ -224,6 +272,48 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
+
+    // Fusion Reactor - Netherite-reinforced Copper containment shell, one tier past the
+    // Turbine's industrial iron casing to match the reactor's capstone status.
+    public static final DeferredBlock<FusionReactorCasingBlock> FUSION_REACTOR_CASING = registerBlock("fusion_reactor_casing",
+            () -> new FusionReactorCasingBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .requiresCorrectToolForDrops()
+                    .strength(6.0f, 12.0f)
+                    .sound(SoundType.NETHERITE_BLOCK)));
+
+    public static final DeferredBlock<FusionReactorCasingGlassBlock> FUSION_REACTOR_CASING_GLASS = registerBlock("fusion_reactor_casing_glass",
+            () -> new FusionReactorCasingGlassBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .requiresCorrectToolForDrops()
+                    .strength(4.5f, 9.0f)
+                    .noOcclusion()
+                    .sound(SoundType.NETHERITE_BLOCK)));
+
+    // Blanket modules - fill the band between the Core and the Casing shell (see
+    // plan_for_fusion.md's Tunable knob section). Plain non-BE blocks; the ratio math
+    // lives entirely in FusionReactorCoreBlockEntity's scan.
+    public static final DeferredBlock<LithiumBreederModuleBlock> LITHIUM_BREEDER_MODULE = registerBlock("lithium_breeder_module",
+            () -> new LithiumBreederModuleBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_BLUE)
+                    .requiresCorrectToolForDrops()
+                    .strength(4.0f, 8.0f)));
+
+    public static final DeferredBlock<BerylliumReflectorModuleBlock> BERYLLIUM_REFLECTOR_MODULE = registerBlock("beryllium_reflector_module",
+            () -> new BerylliumReflectorModuleBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_GREEN)
+                    .requiresCorrectToolForDrops()
+                    .strength(4.0f, 8.0f)));
+
+    // Reactor centerpiece - minimal placeholder, see FusionReactorCoreBlock. Plain
+    // auto-registered BlockItem, no custom placer logic.
+    public static final DeferredBlock<FusionReactorCoreBlock> FUSION_REACTOR_CORE = registerBlock("fusion_reactor_core",
+            () -> new FusionReactorCoreBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLACK)
+                    .requiresCorrectToolForDrops()
+                    .strength(6.0f, 1200.0f)
+                    .noOcclusion()
+                    .pushReaction(PushReaction.BLOCK)));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

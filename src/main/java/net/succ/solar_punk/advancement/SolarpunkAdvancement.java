@@ -76,7 +76,12 @@ public class SolarpunkAdvancement {
         NORMAL(AdvancementType.TASK,  true,  false, false),
         NOISY( AdvancementType.TASK,  true,  true,  false),
         EXPERT(AdvancementType.GOAL,  true,  true,  false),
-        SECRET(AdvancementType.GOAL,  true,  true,  true);
+        SECRET(AdvancementType.GOAL,  true,  true,  true),
+        // Purple "challenge" frame + fireworks, reserved exclusively for the Fusion
+        // Reactor - see plan_for_fusion.md's Advancement section. Every other capstone
+        // multiblock (Tower, Turbine, Fermentation Vat) uses EXPERT/GOAL; this is the
+        // one free "this is bigger than those" signal.
+        CHALLENGE(AdvancementType.CHALLENGE, true, true, false);
 
         final AdvancementType advancementType;
         final boolean toast, announce, hide;

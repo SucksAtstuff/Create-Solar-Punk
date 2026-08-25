@@ -146,6 +146,30 @@ public class SolarPunk {
                 ModBlockEntities.TURBINE_CASING.get(),
                 (be, side) -> be.getFluidHandler()
         );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.FUSION_REACTOR_CORE.get(),
+                (be, side) -> be.combinedFluidHandler
+        );
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.FUSION_REACTOR_CORE.get(),
+                (be, side) -> be.itemHandler
+        );
+        // The Core itself is buried at dead center of the sealed Casing sphere and
+        // unreachable by any pipe/hopper once the reactor is built - the direct Core
+        // registrations above only ever matter mid-construction, before the shell
+        // closes. Every exterior Casing block proxies through to the same tanks/slot.
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.FUSION_REACTOR_CASING.get(),
+                (be, side) -> be.getFluidHandler()
+        );
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.FUSION_REACTOR_CASING.get(),
+                (be, side) -> be.getItemHandler()
+        );
     }
 
     private static void commonSetup(FMLCommonSetupEvent event) {

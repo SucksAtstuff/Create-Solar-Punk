@@ -1,5 +1,7 @@
 {
   "values": [
-    "solarpunk:salt_block"
+    "solarpunk:salt_block",
+    "solarpunk:lithium_block",
+    "solarpunk:beryllium_block"
   ]
 }

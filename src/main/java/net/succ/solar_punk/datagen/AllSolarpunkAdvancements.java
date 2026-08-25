@@ -97,6 +97,15 @@ public class AllSolarpunkAdvancements implements DataProvider {
             .special(TaskType.SECRET)
     );
 
+    public static final SolarpunkAdvancement FUSION_REACTOR = SolarpunkAdvancement.create("fusion_reactor", b -> b
+            .icon(ModBlocks.FUSION_REACTOR_CORE.get())
+            .title("A Star in a Bottle")
+            .description("Bring a Fusion Reactor online - the absolute capstone of clean power.")
+            .withCustomTrigger(ModTriggers.REACTOR_BUILT)
+            .after(STEAM_TURBINE)
+            .special(TaskType.CHALLENGE)
+    );
+
     // -------------------------------------------------------------------------
     // Geothermal branch
     // -------------------------------------------------------------------------
