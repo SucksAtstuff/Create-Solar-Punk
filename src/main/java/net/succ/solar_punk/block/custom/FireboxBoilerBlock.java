@@ -4,6 +4,9 @@ import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -51,6 +54,22 @@ public class FireboxBoilerBlock extends Block implements IBE<FireboxBoilerBlockE
         return defaultBlockState()
                 .setValue(FACING, context.getHorizontalDirection().getOpposite())
                 .setValue(LIT, false);
+    }
+
+    // Reuses vanilla's own furnace crackle (block.furnace.fire_crackle) rather than a
+    // bespoke sound - a Firebox Boiler genuinely is a furnace with extra plumbing, and
+    // Create's own Blaze Burner/boiler already lean on this same family of sound, so
+    // there's no case for spending an original clip on something that already has a
+    // perfect vanilla analog. Same 10%-per-animateTick-call chance and LIT gate vanilla's
+    // own FurnaceBlock#animateTick uses; only the pitch is lightly randomized (vanilla
+    // plays it dead flat at 1.0) so it doesn't read as a literal, unvaried copy-paste.
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        if (state.getValue(LIT) && random.nextDouble() < 0.1) {
+            level.playLocalSound(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5,
+                    SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS,
+                    1.0f, 0.9f + random.nextFloat() * 0.2f, false);
+        }
     }
 
     @Override

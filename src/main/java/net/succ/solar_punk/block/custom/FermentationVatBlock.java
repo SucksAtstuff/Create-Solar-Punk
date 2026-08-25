@@ -87,7 +87,12 @@ public class FermentationVatBlock extends Block implements EntityBlock, IWrencha
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (!level.isClientSide && type == ModBlockEntities.FERMENTATION_VAT.get())
+        // Used to be server-only (!level.isClientSide) - FermentationVatBlockEntity#tick()
+        // now needs to run client-side too for tickAudio() (the bubbling ambience sound),
+        // matching how BiofuelEngineBlock/BiomassGasifierBlock/BiofilterBlock already
+        // register their own tickers unconditionally. tick() itself still branches
+        // level.isClientSide right at the top before touching any server-only state.
+        if (type == ModBlockEntities.FERMENTATION_VAT.get())
             return (l, p, s, be) -> ((FermentationVatBlockEntity) be).tick();
         return null;
     }

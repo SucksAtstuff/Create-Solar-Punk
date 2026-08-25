@@ -1,13 +1,19 @@
 package net.succ.solar_punk.block.custom;
 
+import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.succ.solar_punk.block.entity.ModBlockEntities;
+import net.succ.solar_punk.block.entity.custom.GeyserVentBlockEntity;
 
-public class GeyserVentBlock extends Block {
+public class GeyserVentBlock extends Block implements IBE<GeyserVentBlockEntity> {
     public GeyserVentBlock(Properties properties) {
         super(properties);
     }
@@ -17,6 +23,13 @@ public class GeyserVentBlock extends Block {
         double cx = pos.getX() + 0.5;
         double cy = pos.getY() + 1.0;
         double cz = pos.getZ() + 0.5;
+
+        // The puff sound used to live here too, but animateTick only fires when the
+        // client's particle system happens to randomly sample this exact block position
+        // (see GeyserVentBlockEntity for why that made the sound extremely rare without a
+        // Geyser Cap on top) - it now runs on GeyserVentBlockEntity's real per-tick
+        // schedule instead. This method still handles the dense steam/water/mist burst
+        // below, which is just ambient flourish and doesn't need to land on an exact beat.
 
         // Dense steam column
         for (int i = 0; i < 20 + random.nextInt(10); i++) {
@@ -45,5 +58,23 @@ public class GeyserVentBlock extends Block {
             double vz = (random.nextDouble() - 0.5) * 0.15;
             level.addParticle(ParticleTypes.SMOKE, x, cy, z, vx, vy, vz);
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        if (type == ModBlockEntities.GEYSER_VENT.get())
+            return (BlockEntityTicker<T>) (BlockEntityTicker<GeyserVentBlockEntity>) (l, p, s, be) -> be.tick();
+        return null;
+    }
+
+    @Override
+    public Class<GeyserVentBlockEntity> getBlockEntityClass() {
+        return GeyserVentBlockEntity.class;
+    }
+
+    @Override
+    public BlockEntityType<? extends GeyserVentBlockEntity> getBlockEntityType() {
+        return ModBlockEntities.GEYSER_VENT.get();
     }
 }

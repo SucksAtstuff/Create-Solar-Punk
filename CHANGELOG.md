@@ -14,6 +14,15 @@ Added the Fusion Reactor, the mod's endgame capstone. Build a Netherite-and-Copp
 
 Deuterium is made by Mixing Water with a Copper Ingot overheat, and Lithium Dust by Mixing Water with Salt over superheat (with a small chance of bonus Beryllium Dust alongside it) - both show up in JEI automatically.
 
+### Compatibility
+
+The Steam Turbine can now burn Liquid Hydrogen from Northstar Redux as an alternative to Steam, at the same rate. Pipe it in the same way you would Steam - just not both at once, the tank has to fully drain before switching fuels.
+
+### QoL
+- The Biofuel Engine, Biofilter, Biomass Gasifier, Fermentation Vat, Solar Heater, and Steam Turbine now have ambient sounds while they're running, and the Crystallizer hisses each time it finishes a batch.
+- The Firebox Boiler now crackles like a furnace while it's lit, instead of burning silently.
+- The Biofilter's ambient sound now pitches up the faster it's spinning.
+- All of the mod's sounds now show subtitles when subtitles are enabled.
 
 ### Bug Fixes
 
@@ -24,6 +33,8 @@ Deuterium is made by Mixing Water with a Copper Ingot overheat, and Lithium Dust
 - Moved the Biomass Gasifier's rotation-direction scroll box off the input shaft face, matching the Biofuel Engine.
 - Fixed some stretched and mismatched textures on the Biomass Gasifier and Biofuel Engine.
 - The Biofilter's pollution absorption now scales with how fast it's spinning, instead of removing the same amount no matter how much Rotational Force you feed it.
+- The Geyser Vent now actually plays its puff sound when it blows out steam, and reliably keeps doing so even with no Geyser Cap placed on top.
+- Turned down several sounds that were mastered much louder than the rest of the mod (the Geyser's puff, the Crystallizer's hiss, and the Fusion Reactor's startup/shutdown/hum) so they no longer blast out over everything else.
 
 # 0.4.0-1.21.1
 

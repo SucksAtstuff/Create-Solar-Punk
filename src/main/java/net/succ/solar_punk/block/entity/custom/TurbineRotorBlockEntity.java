@@ -3,7 +3,10 @@ package net.succ.solar_punk.block.entity.custom;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.utility.CreateLang;
+import net.createmod.catnip.lang.LangBuilder;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -13,6 +16,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -22,7 +27,10 @@ import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.AndesiteTurbineBladeBlock;
 import net.succ.solar_punk.block.custom.BrassTurbineBladeBlock;
 import net.succ.solar_punk.block.custom.TurbineRotorBlock;
+import net.succ.solar_punk.client.sound.TurbineSoundInstance;
+import net.succ.solar_punk.compat.northstar.NorthstarCompat;
 import net.succ.solar_punk.fluid.ModFluids;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -70,10 +78,36 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
     private int scanCooldown = 1;
     private boolean needsCapabilityRefresh = true; // not persisted - fires once after each load
 
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    private TurbineSoundInstance soundInstance;
+
+    @OnlyIn(Dist.CLIENT)
+    public void tickAudio() {
+        boolean active = getBlockState().getBlock() instanceof TurbineRotorBlock
+                && getBlockState().getValue(TurbineRotorBlock.ACTIVE);
+        if (active && (soundInstance == null || soundInstance.isStopped())) {
+            soundInstance = new TurbineSoundInstance(this);
+            Minecraft.getInstance().getSoundManager().play(soundInstance);
+        }
+    }
+
+    // Steam is the mod's own fuel; Liquid Hydrogen (Northstar Redux, soft compat, see
+    // NorthstarCompat) is an accepted alternative at the same rate - same steamPerTick
+    // math below either way, it just drains whatever's actually in the tank regardless
+    // of which of the two fluids that is. FluidTank.fill() already refuses a fluid that
+    // doesn't match what's currently stored once non-empty, so the two fuels can never
+    // mix in one tank - has to fully drain before switching, no extra code needed for
+    // that exclusivity.
+    private static boolean isTurbineFuel(FluidStack stack) {
+        return stack.getFluid().isSame(ModFluids.STEAM_SOURCE.get())
+                || NorthstarCompat.isTurbineFuel(stack.getFluid());
+    }
+
     public final FluidTank steamTank = new FluidTank(Config.turbineSteamTank) {
         @Override
         public boolean isFluidValid(FluidStack stack) {
-            return stack.getFluid().isSame(ModFluids.STEAM_SOURCE.get());
+            return isTurbineFuel(stack);
         }
         @Override
         protected void onContentsChanged() { setChanged(); }
@@ -100,11 +134,11 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         }
 
         @Override public boolean isFluidValid(int tank, FluidStack stack) {
-            return tank == 0 && stack.getFluid().isSame(ModFluids.STEAM_SOURCE.get());
+            return tank == 0 && isTurbineFuel(stack);
         }
 
         @Override public int fill(FluidStack resource, FluidAction action) {
-            if (!resource.getFluid().isSame(ModFluids.STEAM_SOURCE.get())) return 0;
+            if (!isTurbineFuel(resource)) return 0;
             return steamTank.fill(resource, action);
         }
 
@@ -155,7 +189,11 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
     @Override
     public void tick() {
         super.tick();
-        if (level == null || level.isClientSide) return;
+        if (level == null) return;
+        if (level.isClientSide) {
+            CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> this.tickAudio());
+            return;
+        }
 
         if (needsCapabilityRefresh && structureValid && isMaster) {
             needsCapabilityRefresh = false;
@@ -492,12 +530,23 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
                 .add(CreateLang.number(effPct).text("%").style(ChatFormatting.GREEN).component())
                 .forGoggles(tooltip, 1);
 
-        CreateLang.translate("solar_punk.tooltip.steam")
+        // Own key, not the shared "solar_punk.tooltip.steam" one - Firebox Boiler and
+        // Solar Power Tower use that key too and are genuinely Steam-only, so their
+        // "Steam:" label needs to stay put. The Turbine's tank can hold either fuel now
+        // (Northstar Liquid Hydrogen, soft compat - see isTurbineFuel), so its label is
+        // the generic "Fuel:", with the fluid's own name appended once the tank
+        // actually holds something, so an empty tank just reads as a plain gauge
+        // instead of naming a fluid that isn't there.
+        LangBuilder steamLine = CreateLang.translate("solar_punk.tooltip.turbine_fuel")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(steamTank.getFluidAmount())
                         .text(" / " + steamTank.getCapacity() + " mB")
-                        .style(ChatFormatting.AQUA).component())
-                .forGoggles(tooltip, 1);
+                        .style(ChatFormatting.AQUA).component());
+        if (!steamTank.isEmpty())
+            steamLine.add(Component.literal(" (").withStyle(ChatFormatting.DARK_GRAY)
+                    .append(steamTank.getFluid().getHoverName().copy().withStyle(ChatFormatting.DARK_AQUA))
+                    .append(Component.literal(")").withStyle(ChatFormatting.DARK_GRAY)));
+        steamLine.forGoggles(tooltip, 1);
 
         CreateLang.translate("solar_punk.tooltip.water")
                 .style(ChatFormatting.GRAY)

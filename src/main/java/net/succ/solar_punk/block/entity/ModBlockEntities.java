@@ -13,6 +13,7 @@ import net.succ.solar_punk.block.entity.custom.BiomassGasifierBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FermentationVatBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FireboxBoilerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GeyserCapBlockEntity;
+import net.succ.solar_punk.block.entity.custom.GeyserVentBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BrassSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.CrystallizerBlockEntity;
@@ -49,6 +50,11 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GeyserCapBlockEntity>> GEYSER_CAP =
             BLOCK_ENTITIES.register("geyser_cap", () -> BlockEntityType.Builder
                     .of((pos, state) -> new GeyserCapBlockEntity(ModBlockEntities.GEYSER_CAP.get(), pos, state), ModBlocks.GEYSER_CAP.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GeyserVentBlockEntity>> GEYSER_VENT =
+            BLOCK_ENTITIES.register("geyser_vent", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new GeyserVentBlockEntity(ModBlockEntities.GEYSER_VENT.get(), pos, state), ModBlocks.GEYSER_VENT.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SolarHeaterBlockEntity>> SOLAR_HEATER =

@@ -26,15 +26,21 @@ public class FusionReactorSoundInstance extends AbstractTickableSoundInstance {
     // immediately by the caller - see requestStop().
     private boolean stopRequested = false;
 
-    public FusionReactorSoundInstance(SoundEvent sound, FusionReactorCoreBlockEntity be, boolean looping, boolean stopWhenUnformed) {
+    public FusionReactorSoundInstance(SoundEvent sound, FusionReactorCoreBlockEntity be, boolean looping, boolean stopWhenUnformed, float volume) {
         super(sound, SoundSource.BLOCKS, RandomSource.create());
         this.blockEntity = be;
         this.stopWhenUnformed = stopWhenUnformed;
         this.looping = looping;
         this.delay = 0;
         // Well below BrassPanelSoundInstance's 0.75 - the raw clips are mastered much
-        // hotter than that ambient buzz, so the same multiplier came out deafening.
-        this.volume = 0.25f;
+        // hotter than that ambient buzz, so the same multiplier came out deafening. Now
+        // per-sound rather than one flat 0.25 for all three - measured via ffmpeg
+        // volumedetect against electric_motor_buzz.ogg the same way every other
+        // ambience's volume was tuned (see FusionReactorCoreBlockEntity#tickAudio for the
+        // actual numbers), since the loop clip runs ~9 dB hotter than the two one-shots
+        // and was still noticeably louder than the rest of the mod's ambience at the old
+        // shared value.
+        this.volume = volume;
         this.pitch = 1.0f;
         this.x = be.getBlockPos().getX() + 0.5;
         this.y = be.getBlockPos().getY() + 0.5;
@@ -57,6 +63,9 @@ public class FusionReactorSoundInstance extends AbstractTickableSoundInstance {
 
     @Override
     public void tick() {
-        if (stopRequested || (stopWhenUnformed && (blockEntity.isRemoved() || !blockEntity.formed))) stop();
+        if (stopRequested
+                || (stopWhenUnformed && (blockEntity.isRemoved() || !blockEntity.formed))
+                || AmbientSoundRange.isTooFar(x, y, z))
+            stop();
     }
 }
