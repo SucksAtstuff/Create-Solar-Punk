@@ -1,35 +1,34 @@
 {
+  "format_version": "1.21.11",
   "credit": "Made with Blockbench",
   "textures": {
     "0": "solarpunk:block/biomass_gasifier/biomass_gasifier_front_lit",
     "1": "solarpunk:block/biomass_gasifier/andesite_casing",
     "2": "solarpunk:block/biomass_gasifier/gearbox",
-    "3": "solarpunk:block/biomass_gasifier/axis",
-    "4": "solarpunk:block/biomass_gasifier/axis_top",
     "particle": "solarpunk:block/biomass_gasifier/biomass_gasifier_front_lit"
   },
   "elements": [
     {
-      "name": "Side_left",
+      "name": "Side",
       "from": [0, 0, 0],
       "to": [2, 14, 16],
       "faces": {
         "north": {"uv": [14, 2, 16, 16], "texture": "#0"},
         "east": {"uv": [0, 0, 16, 16], "texture": "#1"},
-        "south": {"uv": [0, 0, 2, 16], "texture": "#1"},
+        "south": {"uv": [0, 2, 2, 16], "texture": "#1"},
         "west": {"uv": [0, 2, 16, 16], "texture": "#1"},
         "up": {"uv": [0, 0, 2, 16], "texture": "#1"},
         "down": {"uv": [0, 0, 2, 16], "texture": "#1"}
       }
     },
     {
-      "name": "Side_right",
+      "name": "Side",
       "from": [14, 0, 0],
       "to": [16, 14, 16],
       "faces": {
         "north": {"uv": [0, 2, 2, 16], "texture": "#0"},
         "east": {"uv": [0, 2, 16, 16], "texture": "#1"},
-        "south": {"uv": [14, 0, 16, 16], "texture": "#1"},
+        "south": {"uv": [14, 2, 16, 16], "texture": "#1"},
         "west": {"uv": [0, 0, 16, 16], "texture": "#1"},
         "up": {"uv": [14, 0, 16, 16], "texture": "#1"},
         "down": {"uv": [14, 0, 16, 16], "texture": "#2"}
@@ -44,8 +43,8 @@
         "east": {"uv": [14, 0, 16, 16], "texture": "#1"},
         "south": {"uv": [0, 0, 16, 16], "texture": "#1"},
         "west": {"uv": [0, 0, 2, 16], "texture": "#1"},
-        "up": {"uv": [14, 0, 16, 16], "texture": "#1"},
-        "down": {"uv": [14, 0, 16, 16], "texture": "#2"}
+        "up": {"uv": [2, 0, 14, 2], "texture": "#1"},
+        "down": {"uv": [2, 0, 14, 2], "texture": "#2"}
       }
     },
     {
@@ -55,10 +54,10 @@
       "faces": {
         "north": {"uv": [2, 2, 14, 16], "texture": "#1"},
         "east": {"uv": [14, 0, 16, 16], "texture": "#1"},
-        "south": {"uv": [0, 0, 16, 16], "texture": "#1"},
+        "south": {"uv": [2, 2, 14, 14], "texture": "#1"},
         "west": {"uv": [0, 0, 2, 16], "texture": "#1"},
-        "up": {"uv": [14, 0, 16, 16], "texture": "#1"},
-        "down": {"uv": [14, 0, 16, 16], "texture": "#2"}
+        "up": {"uv": [2, 0, 14, 2], "texture": "#1"},
+        "down": {"uv": [2, 0, 14, 2], "texture": "#2"}
       }
     },
     {
@@ -81,8 +80,18 @@
       "faces": {
         "north": {"uv": [2, 1, 14, 15], "texture": "#2"},
         "south": {"uv": [2, 1, 14, 15], "texture": "#2"},
+        "up": {"uv": [2, 1, 14, 15], "texture": "#2"},
         "down": {"uv": [2, 1, 14, 15], "texture": "#2"}
       }
+    }
+  ],
+  "groups": [
+    {
+      "name": "block",
+      "origin": [8, 8, 8],
+      "scope": 0,
+      "color": 0,
+      "children": [0, 1, 2, 3, 4, 5]
     }
   ],
   "display": {

@@ -32,6 +32,7 @@ import net.succ.solar_punk.client.model.TurbineCasingModel;
 import net.succ.solar_punk.client.model.FusionReactorCasingGlassModel;
 import net.succ.solar_punk.client.model.FusionReactorCasingModel;
 import net.succ.solar_punk.client.renderer.AndesiteSolarPanelRenderer;
+import net.succ.solar_punk.client.renderer.BiofuelEngineRenderer;
 import net.succ.solar_punk.client.renderer.BiomassGasifierRenderer;
 import net.succ.solar_punk.client.renderer.BiofilterRenderer;
 import net.succ.solar_punk.client.renderer.FermentationVatRenderer;
@@ -112,6 +113,7 @@ public class ModClientEvents {
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntities.BIOMASS_GASIFIER.get(), BiomassGasifierRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.BIOFUEL_ENGINE.get(), BiofuelEngineRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.GEYSER_CAP.get(), GeyserCapRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.TURBINE_ROTOR.get(), TurbineRotorRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.ANDESITE_SOLAR_PANEL.get(), AndesiteSolarPanelRenderer::new);
@@ -130,10 +132,6 @@ public class ModClientEvents {
             ModSpriteShifts.init();
             PonderIndex.addPlugin(new SolarPunkPonderPlugin());
             registerTooltips();
-
-            SimpleBlockEntityVisualizer.builder(ModBlockEntities.BIOMASS_GASIFIER.get())
-                    .factory(SingleAxisRotatingVisual::shaft)
-                    .apply();
 
             SimpleBlockEntityVisualizer.builder(ModBlockEntities.TURBINE_ROTOR.get())
                     .factory(SingleAxisRotatingVisual::shaft)
