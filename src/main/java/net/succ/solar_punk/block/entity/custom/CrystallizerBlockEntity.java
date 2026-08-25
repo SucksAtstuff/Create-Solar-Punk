@@ -8,6 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -21,6 +22,7 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.CrystallizerBlock;
 import net.succ.solar_punk.recipe.CrystallizerRecipe;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
+import net.succ.solar_punk.sound.ModSounds;
 
 import java.util.List;
 import java.util.Optional;
@@ -207,6 +209,15 @@ public class CrystallizerBlockEntity extends BlockEntity implements IHaveGoggleI
                 outputFluidTank.fill(recipe.byproduct().copy(), IFluidHandler.FluidAction.EXECUTE);
             outputResult(recipe);
             setChanged();
+
+            // One-shot quench hiss right as a cycle actually completes, not a looped
+            // ambient hum - the Crystallizer is a repeated dunk-and-quench cycle, not a
+            // continuously running machine, so the sound should punctuate each cycle the
+            // same way geyser_puff punctuates each geyser burst rather than droning
+            // throughout the whole processingTime(). Server-side playSound(null, ...)
+            // broadcasts to every nearby client, not just a local-only sound.
+            level.playSound(null, worldPosition, ModSounds.STEAM_HISS.get(), SoundSource.BLOCKS,
+                    1.0f, 0.9f + level.getRandom().nextFloat() * 0.2f);
         }
 
         if (level.getGameTime() % 20 == 0)

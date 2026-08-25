@@ -8,7 +8,9 @@ import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.math.VecHelper;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
@@ -24,6 +26,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -31,8 +35,10 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
 import net.succ.solar_punk.block.custom.BiofuelEngineBlock;
+import net.succ.solar_punk.client.sound.BiofuelEngineSoundInstance;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.pollution.PollutionSavedData;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -52,6 +58,10 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
                 level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
         }
     };
+
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    private BiofuelEngineSoundInstance soundInstance;
 
     public BiofuelEngineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -100,7 +110,11 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
     @Override
     public void tick() {
         super.tick();
-        if (level == null || level.isClientSide) return;
+        if (level == null) return;
+        if (level.isClientSide) {
+            CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> this.tickAudio());
+            return;
+        }
 
         if (level.getGameTime() % Config.biofuelConsumePeriod == 0 && biofuelTank.getFluidAmount() >= Config.biofuelConsumeMb)
             biofuelTank.drain(Config.biofuelConsumeMb, IFluidHandler.FluidAction.EXECUTE);
@@ -115,6 +129,15 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
                 if (active)
                     ModTriggers.fireNearby(level, worldPosition, ModTriggers.BIOFUEL_ENGINE_ON);
             }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void tickAudio() {
+        if (getBlockState().getValue(BiofuelEngineBlock.LIT)
+                && (soundInstance == null || soundInstance.isStopped())) {
+            soundInstance = new BiofuelEngineSoundInstance(this);
+            Minecraft.getInstance().getSoundManager().play(soundInstance);
         }
     }
 

@@ -8,7 +8,9 @@ import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.math.VecHelper;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -22,12 +24,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
 import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
+import net.succ.solar_punk.client.sound.BiomassGasifierSoundInstance;
 import net.succ.solar_punk.item.ModItems;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -56,6 +62,10 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
     };
 
     private int burnTimeRemaining = 0;
+
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    private BiomassGasifierSoundInstance soundInstance;
 
     public BiomassGasifierBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -115,10 +125,23 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
         return capacity;
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public void tickAudio() {
+        if (getBlockState().getValue(BiomassGasifierBlock.LIT)
+                && (soundInstance == null || soundInstance.isStopped())) {
+            soundInstance = new BiomassGasifierSoundInstance(this);
+            Minecraft.getInstance().getSoundManager().play(soundInstance);
+        }
+    }
+
     @Override
     public void tick() {
         super.tick();
-        if (level == null || level.isClientSide) return;
+        if (level == null) return;
+        if (level.isClientSide) {
+            CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> this.tickAudio());
+            return;
+        }
 
         boolean wasActive = burnTimeRemaining > 0;
 

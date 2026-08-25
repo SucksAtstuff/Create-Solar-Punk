@@ -2,7 +2,9 @@ package net.succ.solar_punk.block.entity.custom;
 
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,15 +19,19 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.SolarHeaterBlock;
+import net.succ.solar_punk.client.sound.SolarHeaterSoundInstance;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
 import net.succ.solar_punk.recipe.SolarHeaterRecipe;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -101,8 +107,21 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
     private int progress = 0;
     private int evaporationProgress = 0;
 
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    private SolarHeaterSoundInstance soundInstance;
+
     public SolarHeaterBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void tickAudio() {
+        boolean lit = getBlockState().getValue(SolarHeaterBlock.LIT);
+        if (lit && (soundInstance == null || soundInstance.isStopped())) {
+            soundInstance = new SolarHeaterSoundInstance(this);
+            Minecraft.getInstance().getSoundManager().play(soundInstance);
+        }
     }
 
     private Optional<SolarHeaterRecipe> findRecipe() {
@@ -119,7 +138,11 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
     }
 
     public void tick() {
-        if (level == null || level.isClientSide) return;
+        if (level == null) return;
+        if (level.isClientSide) {
+            CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> this.tickAudio());
+            return;
+        }
 
         boolean currentlyLit = getBlockState().getValue(SolarHeaterBlock.LIT);
         boolean sunShining = isSunShining();

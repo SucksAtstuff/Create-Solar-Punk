@@ -1,15 +1,63 @@
 {
     "alternator": {
+        "subtitle": "subtitles.solarpunk.alternator",
         "sounds": [
             "solarpunk:electric_motor_buzz"
         ]
     },
     "geyser_puff": {
+        "subtitle": "subtitles.solarpunk.geyser_puff",
         "sounds": [
             "solarpunk:geyser_puff"
         ]
     },
+    "biofuel_engine_loop": {
+        "subtitle": "subtitles.solarpunk.biofuel_engine_loop",
+        "sounds": [
+            "solarpunk:biofuel_engine_loop"
+        ]
+    },
+    "biofilter_loop": {
+        "subtitle": "subtitles.solarpunk.biofilter_loop",
+        "sounds": [
+            "solarpunk:biofilter_loop"
+        ]
+    },
+    "biomass_gasifier_loop": {
+        "subtitle": "subtitles.solarpunk.biomass_gasifier_loop",
+        "sounds": [
+            "solarpunk:biomass_gasifier_loop"
+        ]
+    },
+    "fermentation_vat_bubbling": {
+        "subtitle": "subtitles.solarpunk.fermentation_vat_bubbling",
+        "sounds": [
+            "solarpunk:fermentation_vat_bubbling"
+        ]
+    },
+    "solar_heater_shimmer": {
+        "subtitle": "subtitles.solarpunk.solar_heater_shimmer",
+        "sounds": [
+            "solarpunk:solar_heater_shimmer"
+        ]
+    },
+    "steam_hiss": {
+        "subtitle": "subtitles.solarpunk.steam_hiss",
+        "sounds": [
+            "solarpunk:steam_hiss"
+        ]
+    },
+    "turbine_loop": {
+        "subtitle": "subtitles.solarpunk.turbine_loop",
+        "sounds": [
+            {
+                "name": "solarpunk:turbine_loop",
+                "stream": true
+            }
+        ]
+    },
     "fusion_reactor_startup": {
+        "subtitle": "subtitles.solarpunk.fusion_reactor_startup",
         "sounds": [
             {
                 "name": "solarpunk:fusion_reactor_startup",
@@ -18,6 +66,7 @@
         ]
     },
     "fusion_reactor_shutdown": {
+        "subtitle": "subtitles.solarpunk.fusion_reactor_shutdown",
         "sounds": [
             {
                 "name": "solarpunk:fusion_reactor_shutdown",
@@ -26,6 +75,7 @@
         ]
     },
     "reactor_on_loop": {
+        "subtitle": "subtitles.solarpunk.reactor_on_loop",
         "sounds": [
             {
                 "name": "solarpunk:reactor_on_loop",

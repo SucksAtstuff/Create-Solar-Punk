@@ -78,7 +78,12 @@ public class TurbineRotorBlock extends KineticBlock implements IBE<TurbineRotorB
     @Nullable
     @SuppressWarnings("unchecked")
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (!level.isClientSide && type == ModBlockEntities.TURBINE_ROTOR.get())
+        // Used to be server-only (!level.isClientSide) - TurbineRotorBlockEntity#tick()
+        // now needs to run client-side too for tickAudio() (the turbine loop), matching
+        // BiofuelEngineBlock/BiomassGasifierBlock/BiofilterBlock/FermentationVatBlock.
+        // tick() itself still branches level.isClientSide right after super.tick(),
+        // before touching any server-only structure/fuel state.
+        if (type == ModBlockEntities.TURBINE_ROTOR.get())
             return (BlockEntityTicker<T>) (BlockEntityTicker<TurbineRotorBlockEntity>) (l, p, s, be) -> be.tick();
         return null;
     }

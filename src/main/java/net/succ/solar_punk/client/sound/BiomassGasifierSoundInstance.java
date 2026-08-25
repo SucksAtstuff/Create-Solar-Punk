@@ -5,17 +5,17 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
-import net.succ.solar_punk.block.entity.custom.BrassSolarPanelBlockEntity;
+import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
+import net.succ.solar_punk.block.entity.custom.BiomassGasifierBlockEntity;
 import net.succ.solar_punk.sound.ModSounds;
 
 @OnlyIn(Dist.CLIENT)
-public class BrassPanelSoundInstance extends AbstractTickableSoundInstance {
+public class BiomassGasifierSoundInstance extends AbstractTickableSoundInstance {
 
-    private final BrassSolarPanelBlockEntity blockEntity;
+    private final BiomassGasifierBlockEntity blockEntity;
 
-    public BrassPanelSoundInstance(BrassSolarPanelBlockEntity be) {
-        super(ModSounds.ALTERNATOR.get(), SoundSource.BLOCKS, RandomSource.create());
+    public BiomassGasifierSoundInstance(BiomassGasifierBlockEntity be) {
+        super(ModSounds.BIOMASS_GASIFIER_LOOP.get(), SoundSource.BLOCKS, RandomSource.create());
         this.blockEntity = be;
         this.looping = true;
         this.delay = 0;
@@ -29,7 +29,7 @@ public class BrassPanelSoundInstance extends AbstractTickableSoundInstance {
 
     @Override
     public void tick() {
-        if (blockEntity.isRemoved() || !blockEntity.getBlockState().getValue(BrassSolarPanelBlock.LIT)
+        if (blockEntity.isRemoved() || !blockEntity.getBlockState().getValue(BiomassGasifierBlock.LIT)
                 || AmbientSoundRange.isTooFar(x, y, z)) {
             stop();
         }

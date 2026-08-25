@@ -57,6 +57,9 @@ public class FusionReactorSoundInstance extends AbstractTickableSoundInstance {
 
     @Override
     public void tick() {
-        if (stopRequested || (stopWhenUnformed && (blockEntity.isRemoved() || !blockEntity.formed))) stop();
+        if (stopRequested
+                || (stopWhenUnformed && (blockEntity.isRemoved() || !blockEntity.formed))
+                || AmbientSoundRange.isTooFar(x, y, z))
+            stop();
     }
 }

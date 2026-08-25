@@ -3,7 +3,9 @@ package net.succ.solar_punk.block.entity.custom;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -17,6 +19,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -26,7 +30,9 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock.VatPosition;
+import net.succ.solar_punk.client.sound.FermentationVatSoundInstance;
 import net.succ.solar_punk.fluid.ModFluids;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -34,6 +40,10 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         implements IHaveGoggleInformation {
 
     public static final int MAX_HEIGHT = 16;
+
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    private FermentationVatSoundInstance soundInstance;
 
     private static final TagKey<Item> BIO_FUELS =
             TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "bio_fuels"));
@@ -149,8 +159,21 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
     // Tick
     // -------------------------------------------------------------------------
 
+    @OnlyIn(Dist.CLIENT)
+    public void tickAudio() {
+        if (isController() && getBlockState().getValue(FermentationVatBlock.LIT)
+                && (soundInstance == null || soundInstance.isStopped())) {
+            soundInstance = new FermentationVatSoundInstance(this);
+            Minecraft.getInstance().getSoundManager().play(soundInstance);
+        }
+    }
+
     public void tick() {
-        if (level == null || level.isClientSide) return;
+        if (level == null) return;
+        if (level.isClientSide) {
+            CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> this.tickAudio());
+            return;
+        }
 
         if (updateConnectivity) {
             updateConnectivity = false;

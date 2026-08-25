@@ -2,10 +2,12 @@ package net.succ.solar_punk.block.custom;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.succ.solar_punk.sound.ModSounds;
 
 public class GeyserVentBlock extends Block {
     public GeyserVentBlock(Properties properties) {
@@ -17,6 +19,17 @@ public class GeyserVentBlock extends Block {
         double cx = pos.getX() + 0.5;
         double cy = pos.getY() + 1.0;
         double cz = pos.getZ() + 0.5;
+
+        // Same geyser_puff sound GeyserCapBlockEntity already plays, on the same time%40
+        // (~2s) world-clock cadence it uses - not random.nextInt(), which fires on an
+        // independent per-call dice roll with no fixed relationship to anything, so it
+        // never lines up the same way twice. A deterministic tick-based gate is steady
+        // and repeatable instead of drifting. Particle emission itself is untouched -
+        // still every tick, exactly as designed.
+        if (level.getGameTime() % 40 == 0) {
+            level.playLocalSound(cx, cy, cz, ModSounds.GEYSER_PUFF.get(), SoundSource.BLOCKS,
+                    1.0f, 0.9f + random.nextFloat() * 0.2f, false);
+        }
 
         // Dense steam column
         for (int i = 0; i < 20 + random.nextInt(10); i++) {

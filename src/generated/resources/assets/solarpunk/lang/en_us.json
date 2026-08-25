@@ -167,6 +167,7 @@
   "create.solar_punk.tooltip.stored": "Stored: ",
   "create.solar_punk.tooltip.tower_mode": "Mode: ",
   "create.solar_punk.tooltip.turbine_blades": "Blades: ",
+  "create.solar_punk.tooltip.turbine_fuel": "Fuel: ",
   "create.solar_punk.tooltip.turbine_height": "Height: ",
   "create.solar_punk.tooltip.turbine_invalid": "Structure invalid - check build",
   "create.solar_punk.tooltip.turbine_not_master": "Not the base rotor",

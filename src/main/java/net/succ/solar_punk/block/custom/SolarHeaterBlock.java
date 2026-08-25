@@ -131,7 +131,11 @@ public class SolarHeaterBlock extends Block implements IBE<SolarHeaterBlockEntit
     @Override
     @SuppressWarnings("unchecked")
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide || type != ModBlockEntities.SOLAR_HEATER.get()) return null;
+        // Used to be server-only (level.isClientSide -> null) - SolarHeaterBlockEntity#tick()
+        // now needs to run client-side too for tickAudio() (the shimmer ambience sound),
+        // matching BiofuelEngineBlock/BiomassGasifierBlock/BiofilterBlock. tick() itself
+        // still branches level.isClientSide right at the top before touching server state.
+        if (type != ModBlockEntities.SOLAR_HEATER.get()) return null;
         return (BlockEntityTicker<T>) (BlockEntityTicker<SolarHeaterBlockEntity>) (l, p, s, be) -> be.tick();
     }
 }

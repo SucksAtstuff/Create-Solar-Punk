@@ -4,7 +4,9 @@ import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.CreateLang;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -13,14 +15,22 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.succ.solar_punk.Config;
+import net.succ.solar_punk.client.sound.BiofilterSoundInstance;
 import net.succ.solar_punk.pollution.PollutionSavedData;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class BiofilterBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation {
 
     private long chunkPollution = 0;
+
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    private BiofilterSoundInstance soundInstance;
 
     public BiofilterBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -37,9 +47,21 @@ public class BiofilterBlockEntity extends KineticBlockEntity implements IHaveGog
         return Math.abs(getSpeed()) > 0;
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public void tickAudio() {
+        if (isPowered() && (soundInstance == null || soundInstance.isStopped())) {
+            soundInstance = new BiofilterSoundInstance(this);
+            Minecraft.getInstance().getSoundManager().play(soundInstance);
+        }
+    }
+
     @Override
     public void tick() {
         super.tick();
+        if (level != null && level.isClientSide) {
+            CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> this.tickAudio());
+            return;
+        }
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (serverLevel.getGameTime() % 20 != 0) return;
 

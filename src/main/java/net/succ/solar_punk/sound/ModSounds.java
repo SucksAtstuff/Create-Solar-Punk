@@ -22,6 +22,43 @@ public class ModSounds {
                     () -> SoundEvent.createVariableRangeEvent(
                             ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "geyser_puff")));
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> BIOFUEL_ENGINE_LOOP =
+            SOUND_EVENTS.register("biofuel_engine_loop",
+                    () -> SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "biofuel_engine_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> BIOFILTER_LOOP =
+            SOUND_EVENTS.register("biofilter_loop",
+                    () -> SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "biofilter_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> BIOMASS_GASIFIER_LOOP =
+            SOUND_EVENTS.register("biomass_gasifier_loop",
+                    () -> SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "biomass_gasifier_loop")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> FERMENTATION_VAT_BUBBLING =
+            SOUND_EVENTS.register("fermentation_vat_bubbling",
+                    () -> SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "fermentation_vat_bubbling")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> SOLAR_HEATER_SHIMMER =
+            SOUND_EVENTS.register("solar_heater_shimmer",
+                    () -> SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "solar_heater_shimmer")));
+
+    // One-shot quench hiss, played once per crystallization cycle (see
+    // CrystallizerBlockEntity#tick) rather than looped - not an ambient machine hum.
+    public static final DeferredHolder<SoundEvent, SoundEvent> STEAM_HISS =
+            SOUND_EVENTS.register("steam_hiss",
+                    () -> SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "steam_hiss")));
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> TURBINE_LOOP =
+            SOUND_EVENTS.register("turbine_loop",
+                    () -> SoundEvent.createVariableRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "turbine_loop")));
+
     // Fusion Reactor Core ambience - see FusionReactorCoreBlockEntity#tickAudio for the
     // startup -> loop -> shutdown sequencing that picks between these three.
     public static final DeferredHolder<SoundEvent, SoundEvent> FUSION_REACTOR_STARTUP =
