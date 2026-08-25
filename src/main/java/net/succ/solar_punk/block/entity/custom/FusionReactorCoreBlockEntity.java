@@ -308,17 +308,25 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
 
         if (formed && !clientWasFormed) {
             if (activeSound != null) activeSound.requestStop();
-            activeSound = new FusionReactorSoundInstance(ModSounds.FUSION_REACTOR_STARTUP.get(), this, false, false);
+            // fusion_reactor_startup.ogg mean -14.4 dB vs electric_motor_buzz.ogg's
+            // -34.2 dB baseline (ffmpeg volumedetect) - a loudness match against
+            // BrassPanelSoundInstance's 0.75f lands around 0.08f.
+            activeSound = new FusionReactorSoundInstance(ModSounds.FUSION_REACTOR_STARTUP.get(), this, false, false, 0.08f);
             soundManager.play(activeSound);
             audioInStartupPhase = true;
         } else if (!formed && clientWasFormed) {
             if (activeSound != null) activeSound.requestStop();
-            activeSound = new FusionReactorSoundInstance(ModSounds.FUSION_REACTOR_SHUTDOWN.get(), this, false, false);
+            // fusion_reactor_shutdown.ogg mean -11.7 dB vs the same -34.2 dB baseline -
+            // matched loudness lands around 0.06f.
+            activeSound = new FusionReactorSoundInstance(ModSounds.FUSION_REACTOR_SHUTDOWN.get(), this, false, false, 0.06f);
             soundManager.play(activeSound);
             audioInStartupPhase = false;
         } else if (formed && audioInStartupPhase && activeSound != null && !soundManager.isActive(activeSound)) {
             audioInStartupPhase = false;
-            activeSound = new FusionReactorSoundInstance(ModSounds.REACTOR_ON_LOOP.get(), this, true, true);
+            // reactor_on_loop.ogg mean -10.3 dB vs the same -34.2 dB baseline - the
+            // hottest of the mod's clips, and this one runs continuously rather than
+            // playing once, so it gets the most conservative match: ~0.05f.
+            activeSound = new FusionReactorSoundInstance(ModSounds.REACTOR_ON_LOOP.get(), this, true, true, 0.05f);
             soundManager.play(activeSound);
         }
 

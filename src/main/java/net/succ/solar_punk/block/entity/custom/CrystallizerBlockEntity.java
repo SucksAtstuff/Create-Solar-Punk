@@ -216,8 +216,11 @@ public class CrystallizerBlockEntity extends BlockEntity implements IHaveGoggleI
             // same way geyser_puff punctuates each geyser burst rather than droning
             // throughout the whole processingTime(). Server-side playSound(null, ...)
             // broadcasts to every nearby client, not just a local-only sound.
+            // steam_hiss.ogg is mastered ~8.8 dB hotter than electric_motor_buzz.ogg
+            // (mean -25.4 dB vs -34.2 dB, ffmpeg volumedetect) - a loudness match
+            // against BrassPanelSoundInstance's 0.75f lands around 0.27f.
             level.playSound(null, worldPosition, ModSounds.STEAM_HISS.get(), SoundSource.BLOCKS,
-                    1.0f, 0.9f + level.getRandom().nextFloat() * 0.2f);
+                    0.27f, 0.9f + level.getRandom().nextFloat() * 0.2f);
         }
 
         if (level.getGameTime() % 20 == 0)

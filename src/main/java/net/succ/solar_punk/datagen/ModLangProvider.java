@@ -23,6 +23,21 @@ public class ModLangProvider extends LanguageProvider {
         add("jei.solarpunk.category.fermentation_vat", "Fermentation Vat");
         add("jei.solarpunk.category.crystallizing", "Crystallizer");
 
+        // Sound subtitles - format: subtitles.solarpunk.<sound event path>, referenced by
+        // sounds.json. One entry per SoundEvent registered in ModSounds.
+        add("subtitles.solarpunk.alternator", "Solar panel hums");
+        add("subtitles.solarpunk.geyser_puff", "Geyser puffs");
+        add("subtitles.solarpunk.biofuel_engine_loop", "Biofuel Engine running");
+        add("subtitles.solarpunk.biofilter_loop", "Biofilter filtering");
+        add("subtitles.solarpunk.biomass_gasifier_loop", "Biomass Gasifier burning");
+        add("subtitles.solarpunk.fermentation_vat_bubbling", "Fermentation Vat bubbles");
+        add("subtitles.solarpunk.solar_heater_shimmer", "Solar Heater shimmers");
+        add("subtitles.solarpunk.steam_hiss", "Steam hisses");
+        add("subtitles.solarpunk.turbine_loop", "Steam Turbine spins");
+        add("subtitles.solarpunk.fusion_reactor_startup", "Fusion Reactor powers up");
+        add("subtitles.solarpunk.fusion_reactor_shutdown", "Fusion Reactor powers down");
+        add("subtitles.solarpunk.reactor_on_loop", "Fusion Reactor hums");
+
         // Ponder tag - format: <namespace>.ponder.tag.<path>
         add("solarpunk.ponder.tag.solar_machines", "Solar Machines");
         add("solarpunk.ponder.tag.solar_machines.description", "Machines that harness the power of sunlight");

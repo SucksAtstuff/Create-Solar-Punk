@@ -341,5 +341,17 @@
   "solarpunk.ponder.turbine_structure.text_6": "Pipe Steam into any face of the outer casing wall - condensate water drains from any casing face too",
   "solarpunk.ponder.turbine_structure.text_7": "Rotational power exits from the top face of the cap rotor - connect a shaft directly above",
   "solarpunk.tooltip.tower_mode_salt": "Molten Salt",
-  "solarpunk.tooltip.tower_mode_steam": "Steam"
+  "solarpunk.tooltip.tower_mode_steam": "Steam",
+  "subtitles.solarpunk.alternator": "Solar panel hums",
+  "subtitles.solarpunk.biofilter_loop": "Biofilter filtering",
+  "subtitles.solarpunk.biofuel_engine_loop": "Biofuel Engine running",
+  "subtitles.solarpunk.biomass_gasifier_loop": "Biomass Gasifier burning",
+  "subtitles.solarpunk.fermentation_vat_bubbling": "Fermentation Vat bubbles",
+  "subtitles.solarpunk.fusion_reactor_shutdown": "Fusion Reactor powers down",
+  "subtitles.solarpunk.fusion_reactor_startup": "Fusion Reactor powers up",
+  "subtitles.solarpunk.geyser_puff": "Geyser puffs",
+  "subtitles.solarpunk.reactor_on_loop": "Fusion Reactor hums",
+  "subtitles.solarpunk.solar_heater_shimmer": "Solar Heater shimmers",
+  "subtitles.solarpunk.steam_hiss": "Steam hisses",
+  "subtitles.solarpunk.turbine_loop": "Steam Turbine spins"
 }

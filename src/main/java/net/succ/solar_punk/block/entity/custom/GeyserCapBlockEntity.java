@@ -94,10 +94,11 @@ public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implement
 
         if (level.isClientSide) {
             if (time % 40 == 0 && getBlockState().getValue(GeyserCapBlock.LIT)) {
+                // See GeyserVentBlock#animateTick for the loudness-matching behind 0.15f.
                 level.playLocalSound(
                         worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5,
                         ModSounds.GEYSER_PUFF.get(), SoundSource.BLOCKS,
-                        1.0f, 0.9f + level.random.nextFloat() * 0.2f, false);
+                        0.15f, 0.9f + level.random.nextFloat() * 0.2f, false);
             }
             return;
         }
