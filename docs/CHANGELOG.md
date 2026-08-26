@@ -24,6 +24,10 @@ The Steam Turbine can now burn Liquid Hydrogen from Northstar Redux as an altern
 - The Biofilter's ambient sound now pitches up the faster it's spinning.
 - All of the mod's sounds now show subtitles when subtitles are enabled.
 
+### Balance
+
+- Salt is significantly rarer in desert, badlands, and savanna terrain now. It used to generate in almost every chunk; you'll have to actually go looking for it.
+
 ### Bug Fixes
 
 - Fixed the Brass Solar Panel producing more FE per tick than intended when multiple cables or machines were drawing from it at once.
@@ -34,6 +38,7 @@ The Steam Turbine can now burn Liquid Hydrogen from Northstar Redux as an altern
 - Fixed some stretched and mismatched textures on the Biomass Gasifier and Biofuel Engine.
 - The Biofilter's pollution absorption now scales with how fast it's spinning, instead of removing the same amount no matter how much Rotational Force you feed it.
 - The Geyser Vent now actually plays its puff sound when it blows out steam, and reliably keeps doing so even with no Geyser Cap placed on top.
+- Molten Salt now actually glows, instead of just looking hot without lighting up the area around it.
 - Turned down several sounds that were mastered much louder than the rest of the mod (the Geyser's puff, the Crystallizer's hiss, and the Fusion Reactor's startup/shutdown/hum) so they no longer blast out over everything else.
 
 # 0.4.0-1.21.1

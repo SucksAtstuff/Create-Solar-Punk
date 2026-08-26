@@ -36,6 +36,7 @@ public class ModFluidTypes {
                             .density(3000)
                             .viscosity(6000)
                             .temperature(2100)
+                            .lightLevel(13)
             ));
 
     public static final Supplier<FluidType> BIOFUEL_TYPE = FLUID_TYPES.register("biofuel",

@@ -141,7 +141,8 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
 
         var configured = context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(SALT_DEPOSIT_CONFIGURED);
         context.register(SALT_DEPOSIT_PLACED, new PlacedFeature(configured, List.of(
-                CountPlacement.of(4),
+                RarityFilter.onAverageOnceEvery(3),
+                CountPlacement.of(1),
                 InSquarePlacement.spread(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(48), VerticalAnchor.absolute(90)),
                 BiomeFilter.biome()

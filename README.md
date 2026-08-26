@@ -6,10 +6,10 @@ A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation, thermal s
 
 - Minecraft 1.21.1
 - NeoForge 21.1.228+
-- Create 6.0.4+
+- Create 6.0.9+
 - GeckoLib 4.7.2+
 
-**Optional:** JEI (adds recipe categories for the Solar Heater and Fermentation Vat)
+**Optional:** JEI (adds recipe categories for the Solar Heater, Fermentation Vat, Solar Power Tower, and Crystallizer)
 
 ## Features
 
@@ -19,6 +19,7 @@ A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation, thermal s
 - **Solar Power Tower** - large multiblock structure (1×1 up to 3×3 footprint, up to 20 blocks tall) that concentrates reflected sunlight to produce molten salt or steam at scale; right-click with a Wrench to toggle between Molten Salt mode and Steam mode; pair with Solar Mirrors for maximum efficiency
 - **Solar Mirror** - a freestanding heliostat; place it on the ground anywhere near a Solar Power Tower and it links up automatically as long as it has open sky above it and a clear line of sight to the tower. Linked mirrors continuously turn and tilt to track the sun and reflect it toward the tower
 - **Heat Battery** - stores thermal energy from molten salt and heats Create boilers
+- **Crystallizer** - a brass-tier machine that quenches Molten Salt with Water back into Salt, releasing a bit of Steam as a byproduct; a much faster bulk alternative to the Solar Heater's slow evaporation trickle. Pipe both fluids in from any side and collect Salt from the output slot (or a hopper underneath) and Steam from any face. It's recipe-driven, so modpacks and datapacks can add their own custom conversions to the same machine
 
 ### Steam Turbine
 - **Steam** - a new fluid produced by a Solar Power Tower in Steam mode or a Firebox Boiler; piped in to power the turbine
@@ -27,6 +28,15 @@ A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation, thermal s
 - **Turbine Rotor** - the central column the blades attach to; rotational output exits from the top (or the end of the rotor column, for horizontal builds)
 - **Andesite Turbine Blade / Brass Turbine Blade** - Andesite Blades are cheap but waste more steam; Brass Blades squeeze out the most power per bucket and reach 100% efficiency with just one blade per arm; mixing types is fine, efficiency scales smoothly
 - **Firebox Boiler** - a cheap early-game Steam source; craft it with iron, a furnace, and a bucket, feed it any furnace fuel, and pipe water in to get Steam out - no Salt or Solar Power Tower required. Much weaker per block than a fully built Solar Power Tower, but enough to get a Steam Turbine running early
+
+### Fusion Reactor
+- **Fusion Reactor Core** - the mod's endgame capstone; produces a huge amount of Steam from Deuterium and Lithium Dust, far more than any single Steam Turbine can use on its own - meant to feed a whole bank of them. A redstone signal anywhere on the shell throttles it up or down
+- **Fusion Reactor Casing / Casing Glass** - the Netherite-and-Copper shell built around the Core
+- **Lithium Breeder Module / Beryllium Reflector Module** - Blanket modules that ring the Core in whatever mix you like; more Lithium breeds Tritium more efficiently for a lower, steadier output, while more Beryllium burns fuel faster for more raw Steam output
+- **Lithium & Beryllium** - Lithium is a new ore found underground worldwide rather than in any specific biome; mine it for Raw Lithium and smelt that into Lithium Ingots, or crush it for Lithium Dust (which also smelts into ingots) with a small chance of bonus Beryllium Dust. Beryllium Dust smelts into Beryllium Ingots too, and both metals store compactly as a Block of Lithium or Block of Beryllium
+- **Deuterium** - made by Mixing Water with an overheated Copper Ingot; Lithium Dust can also be made by Mixing Water with Salt over superheat (with a small chance of bonus Beryllium Dust). Both show up in JEI automatically
+
+Building the reactor and getting it running is rewarded with its own dedicated advancement, "A Star in a Bottle."
 
 ### Electricity
 - **Andesite Solar Panel** - generates Create rotational force (SU) from sunlight
@@ -59,12 +69,13 @@ An opt-in pollution system, disabled by default and toggled in the config.
 - All pollution rates, thresholds, decay speeds, blacklisted blocks, and the target dead biome are configurable; see the [wiki](https://github.com/SucksAtstuff/Create-Solar-Punk/wiki) for full details
 
 ### Achievements
-A dedicated **Create: Solarpunk** advancement tab guides you through the mod, from collecting your first Salt all the way to running a Steam Turbine, with branches for the geothermal and biofuel chains along the way.
+A dedicated **Create: Solarpunk** advancement tab guides you through the mod, from collecting your first Salt all the way to running a Steam Turbine and, eventually, a Fusion Reactor, with branches for the geothermal and biofuel chains along the way.
 
 ### Compatibility
 - **Create: Diesel Generators** - diesel engines count as pollution sources when Global Warming is enabled
 - **Create: Aeronautics** - engines on airships correctly accumulate pollution in the real-world chunk beneath the airship, even though they run in a simulated sublevel; requires Aeronautics to be installed, otherwise has no effect
 - **Create: New Age** - the Generator Coil is excluded from pollution accumulation
+- **Create: Northstar Redux** - the Steam Turbine can burn its Liquid Hydrogen as an alternative fuel to Steam, at the same rate; pipe it in the same way you would Steam, just not both at once - the tank has to fully drain before switching fuels
 
 ## Quick Start
 
