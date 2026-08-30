@@ -102,6 +102,10 @@ public class Config {
     private static final ModConfigSpec.DoubleValue CFG_SOLAR_POWER_TOWER_SALT_MULTIPLIER;
     private static final ModConfigSpec.DoubleValue CFG_SOLAR_POWER_TOWER_STEAM_MULTIPLIER;
 
+    private static final ModConfigSpec.BooleanValue CFG_SERENE_SEASONS_ENABLED;
+    private static final ModConfigSpec.DoubleValue CFG_SERENE_SEASONS_SUMMER_MULTIPLIER;
+    private static final ModConfigSpec.DoubleValue CFG_SERENE_SEASONS_WINTER_MULTIPLIER;
+
     // -------------------------------------------------------------------------
     // Machines — speed and output amounts
     // -------------------------------------------------------------------------
@@ -259,6 +263,24 @@ public class Config {
                 "Steam output multiplier. Default 7/3 = 21 mB/t at max size, matching one",
                 "max-height Steam Turbine's consumption.")
                 .defineInRange("steam_output_multiplier", 7.0 / 3.0, 0.0, 1000.0);
+        BUILDER.pop();
+
+        BUILDER.push("serene_seasons");
+        CFG_SERENE_SEASONS_ENABLED = BUILDER.comment(
+                "Scale solar output (both Solar Panels and the Solar Power Tower) with the current season",
+                "when Serene Seasons is installed. Summer boosts output, winter cuts it, spring and autumn",
+                "sit near neutral, ramping smoothly in between. Has no effect if Serene Seasons is absent.",
+                "Assumes Serene Seasons is managing the Overworld (its default) - only Overworld generators",
+                "are affected. Set to false to keep flat year-round output even with Serene Seasons present.")
+                .define("enabled", true);
+        CFG_SERENE_SEASONS_SUMMER_MULTIPLIER = BUILDER.comment(
+                "Peak solar output multiplier at midsummer, in a temperate biome.")
+                .defineInRange("summer_multiplier", 1.15, 1.0, 5.0);
+        CFG_SERENE_SEASONS_WINTER_MULTIPLIER = BUILDER.comment(
+                "Lowest solar output multiplier at midwinter, in a temperate biome. Hot biomes (desert,",
+                "savanna, badlands, jungle) barely swing at all regardless, matching Serene Seasons treating",
+                "them as seasonless.")
+                .defineInRange("winter_multiplier", 0.7, 0.05, 1.0);
         BUILDER.pop();
 
         BUILDER.pop(); // generators
@@ -471,6 +493,9 @@ public class Config {
     public static int turbineSteamTank, turbineCondensateTank;
     public static double solarPowerTowerSaltMultiplier, solarPowerTowerSteamMultiplier;
 
+    public static boolean sereneSeasonsEnabled;
+    public static double sereneSeasonsSummerMultiplier, sereneSeasonsWinterMultiplier;
+
     public static int solarHeaterMeltTicks, solarHeaterEvaporationTicks, solarHeaterWaterPerSalt;
     public static int fireboxBoilerSteamPerTick;
     public static int fermentationTicks, fermentationWaterPerBatch, fermentationBiofuelPerBatch;
@@ -542,6 +567,10 @@ public class Config {
 
         solarPowerTowerSaltMultiplier  = CFG_SOLAR_POWER_TOWER_SALT_MULTIPLIER.get();
         solarPowerTowerSteamMultiplier = CFG_SOLAR_POWER_TOWER_STEAM_MULTIPLIER.get();
+
+        sereneSeasonsEnabled          = CFG_SERENE_SEASONS_ENABLED.get();
+        sereneSeasonsSummerMultiplier = CFG_SERENE_SEASONS_SUMMER_MULTIPLIER.get();
+        sereneSeasonsWinterMultiplier = CFG_SERENE_SEASONS_WINTER_MULTIPLIER.get();
 
         solarHeaterMeltTicks       = CFG_SOLAR_HEATER_MELT_TICKS.get();
         solarHeaterEvaporationTicks = CFG_SOLAR_HEATER_EVAPORATION_TICKS.get();

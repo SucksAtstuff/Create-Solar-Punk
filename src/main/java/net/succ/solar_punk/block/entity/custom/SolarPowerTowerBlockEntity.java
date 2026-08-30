@@ -224,6 +224,7 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         float baseRate = (width * width) * (float) Math.pow(heightFraction, 1.5) * efficiency;
         float rate = steamMode ? baseRate * (float) Config.solarPowerTowerSteamMultiplier
                                : baseRate * (float) Config.solarPowerTowerSaltMultiplier;
+        rate *= net.succ.solar_punk.compat.sereneseasons.SeasonalSolar.outputMultiplier(level, worldPosition);
         if (steamMode) {
             steamAccumulator += rate;
             saltAccumulator = 0f;
