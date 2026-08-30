@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
+import net.succ.solar_punk.compat.sereneseasons.SeasonalSolar;
 
 import java.util.List;
 
@@ -54,6 +55,9 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
             case NOON -> level.isRaining() ? Config.andesiteMorningRpm : Config.andesiteNoonRpm;
             case NIGHT -> 0;
         };
+        // Round so the network keeps clean integer RPM; the season only shifts every few
+        // in-game days, so this doesn't churn the kinetic network.
+        if (speed != 0) speed = Math.round(speed * SeasonalSolar.outputMultiplier(level, worldPosition));
         if (rotationDirection.get() == RotationDirection.COUNTER_CLOCKWISE) speed = -speed;
         return speed;
     }
@@ -67,6 +71,7 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
                 case NOON -> level.isRaining() ? Config.andesiteMorningSu : Config.andesiteNoonSu;
                 case NIGHT -> 0;
             };
+            if (capacity != 0) capacity *= SeasonalSolar.outputMultiplier(level, worldPosition);
         }
         this.lastCapacityProvided = capacity;
         return capacity;

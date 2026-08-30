@@ -22,6 +22,8 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
 import net.succ.solar_punk.client.sound.BrassPanelSoundInstance;
+import net.succ.solar_punk.compat.sereneseasons.SeasonalSolar;
+import net.succ.solar_punk.util.EnergyFormat;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -52,11 +54,13 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
 
     private int getGeneratedFE() {
         if (!SolarHelper.hasSkyAccess(level, worldPosition)) return 0;
-        return switch (SolarHelper.getPhase(level)) {
+        int base = switch (SolarHelper.getPhase(level)) {
             case MORNING, EVENING -> Config.brassMorningFe;
             case NOON -> level.isRaining() ? Config.brassMorningFe : Config.brassNoonFe;
             case NIGHT -> 0;
         };
+        if (base == 0) return 0;
+        return Math.round(base * SeasonalSolar.outputMultiplier(level, worldPosition));
     }
 
     public void tick() {
@@ -125,18 +129,15 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
         int generated = getGeneratedFE();
         CreateLang.translate("solar_punk.tooltip.generating")
                 .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(generated)
-                        .text(" FE/t")
-                        .style(generated > 0 ? ChatFormatting.GREEN : ChatFormatting.RED)
-                        .component())
+                .add(Component.literal(EnergyFormat.feRate(generated))
+                        .withStyle(generated > 0 ? ChatFormatting.GREEN : ChatFormatting.RED))
                 .forGoggles(tooltip, 1);
 
         CreateLang.translate("solar_punk.tooltip.stored")
                 .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(energyStorage.getEnergyStored())
-                        .text(" / " + energyStorage.getMaxEnergyStored() + " FE")
-                        .style(ChatFormatting.AQUA)
-                        .component())
+                .add(Component.literal(EnergyFormat.abbreviate(energyStorage.getEnergyStored())
+                                + " / " + EnergyFormat.fe(energyStorage.getMaxEnergyStored()))
+                        .withStyle(ChatFormatting.AQUA))
                 .forGoggles(tooltip, 1);
 
         return true;

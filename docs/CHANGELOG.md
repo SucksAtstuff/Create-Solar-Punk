@@ -18,6 +18,8 @@ Deuterium is made by Mixing Water with a Copper Ingot overheat, and Lithium Dust
 
 The Steam Turbine can now burn Liquid Hydrogen from Northstar Redux as an alternative to Steam, at the same rate. Pipe it in the same way you would Steam - just not both at once, the tank has to fully drain before switching fuels.
 
+With Serene Seasons installed, solar output now shifts with the seasons: higher in summer, lower in winter, near-normal in spring and autumn. Hot biomes like deserts and savannas barely change. Affects the Solar Panels and the Solar Power Tower; turn it off in the config if you'd rather keep flat year-round output.
+
 ### QoL
 - The Biofuel Engine, Biofilter, Biomass Gasifier, Fermentation Vat, Solar Heater, and Steam Turbine now have ambient sounds while they're running, and the Crystallizer hisses each time it finishes a batch.
 - The Firebox Boiler now crackles like a furnace while it's lit, instead of burning silently.

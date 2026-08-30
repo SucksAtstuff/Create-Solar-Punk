@@ -9,7 +9,10 @@ A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation, thermal s
 - Create 6.0.9+
 - GeckoLib 4.7.2+
 
-**Optional:** JEI (adds recipe categories for the Solar Heater, Fermentation Vat, Solar Power Tower, and Crystallizer)
+**Optional:**
+- JEI (adds recipe categories for the Solar Heater, Fermentation Vat, Solar Power Tower, and Crystallizer)
+- Serene Seasons (solar output scales with the season - up in summer, down in winter; can be turned off in the config)
+- Create: Northstar Redux (the Steam Turbine can burn its Liquid Hydrogen as an alternative fuel to Steam)
 
 ## Features
 
@@ -76,6 +79,7 @@ A dedicated **Create: Solarpunk** advancement tab guides you through the mod, fr
 - **Create: Aeronautics** - engines on airships correctly accumulate pollution in the real-world chunk beneath the airship, even though they run in a simulated sublevel; requires Aeronautics to be installed, otherwise has no effect
 - **Create: New Age** - the Generator Coil is excluded from pollution accumulation
 - **Create: Northstar Redux** - the Steam Turbine can burn its Liquid Hydrogen as an alternative fuel to Steam, at the same rate; pipe it in the same way you would Steam, just not both at once - the tank has to fully drain before switching fuels
+- **Serene Seasons** - Solar Panel and Solar Power Tower output scales with the season: highest at midsummer, lowest at midwinter, near-normal in spring and autumn. Hot biomes (desert, savanna, badlands, jungle) barely change, matching how Serene Seasons treats them as seasonless. Applies to the Overworld only; toggle it and tune the summer/winter multipliers under `generators.serene_seasons` in the config
 
 ## Quick Start
 
@@ -128,3 +132,4 @@ Thanks to the following people for their ideas:
 
 - [Issues](https://github.com/SucksAtstuff/Create-Solar-Punk/issues)
 - [Wiki](https://github.com/SucksAtstuff/Create-Solar-Punk/wiki)
+- [Progress board](https://app.milanote.com/1WkoDV1EO0yY5F?p=lX3oRKKq2ax) - follow along with what's being worked on between releases
