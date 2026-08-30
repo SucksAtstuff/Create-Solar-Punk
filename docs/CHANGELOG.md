@@ -23,6 +23,7 @@ The Steam Turbine can now burn Liquid Hydrogen from Northstar Redux as an altern
 - The Firebox Boiler now crackles like a furnace while it's lit, instead of burning silently.
 - The Biofilter's ambient sound now pitches up the faster it's spinning.
 - All of the mod's sounds now show subtitles when subtitles are enabled.
+- The Solar Power Tower's Molten Salt and Steam output rates can each be tuned in the config file now.
 
 ### Balance
 
@@ -38,8 +39,9 @@ The Steam Turbine can now burn Liquid Hydrogen from Northstar Redux as an altern
 - Fixed some stretched and mismatched textures on the Biomass Gasifier and Biofuel Engine.
 - The Biofilter's pollution absorption now scales with how fast it's spinning, instead of removing the same amount no matter how much Rotational Force you feed it.
 - The Geyser Vent now actually plays its puff sound when it blows out steam, and reliably keeps doing so even with no Geyser Cap placed on top.
-- Molten Salt now actually glows, instead of just looking hot without lighting up the area around it.
-- Turned down several sounds that were mastered much louder than the rest of the mod (the Geyser's puff, the Crystallizer's hiss, and the Fusion Reactor's startup/shutdown/hum) so they no longer blast out over everything else.
+- Molten Salt now actually glows, instead of just looking hot without lighting up the surrounding area.
+- Fixed a maxed-out Solar Power Tower making far too little Molten Salt in salt mode. It had dropped to where it couldn't keep even 3 Heat Batteries superheated; a full tower at noon now makes enough to hold 9 Heat Batteries (a max-size boiler's worth) superheated around the clock.
+- Fix crash when a kinetic conflict destroys a generator mid-tick https://github.com/SucksAtstuff/Create-Solar-Punk/pull/29
 
 # 0.4.0-1.21.1
 

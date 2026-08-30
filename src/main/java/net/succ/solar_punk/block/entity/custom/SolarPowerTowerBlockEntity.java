@@ -212,14 +212,18 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
 
         float efficiency = mirrorEfficiency();
         // Rate scales super-linearly with height (exponent 1.5) so taller towers are
-        // always more block-efficient than multiple short ones.
-        // Steam: 7/3 multiplier → max tower produces 21 mB/t, matching the turbine.
-        // Salt:  0.4 multiplier → max tower produces 3.6 mB/t, enough for 9 Heat
-        //        Batteries (one per 3×3 base block) to stay superheated 24/7.
+        // always more block-efficient than multiple short ones. baseRate is 9 at max
+        // size (3×3×20, full sun, full mirror field); the mode multiplier below scales
+        // that into a final mB/t and is config-exposed (generators.solar_power_tower).
+        // Steam default 7/3 → 21 mB/t at max, matching one max-height Steam Turbine.
+        // Salt default 1.0 → 9 mB/t at max. A charged Heat Battery tops itself back up
+        // every tick (decay always leaves room for another mB), so it draws a steady
+        // 1 mB/t; 9 mB/t holds 9 Heat Batteries (a max-size boiler's worth) superheated.
         int maxH = switch (width) { case 2 -> MAX_HEIGHTS[2]; case 3 -> MAX_HEIGHTS[3]; default -> MAX_HEIGHTS[1]; };
         float heightFraction = (float) height / maxH;
         float baseRate = (width * width) * (float) Math.pow(heightFraction, 1.5) * efficiency;
-        float rate = steamMode ? baseRate * (7f / 3f) : baseRate * 0.4f;
+        float rate = steamMode ? baseRate * (float) Config.solarPowerTowerSteamMultiplier
+                               : baseRate * (float) Config.solarPowerTowerSaltMultiplier;
         if (steamMode) {
             steamAccumulator += rate;
             saltAccumulator = 0f;
