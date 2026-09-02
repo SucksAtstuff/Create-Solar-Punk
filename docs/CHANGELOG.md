@@ -1,5 +1,14 @@
 # 1.0.0-1.21.1
 
+## This is the big one, the big 1.0.0 release, which brings a bunch of stuff and bug fixes, but most importantly Nuclear Fusion
+
+### Fusion Reactor
+
+Added the Fusion Reactor, the mod's endgame capstone. Build a Netherite-and-Copper Casing shell around a Core, ring it with Lithium Breeder and Beryllium Reflector Blanket modules in whatever mix you like (Lithium for efficiency, Beryllium for raw output), then feed it Deuterium and Lithium Dust to produce a huge amount of Steam - far more than any single Steam Turbine can use on its own, so it's meant to feed a whole bank of them. A redstone signal anywhere on the shell throttles it up or down. Comes with its own dedicated advancement, "A Star in a Bottle."
+
+Deuterium is made by Mixing Water with a Copper Ingot overheat, and Lithium Dust by Mixing Water with Salt over superheat (with a small chance of bonus Beryllium Dust alongside it) - both show up in JEI automatically.
+
+
 ### Crystallizer
 
 Added the Crystallizer, a brass-tier machine that quenches Molten Salt with Water to crystallize it back into Salt, releasing a bit of Steam as a byproduct - a much faster bulk alternative to the Solar Heater's slow evaporation trickle. Pipe both fluids in from any side, and collect Salt from the output slot (or a hopper underneath) and Steam from any face. It's recipe-driven, so modpacks and datapacks can add their own custom conversions to the same machine.
