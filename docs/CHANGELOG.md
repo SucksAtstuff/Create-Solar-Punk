@@ -52,6 +52,7 @@ With Serene Seasons installed, solar output now shifts with the seasons: higher 
 - The Geyser Vent now actually plays its puff sound when it blows out steam, and reliably keeps doing so even with no Geyser Cap placed on top.
 - Molten Salt now actually glows, instead of just looking hot without lighting up the surrounding area.
 - Fixed a maxed-out Solar Power Tower making far too little Molten Salt in salt mode. It had dropped to where it couldn't keep even 3 Heat Batteries superheated; a full tower at noon now makes enough to hold 9 Heat Batteries (a max-size boiler's worth) superheated around the clock.
+- The Solar Power Tower's Steam mode now actually requires and consumes Water to produce Steam, instead of generating it for free. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/34
 - Fix crash when a kinetic conflict destroys a generator mid-tick https://github.com/SucksAtstuff/Create-Solar-Punk/pull/29
 
 # 0.4.0-1.21.1

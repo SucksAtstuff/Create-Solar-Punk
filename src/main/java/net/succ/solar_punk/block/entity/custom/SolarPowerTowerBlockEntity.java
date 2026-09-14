@@ -229,12 +229,16 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
             steamAccumulator += rate;
             saltAccumulator = 0f;
             int steamToAdd = (int) steamAccumulator;
-            if (steamToAdd >= 1 &&
-                steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), steamToAdd),
-                        IFluidHandler.FluidAction.SIMULATE) == steamToAdd) {
-                steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), steamToAdd),
-                        IFluidHandler.FluidAction.EXECUTE);
-                steamAccumulator -= steamToAdd;
+            if (steamToAdd >= 1) {
+                int waterToDrain = steamToAdd * width * width;
+                if (waterTank.getFluidAmount() >= waterToDrain &&
+                    steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), steamToAdd),
+                            IFluidHandler.FluidAction.SIMULATE) == steamToAdd) {
+                    waterTank.drain(waterToDrain, IFluidHandler.FluidAction.EXECUTE);
+                    steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), steamToAdd),
+                            IFluidHandler.FluidAction.EXECUTE);
+                    steamAccumulator -= steamToAdd;
+                }
             }
         } else {
             saltAccumulator += rate;
