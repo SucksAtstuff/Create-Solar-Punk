@@ -3,6 +3,7 @@ package net.succ.solar_punk.block.entity.custom;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.platform.CatnipServices;
+import net.createmod.ponder.api.level.PonderLevel;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -179,9 +180,9 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
     @Nullable
     private FusionReactorSoundInstance activeSound;
     @OnlyIn(Dist.CLIENT)
-    private boolean audioInStartupPhase = false;
+    private boolean audioInStartupPhase;
     @OnlyIn(Dist.CLIENT)
-    private boolean clientWasFormed = false;
+    private boolean clientWasFormed;
 
     public FusionReactorCoreBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -190,7 +191,8 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
     public void tick() {
         if (level == null) return;
         if (level.isClientSide) {
-            CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> this.tickAudio());
+            if (!(level instanceof PonderLevel))
+                CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> this.tickAudio());
             return;
         }
 

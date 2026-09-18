@@ -1,3 +1,10 @@
+# 1.0.1-1.21.1
+
+### Bug Fixes
+
+- Fixed the Fusion Reactor Core crashing dedicated servers when placed. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/36
+- The Fusion Reactor's ambient startup/running sounds no longer play during its Ponder scenes.
+
 # 1.0.0-1.21.1
 
 ## This is the big one, the big 1.0.0 release, which brings a bunch of stuff and bug fixes, but most importantly Nuclear Fusion
