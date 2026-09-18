@@ -216,9 +216,12 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         // size (3×3×20, full sun, full mirror field); the mode multiplier below scales
         // that into a final mB/t and is config-exposed (generators.solar_power_tower).
         // Steam default 7/3 → 21 mB/t at max, matching one max-height Steam Turbine.
-        // Salt default 1.0 → 9 mB/t at max. A charged Heat Battery tops itself back up
-        // every tick (decay always leaves room for another mB), so it draws a steady
-        // 1 mB/t; 9 mB/t holds 9 Heat Batteries (a max-size boiler's worth) superheated.
+        // Salt default 2.0 → 18 mB/t at max, but only while isSunActive() (roughly the
+        // daylight half of the day/night cycle - see below). A charged Heat Battery
+        // drains a steady 1 mB/t around the clock, day or night, so 18 mB/t of daytime
+        // output averages out to 9 mB/t over a full cycle: enough to hold 9 Heat
+        // Batteries (a max-size boiler's worth) superheated continuously, provided the
+        // salt tank has room to bank the daytime surplus for use overnight.
         int maxH = switch (width) { case 2 -> MAX_HEIGHTS[2]; case 3 -> MAX_HEIGHTS[3]; default -> MAX_HEIGHTS[1]; };
         float heightFraction = (float) height / maxH;
         float baseRate = (width * width) * (float) Math.pow(heightFraction, 1.5) * efficiency;
