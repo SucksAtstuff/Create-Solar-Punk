@@ -255,10 +255,13 @@ public class Config {
         BUILDER.push("solar_power_tower");
         CFG_SOLAR_POWER_TOWER_SALT_MULTIPLIER = BUILDER.comment(
                 "Molten Salt output multiplier. The base rate formula yields 9 at max size",
-                "(3x3x20 tower, full sun, full mirror field), so default 1.0 = 9 mB/t there -",
-                "exactly enough to hold 9 Heat Batteries (a max-size boiler's worth) superheated",
-                "24/7. Raise it for headroom to recharge a drained bank or run more batteries.")
-                .defineInRange("salt_output_multiplier", 1.0, 0.0, 1000.0);
+                "(3x3x20 tower, full sun, full mirror field), so default 2.0 = 18 mB/t while the",
+                "sun is up. Production only runs during the daylight half of the day/night cycle,",
+                "while a charged Heat Battery drains a steady 1 mB/t around the clock, so 18 mB/t",
+                "by day averages out to 9 mB/t over a full day/night cycle - exactly enough to hold",
+                "9 Heat Batteries (a max-size boiler's worth) superheated continuously. Raise it for",
+                "headroom to recharge a drained bank, cover rainy days, or run more batteries.")
+                .defineInRange("salt_output_multiplier", 2.0, 0.0, 1000.0);
         CFG_SOLAR_POWER_TOWER_STEAM_MULTIPLIER = BUILDER.comment(
                 "Steam output multiplier. Default 7/3 = 21 mB/t at max size, matching one",
                 "max-height Steam Turbine's consumption.")

@@ -4,6 +4,7 @@
 
 - Fixed the Fusion Reactor Core crashing dedicated servers when placed. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/36
 - The Fusion Reactor's ambient startup/running sounds no longer play during its Ponder scenes.
+- A maxed-out, fully efficient Solar Power Tower still couldn't keep a full bank of 9 Heat Batteries topped up overnight - it only made enough Molten Salt to break even during the day, with nothing left over to cover the night. Doubled its Molten Salt output so it can actually bank a surplus. **Existing worlds won't get this automatically** - either delete `solarpunk-common.toml` in your world/server config folder so it regenerates, or open it and change `salt_output_multiplier` under `[solar_power_tower]` from `1.0` to `2.0` by hand.
 
 # 1.0.0-1.21.1
 
