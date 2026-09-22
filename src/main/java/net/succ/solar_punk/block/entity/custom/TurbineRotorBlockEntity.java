@@ -376,6 +376,19 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         int height = topS + 1; // blade layers + cap
         if (height < 2) return false; // minimum: 1 blade layer + cap
 
+        // Every other Rotor block in the structure (blade layers 1..topS-1, plus the cap
+        // at topS) only got counted above by block type - AXIS was never checked, since
+        // AXIS is set per-block from whichever face was clicked at placement (see
+        // TurbineRotorBlock#getStateForPlacement) and a hand-built horizontal/side-grown
+        // turbine can easily end up with one rotor placed against a top/bottom face by
+        // habit, silently leaving it on AXIS=Y. That block's own doStructureScan() (and
+        // findMaster()) then reads its own wrong axis and reports itself invalid even
+        // though the master and the overall structure are fine. Self-heal it here, the
+        // same way blade FACING/AXIS gets corrected below, now that we know this axis is
+        // the one the whole shell actually validates against.
+        for (int s = 1; s <= topS; s++)
+            syncRotorAxis(worldPosition.relative(growthDir, s), axis);
+
         // Count blades and build per-layer arm presence mask (4 bits, one per arm direction).
         int andesite = 0, brass = 0;
         int[] newMask = new int[height - 1];
@@ -427,6 +440,19 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
                 ? bs.setValue(AndesiteTurbineBladeBlock.FACING, wantFacing).setValue(AndesiteTurbineBladeBlock.AXIS, wantAxis)
                 : bs.setValue(BrassTurbineBladeBlock.FACING, wantFacing).setValue(BrassTurbineBladeBlock.AXIS, wantAxis);
         level.setBlock(pos, updated, 2);
+    }
+
+    // Corrects a subordinate Rotor block's AXIS to match the structure it's actually
+    // part of. AXIS is set once at placement from whichever face was clicked, so a
+    // hand-built turbine can end up with one rotor on the wrong axis even though it's
+    // physically in the right spot - see the call site in doStructureScan() for why this
+    // matters. Guarded by an equality check like syncBladeOrientation, so a correctly-
+    // placed rotor isn't rewritten on every scan interval.
+    private void syncRotorAxis(BlockPos pos, Direction.Axis wantAxis) {
+        BlockState bs = level.getBlockState(pos);
+        if (!(bs.getBlock() instanceof TurbineRotorBlock)) return;
+        if (bs.getValue(TurbineRotorBlock.AXIS) == wantAxis) return;
+        level.setBlock(pos, bs.setValue(TurbineRotorBlock.AXIS, wantAxis), 2);
     }
 
     // The perpendicular plane offset helper: growthDir/uDir/vDir form a 3-axis basis
