@@ -36,6 +36,7 @@ public class SolarPunk {
     public static final String MODID = "solarpunk";
 
     public SolarPunk(IEventBus modEventBus, ModContainer modContainer) {
+
         ModFluidTypes.register(modEventBus);
         ModFluids.register(modEventBus);
         ModItems.register(modEventBus);

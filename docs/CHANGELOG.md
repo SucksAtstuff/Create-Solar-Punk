@@ -14,6 +14,7 @@ Added Create Display Link sources for the Heat Battery (charge % and Heated/Supe
 - Fixed the Solar Power Tower sometimes stopping Molten Salt or Steam production for the rest of the day if its output tank filled up or it briefly ran short on water, even after you fixed the problem.
 - Fixed the Fermentation Vat occasionally losing its stored Water/Biofuel and getting stuck with no tank space after being reshaped.
 - The "Maximum Size Turbine" Ponder scene now actually builds a 20-blade-layer turbine instead of a 7-layer one, so it matches the SU numbers it's advertising.
+- Fixed a horizontal (on-its-side) Steam Turbine hand-built past the minimum size sometimes reporting itself invalid, or losing Steam/water piping on casing blocks further from the master Rotor - both were caused by the turbine's axis-agnostic scan not being applied consistently to every Rotor block and to piping capability lookups. Horizontal turbines can now be built up to the same 20-blade-layer maximum as a vertical one.
 
 # 1.0.0-1.21.1
 
