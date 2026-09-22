@@ -108,9 +108,9 @@ public class ModPonderProvider implements DataProvider {
         SCHEMATICS.put("turbine_rotor/condensate",
                 addTurbineLayers(new SceneStructure(7, 7, 7).withBasePlate(), 3, false));
 
-        // floor + 7 blade layers + cap = 9 total layers; 7x11x7 schematic
+        // floor + 20 blade layers + cap = 22 total layers; 7x24x7 schematic
         SCHEMATICS.put("turbine_rotor/max_turbine",
-                addTurbineLayers(new SceneStructure(7, 11, 7).withBasePlate(), 7, true));
+                addTurbineLayers(new SceneStructure(7, 24, 7).withBasePlate(), 20, true));
 
         // Same size as turbine_rotor/structure, but grown along the X axis instead of Y:
         // floor(x=1) + 3 blade layers(x=2-4) + cap(x=5); 7x7x7 schematic.
