@@ -225,8 +225,13 @@ public class SteamTurbineScenes {
      */
     public static void maxTurbine(SceneBuilder builder, SceneBuildingUtil util) {
         CreateSceneBuilder scene = new CreateSceneBuilder(builder);
-        scene.title("turbine_max", "Maximum Efficiency Turbine");
+        scene.title("turbine_max", "Maximum Size Turbine");
         scene.configureBasePlate(0, 0, 11);
+        // The true max structure (20 blade layers + floor + cap = 22 blocks tall) is far
+        // taller than any other scene in the mod - shrink and recenter the camera so the
+        // whole thing fits in the ponder view instead of only showing the lower portion.
+        scene.scaleSceneView(0.4f);
+        scene.setSceneOffsetY(-4f);
 
         scene.world().showSection(util.select().layer(0), Direction.UP);
         scene.idle(10);
@@ -241,45 +246,45 @@ public class SteamTurbineScenes {
                 .attachKeyFrame();
         scene.idle(70);
 
-        // Blade layers 2-8
-        for (int y = 2; y <= 8; y++) {
+        // Blade layers 2-21 - the true maximum of 20 blade layers
+        for (int y = 2; y <= 21; y++) {
             scene.world().showSection(util.select().layer(y), Direction.DOWN);
-            scene.idle(4);
+            scene.idle(2);
         }
         scene.idle(10);
 
         scene.overlay().showText(80)
                 .text("A taller turbine consumes more Steam per tick but produces proportionally more SU - height is the main throughput lever")
-                .pointAt(util.vector().topOf(new BlockPos(3, 8, 3)))
+                .pointAt(util.vector().topOf(new BlockPos(3, 21, 3)))
                 .attachKeyFrame();
         scene.idle(90);
 
         scene.overlay().showText(70)
                 .text("Fill every blade slot with Brass Blades for the best Steam-to-SU efficiency")
-                .pointAt(util.vector().centerOf(new BlockPos(5, 5, 3)))
+                .pointAt(util.vector().centerOf(new BlockPos(5, 11, 3)))
                 .attachKeyFrame();
         scene.idle(80);
 
         // Top cap
-        scene.world().showSection(util.select().layer(9), Direction.DOWN);
+        scene.world().showSection(util.select().layer(22), Direction.DOWN);
         scene.idle(10);
 
-        scene.world().setKineticSpeed(util.select().fromTo(new BlockPos(3, 2, 3), new BlockPos(3, 9, 3)), 16f);
+        scene.world().setKineticSpeed(util.select().fromTo(new BlockPos(3, 2, 3), new BlockPos(3, 22, 3)), 16f);
         scene.overlay().showText(80)
                 .text("Cap the top identically to the floor - full 7x7 Casing with the Rotor at center. Power exits from the top of this rotor")
-                .pointAt(util.vector().topOf(new BlockPos(3, 9, 3)))
+                .pointAt(util.vector().topOf(new BlockPos(3, 22, 3)))
                 .attachKeyFrame();
         scene.idle(90);
 
         scene.overlay().showText(70)
                 .text("Replace any casing with Turbine Casing Glass anywhere in the structure to see inside - still valid")
-                .pointAt(util.vector().centerOf(new BlockPos(0, 5, 3)))
+                .pointAt(util.vector().centerOf(new BlockPos(0, 11, 3)))
                 .attachKeyFrame();
         scene.idle(80);
 
         scene.overlay().showText(70)
-                .text("The maximum is 20 blade layers - at full brass and max height it can power an entire base")
-                .pointAt(util.vector().topOf(new BlockPos(3, 9, 3)))
+                .text("20 blade layers, all Brass - this is the true maximum, and it can power an entire base")
+                .pointAt(util.vector().topOf(new BlockPos(3, 22, 3)))
                 .attachKeyFrame();
         scene.idle(80);
 

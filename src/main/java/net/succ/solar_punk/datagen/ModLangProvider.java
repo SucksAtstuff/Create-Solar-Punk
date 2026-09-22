@@ -165,13 +165,13 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.ponder.turbine_condensate.text_3", "When the condensate tank is full the turbine shuts down automatically - no more steam is consumed until the water is drained");
         add("solarpunk.ponder.turbine_condensate.text_4", "Pipe the condensate water out of any casing face to drain it - the turbine restarts as soon as there is room");
 
-        add("solarpunk.ponder.turbine_max.header", "Maximum Efficiency Turbine");
+        add("solarpunk.ponder.turbine_max.header", "Maximum Size Turbine");
         add("solarpunk.ponder.turbine_max.text_1", "The sealed floor is a full 7x7 of Turbine Casing with no rotor - it anchors the structure from below");
         add("solarpunk.ponder.turbine_max.text_2", "A taller turbine consumes more Steam per tick but produces proportionally more SU - height is the main throughput lever");
         add("solarpunk.ponder.turbine_max.text_3", "Fill every blade slot with Brass Blades for the best Steam-to-SU efficiency");
         add("solarpunk.ponder.turbine_max.text_4", "Cap the top identically to the floor - full 7x7 Casing with the Rotor at center. Power exits from the top of this rotor");
         add("solarpunk.ponder.turbine_max.text_5", "Replace any casing with Turbine Casing Glass anywhere in the structure to see inside - still valid");
-        add("solarpunk.ponder.turbine_max.text_6", "The maximum is 20 blade layers - at full brass and max height it can power an entire base");
+        add("solarpunk.ponder.turbine_max.text_6", "20 blade layers, all Brass - this is the true maximum, and it can power an entire base");
 
         add("solarpunk.ponder.turbine_horizontal.header", "Building On Its Side");
         add("solarpunk.ponder.turbine_horizontal.text_1", "The Steam Turbine doesn't have to stand up - the same shell works lying on the East/West or North/South axis");
@@ -217,6 +217,14 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.tower_mode", "Mode: ");
         add("solarpunk.tooltip.tower_mode_salt", "Molten Salt");
         add("solarpunk.tooltip.tower_mode_steam", "Steam");
+
+        add("solarpunk.display_source.heat_battery_charge", "Heat Battery Charge");
+        add("solarpunk.display_source.heat_battery_status", "Heat Battery Status");
+        add("solarpunk.display_source.kinetic_battery_charge", "Kinetic Battery Charge");
+        add("solarpunk.display_source.solar_power_tower_efficiency", "Solar Power Tower Efficiency");
+        add("solarpunk.display_source.solar_power_tower_mirror_count", "Solar Power Tower Mirror Count");
+        add("solarpunk.display_source.solar_power_tower_generation_rate", "Solar Power Tower Generation Rate");
+        add("solarpunk.display_source.fusion_reactor_lithium_buffer", "Fusion Reactor Lithium Buffer");
 
         add("create.solar_punk.tooltip.fermentation_vat_header", "Fermentation Vat");
         add("create.solar_punk.tooltip.vat_too_small", "Needs at least 2x2 footprint");
