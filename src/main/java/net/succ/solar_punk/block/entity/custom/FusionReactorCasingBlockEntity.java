@@ -60,6 +60,12 @@ public class FusionReactorCasingBlockEntity extends BlockEntity implements IHave
         return core != null ? core.itemHandler : null;
     }
 
+    @Nullable
+    public Float getLithiumBufferMb() {
+        FusionReactorCoreBlockEntity core = core();
+        return core != null ? core.getLithiumBufferMb() : null;
+    }
+
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         FusionReactorCoreBlockEntity core = core();

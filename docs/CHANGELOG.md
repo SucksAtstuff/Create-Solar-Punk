@@ -1,10 +1,19 @@
-# 1.0.1-1.21.1
+# 1.1.0-1.21.1
+
+## Display Link support, plus bug fixes from the 1.0.0 release
+
+### Display Link Support
+
+Added Create Display Link sources for the Heat Battery (charge % and Heated/Superheated status), Kinetic Battery (charge %), Solar Power Tower (mirror efficiency %, connected mirror count, and Molten Salt/Steam output rate in mB/s), and the Fusion Reactor (buffered Lithium fuel, readable from any Casing block on the shell). Hook a Display Link up to any of these blocks to show their live stats on a Display Board, Nixie Tube, or any other Create display.
 
 ### Bug Fixes
 
 - Fixed the Fusion Reactor Core crashing dedicated servers when placed. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/36
 - The Fusion Reactor's ambient startup/running sounds no longer play during its Ponder scenes.
 - A maxed-out, fully efficient Solar Power Tower still couldn't keep a full bank of 9 Heat Batteries topped up overnight - it only made enough Molten Salt to break even during the day, with nothing left over to cover the night. Doubled its Molten Salt output so it can actually bank a surplus. **Existing worlds won't get this automatically** - either delete `solarpunk-common.toml` in your world/server config folder so it regenerates, or open it and change `salt_output_multiplier` under `[solar_power_tower]` from `1.0` to `2.0` by hand.
+- Fixed the Solar Power Tower sometimes stopping Molten Salt or Steam production for the rest of the day if its output tank filled up or it briefly ran short on water, even after you fixed the problem.
+- Fixed the Fermentation Vat occasionally losing its stored Water/Biofuel and getting stuck with no tank space after being reshaped.
+- The "Maximum Size Turbine" Ponder scene now actually builds a 20-blade-layer turbine instead of a 7-layer one, so it matches the SU numbers it's advertising.
 
 # 1.0.0-1.21.1
 

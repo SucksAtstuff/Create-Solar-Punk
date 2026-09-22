@@ -43,6 +43,7 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
     private int   cachedMirrorCount    = 0;
     private int   mirrorScanCooldown   = 0;
     private boolean advancementFired   = false;
+    private float lastGenerationRate   = 0f;
 
     // Mirrors that have linked themselves to this tower controller. Membership is
     // decided by this tower (see updateMirrors()), not by the mirrors scanning outward.
@@ -194,6 +195,7 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         if (width < Config.solarPowerTowerMinWidth || height < Config.solarPowerTowerMinHeight) {
             saltAccumulator = 0f;
             steamAccumulator = 0f;
+            lastGenerationRate = 0f;
             advancementFired = false;
             setLit(false);
             return;
@@ -206,6 +208,7 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         if (!isSunActive()) {
             saltAccumulator = 0f;
             steamAccumulator = 0f;
+            lastGenerationRate = 0f;
             setLit(false);
             return;
         }
@@ -229,33 +232,43 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
                                : baseRate * (float) Config.solarPowerTowerSaltMultiplier;
         rate *= net.succ.solar_punk.compat.sereneseasons.SeasonalSolar.outputMultiplier(level, worldPosition);
         if (steamMode) {
-            steamAccumulator += rate;
             saltAccumulator = 0f;
+            boolean hasSpaceForOne = steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), 1),
+                    IFluidHandler.FluidAction.SIMULATE) >= 1;
+            boolean hasWaterForOne = waterTank.getFluidAmount() >= width * width;
+            lastGenerationRate = (hasSpaceForOne && hasWaterForOne) ? rate : 0f;
+            if (hasSpaceForOne && hasWaterForOne) steamAccumulator += rate;
             int steamToAdd = (int) steamAccumulator;
             if (steamToAdd >= 1) {
-                int waterToDrain = steamToAdd * width * width;
-                if (waterTank.getFluidAmount() >= waterToDrain &&
-                    steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), steamToAdd),
-                            IFluidHandler.FluidAction.SIMULATE) == steamToAdd) {
-                    waterTank.drain(waterToDrain, IFluidHandler.FluidAction.EXECUTE);
-                    steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), steamToAdd),
+                int maxByWater = waterTank.getFluidAmount() / (width * width);
+                int maxBySpace = steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), steamToAdd),
+                        IFluidHandler.FluidAction.SIMULATE);
+                int actualToAdd = Math.min(steamToAdd, Math.min(maxByWater, maxBySpace));
+                if (actualToAdd >= 1) {
+                    waterTank.drain(actualToAdd * width * width, IFluidHandler.FluidAction.EXECUTE);
+                    steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), actualToAdd),
                             IFluidHandler.FluidAction.EXECUTE);
-                    steamAccumulator -= steamToAdd;
+                    steamAccumulator -= actualToAdd;
                 }
             }
         } else {
-            saltAccumulator += rate;
             steamAccumulator = 0f;
+            boolean hasSpaceForOne = saltTank.fill(new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 1),
+                    IFluidHandler.FluidAction.SIMULATE) >= 1;
+            boolean hasWaterForOne = waterTank.getFluidAmount() >= width * width;
+            lastGenerationRate = (hasSpaceForOne && hasWaterForOne) ? rate : 0f;
+            if (hasSpaceForOne && hasWaterForOne) saltAccumulator += rate;
             int saltToAdd = (int) saltAccumulator;
             if (saltToAdd >= 1) {
-                int waterToDrain = saltToAdd * width * width;
-                if (waterTank.getFluidAmount() >= waterToDrain &&
-                    saltTank.fill(new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), saltToAdd),
-                            IFluidHandler.FluidAction.SIMULATE) == saltToAdd) {
-                    waterTank.drain(waterToDrain, IFluidHandler.FluidAction.EXECUTE);
-                    saltTank.fill(new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), saltToAdd),
+                int maxByWater = waterTank.getFluidAmount() / (width * width);
+                int maxBySpace = saltTank.fill(new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), saltToAdd),
+                        IFluidHandler.FluidAction.SIMULATE);
+                int actualToAdd = Math.min(saltToAdd, Math.min(maxByWater, maxBySpace));
+                if (actualToAdd >= 1) {
+                    waterTank.drain(actualToAdd * width * width, IFluidHandler.FluidAction.EXECUTE);
+                    saltTank.fill(new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), actualToAdd),
                             IFluidHandler.FluidAction.EXECUTE);
-                    saltAccumulator -= saltToAdd;
+                    saltAccumulator -= actualToAdd;
                 }
             }
         }
@@ -427,6 +440,10 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         float ratio = cachedMirrorCount / (float) optimal;
         return ratio <= 1f ? ratio : Math.max(0f, 2f - ratio);
     }
+
+    public int getMirrorCount() { return cachedMirrorCount; }
+    public float getEfficiency() { return mirrorEfficiency(); }
+    public float getGenerationRate() { return lastGenerationRate; }
 
     public void syncToClients() { sync(); }
 

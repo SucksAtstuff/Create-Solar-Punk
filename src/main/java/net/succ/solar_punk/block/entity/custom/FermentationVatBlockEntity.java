@@ -145,7 +145,7 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
 
     @Override
     public void setTankSize(int tank, int blocks) {
-        int newCap = Config.fermentationVatTankPerBlock * blocks;
+        int newCap = Config.fermentationVatTankPerBlock * Math.max(blocks, 1);
         waterTank.setCapacity(newCap);
         biofuelTank.setCapacity(newCap);
         if (waterTank.getFluidAmount()   > newCap) waterTank.setFluid(new FluidStack(waterTank.getFluid().getFluid(), newCap));

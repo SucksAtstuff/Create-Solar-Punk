@@ -174,6 +174,8 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
     // fractionally the way Deuterium can.
     private float lithiumBufferMb = 0f;
 
+    public float getLithiumBufferMb() { return lithiumBufferMb; }
+
     // Client-only ambience state - see tickAudio(). Not saved/synced; each client just
     // re-derives it from the synced `formed` field as chunks load in.
     @OnlyIn(Dist.CLIENT)

@@ -1,5 +1,6 @@
 package net.succ.solar_punk;
 
+import com.simibubi.create.api.behaviour.display.DisplaySource;
 import com.simibubi.create.api.boiler.BoilerHeater;
 import com.simibubi.create.api.stress.BlockStressValues;
 import com.simibubi.create.api.stress.BlockStressValues.GeneratedRpm;
@@ -19,6 +20,7 @@ import net.succ.solar_punk.block.entity.custom.FermentationVatBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineRotorBlockEntity;
 import net.succ.solar_punk.datagen.DataGenerators;
+import net.succ.solar_punk.display.ModDisplaySources;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.fluid.ModFluidTypes;
 import net.succ.solar_punk.item.ModCreativeModeTabs;
@@ -45,6 +47,7 @@ public class SolarPunk {
         ModFeatures.register(modEventBus);
         ModBiomeModifierTypes.register(modEventBus);
         ModTriggers.register(modEventBus);
+        ModDisplaySources.register(modEventBus);
 
         modEventBus.addListener(DataGenerators::gatherData);
         modEventBus.addListener(Config::onLoad);
@@ -179,6 +182,18 @@ public class SolarPunk {
                     return BoilerHeater.NO_HEAT;
                 return be.getHeatLevel();
             });
+
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.HEAT_BATTERY.get(), ModDisplaySources.HEAT_BATTERY_CHARGE.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.HEAT_BATTERY.get(), ModDisplaySources.HEAT_BATTERY_STATUS.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.KINETIC_BATTERY.get(), ModDisplaySources.KINETIC_BATTERY_CHARGE.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.SOLAR_POWER_TOWER.get(), ModDisplaySources.SOLAR_POWER_TOWER_EFFICIENCY.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.SOLAR_POWER_TOWER.get(), ModDisplaySources.SOLAR_POWER_TOWER_MIRROR_COUNT.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.SOLAR_POWER_TOWER.get(), ModDisplaySources.SOLAR_POWER_TOWER_GENERATION_RATE.get());
+            // Registered on both the Core and its Casing shell - the Core is buried at dead
+            // center and unreachable once the reactor is built (see FusionReactorCasingBlockEntity),
+            // so the Casing registration is what actually matters post-construction.
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CORE.get(), ModDisplaySources.FUSION_REACTOR_LITHIUM_BUFFER.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_LITHIUM_BUFFER.get());
 
             // Generators — capacity (per RPM) and generated RPM for stress tooltips
             BlockStressValues.CAPACITIES.register(ModBlocks.ANDESITE_SOLAR_PANEL.get(),
