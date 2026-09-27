@@ -195,6 +195,13 @@ public class SolarPunk {
             // so the Casing registration is what actually matters post-construction.
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CORE.get(), ModDisplaySources.FUSION_REACTOR_LITHIUM_BUFFER.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_LITHIUM_BUFFER.get());
+            // The rest are Casing-only (Casing and Casing Glass share this BE type) - read
+            // from the outside of the shell, never the buried Core.
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_STATUS.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_STEAM_OUTPUT.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_THROTTLE.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_DEUTERIUM.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_STEAM_TANK.get());
 
             // Generators — capacity (per RPM) and generated RPM for stress tooltips
             BlockStressValues.CAPACITIES.register(ModBlocks.ANDESITE_SOLAR_PANEL.get(),

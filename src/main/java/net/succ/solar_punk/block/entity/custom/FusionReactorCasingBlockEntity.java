@@ -43,7 +43,7 @@ public class FusionReactorCasingBlockEntity extends BlockEntity implements IHave
     }
 
     @Nullable
-    private FusionReactorCoreBlockEntity core() {
+    public FusionReactorCoreBlockEntity core() {
         if (level == null || corePos == null) return null;
         return level.getBlockEntity(corePos) instanceof FusionReactorCoreBlockEntity core ? core : null;
     }
@@ -58,12 +58,6 @@ public class FusionReactorCasingBlockEntity extends BlockEntity implements IHave
     public IItemHandler getItemHandler() {
         FusionReactorCoreBlockEntity core = core();
         return core != null ? core.itemHandler : null;
-    }
-
-    @Nullable
-    public Float getLithiumBufferMb() {
-        FusionReactorCoreBlockEntity core = core();
-        return core != null ? core.getLithiumBufferMb() : null;
     }
 
     @Override

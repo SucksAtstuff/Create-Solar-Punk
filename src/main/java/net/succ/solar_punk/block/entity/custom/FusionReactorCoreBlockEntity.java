@@ -176,6 +176,22 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
 
     public float getLithiumBufferMb() { return lithiumBufferMb; }
 
+    // Why the power loop did or didn't run on its last tick - read by the Status display
+    // source so a stalled reactor says what to fix instead of just reading 0 mB/t.
+    // Server-side only and recomputed every tick, so it isn't saved or synced.
+    public enum Status { RUNNING, INCOMPLETE, NO_BLANKET, NO_SIGNAL, LOW_SIGNAL, STEAM_FULL, NO_DEUTERIUM, NO_LITHIUM }
+
+    private Status status = Status.INCOMPLETE;
+
+    public Status getStatus() { return status; }
+
+    public int getThrottlePercent() { return Math.round(cachedShellSignal / 15f * 100f); }
+
+    // Buffered Lithium plus every Lithium Dust still waiting in the input slot, in mB.
+    public float getLithiumSupplyMb() {
+        return lithiumBufferMb + itemHandler.getStackInSlot(0).getCount() * LITHIUM_DUST_MB_EQUIVALENT;
+    }
+
     // Client-only ambience state - see tickAudio(). Not saved/synced; each client just
     // re-derives it from the synced `formed` field as chunks load in.
     @OnlyIn(Dist.CLIENT)
@@ -235,10 +251,11 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
     // than assuming both are available, and never overflows the steam tank.
     private void runPowerLoop() {
         int totalModules = lithiumModuleCount + berylliumModuleCount;
-        if (!formed || totalModules <= 0) { stallPowerLoop(); return; }
+        if (!formed) { stallPowerLoop(Status.INCOMPLETE); return; }
+        if (totalModules <= 0) { stallPowerLoop(Status.NO_BLANKET); return; }
 
         int steamRoom = steamTank.getCapacity() - steamTank.getFluidAmount();
-        if (steamRoom <= 0) { stallPowerLoop(); return; }
+        if (steamRoom <= 0) { stallPowerLoop(Status.STEAM_FULL); return; }
 
         // Fuel-injection-rate throttle (plan_for_fusion.md's secondary, independent
         // lever on top of the blanket-ratio knob) - a redstone signal anywhere on the
@@ -247,13 +264,13 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         // signal at all means the reactor idles at 0% and pulls no fuel; a lever or
         // comparator at full strength (15) means full throttle.
         float throttle = cachedShellSignal / 15f;
-        if (throttle <= 0) { stallPowerLoop(); return; }
+        if (throttle <= 0) { stallPowerLoop(Status.NO_SIGNAL); return; }
 
         float t = blanketEfficiency;
         double steamPerModule = Config.reactorSteamPerLayerPerTick
                 * (Config.reactorLithiumOutputRatio + (1 - Config.reactorLithiumOutputRatio) * t);
         int desiredSteam = Math.min(steamRoom, (int) Math.round(totalModules * steamPerModule * throttle));
-        if (desiredSteam <= 0) { stallPowerLoop(); return; }
+        if (desiredSteam <= 0) { stallPowerLoop(Status.LOW_SIGNAL); return; }
 
         double fuelPerSteam = Config.reactorFuelPerSteamMb
                 * (1 + (Config.reactorBerylliumFuelWasteMultiplier - 1) * t);
@@ -274,7 +291,10 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         double byDeuterium = deuteriumPerSteam > 0 ? deuteriumTank.getFluidAmount() / deuteriumPerSteam : Double.MAX_VALUE;
         double byLithium = lithiumPerSteam > 0 ? lithiumBufferMb / lithiumPerSteam : Double.MAX_VALUE;
         int actualSteam = (int) Math.min(desiredSteam, Math.floor(Math.min(byDeuterium, byLithium)));
-        if (actualSteam <= 0) { stallPowerLoop(); return; }
+        if (actualSteam <= 0) {
+            stallPowerLoop(byDeuterium < 1 ? Status.NO_DEUTERIUM : Status.NO_LITHIUM);
+            return;
+        }
 
         int deuteriumUsed = (int) Math.round(actualSteam * deuteriumPerSteam);
         int lithiumUsed = (int) Math.round(actualSteam * lithiumPerSteam);
@@ -285,13 +305,15 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         steamOutputPerTick = actualSteam;
         deuteriumUsedPerTick = deuteriumUsed;
         lithiumUsedPerTick = lithiumUsed;
+        status = Status.RUNNING;
         setChanged();
     }
 
     // Zeroes the goggle-tooltip production stats whenever the loop can't run this tick
     // for any reason, so a stalled reactor honestly reads as producing nothing instead
     // of showing the last tick it actually ran.
-    private void stallPowerLoop() {
+    private void stallPowerLoop(Status reason) {
+        status = reason;
         if (steamOutputPerTick == 0 && deuteriumUsedPerTick == 0 && lithiumUsedPerTick == 0) return;
         steamOutputPerTick = 0;
         deuteriumUsedPerTick = 0;

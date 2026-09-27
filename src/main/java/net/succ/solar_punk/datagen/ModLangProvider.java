@@ -224,7 +224,12 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.display_source.solar_power_tower_efficiency", "Solar Power Tower Efficiency");
         add("solarpunk.display_source.solar_power_tower_mirror_count", "Solar Power Tower Mirror Count");
         add("solarpunk.display_source.solar_power_tower_generation_rate", "Solar Power Tower Generation Rate");
-        add("solarpunk.display_source.fusion_reactor_lithium_buffer", "Fusion Reactor Lithium Buffer");
+        add("solarpunk.display_source.fusion_reactor_lithium_buffer", "Fusion Reactor Lithium Supply");
+        add("solarpunk.display_source.fusion_reactor_status", "Fusion Reactor Status");
+        add("solarpunk.display_source.fusion_reactor_steam_output", "Fusion Reactor Steam Output");
+        add("solarpunk.display_source.fusion_reactor_throttle", "Fusion Reactor Throttle");
+        add("solarpunk.display_source.fusion_reactor_deuterium", "Fusion Reactor Deuterium");
+        add("solarpunk.display_source.fusion_reactor_steam_tank", "Fusion Reactor Steam Tank");
 
         add("create.solar_punk.tooltip.fermentation_vat_header", "Fermentation Vat");
         add("create.solar_punk.tooltip.vat_too_small", "Needs at least 2x2 footprint");

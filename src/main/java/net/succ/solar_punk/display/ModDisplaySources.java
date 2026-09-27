@@ -32,6 +32,21 @@ public class ModDisplaySources {
     public static final DeferredHolder<DisplaySource, FusionReactorLithiumBufferDisplaySource> FUSION_REACTOR_LITHIUM_BUFFER =
             DISPLAY_SOURCES.register("fusion_reactor_lithium_buffer", FusionReactorLithiumBufferDisplaySource::new);
 
+    public static final DeferredHolder<DisplaySource, FusionReactorStatusDisplaySource> FUSION_REACTOR_STATUS =
+            DISPLAY_SOURCES.register("fusion_reactor_status", FusionReactorStatusDisplaySource::new);
+
+    public static final DeferredHolder<DisplaySource, FusionReactorSteamOutputDisplaySource> FUSION_REACTOR_STEAM_OUTPUT =
+            DISPLAY_SOURCES.register("fusion_reactor_steam_output", FusionReactorSteamOutputDisplaySource::new);
+
+    public static final DeferredHolder<DisplaySource, FusionReactorThrottleDisplaySource> FUSION_REACTOR_THROTTLE =
+            DISPLAY_SOURCES.register("fusion_reactor_throttle", FusionReactorThrottleDisplaySource::new);
+
+    public static final DeferredHolder<DisplaySource, FusionReactorDeuteriumDisplaySource> FUSION_REACTOR_DEUTERIUM =
+            DISPLAY_SOURCES.register("fusion_reactor_deuterium", FusionReactorDeuteriumDisplaySource::new);
+
+    public static final DeferredHolder<DisplaySource, FusionReactorSteamTankDisplaySource> FUSION_REACTOR_STEAM_TANK =
+            DISPLAY_SOURCES.register("fusion_reactor_steam_tank", FusionReactorSteamTankDisplaySource::new);
+
     public static void register(IEventBus modEventBus) {
         DISPLAY_SOURCES.register(modEventBus);
     }

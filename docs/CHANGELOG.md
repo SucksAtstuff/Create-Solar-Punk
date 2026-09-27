@@ -4,7 +4,7 @@
 
 ### Display Link Support
 
-Added Create Display Link sources for the Heat Battery (charge % and Heated/Superheated status), Kinetic Battery (charge %), Solar Power Tower (mirror efficiency %, connected mirror count, and Molten Salt/Steam output rate in mB/s), and the Fusion Reactor (buffered Lithium fuel, readable from any Casing block on the shell). Hook a Display Link up to any of these blocks to show their live stats on a Display Board, Nixie Tube, or any other Create display.
+Added Create Display Link sources for the Heat Battery (charge % and Heated/Superheated status), Kinetic Battery (charge %), Solar Power Tower (mirror efficiency %, connected mirror count, and Molten Salt/Steam output rate in mB/s), and the Fusion Reactor (status, including why it stopped, Steam output in mB/s, redstone throttle %, Deuterium level, Steam tank fill %, and Lithium supply, all readable from any Casing block on the outside of the shell). Hook a Display Link up to any of these blocks to show their live stats on a Display Board, Nixie Tube, or any other Create display.
 
 ### Bug Fixes
 
