@@ -254,6 +254,7 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.turbine_height", "Height: ");
         add("create.solar_punk.tooltip.turbine_blades", "Blades: ");
         add("create.solar_punk.tooltip.turbine_fuel", "Fuel: ");
+        add("create.solar_punk.tooltip.steam_supply", "Steam Supply: ");
         add("create.solar_punk.tooltip.condensate_full", "Condensate full - drain water to restart");
 
         add("create.solar_punk.tooltip.fusion_reactor_core_header", "Fusion Reactor Core");
