@@ -122,6 +122,13 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
 
     private int condensateAccumulator = 0;
 
+    // Fraction (0-1) of the steam demand actually being met, smoothed over ~1s so a
+    // lumpy pipe feed doesn't jitter the network. Scales SU capacity (not RPM, which
+    // would ripple speed changes through the whole network) - an underfed turbine
+    // otherwise gave full output from any trickle that kept the tank non-empty.
+    private static final float SUPPLY_SMOOTHING = 0.05f;
+    private float steamSupply = 0f;
+
     public final IFluidHandler combinedFluidHandler = new IFluidHandler() {
         @Override public int getTanks() { return 2; }
 
@@ -177,7 +184,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
             this.lastCapacityProvided = 0;
             return 0;
         }
-        float su = Config.turbineSuPerLayer * turbineHeight * bladeEfficiency;
+        float su = Config.turbineSuPerLayer * turbineHeight * bladeEfficiency * steamSupply;
         this.lastCapacityProvided = su;
         return su;
     }
@@ -215,6 +222,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         }
 
         if (!structureValid || !isMaster || steamTank.isEmpty()) {
+            steamSupply = 0f;
             if (getBlockState().getBlock() instanceof TurbineRotorBlock b
                     && getBlockState().getValue(TurbineRotorBlock.ACTIVE)) {
                 setActive(false);
@@ -233,24 +241,32 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
             return;
         }
 
+        int steamPerTick = Math.max(1,
+                (int) Math.ceil(Config.turbineSteamPerLayerPerTick * turbineHeight / bladeEfficiency));
+
         // Update speed BEFORE draining so getGeneratedSpeed() sees a non-empty tank.
-        // Also fire immediately on the first active tick so the kinetic network wakes up.
+        // Also fire immediately on the first active tick so the kinetic network wakes up,
+        // seeding the supply from what's in the tank so a startup doesn't ramp from 0 SU.
         boolean wasActive = getBlockState().getBlock() instanceof TurbineRotorBlock
                 && getBlockState().getValue(TurbineRotorBlock.ACTIVE);
+        if (!wasActive)
+            steamSupply = Math.min(1f, (float) steamTank.getFluidAmount() / steamPerTick);
         if (!wasActive || level.getGameTime() % 20 == 0) {
             updateGeneratedRotation();
             setChanged();
         }
 
-        int steamPerTick = Math.max(1,
-                (int) Math.ceil(Config.turbineSteamPerLayerPerTick * turbineHeight / bladeEfficiency));
         FluidStack consumed = steamTank.drain(steamPerTick, IFluidHandler.FluidAction.EXECUTE);
 
         if (consumed.isEmpty()) {
+            steamSupply = 0f;
             setActive(false);
             updateGeneratedRotation();
             return;
         }
+
+        float ratio = (float) consumed.getAmount() / steamPerTick;
+        steamSupply += (ratio - steamSupply) * SUPPLY_SMOOTHING;
 
         condensateAccumulator += consumed.getAmount();
         int waterProduced = condensateAccumulator / Config.turbineCondensateRatio;
@@ -556,6 +572,13 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
                 .add(CreateLang.number(effPct).text("%").style(ChatFormatting.GREEN).component())
                 .forGoggles(tooltip, 1);
 
+        int supplyPct = Math.round(steamSupply * 100);
+        CreateLang.translate("solar_punk.tooltip.steam_supply")
+                .style(ChatFormatting.GRAY)
+                .add(CreateLang.number(supplyPct).text("%")
+                        .style(supplyPct >= 100 ? ChatFormatting.GREEN : ChatFormatting.GOLD).component())
+                .forGoggles(tooltip, 1);
+
         // Own key, not the shared "solar_punk.tooltip.steam" one - Firebox Boiler and
         // Solar Power Tower use that key too and are genuinely Steam-only, so their
         // "Steam:" label needs to stay put. The Turbine's tank can hold either fuel now
@@ -607,6 +630,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         FluidTankNBTHelper.save(tag, "SteamTank", steamTank);
         FluidTankNBTHelper.save(tag, "CondensateTank", condensateTank);
         tag.putInt("CondensateAccumulator", condensateAccumulator);
+        tag.putFloat("SteamSupply", steamSupply);
     }
 
     @Override
@@ -624,5 +648,6 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         FluidTankNBTHelper.load(tag, "SteamTank", steamTank);
         FluidTankNBTHelper.load(tag, "CondensateTank", condensateTank);
         condensateAccumulator = tag.getInt("CondensateAccumulator");
+        steamSupply = tag.getFloat("SteamSupply");
     }
 }
