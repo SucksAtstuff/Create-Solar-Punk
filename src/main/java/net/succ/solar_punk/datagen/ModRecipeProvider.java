@@ -87,6 +87,19 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_lithium_ingot", has(ModItems.LITHIUM_INGOT.get()))
                 .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "lithium_nugget_from_ingot"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.LITHIUM_BLOCK.get())
+                .pattern("III")
+                .pattern("III")
+                .pattern("III")
+                .define('I', ModItems.LITHIUM_INGOT.get())
+                .unlockedBy("has_lithium_ingot", has(ModItems.LITHIUM_INGOT.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.LITHIUM_INGOT.get(), 9)
+                .requires(ModBlocks.LITHIUM_BLOCK.get())
+                .unlockedBy("has_lithium_block", has(ModBlocks.LITHIUM_BLOCK.get()))
+                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "lithium_ingot_from_block"));
+
         // Beryllium Dust -> Ingot, same smelting/blasting pairing as the lithium chain.
         berylliumSmelting(output, ModItems.BERYLLIUM_DUST.get(), "beryllium_dust");
 
@@ -102,6 +115,19 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .requires(ModItems.BERYLLIUM_INGOT.get())
                 .unlockedBy("has_beryllium_ingot", has(ModItems.BERYLLIUM_INGOT.get()))
                 .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "beryllium_nugget_from_ingot"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BERYLLIUM_BLOCK.get())
+                .pattern("III")
+                .pattern("III")
+                .pattern("III")
+                .define('I', ModItems.BERYLLIUM_INGOT.get())
+                .unlockedBy("has_beryllium_ingot", has(ModItems.BERYLLIUM_INGOT.get()))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.BERYLLIUM_INGOT.get(), 9)
+                .requires(ModBlocks.BERYLLIUM_BLOCK.get())
+                .unlockedBy("has_beryllium_block", has(ModBlocks.BERYLLIUM_BLOCK.get()))
+                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "beryllium_ingot_from_block"));
 
         // Fusion Reactor Core - the one piece of the structure with no recipe yet
         // (Casing is an item_application recipe in ModItemApplicationRecipeGen, the
@@ -119,6 +145,22 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('B', ModItems.BERYLLIUM_INGOT.get())
                 .define('N', Items.NETHERITE_INGOT)
                 .unlockedBy("has_fusion_reactor_casing", has(ModBlocks.FUSION_REACTOR_CASING.get()))
+                .save(output);
+
+        // Turbine Rotor - kept cheap since a turbine needs one per blade layer plus the
+        // cap. Shafts run through the column axis, and the Turbine Casing matches the
+        // rotor's casing texture.
+        //   . S .
+        //   C A C
+        //   . S .
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.TURBINE_ROTOR.get())
+                .pattern(" S ")
+                .pattern("CAC")
+                .pattern(" S ")
+                .define('S', createItem("shaft"))
+                .define('C', ModBlocks.TURBINE_CASING.get())
+                .define('A', createItem("andesite_alloy"))
+                .unlockedBy("has_turbine_casing", has(ModBlocks.TURBINE_CASING.get()))
                 .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SOLAR_HEATER.get())

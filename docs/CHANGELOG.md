@@ -1,3 +1,13 @@
+# 1.1.1-1.21.1
+
+Thanks to Studio V for reviewing the mod in [This Create Addon Adds FUSION](https://www.youtube.com/watch?v=OxV7FP923lA)! Watching the video is how I found out the Turbine Rotor was missing its recipe.
+
+### Bug Fixes
+
+- Steam Turbines no longer run at full power from a tiny trickle of Steam. Their SU output now scales with how much of the Steam they need is actually being supplied, and the goggles show a new Steam Supply percentage. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/45
+- The Turbine Rotor now has a crafting recipe (two Shafts, two Turbine Casings, and an Andesite Alloy). Before this you could only get it from the creative menu, so you couldn't build a Steam Turbine in survival.
+- The Block of Lithium and Block of Beryllium now have crafting recipes: 9 Ingots make a Block, and a Block breaks back down into 9 Ingots.
+
 # 1.1.0-1.21.1
 
 ## Display Link support, plus bug fixes from the 1.0.0 release

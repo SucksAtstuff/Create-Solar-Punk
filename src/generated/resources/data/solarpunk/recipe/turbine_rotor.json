@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "create:andesite_alloy"
+    },
+    "C": {
+      "item": "solarpunk:turbine_casing"
+    },
+    "S": {
+      "item": "create:shaft"
+    }
+  },
+  "pattern": [
+    " S ",
+    "CAC",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "solarpunk:turbine_rotor"
+  }
+}
