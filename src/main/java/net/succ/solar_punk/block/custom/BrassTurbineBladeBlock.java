@@ -49,8 +49,10 @@ public class BrassTurbineBladeBlock extends Block implements IWrenchable {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
+        // The blade model is 2 blocks long and extends toward FACING, so turn it
+        // clockwise from the player's view to put the second half on their right.
         return defaultBlockState()
-                .setValue(FACING, context.getHorizontalDirection())
+                .setValue(FACING, context.getHorizontalDirection().getClockWise())
                 .setValue(AXIS, Direction.Axis.Y)
                 .setValue(HIDDEN, false);
     }

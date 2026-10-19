@@ -19,6 +19,12 @@ Higher-tier machines now need real Create processing instead of just a crafting 
 
 **For modpack makers:** the Brass Solar Panel, Biofuel Engine, Solar Mirror, Solar Power Tower and Fusion Reactor Core recipes have new IDs, under `mechanical_crafting/` or `sequenced_assembly/`. Update any recipe overrides that point at the old ones.
 
+### Turbine Blades
+
+- New model and textures for the Andesite and Brass Turbine Blades.
+- Blades now show their 3D model when held, dropped, and in your inventory.
+- Placing a blade now puts its second half to your right instead of straight ahead.
+
 ### Solar Power in Space
 
 Solar blocks now work in space with Create: Cosmonautics, and follow the real sun just like they do in the Overworld. In deep space, Solar Panels, the Solar Heater, and the Solar Power Tower track where the sun actually is: turn your station away from it and they go dark, fly into a planet's shadow and it's night, and your station's own hull can shade them. Stations are built as ships with Create Aeronautics, and the panels follow the ship as it turns, so "up" is always the ship's up. Goggles show the panel's real output wherever it is. There's no weather in space. On the Moon they follow the Moon's own day and night instead of the Overworld's, and never get rained on. Cosmonautics is optional, and this was built against Cosmonautics 26.08.307.

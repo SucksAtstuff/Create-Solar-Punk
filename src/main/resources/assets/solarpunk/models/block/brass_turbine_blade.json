@@ -1,6 +1,6 @@
 {
   "parent": "solarpunk:block/turbine_blade",
   "textures": {
-    "casing": "create:block/brass_casing"
+    "blade": "solarpunk:block/steam_turbine/turbine_blade/brass_turbine_blade"
   }
 }
