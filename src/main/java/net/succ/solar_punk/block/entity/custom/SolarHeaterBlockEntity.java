@@ -154,7 +154,7 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
             return;
         }
 
-        boolean rainPenalty = level.isRaining() && level.getGameTime() % 2 != 0;
+        boolean rainPenalty = SolarHelper.isRaining(level) && level.getGameTime() % 2 != 0;
         boolean shouldBeLit = false;
 
         // --- Item melting ---
@@ -220,8 +220,8 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
 
     private boolean isSunShining() {
         if (level == null) return false;
-        long time = level.getDayTime() % 24000;
-        return time < 12000 && !level.isThundering() && level.canSeeSky(worldPosition.above());
+        return SolarHelper.isDaytime(level, worldPosition) && !SolarHelper.isThundering(level)
+                && SolarHelper.hasSkyAccess(level, worldPosition);
     }
 
     private void setLit(boolean lit) {

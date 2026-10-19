@@ -106,6 +106,9 @@ public class Config {
     private static final ModConfigSpec.DoubleValue CFG_SERENE_SEASONS_SUMMER_MULTIPLIER;
     private static final ModConfigSpec.DoubleValue CFG_SERENE_SEASONS_WINTER_MULTIPLIER;
 
+    private static final ModConfigSpec.DoubleValue CFG_SPACE_SOLAR_MULTIPLIER;
+    private static final ModConfigSpec.BooleanValue CFG_SPACE_REAL_SUN;
+
     // -------------------------------------------------------------------------
     // Machines — speed and output amounts
     // -------------------------------------------------------------------------
@@ -284,6 +287,19 @@ public class Config {
                 "savanna, badlands, jungle) barely swing at all regardless, matching Serene Seasons treating",
                 "them as seasonless.")
                 .defineInRange("winter_multiplier", 0.7, 0.05, 1.0);
+        BUILDER.pop();
+
+        BUILDER.push("space");
+        CFG_SPACE_SOLAR_MULTIPLIER = BUILDER.comment(
+                "Output multiplier for Solar Panels and the Solar Power Tower in dimensions tagged",
+                "solarpunk:always_sunny (e.g. Create: Cosmonautics deep space). Those dimensions have no",
+                "weather, so 1.0 keeps output at the normal noon value while the sun is up.")
+                .defineInRange("output_multiplier", 1.0, 0.0, 10.0);
+        CFG_SPACE_REAL_SUN = BUILDER.comment(
+                "In Create: Cosmonautics deep space, follow the real sun: panels facing away from it, in a",
+                "planet's shadow, or shaded by the station's hull stop producing. Set to false to make deep",
+                "space always sunny instead, so panels only need a clear view straight up.")
+                .define("real_sun", true);
         BUILDER.pop();
 
         BUILDER.pop(); // generators
@@ -499,6 +515,9 @@ public class Config {
     public static boolean sereneSeasonsEnabled;
     public static double sereneSeasonsSummerMultiplier, sereneSeasonsWinterMultiplier;
 
+    public static double spaceSolarMultiplier;
+    public static boolean spaceRealSun;
+
     public static int solarHeaterMeltTicks, solarHeaterEvaporationTicks, solarHeaterWaterPerSalt;
     public static int fireboxBoilerSteamPerTick;
     public static int fermentationTicks, fermentationWaterPerBatch, fermentationBiofuelPerBatch;
@@ -574,6 +593,9 @@ public class Config {
         sereneSeasonsEnabled          = CFG_SERENE_SEASONS_ENABLED.get();
         sereneSeasonsSummerMultiplier = CFG_SERENE_SEASONS_SUMMER_MULTIPLIER.get();
         sereneSeasonsWinterMultiplier = CFG_SERENE_SEASONS_WINTER_MULTIPLIER.get();
+
+        spaceSolarMultiplier = CFG_SPACE_SOLAR_MULTIPLIER.get();
+        spaceRealSun         = CFG_SPACE_REAL_SUN.get();
 
         solarHeaterMeltTicks       = CFG_SOLAR_HEATER_MELT_TICKS.get();
         solarHeaterEvaporationTicks = CFG_SOLAR_HEATER_EVAPORATION_TICKS.get();

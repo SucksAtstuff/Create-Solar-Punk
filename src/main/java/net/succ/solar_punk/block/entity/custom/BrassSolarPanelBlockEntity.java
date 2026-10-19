@@ -22,7 +22,6 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
 import net.succ.solar_punk.client.sound.BrassPanelSoundInstance;
-import net.succ.solar_punk.compat.sereneseasons.SeasonalSolar;
 import net.succ.solar_punk.util.EnergyFormat;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,19 +47,23 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
     @Nullable
     private BrassPanelSoundInstance soundInstance;
 
+    // Last tick's output, synced for the goggle tooltip. The client can't always work it
+    // out itself: in Cosmonautics deep space the sun position is server-only data.
+    private int lastGenerated = 0;
+
     public BrassSolarPanelBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
     private int getGeneratedFE() {
         if (!SolarHelper.hasSkyAccess(level, worldPosition)) return 0;
-        int base = switch (SolarHelper.getPhase(level)) {
+        int base = switch (SolarHelper.getPhase(level, worldPosition)) {
             case MORNING, EVENING -> Config.brassMorningFe;
-            case NOON -> level.isRaining() ? Config.brassMorningFe : Config.brassNoonFe;
+            case NOON -> SolarHelper.isRaining(level) ? Config.brassMorningFe : Config.brassNoonFe;
             case NIGHT -> 0;
         };
         if (base == 0) return 0;
-        return Math.round(base * SeasonalSolar.outputMultiplier(level, worldPosition));
+        return Math.round(base * SolarHelper.outputMultiplier(level, worldPosition));
     }
 
     public void tick() {
@@ -71,6 +74,7 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
         }
 
         int generated = getGeneratedFE();
+        lastGenerated = generated;
         if (generated > 0) {
             energyStorage.generate(generated);
             setChanged();
@@ -126,7 +130,7 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         CreateLang.translate("solar_punk.tooltip.fe_header").forGoggles(tooltip);
 
-        int generated = getGeneratedFE();
+        int generated = lastGenerated;
         CreateLang.translate("solar_punk.tooltip.generating")
                 .style(ChatFormatting.GRAY)
                 .add(Component.literal(EnergyFormat.feRate(generated))
@@ -157,11 +161,13 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.putInt("energy", energyStorage.getEnergyStored());
+        tag.putInt("generated", lastGenerated);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         energyStorage.setStored(tag.getInt("energy"));
+        lastGenerated = tag.getInt("generated");
     }
 }

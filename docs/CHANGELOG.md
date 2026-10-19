@@ -1,3 +1,11 @@
+# 1.2.0-1.21.1
+
+### Solar Power in Space
+
+Solar blocks now work in space with Create: Cosmonautics, and follow the real sun just like they do in the Overworld. In deep space, Solar Panels, the Solar Heater, and the Solar Power Tower track where the sun actually is: turn your station away from it and they go dark, fly into a planet's shadow and it's night, and your station's own hull can shade them. Stations are built as ships with Create Aeronautics, and the panels follow the ship as it turns, so "up" is always the ship's up. Goggles show the panel's real output wherever it is. There's no weather in space. On the Moon they follow the Moon's own day and night instead of the Overworld's, and never get rained on. Cosmonautics is optional, and this was built against Cosmonautics 26.08.307.
+
+Other space mods and modpacks can add their dimensions to the `solarpunk:always_sunny` (constant sunshine, no weather) or `solarpunk:no_weather` (normal day and night, no weather) dimension type tags with a datapack. Two new config options under `[space]`: `output_multiplier` boosts solar output in deep space, and `real_sun` can be turned off to make deep space always sunny instead of following the real sun.
+
 # 1.1.1-1.21.1
 
 Thanks to Studio V for reviewing the mod in [This Create Addon Adds FUSION](https://www.youtube.com/watch?v=OxV7FP923lA)! Watching the video is how I found out the Turbine Rotor was missing its recipe.

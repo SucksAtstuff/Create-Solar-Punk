@@ -10,11 +10,12 @@ import net.minecraft.world.phys.Vec3;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
-import net.succ.solar_punk.compat.sereneseasons.SeasonalSolar;
 
 import java.util.List;
 
@@ -50,30 +51,40 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
     @Override
     public float getGeneratedSpeed() {
         if (!SolarHelper.hasSkyAccess(level, worldPosition)) return 0;
-        float speed = switch (SolarHelper.getPhase(level)) {
+        float speed = switch (SolarHelper.getPhase(level, worldPosition)) {
             case MORNING, EVENING -> Config.andesiteMorningRpm;
-            case NOON -> level.isRaining() ? Config.andesiteMorningRpm : Config.andesiteNoonRpm;
+            case NOON -> SolarHelper.isRaining(level) ? Config.andesiteMorningRpm : Config.andesiteNoonRpm;
             case NIGHT -> 0;
         };
         // Round so the network keeps clean integer RPM; the season only shifts every few
         // in-game days, so this doesn't churn the kinetic network.
-        if (speed != 0) speed = Math.round(speed * SeasonalSolar.outputMultiplier(level, worldPosition));
+        if (speed != 0) speed = Math.round(speed * SolarHelper.outputMultiplier(level, worldPosition));
         if (rotationDirection.get() == RotationDirection.COUNTER_CLOCKWISE) speed = -speed;
         return speed;
     }
 
+    // Server-computed capacity, synced for the goggle tooltip. The client can't always work
+    // it out itself: in Cosmonautics deep space the sun position is server-only data.
+    private float syncedCapacity = 0;
+
     @Override
     public float calculateAddedStressCapacity() {
+        if (level != null && level.isClientSide) return syncedCapacity;
+        float capacity = computeCapacity();
+        this.lastCapacityProvided = capacity;
+        return capacity;
+    }
+
+    private float computeCapacity() {
         float capacity = 0;
         if (SolarHelper.hasSkyAccess(level, worldPosition)) {
-            capacity = switch (SolarHelper.getPhase(level)) {
+            capacity = switch (SolarHelper.getPhase(level, worldPosition)) {
                 case MORNING, EVENING -> Config.andesiteMorningSu;
-                case NOON -> level.isRaining() ? Config.andesiteMorningSu : Config.andesiteNoonSu;
+                case NOON -> SolarHelper.isRaining(level) ? Config.andesiteMorningSu : Config.andesiteNoonSu;
                 case NIGHT -> 0;
             };
-            if (capacity != 0) capacity *= SeasonalSolar.outputMultiplier(level, worldPosition);
+            if (capacity != 0) capacity *= SolarHelper.outputMultiplier(level, worldPosition);
         }
-        this.lastCapacityProvided = capacity;
         return capacity;
     }
 
@@ -82,11 +93,28 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
         super.tick();
         if (level != null && !level.isClientSide && level.getGameTime() % 20 == 0) {
             updateGeneratedRotation();
+            float capacity = computeCapacity();
+            if (capacity != syncedCapacity) {
+                syncedCapacity = capacity;
+                sendData();
+            }
             boolean active = getGeneratedSpeed() != 0;
             BlockState state = level.getBlockState(worldPosition);
             if (!(state.getBlock() instanceof AndesiteSolarPanelBlock)) return;
             if (state.getValue(AndesiteSolarPanelBlock.LIT) != active)
                 level.setBlock(worldPosition, state.setValue(AndesiteSolarPanelBlock.LIT, active), 3);
         }
+    }
+
+    @Override
+    protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.write(tag, registries, clientPacket);
+        if (clientPacket) tag.putFloat("SolarCapacity", syncedCapacity);
+    }
+
+    @Override
+    protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
+        super.read(tag, registries, clientPacket);
+        if (clientPacket) syncedCapacity = tag.getFloat("SolarCapacity");
     }
 }
