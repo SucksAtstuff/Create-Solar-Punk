@@ -2,6 +2,12 @@
 
 A NeoForge mod for Minecraft 1.21.1 that adds solar energy generation, thermal storage, biofuel production, and an optional global warming system to the Create ecosystem.
 
+**New to the mod?** Watch this video for a walkthrough of sorts covering what it adds and how it all fits together:
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/OxV7FP923lA" title="Create: Solarpunk walkthrough" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+[Watch on YouTube](https://youtu.be/OxV7FP923lA)
+
 ## Requirements
 
 - Minecraft 1.21.1

@@ -230,7 +230,7 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         float baseRate = (width * width) * (float) Math.pow(heightFraction, 1.5) * efficiency;
         float rate = steamMode ? baseRate * (float) Config.solarPowerTowerSteamMultiplier
                                : baseRate * (float) Config.solarPowerTowerSaltMultiplier;
-        rate *= net.succ.solar_punk.compat.sereneseasons.SeasonalSolar.outputMultiplier(level, worldPosition);
+        rate *= SolarHelper.outputMultiplier(level, worldPosition);
         if (steamMode) {
             saltAccumulator = 0f;
             boolean hasSpaceForOne = steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), 1),
@@ -279,9 +279,8 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
 
     private boolean isSunActive() {
         if (level == null) return false;
-        long time = level.getDayTime() % 24000;
-        if (time >= 12000 || level.isThundering() || level.isRaining()) return false;
-        return level.canSeeSky(worldPosition.above(height));
+        if (!SolarHelper.isDaytime(level, worldPosition) || SolarHelper.isThundering(level) || SolarHelper.isRaining(level)) return false;
+        return SolarHelper.canSeeSky(level, worldPosition.above(height));
     }
 
     // -------------------------------------------------------------------------
@@ -358,7 +357,7 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         // occupies two cells (see SolarMirrorBlock's lower/upper halves) and, like any
         // non-fully-transparent block, each one absorbs a point of its own incoming
         // skylight - so genuinely open air only starts two cells above the mirror's base.
-        if (!level.canSeeSky(mirrorPos.above().above())) return false;
+        if (!SolarHelper.canSeeSky(level, mirrorPos.above().above())) return false;
 
         BlockPos receiverPos = worldPosition.above(Math.max(height - 1, 0));
         BlockPos mirrorTopPos = mirrorPos.above();
