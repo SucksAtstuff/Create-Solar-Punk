@@ -1,20 +1,27 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
   "category": "misc",
   "key": {
     "B": {
-      "item": "create:brass_ingot"
+      "item": "create:brass_sheet"
     },
     "E": {
       "item": "create:electron_tube"
     },
     "G": {
       "item": "minecraft:glass_pane"
+    },
+    "H": {
+      "item": "create:brass_casing"
+    },
+    "P": {
+      "item": "solarpunk:photovoltaic_cell"
     }
   },
   "pattern": [
     "GGG",
-    "BBB",
+    "PHP",
     "EBE"
   ],
   "result": {

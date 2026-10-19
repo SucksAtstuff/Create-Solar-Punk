@@ -30,6 +30,13 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.BERYLLIUM_DUST.get());
         basicItem(ModItems.BERYLLIUM_INGOT.get());
         basicItem(ModItems.BERYLLIUM_NUGGET.get());
+        basicItem(ModItems.PHOTOVOLTAIC_CELL.get());
+        // No separate incomplete texture yet, so it reuses the finished cell's
+        withExistingParent(ModItems.INCOMPLETE_PHOTOVOLTAIC_CELL.getId().getPath(), "item/generated")
+                .texture("layer0", ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "item/photovoltaic_cell"));
+        // Same for the mirror: shows the finished mirror's held-item model
+        withExistingParent(ModItems.INCOMPLETE_SOLAR_MIRROR.getId().getPath(),
+                ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "block/solar_mirror"));
         basicItem(ModFluids.MOLTEN_SALT_BUCKET.get());
         basicItem(ModFluids.BIOFUEL_BUCKET.get());
         basicItem(ModFluids.FERTILIZER_BUCKET.get());

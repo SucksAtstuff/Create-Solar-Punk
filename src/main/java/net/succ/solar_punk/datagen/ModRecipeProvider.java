@@ -129,24 +129,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_beryllium_block", has(ModBlocks.BERYLLIUM_BLOCK.get()))
                 .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "beryllium_ingot_from_block"));
 
-        // Fusion Reactor Core - the one piece of the structure with no recipe yet
-        // (Casing is an item_application recipe in ModItemApplicationRecipeGen, the
-        // Blanket modules are mechanical crafting in ModMechanicalCraftingRecipeGen).
-        // Both fuel-chain ingots ring a Netherite Ingot at the literal center of the
-        // pattern - the block is the reactor's core, so the recipe's core is too.
-        //   L B L
-        //   B N B
-        //   L B L
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.FUSION_REACTOR_CORE.get())
-                .pattern("LBL")
-                .pattern("BNB")
-                .pattern("LBL")
-                .define('L', ModItems.LITHIUM_INGOT.get())
-                .define('B', ModItems.BERYLLIUM_INGOT.get())
-                .define('N', Items.NETHERITE_INGOT)
-                .unlockedBy("has_fusion_reactor_casing", has(ModBlocks.FUSION_REACTOR_CASING.get()))
-                .save(output);
-
         // Turbine Rotor - kept cheap since a turbine needs one per blade layer plus the
         // cap. Shafts run through the column axis, and the Turbine Casing matches the
         // rotor's casing texture.
@@ -168,7 +150,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("C C")
                 .pattern("AAA")
                 .define('G', Items.GLASS_PANE)
-                .define('C', Items.COPPER_INGOT)
+                .define('C', createItem("copper_sheet"))
                 .define('A', createItem("andesite_alloy"))
                 .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
                 .save(output);
@@ -179,7 +161,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("BGB")
                 .pattern("CIC")
                 .pattern("BGB")
-                .define('B', createItem("brass_ingot"))
+                .define('B', createItem("brass_sheet"))
                 .define('G', Items.GLASS_PANE)
                 .define('C', createItem("brass_casing"))
                 .define('I', createItem("fluid_tank"))
@@ -200,22 +182,13 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ANDESITE_SOLAR_PANEL.get())
                 .pattern("GGG")
-                .pattern("AAA")
+                .pattern("IAI")
                 .pattern("ASA")
                 .define('G', Items.GLASS_PANE)
+                .define('I', createItem("iron_sheet"))
                 .define('A', createItem("andesite_alloy"))
                 .define('S', createItem("shaft"))
                 .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
-                .save(output);
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BRASS_SOLAR_PANEL.get())
-                .pattern("GGG")
-                .pattern("BBB")
-                .pattern("EBE")
-                .define('G', Items.GLASS_PANE)
-                .define('B', createItem("brass_ingot"))
-                .define('E', createItem("electron_tube"))
-                .unlockedBy("has_brass_ingot", has(createItem("brass_ingot")))
                 .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.KINETIC_BATTERY.get())
@@ -232,9 +205,9 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("BSB")
                 .pattern("DDD")
                 .define('D', Items.DEEPSLATE_BRICKS)
-                .define('B', createItem("brass_ingot"))
+                .define('B', createItem("brass_sheet"))
                 .define('S', ModBlocks.SALT_BLOCK.get())
-                .unlockedBy("has_brass_ingot", has(createItem("brass_ingot")))
+                .unlockedBy("has_brass_sheet", has(createItem("brass_sheet")))
                 .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BIOMASS_GASIFIER.get())
@@ -245,17 +218,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('C', createItem("andesite_casing"))
                 .define('S', createItem("shaft"))
                 .unlockedBy("has_andesite_casing", has(createItem("andesite_casing")))
-                .save(output);
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BIOFUEL_ENGINE.get())
-                .pattern("BCB")
-                .pattern("SFS")
-                .pattern("BCB")
-                .define('B', createItem("brass_ingot"))
-                .define('C', createItem("brass_casing"))
-                .define('S', createItem("shaft"))
-                .define('F', createItem("flywheel"))
-                .unlockedBy("has_brass_casing", has(createItem("brass_casing")))
                 .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.FERMENTATION_VAT.get())
@@ -277,27 +239,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('S', createItem("shaft"))
                 .define('H', createItem("chute"))
                 .unlockedBy("has_andesite_casing", has(createItem("andesite_casing")))
-                .save(output);
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SOLAR_MIRROR.get())
-                .pattern("GGG")
-                .pattern("RAR")
-                .pattern("SAS")
-                .define('G', Items.GLASS_PANE)
-                .define('R', Items.REDSTONE)
-                .define('S', Blocks.SMOOTH_STONE)
-                .define('A', createItem("andesite_alloy"))
-                .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
-                .save(output);
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SOLAR_POWER_TOWER.get())
-                .pattern("QIQ")
-                .pattern("IAI")
-                .pattern("QIQ")
-                .define('Q', Items.QUARTZ_BLOCK)
-                .define('I', Items.IRON_INGOT)
-                .define('A', createItem("andesite_alloy"))
-                .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
                 .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.KINETIC_SPRINKLER.get())

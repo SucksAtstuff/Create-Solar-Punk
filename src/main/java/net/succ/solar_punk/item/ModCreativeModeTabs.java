@@ -57,6 +57,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.BIOMASS.get());
                         output.accept(ModItems.BIOMASS_PELLET.get());
                         output.accept(ModItems.BIOCHAR.get());
+                        output.accept(ModItems.PHOTOVOLTAIC_CELL.get());
                         output.accept(ModBlocks.TURBINE_CASING.get());
                         output.accept(ModBlocks.TURBINE_CASING_GLASS.get());
                         output.accept(ModBlocks.TURBINE_ROTOR.get());

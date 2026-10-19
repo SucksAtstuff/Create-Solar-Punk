@@ -5,11 +5,15 @@
   "key": {
     "B": {
       "item": "solarpunk:beryllium_ingot"
+    },
+    "S": {
+      "item": "create:copper_sheet"
     }
   },
   "pattern": [
-    "BBBB",
-    "BB  "
+    "BBB",
+    "BSB",
+    "BBB"
   ],
   "result": {
     "count": 2,

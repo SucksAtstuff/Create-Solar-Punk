@@ -8,13 +8,16 @@
     "G": {
       "item": "minecraft:glass_pane"
     },
+    "I": {
+      "item": "create:iron_sheet"
+    },
     "S": {
       "item": "create:shaft"
     }
   },
   "pattern": [
     "GGG",
-    "AAA",
+    "IAI",
     "ASA"
   ],
   "result": {

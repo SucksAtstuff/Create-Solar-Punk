@@ -1,5 +1,6 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
   "category": "misc",
   "key": {
     "B": {
@@ -10,12 +11,15 @@
     },
     "N": {
       "item": "minecraft:netherite_ingot"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
     }
   },
   "pattern": [
-    "LBL",
-    "BNB",
-    "LBL"
+    "PLBLP",
+    "LBNBL",
+    "PLBLP"
   ],
   "result": {
     "count": 1,

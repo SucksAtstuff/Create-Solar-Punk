@@ -1,4 +1,23 @@
-# 1.2.0-1.21.1
+# 2.0.0-1.21.1
+
+### Recipe Overhaul
+
+Higher-tier machines now need real Create processing instead of just a crafting table, so the mod's progression follows Create's own: cheap to get started, then sheets, assembly lines and Precision Mechanisms as you move up.
+
+**New: Photovoltaic Cell**, made by sequenced assembly: Glass Pane, then deploy Polished Rose Quartz, deploy a Copper Sheet, and press. It's used in the Brass Solar Panel.
+
+- **Andesite Solar Panel:** now uses Iron Sheets.
+- **Solar Heater:** Copper Ingots replaced with Copper Sheets.
+- **Crystallizer** and **Heat Battery:** Brass Ingots replaced with Brass Sheets.
+- **Brass Solar Panel:** now made in a Mechanical Crafter, with Photovoltaic Cells, a Brass Casing, Electron Tubes and a Brass Sheet.
+- **Biofuel Engine:** now made in a Mechanical Crafter, with Brass Sheets instead of Ingots.
+- **Solar Mirror:** now made by sequenced assembly: Iron Sheet, then deploy a Glass Pane, deploy a Cogwheel, and press.
+- **Solar Power Tower:** now made in a Mechanical Crafter with a Precision Mechanism, and gives 2 blocks per craft.
+- **Fusion Reactor Core:** now made in a Mechanical Crafter, with 4 Precision Mechanisms added.
+- **Lithium Breeder Module:** 8 Lithium Ingots around a Fluid Tank.
+- **Beryllium Reflector Module:** 8 Beryllium Ingots around a Copper Sheet.
+
+**For modpack makers:** the Brass Solar Panel, Biofuel Engine, Solar Mirror, Solar Power Tower and Fusion Reactor Core recipes have new IDs, under `mechanical_crafting/` or `sequenced_assembly/`. Update any recipe overrides that point at the old ones.
 
 ### Solar Power in Space
 

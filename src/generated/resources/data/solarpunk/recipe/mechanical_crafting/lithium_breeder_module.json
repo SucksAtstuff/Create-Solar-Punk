@@ -5,11 +5,15 @@
   "key": {
     "L": {
       "item": "solarpunk:lithium_ingot"
+    },
+    "T": {
+      "item": "create:fluid_tank"
     }
   },
   "pattern": [
-    "LLLL",
-    "LL  "
+    "LLL",
+    "LTL",
+    "LLL"
   ],
   "result": {
     "count": 2,

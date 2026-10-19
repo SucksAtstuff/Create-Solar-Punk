@@ -1,9 +1,10 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
   "category": "misc",
   "key": {
     "B": {
-      "item": "create:brass_ingot"
+      "item": "create:brass_sheet"
     },
     "C": {
       "item": "create:brass_casing"

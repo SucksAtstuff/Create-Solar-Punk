@@ -1,5 +1,6 @@
 package net.succ.solar_punk.item;
 
+import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -47,6 +48,19 @@ public class ModItems {
 
     public static final DeferredItem<Item> BERYLLIUM_NUGGET = ITEMS.register("beryllium_nugget",
             () -> new Item(new Item.Properties()));
+
+    // Brass-tier solar component, made by sequenced assembly in
+    // ModSequencedAssemblyRecipeGen. The incomplete item is the transitional item
+    // Create shows on the belt between steps.
+    public static final DeferredItem<Item> PHOTOVOLTAIC_CELL = ITEMS.register("photovoltaic_cell",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_PHOTOVOLTAIC_CELL = ITEMS.register("incomplete_photovoltaic_cell",
+            () -> new SequencedAssemblyItem(new Item.Properties()));
+
+    // Transitional item for the Solar Mirror's sequenced assembly
+    public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_SOLAR_MIRROR = ITEMS.register("incomplete_solar_mirror",
+            () -> new SequencedAssemblyItem(new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

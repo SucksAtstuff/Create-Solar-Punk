@@ -1,0 +1,61 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "item": "minecraft:glass_pane"
+  },
+  "results": [
+    {
+      "id": "solarpunk:photovoltaic_cell"
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_photovoltaic_cell"
+        },
+        {
+          "item": "create:polished_rose_quartz"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_photovoltaic_cell"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_photovoltaic_cell"
+        },
+        {
+          "item": "create:copper_sheet"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_photovoltaic_cell"
+        }
+      ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_photovoltaic_cell"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_photovoltaic_cell"
+        }
+      ]
+    }
+  ],
+  "transitional_item": {
+    "id": "solarpunk:incomplete_photovoltaic_cell"
+  }
+}
