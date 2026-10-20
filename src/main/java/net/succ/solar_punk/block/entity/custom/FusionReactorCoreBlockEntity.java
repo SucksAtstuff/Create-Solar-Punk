@@ -36,9 +36,10 @@ import java.util.List;
 // Fusion Reactor centerpiece. Unlike the Turbine's stacking-rotor scan, this is a
 // single fixed-size voxel-sphere shell scan (Mekanism SPS-inspired, see
 // plan_for_fusion.md): the Core sits at the exact center, FusionReactorCasingBlock /
-// _GLASS must fill the *entire* shell at rounded-distance CASING_SHELL_DIST (the
-// player can already choose the see-through Casing Glass variant there if they want a
-// view in - it's in the same reactor_casing tag this scan checks), while the two
+// _GLASS must fill the outer surface of the shell at rounded-distance CASING_SHELL_DIST
+// (see isCasingPosition(); the player can already choose the see-through Casing Glass
+// variant there if they want a view in - it's in the same reactor_casing tag this
+// scan checks), while the two
 // blanket module types only need to fill the three great-circle rings of the band at
 // rounded-distance BLANKET_BAND_DIST - see isRingPosition(). The blanket band has no
 // glass equivalent, so leaving most of it open is what actually keeps the Core and its
@@ -63,6 +64,27 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
     // required positions.
     public static boolean isRingPosition(int dx, int dy, int dz) {
         return dx == 0 || dy == 0 || dz == 0;
+    }
+
+    private static int roundedDist(int dx, int dy, int dz) {
+        return Math.round((float) Math.sqrt(dx * dx + dy * dy + dz * dz));
+    }
+
+    // Casing shell = the outer surface of the rounded-distance-4 band only, i.e. the
+    // same hollow sphere WorldEdit's //hsphere or an online sphere generator gives.
+    // Positions in the band with no face neighbour outside it (the 24 at offsets like
+    // (0,2,3), tucked behind the blanket ring's diagonals) used to be required too,
+    // which made the reactor hard to build from a normal sphere template. They're now
+    // ignored, so old builds with Casing there still form.
+    public static boolean isCasingPosition(int dx, int dy, int dz) {
+        if (roundedDist(dx, dy, dz) != CASING_SHELL_DIST) return false;
+        return roundedDist(dx + 1, dy, dz) > CASING_SHELL_DIST || roundedDist(dx - 1, dy, dz) > CASING_SHELL_DIST
+                || roundedDist(dx, dy + 1, dz) > CASING_SHELL_DIST || roundedDist(dx, dy - 1, dz) > CASING_SHELL_DIST
+                || roundedDist(dx, dy, dz + 1) > CASING_SHELL_DIST || roundedDist(dx, dy, dz - 1) > CASING_SHELL_DIST;
+    }
+
+    public static boolean isBlanketPosition(int dx, int dy, int dz) {
+        return roundedDist(dx, dy, dz) == BLANKET_BAND_DIST && isRingPosition(dx, dy, dz);
     }
 
     public boolean formed = false;
@@ -92,7 +114,7 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
     // Highest redstone signal found on any exterior Casing block during the last
     // structure scan - see scanStructure()'s CASING_SHELL_DIST branch and
     // runPowerLoop()'s throttle. Refreshed on the same SCAN_INTERVAL cadence as the
-    // structure scan itself, not read live every tick, since scanning all 210 shell
+    // structure scan itself, not read live every tick, since scanning all 186 shell
     // positions for redstone every single tick would be wasteful.
     private int cachedShellSignal = 0;
 
@@ -367,8 +389,7 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         for (int dx = -SCAN_RADIUS; dx <= SCAN_RADIUS; dx++) {
             for (int dy = -SCAN_RADIUS; dy <= SCAN_RADIUS; dy++) {
                 for (int dz = -SCAN_RADIUS; dz <= SCAN_RADIUS; dz++) {
-                    int rounded = Math.round((float) Math.sqrt(dx * dx + dy * dy + dz * dz));
-                    if (rounded == CASING_SHELL_DIST) {
+                    if (isCasingPosition(dx, dy, dz)) {
                         casingRequired++;
                         BlockPos pos = worldPosition.offset(dx, dy, dz);
                         BlockState state = level.getBlockState(pos);
@@ -389,7 +410,7 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
                         // once the reactor is built.
                         int sig = level.getBestNeighborSignal(pos);
                         if (sig > shellSignal) shellSignal = sig;
-                    } else if (rounded == BLANKET_BAND_DIST && isRingPosition(dx, dy, dz)) {
+                    } else if (isBlanketPosition(dx, dy, dz)) {
                         blanketRequired++;
                         BlockState state = level.getBlockState(worldPosition.offset(dx, dy, dz));
                         if (state.is(ModTags.Blocks.REACTOR_BLANKET_LITHIUM)) lithiumFound++;

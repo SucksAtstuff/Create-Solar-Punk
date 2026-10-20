@@ -13,20 +13,18 @@ public class FusionReactorScenes {
     // --- Fusion Reactor structure ----------------------------------------------------
 
     // Fixed voxel-sphere shell, mirroring FusionReactorCoreBlockEntity.scanStructure():
-    // the Core sits at the exact center, everything at rounded 3D distance 4 is the
-    // (full) Casing shell, everything at rounded distance 3 on one of the three
-    // great-circle rings (isRingPosition()) is the Blanket band, everything else at
-    // that distance is left open. Matches the schematic laid out in ModPonderProvider.
+    // the Core sits at the exact center, isCasingPosition() is the Casing shell and
+    // isBlanketPosition() is the Blanket band. Matches the schematic laid out in ModPonderProvider.
     private static final BlockPos CORE = new BlockPos(4, 5, 4);
     private static final int SHELL_RADIUS = 4;
     private static final int BLANKET_RADIUS = 3;
 
-    private static void revealShell(SceneBuilder scene, SceneBuildingUtil util, int dist, boolean ringOnly) {
+    private static void revealShell(SceneBuilder scene, SceneBuildingUtil util, boolean blanket) {
         for (int dx = -SHELL_RADIUS; dx <= SHELL_RADIUS; dx++)
             for (int dy = -SHELL_RADIUS; dy <= SHELL_RADIUS; dy++)
                 for (int dz = -SHELL_RADIUS; dz <= SHELL_RADIUS; dz++)
-                    if ((!ringOnly || FusionReactorCoreBlockEntity.isRingPosition(dx, dy, dz))
-                            && Math.round((float) Math.sqrt(dx * dx + dy * dy + dz * dz)) == dist)
+                    if (blanket ? FusionReactorCoreBlockEntity.isBlanketPosition(dx, dy, dz)
+                                : FusionReactorCoreBlockEntity.isCasingPosition(dx, dy, dz))
                         scene.world().showSection(util.select().position(CORE.offset(dx, dy, dz)), Direction.DOWN);
     }
 
@@ -41,9 +39,8 @@ public class FusionReactorScenes {
             for (int dy = -SHELL_RADIUS; dy <= SHELL_RADIUS; dy++)
                 for (int dz = -SHELL_RADIUS; dz <= SHELL_RADIUS; dz++) {
                     if (dx + dz > WEDGE_CUTOFF) continue;
-                    int dist = Math.round((float) Math.sqrt(dx * dx + dy * dy + dz * dz));
-                    boolean isCasing = dist == SHELL_RADIUS;
-                    boolean isBlanket = dist == BLANKET_RADIUS && FusionReactorCoreBlockEntity.isRingPosition(dx, dy, dz);
+                    boolean isCasing = FusionReactorCoreBlockEntity.isCasingPosition(dx, dy, dz);
+                    boolean isBlanket = FusionReactorCoreBlockEntity.isBlanketPosition(dx, dy, dz);
                     if (!isCasing && !isBlanket) continue;
 
                     var selection = util.select().position(CORE.offset(dx, dy, dz));
@@ -55,6 +52,9 @@ public class FusionReactorScenes {
     public static void structure(SceneBuilder scene, SceneBuildingUtil util) {
         scene.title("fusion_reactor_structure", "Building the Fusion Reactor");
         scene.configureBasePlate(0, 0, 9);
+        // The 9x9x10 sphere overflows the default view on smaller/wider windows
+        scene.scaleSceneView(0.7f);
+        scene.setSceneOffsetY(-1f);
 
         scene.world().showSection(util.select().layer(0), Direction.UP);
         scene.idle(10);
@@ -68,7 +68,7 @@ public class FusionReactorScenes {
                 .attachKeyFrame();
         scene.idle(100);
 
-        revealShell(scene, util, BLANKET_RADIUS, true);
+        revealShell(scene, util, true);
         scene.idle(20);
 
         scene.overlay().showText(90)
@@ -77,7 +77,7 @@ public class FusionReactorScenes {
                 .attachKeyFrame();
         scene.idle(100);
 
-        revealShell(scene, util, SHELL_RADIUS, false);
+        revealShell(scene, util, false);
         scene.idle(20);
 
         scene.overlay().showText(80)

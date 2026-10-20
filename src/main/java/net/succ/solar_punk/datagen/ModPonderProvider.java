@@ -288,8 +288,8 @@ public class ModPonderProvider implements DataProvider {
     }
 
     // Builds the reactor's fixed voxel-sphere shell centered at local (4,5,4) - see
-    // FusionReactorCoreBlockEntity's SCAN_RADIUS/CASING_SHELL_DIST/BLANKET_BAND_DIST/
-    // isRingPosition(). Shell (rounded distance 4, full sphere) alternates solid
+    // FusionReactorCoreBlockEntity's isCasingPosition()/isBlanketPosition(). Shell
+    // (outer surface of the rounded-distance-4 band) alternates solid
     // Casing with Casing Glass windows in one corner cluster (dx+dz <= -5, i.e. facing
     // the default ponder camera angle - rotating an object 180 degrees around Y looks
     // identical to rotating the camera 180 degrees around it, so this is the direct fix
@@ -301,12 +301,11 @@ public class ModPonderProvider implements DataProvider {
         for (int dx = -r; dx <= r; dx++)
             for (int dy = -r; dy <= r; dy++)
                 for (int dz = -r; dz <= r; dz++) {
-                    int dist = Math.round((float) Math.sqrt(dx * dx + dy * dy + dz * dz));
                     int x = dx + 4, y = dy + 5, z = dz + 4;
-                    if (dist == 4) {
+                    if (FusionReactorCoreBlockEntity.isCasingPosition(dx, dy, dz)) {
                         String block = (dx + dz <= -5) ? "solarpunk:fusion_reactor_casing_glass" : "solarpunk:fusion_reactor_casing";
                         s.addBlock(x, y, z, block);
-                    } else if (dist == 3 && FusionReactorCoreBlockEntity.isRingPosition(dx, dy, dz)) {
+                    } else if (FusionReactorCoreBlockEntity.isBlanketPosition(dx, dy, dz)) {
                         String module = dx >= 0 ? "solarpunk:beryllium_reflector_module" : "solarpunk:lithium_breeder_module";
                         s.addBlock(x, y, z, module);
                     }
