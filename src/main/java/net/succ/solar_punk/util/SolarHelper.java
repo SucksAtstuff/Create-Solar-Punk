@@ -1,4 +1,4 @@
-package net.succ.solar_punk.block.entity.custom;
+package net.succ.solar_punk.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;

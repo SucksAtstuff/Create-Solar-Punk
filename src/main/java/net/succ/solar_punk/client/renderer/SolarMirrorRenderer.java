@@ -52,12 +52,9 @@ public class SolarMirrorRenderer extends SafeBlockEntityRenderer<SolarMirrorBloc
 
         Vector3f normal = computeMirrorNormal(be, level, partialTicks);
 
-        // Decompose the target normal into a yaw (azimuth) that points the post/plate
-        // assembly at the right compass direction, and a tilt (elevation) applied only
-        // to the plate on top of that yaw. Deriving elevation from the normal's own
-        // representation *inside* the already-yawed local frame (rather than a
-        // hand-picked spherical formula) guarantees azimuthRotation * elevationRotation
-        // maps local +Y exactly onto `normal`, regardless of axis-convention mistakes.
+        // Split the target normal into a yaw (azimuth) for the post and plate, and a tilt
+        // (elevation) for the plate only. Elevation is measured inside the already-yawed
+        // frame, so azimuthRotation * elevationRotation maps local +Y exactly onto normal.
         float azimuth = (float) Math.atan2(normal.x(), normal.z());
         Quaternionf azimuthRotation = new Quaternionf().rotateY(azimuth);
         Vector3f localNormal = azimuthRotation.transformInverse(new Vector3f(normal));
@@ -108,11 +105,8 @@ public class SolarMirrorRenderer extends SafeBlockEntityRenderer<SolarMirrorBloc
         return normal.normalize();
     }
 
-    // Reproduces the direction vanilla points its sun billboard in LevelRenderer#renderSky:
-    // posestack.mulPose(Axis.YP.rotationDegrees(-90)); posestack.mulPose(Axis.XP.rotationDegrees(angle));
-    // applied to the local point (0, 100, 0). Composing those two rotation matrices by hand
-    // resolves to (-sin(angle), cos(angle), 0) - verified against the decompiled source, not
-    // guessed; the previous (cos, sin, 0) was off by a consistent 90 degrees.
+    // Same direction vanilla draws its sun in LevelRenderer#renderSky: rotating (0, 100, 0)
+    // by YP(-90) then XP(angle) works out to (-sin(angle), cos(angle), 0).
     private static Vector3f sunDirection(Level level, float partialTicks) {
         float angle = level.getSunAngle(partialTicks);
         return new Vector3f(-Mth.sin(angle), Mth.cos(angle), 0.0F).normalize();

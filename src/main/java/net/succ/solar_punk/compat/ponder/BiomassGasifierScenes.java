@@ -36,7 +36,7 @@ public class BiomassGasifierScenes {
         scene.world().modifyBlockEntity(MACHINE, BiomassGasifierBlockEntity.class, be ->
                 be.itemHandler.setStackInSlot(0, new ItemStack(ModItems.BIOMASS.get(), 8)));
         scene.overlay().showText(60)
-                .text("Add Biomass into the top slot - each piece burns for 15 seconds")
+                .text("Add Biomass into the top slot - each piece burns for 10 seconds")
                 .pointAt(util.vector().topOf(MACHINE))
                 .attachKeyFrame();
         scene.idle(70);

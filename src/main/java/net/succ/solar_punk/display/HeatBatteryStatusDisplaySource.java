@@ -15,10 +15,11 @@ public class HeatBatteryStatusDisplaySource extends SingleLineDisplaySource {
         if (!(context.getSourceBlockEntity() instanceof HeatBatteryBlockEntity heatBattery))
             return EMPTY_LINE;
 
-        int level = heatBattery.getHeatLevel();
-        if (level == 2) return Component.literal("Superheated").withStyle(ChatFormatting.RED);
-        if (level == 1) return Component.literal("Heated").withStyle(ChatFormatting.YELLOW);
-        return Component.literal("None").withStyle(ChatFormatting.DARK_GRAY);
+        return switch (heatBattery.getHeatLevel()) {
+            case 2 -> Component.literal("Superheated").withStyle(ChatFormatting.RED);
+            case 1 -> Component.literal("Heated").withStyle(ChatFormatting.YELLOW);
+            default -> Component.literal("None").withStyle(ChatFormatting.DARK_GRAY);
+        };
     }
 
     @Override

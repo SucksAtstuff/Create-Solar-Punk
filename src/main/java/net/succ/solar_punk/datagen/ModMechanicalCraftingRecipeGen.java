@@ -1,17 +1,16 @@
 package net.succ.solar_punk.datagen;
 
 import com.simibubi.create.api.data.recipe.MechanicalCraftingRecipeGen;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
-import net.minecraft.core.HolderLookup;
+
+import static net.succ.solar_punk.datagen.DatagenUtil.createItem;
 
 public class ModMechanicalCraftingRecipeGen extends MechanicalCraftingRecipeGen {
 
@@ -35,9 +34,8 @@ public class ModMechanicalCraftingRecipeGen extends MechanicalCraftingRecipeGen 
                     .patternLine("BB  ")
                     .key('B', createItem("brass_casing")));
 
-    // Fusion Reactor blanket modules - a ring of ingots around a core that hints at
-    // the module's job. See plan_for_fusion.md's Tunable knob section.
-    // Breeder breeds fuel, so its core is a Fluid Tank.
+    // Fusion Reactor blanket modules: a ring of ingots around a core that hints at the
+    // module's job. The Breeder breeds fuel, so its core is a Fluid Tank.
     //   L L L
     //   L T L
     //   L L L
@@ -79,8 +77,7 @@ public class ModMechanicalCraftingRecipeGen extends MechanicalCraftingRecipeGen 
                     .key('E', createItem("electron_tube"))
                     .key('B', createItem("brass_sheet")));
 
-    // Biofuel Engine - same layout as its old crafting recipe, with brass sheets
-    // instead of ingots and moved to mechanical crafting.
+    // Biofuel Engine
     //   B C B
     //   S F S
     //   B C B
@@ -128,9 +125,5 @@ public class ModMechanicalCraftingRecipeGen extends MechanicalCraftingRecipeGen 
 
     public ModMechanicalCraftingRecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, SolarPunk.MODID);
-    }
-
-    private static Item createItem(String name) {
-        return BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create", name));
     }
 }

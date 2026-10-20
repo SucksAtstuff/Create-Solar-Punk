@@ -1,7 +1,8 @@
 package net.succ.solar_punk.client.model;
 
-import net.succ.solar_punk.block.ModBlocks;
+import com.simibubi.create.content.fluids.tank.FluidTankCTBehaviour;
 import com.simibubi.create.foundation.block.connected.CTModel;
+import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
@@ -17,16 +18,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SolarPowerTowerModel extends CTModel {
+// Connected-texture model for the Create-style multiblock tanks (Fermentation Vat,
+// Solar Power Tower). Uses Create's fluid tank CT layout, connects only to the same
+// block, and culls side faces that touch another block of the same tank.
+public class TankModel extends CTModel {
 
     private static final ModelProperty<CullData> CULL_PROPERTY = new ModelProperty<>();
 
-    public SolarPowerTowerModel(BakedModel originalModel) {
-        super(originalModel, new SolarPowerTowerCTBehaviour(
-            ModSpriteShifts.SOLAR_POWER_TOWER,
-            ModSpriteShifts.SOLAR_POWER_TOWER_TOP,
-            ModSpriteShifts.SOLAR_POWER_TOWER_INNER
-        ));
+    public TankModel(BakedModel originalModel, CTSpriteShiftEntry layerShift,
+                     CTSpriteShiftEntry topShift, CTSpriteShiftEntry innerShift) {
+        super(originalModel, new FluidTankCTBehaviour(layerShift, topShift, innerShift) {
+            @Override
+            public boolean connectsTo(BlockState state, BlockState other, BlockAndTintGetter reader,
+                                      BlockPos pos, BlockPos otherPos, Direction face) {
+                return state.getBlock() == other.getBlock();
+            }
+        });
     }
 
     @Override
@@ -35,7 +42,7 @@ public class SolarPowerTowerModel extends CTModel {
         super.gatherModelData(builder, world, pos, state, blockEntityData);
         CullData cullData = new CullData();
         for (Direction d : Direction.Plane.HORIZONTAL)
-            cullData.setCulled(d, world.getBlockState(pos.relative(d)).is(ModBlocks.SOLAR_POWER_TOWER.get()));
+            cullData.setCulled(d, world.getBlockState(pos.relative(d)).is(state.getBlock()));
         return builder.with(CULL_PROPERTY, cullData);
     }
 

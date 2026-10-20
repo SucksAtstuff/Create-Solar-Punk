@@ -22,7 +22,7 @@ public class KineticBatteryScenes {
         BlockPos dischargeShaftPos = new BlockPos(2, 1, 1);
         BlockPos pressPos        = new BlockPos(2, 1, 0);
 
-        // ── reveal base plate and battery ──────────────────────────────
+        // --- reveal base plate and battery ---
         scene.world().showSection(util.select().layer(0), Direction.UP);
         scene.idle(10);
         scene.world().showSection(util.select().position(batteryPos), Direction.DOWN);
@@ -34,7 +34,7 @@ public class KineticBatteryScenes {
                 .attachKeyFrame();
         scene.idle(80);
 
-        // ── show charging source (hand crank) and start spinning ────────
+        // --- show charging source (hand crank) and start spinning ---
         ElementLink<WorldSectionElement> crankSection = scene.world().showIndependentSection(
                 util.select().fromTo(chargeShaftPos, crankPos), Direction.SOUTH);
         scene.idle(10);
@@ -46,7 +46,7 @@ public class KineticBatteryScenes {
                 .attachKeyFrame();
         scene.idle(80);
 
-        // ── crank disappears; press revealed on the discharge side ──────
+        // --- crank disappears; press revealed on the discharge side ---
         scene.world().hideIndependentSection(crankSection, Direction.SOUTH);
         scene.idle(15);
 

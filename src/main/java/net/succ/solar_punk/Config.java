@@ -1,5 +1,6 @@
 package net.succ.solar_punk;
 
+import net.minecraft.world.item.DyeColor;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.succ.solar_punk.pollution.GlobalWarmingHandler;
@@ -7,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -110,7 +113,7 @@ public class Config {
     private static final ModConfigSpec.BooleanValue CFG_SPACE_REAL_SUN;
 
     // -------------------------------------------------------------------------
-    // Machines — speed and output amounts
+    // Machines: speed and output amounts
     // -------------------------------------------------------------------------
 
     private static final ModConfigSpec.IntValue CFG_SOLAR_HEATER_MELT_TICKS;
@@ -170,7 +173,7 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_SOLAR_POWER_TOWER_MIN_HEIGHT;
 
     // -------------------------------------------------------------------------
-    // Solar Power Tower — mirror array
+    // Solar Power Tower: mirror array
     // -------------------------------------------------------------------------
 
     private static final ModConfigSpec.IntValue CFG_SOLAR_POWER_TOWER_MIRROR_BASE_RADIUS;
@@ -179,7 +182,7 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_SOLAR_POWER_TOWER_MAX_TRACKED_MIRRORS;
 
     // -------------------------------------------------------------------------
-    // World gen — geysers
+    // World gen: geysers
     // -------------------------------------------------------------------------
 
     private static final ModConfigSpec.IntValue CFG_GEYSER_SPAWN_CHANCE;
@@ -353,10 +356,8 @@ public class Config {
         CFG_BIOFILTER_SU = BUILDER.comment("Stress units consumed while the Biofilter is running").defineInRange("su", 256, 1, 1_000_000);
         BUILDER.pop();
 
-        // Five knobs mirroring the Steam Turbine's own economy, interpolated by blanket
-        // ratio (blanketEfficiency: 0 = pure Lithium, 1 = pure Beryllium) the same way
-        // bladeEfficiency scales the turbine. See plan_for_fusion.md's Config knobs
-        // section for the worked-example math this is based on.
+        // Each knob is interpolated by blanket composition (blanketEfficiency: 0 = pure
+        // Lithium, 1 = pure Beryllium), the same way blade efficiency scales the turbine.
         BUILDER.push("fusion_reactor");
         CFG_REACTOR_STEAM_PER_LAYER_PER_TICK = BUILDER.comment(
                 "mB of steam produced per Blanket module per tick at pure-Beryllium (max output) composition.",
@@ -549,11 +550,11 @@ public class Config {
     public static double biofilterAbsorptionPerRpm;
     public static int biomeDecayThreshold, biomeDecayInterval, blocksDecayedPerInterval;
     public static String deadBiome;
-    public static Map<String, Integer> perBlockPollution = new java.util.HashMap<>();
+    public static Map<String, Integer> perBlockPollution = new HashMap<>();
     public static List<? extends String> autoDetectKeywords = new ArrayList<>();
     public static int autoDetectPollution;
     public static int aeronauticsEnginePollution;
-    public static Set<String> pollutionBlacklist = new java.util.HashSet<>();
+    public static Set<String> pollutionBlacklist = new HashSet<>();
 
     static void onLoad(final ModConfigEvent event) {
         andesiteMorningRpm   = CFG_ANDESITE_MORNING_RPM.get();
@@ -666,7 +667,7 @@ public class Config {
         blocksDecayedPerInterval  = CFG_BLOCKS_DECAYED_PER_INTERVAL.get();
         deadBiome                 = CFG_DEAD_BIOME.get();
 
-        perBlockPollution = new java.util.HashMap<>();
+        perBlockPollution = new HashMap<>();
         for (String entry : CFG_PER_BLOCK_POLLUTION.get()) {
             int sep = entry.lastIndexOf('=');
             if (sep < 0) continue;
@@ -677,13 +678,11 @@ public class Config {
 
         autoDetectKeywords = CFG_AUTO_DETECT_KEYWORDS.get();
         autoDetectPollution = CFG_AUTO_DETECT_POLLUTION.get();
-        pollutionBlacklist = new java.util.HashSet<>(CFG_POLLUTION_BLACKLIST.get());
+        pollutionBlacklist = new HashSet<>(CFG_POLLUTION_BLACKLIST.get());
         GlobalWarmingHandler.invalidateAutoDetectedCache();
 
         aeronauticsEnginePollution = CFG_AERONAUTICS_ENGINE_POLLUTION.get();
-        for (String colour : List.of("white", "orange", "magenta", "light_blue", "yellow", "lime",
-                "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black")) {
-            perBlockPollution.put("simulated:" + colour + "_portable_engine", aeronauticsEnginePollution);
-        }
+        for (DyeColor colour : DyeColor.values())
+            perBlockPollution.put("simulated:" + colour.getName() + "_portable_engine", aeronauticsEnginePollution);
     }
 }

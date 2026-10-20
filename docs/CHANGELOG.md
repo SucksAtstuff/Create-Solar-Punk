@@ -1,5 +1,7 @@
 # 2.0.0-1.21.1
 
+> **Back up your world before updating.** This is a big update, so make a copy of your world (and your server's config folder) first, just in case.
+
 ### Recipe Overhaul
 
 Higher-tier machines now need real Create processing instead of just a crafting table, so the mod's progression follows Create's own: cheap to get started, then sheets, assembly lines and Precision Mechanisms as you move up.
@@ -24,6 +26,16 @@ Higher-tier machines now need real Create processing instead of just a crafting 
 - New model and textures for the Andesite and Brass Turbine Blades.
 - Blades now show their 3D model when held, dropped, and in your inventory.
 - Placing a blade now puts its second half to your right instead of straight ahead.
+
+### Fusion Reactor
+
+- The Fusion Reactor's Casing shell now matches a standard hollow sphere, so you can build it straight from WorldEdit's `//hsphere` or an online sphere generator. Reactors built the old way still work.
+
+### Tooltips and Ponder
+
+- Fixed outdated item tooltips for the Solar Panels, Solar Power Tower, Solar Mirror, Steam Turbine, Kinetic Sprinkler, Heat Battery, Solar Heater and Biofilter.
+- The Crystallizer's tooltip now actually shows up, and the Fusion Reactor Core and both blanket modules have tooltips.
+- Fixed wrong Ponder text: the Fusion Reactor scene no longer mentions the removed Extractor blocks, the turbine scene now says one blade per arm, and the Biomass Gasifier scene gives the correct burn time.
 
 ### Solar Power in Space
 

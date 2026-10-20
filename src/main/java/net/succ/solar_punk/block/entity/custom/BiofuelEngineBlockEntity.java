@@ -13,19 +13,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -33,11 +26,10 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
-import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
 import net.succ.solar_punk.block.custom.BiofuelEngineBlock;
 import net.succ.solar_punk.client.sound.BiofuelEngineSoundInstance;
 import net.succ.solar_punk.fluid.ModFluids;
-import net.succ.solar_punk.pollution.PollutionSavedData;
+import net.succ.solar_punk.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -80,9 +72,7 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
                     }
                     @Override
                     protected boolean isSideActive(BlockState state, Direction direction) {
-                        // Everywhere except the front (matches FACING - reserved for the
-                        // lit/output face) and the bottom (reserved for the input shaft,
-                        // see hasShaftTowards) - leaves back, top, and both sides.
+                        // Every side except the front (FACING) and the bottom (the shaft).
                         return direction != state.getValue(BiofuelEngineBlock.FACING)
                                 && direction != Direction.DOWN;
                     }
@@ -144,22 +134,13 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
     @Override
     protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.write(tag, registries, clientPacket);
-        if (!biofuelTank.isEmpty()) {
-            CompoundTag t = new CompoundTag();
-            t.putString("Fluid", BuiltInRegistries.FLUID.getKey(biofuelTank.getFluid().getFluid()).toString());
-            t.putInt("Amount", biofuelTank.getFluidAmount());
-            tag.put("BiofuelTank", t);
-        }
+        FluidTankNBTHelper.save(tag, "BiofuelTank", biofuelTank);
     }
 
     @Override
     protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.read(tag, registries, clientPacket);
-        if (tag.contains("BiofuelTank")) {
-            CompoundTag t = tag.getCompound("BiofuelTank");
-            Fluid f = BuiltInRegistries.FLUID.getOptional(ResourceLocation.parse(t.getString("Fluid"))).orElse(Fluids.EMPTY);
-            if (f != Fluids.EMPTY) biofuelTank.setFluid(new FluidStack(f, t.getInt("Amount")));
-        }
+        FluidTankNBTHelper.load(tag, "BiofuelTank", biofuelTank);
     }
 
     @Override

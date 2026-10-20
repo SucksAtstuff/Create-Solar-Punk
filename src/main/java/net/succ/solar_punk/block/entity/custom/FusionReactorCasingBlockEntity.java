@@ -15,18 +15,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-// Casing/Casing Glass have no plumbing or logic of their own (see
-// FusionReactorCasingBlock's own comment) - but the reactor's actual
-// FusionReactorCoreBlockEntity, and every tank/slot it owns, sits buried at the exact
-// center of the sealed sphere and is never reachable by a player, a pipe, or a hopper
-// once the reactor is built. Every Casing position sits on the sphere's outer surface
-// and *is* reachable, so this BE just remembers where its Core is - pushed to it by the
-// Core's own scanStructure(), which already visits every Casing position each scan
-// anyway, rather than each Casing block brute-force searching for its Core on every
-// capability/goggle query - and proxies goggle info, fluid handling (Deuterium in,
-// Steam out), and item handling (Lithium Dust in) all through to it. Same
-// "non-controller cell proxies to the controller" shape FermentationVatBlockEntity
-// already uses, just for reachability instead of multiblock cell identity.
+// The Core sits buried at the center of the sealed sphere, so once the reactor is built
+// nothing can reach it. Every Casing block remembers where its Core is (set by the
+// Core's scanStructure()) and proxies goggles, fluids (Deuterium in, Steam out) and
+// items (Lithium Dust in) through to it.
 public class FusionReactorCasingBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 
     private BlockPos corePos = null;

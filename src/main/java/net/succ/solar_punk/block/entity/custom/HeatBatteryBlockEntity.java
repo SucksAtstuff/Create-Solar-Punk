@@ -5,16 +5,12 @@ import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -24,6 +20,7 @@ import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.fluid.ModFluids;
 
 import java.util.List;
+import net.succ.solar_punk.util.FluidTankNBTHelper;
 
 public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 
@@ -68,7 +65,7 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
             changed = true;
         }
 
-        int newHeat = heatStored <= 0 ? 0 : heatStored >= Config.heatBatteryMaxHeat / 4 ? 2 : 1;
+        int newHeat = Math.max(0, getHeatLevel());
         if (newHeat != getBlockState().getValue(HeatBatteryBlock.HEAT)) {
             level.setBlock(worldPosition, getBlockState().setValue(HeatBatteryBlock.HEAT, newHeat), 3);
         }
@@ -82,7 +79,7 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
     }
 
     // Returns a BoilerHeater heat value:
-    //   2 = superheated (>= 50% charge)
+    //   2 = superheated (>= 25% charge)
     //   1 = heated      (any charge)
     //  -1 = no heat     (empty)
     public int getHeatLevel() {
@@ -107,15 +104,11 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         CreateLang.translate("solar_punk.tooltip.heat_battery_header").forGoggles(tooltip);
 
-        int level = getHeatLevel();
-        Component levelText;
-        if (level == 2) {
-            levelText = Component.literal("Superheated").withStyle(ChatFormatting.RED);
-        } else if (level == 1) {
-            levelText = Component.literal("Heated").withStyle(ChatFormatting.YELLOW);
-        } else {
-            levelText = Component.literal("None").withStyle(ChatFormatting.DARK_GRAY);
-        }
+        Component levelText = switch (getHeatLevel()) {
+            case 2 -> Component.literal("Superheated").withStyle(ChatFormatting.RED);
+            case 1 -> Component.literal("Heated").withStyle(ChatFormatting.YELLOW);
+            default -> Component.literal("None").withStyle(ChatFormatting.DARK_GRAY);
+        };
         CreateLang.translate("solar_punk.tooltip.heat_level")
                 .style(ChatFormatting.GRAY)
                 .add(levelText)
@@ -144,26 +137,13 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.putInt("HeatStored", heatStored);
-        FluidStack fluid = fluidTank.getFluid();
-        if (!fluid.isEmpty()) {
-            CompoundTag fluidTag = new CompoundTag();
-            fluidTag.putString("Fluid", BuiltInRegistries.FLUID.getKey(fluid.getFluid()).toString());
-            fluidTag.putInt("Amount", fluid.getAmount());
-            tag.put("FluidTank", fluidTag);
-        }
+        FluidTankNBTHelper.save(tag, "FluidTank", fluidTank);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         heatStored = tag.getInt("HeatStored");
-        if (tag.contains("FluidTank")) {
-            CompoundTag fluidTag = tag.getCompound("FluidTank");
-            ResourceLocation fluidId = ResourceLocation.parse(fluidTag.getString("Fluid"));
-            Fluid f = BuiltInRegistries.FLUID.getOptional(fluidId).orElse(Fluids.EMPTY);
-            if (f != Fluids.EMPTY) {
-                fluidTank.setFluid(new FluidStack(f, fluidTag.getInt("Amount")));
-            }
-        }
+        FluidTankNBTHelper.load(tag, "FluidTank", fluidTank);
     }
 }

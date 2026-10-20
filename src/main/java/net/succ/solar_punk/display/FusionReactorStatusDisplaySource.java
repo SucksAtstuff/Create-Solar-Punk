@@ -12,7 +12,7 @@ public class FusionReactorStatusDisplaySource extends SingleLineDisplaySource {
 
     @Override
     protected MutableComponent provideLine(DisplayLinkContext context, DisplayTargetStats stats) {
-        FusionReactorCoreBlockEntity core = FusionReactorDisplayHelper.core(context);
+        FusionReactorCoreBlockEntity core = ModDisplaySources.reactorCore(context);
         if (core == null) return EMPTY_LINE;
 
         return switch (core.getStatus()) {

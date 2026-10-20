@@ -6,45 +6,36 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.level.BlockGetter;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.SolarMirrorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarPowerTowerBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A heliostat mirror. {@link #FACING} only decides which face the static mount is
- * bolted to at placement time - the reflective plate itself is rendered separately
- * and continuously reoriented to track the sun by {@link SolarMirrorBlockEntity}'s
- * renderer, once a nearby Solar Power Tower has linked it. Wrenching just picks the
- * block up like any other Create block; there is no manual facing to cycle anymore.
+ * A heliostat mirror. The reflective plate is rendered separately by SolarMirrorRenderer
+ * and tracks the sun once a nearby Solar Power Tower has linked it.
  *
- * <p>The post and mirror plate physically poke up into the block above the one that
- * was placed (they're taller than a single cell), so like a door or a tall flower this
- * occupies two vertical cells: a {@link DoubleBlockHalf#LOWER} half holding the block
- * entity/renderer, and a bare {@link DoubleBlockHalf#UPPER} half that only exists to
- * reserve that space - collision-wise and for placement purposes - and to keep the two
- * halves in sync (removing either one removes both). Only floor placement is supported:
- * the dynamic tracking renderer always treats the post as pointing world-up regardless
- * of {@link #FACING}, so a wall/ceiling mount would never visually line up with its own
- * base anyway.
+ * <p>The post and plate reach into the block above, so like a door this occupies two
+ * cells: a {@link DoubleBlockHalf#LOWER} half holding the block entity, and a bare
+ * {@link DoubleBlockHalf#UPPER} half that reserves the space. Removing either removes
+ * both. Only floor placement is supported, since the renderer always draws the post
+ * pointing up; {@link #FACING} is always UP.
  */
 public class SolarMirrorBlock extends Block implements EntityBlock, IWrenchable {
 
@@ -57,8 +48,7 @@ public class SolarMirrorBlock extends Block implements EntityBlock, IWrenchable 
             Block.box(0, 0, 0, 16, 2, 16),
             Block.box(7, 2, 7, 9, 16, 9));
     // Upper half: the post's remaining segment, plus a generous box approximating the
-    // mirror plate's swept volume as it tracks the sun (it rotates freely, so an exact
-    // dynamic hitbox isn't practical - this just keeps the reserved space honest).
+    // mirror plate's swept volume as it tracks the sun.
     private static final VoxelShape UPPER_SHAPE = Shapes.or(
             Block.box(7, 0, 7, 9, 6, 9),
             Block.box(1, 2, 1, 15, 6, 15));
@@ -76,8 +66,7 @@ public class SolarMirrorBlock extends Block implements EntityBlock, IWrenchable 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        // Only floor placement is supported (see class doc) - the post needs to poke up
-        // into the block above, so that cell has to be free.
+        // Floor placement only (see class doc), and the cell above has to be free.
         if (context.getClickedFace() != Direction.UP) return null;
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
@@ -128,11 +117,5 @@ public class SolarMirrorBlock extends Block implements EntityBlock, IWrenchable 
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         if (state.getValue(HALF) == DoubleBlockHalf.UPPER) return null;
         return new SolarMirrorBlockEntity(ModBlockEntities.SOLAR_MIRROR.get(), pos, state);
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return null;
     }
 }

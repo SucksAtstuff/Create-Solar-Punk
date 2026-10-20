@@ -7,17 +7,15 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -31,12 +29,14 @@ import net.succ.solar_punk.client.sound.SolarHeaterSoundInstance;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
 import net.succ.solar_punk.recipe.SolarHeaterRecipe;
+import net.succ.solar_punk.util.FluidTankNBTHelper;
+import net.succ.solar_punk.util.SolarHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
 
-public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.entity.BlockEntity implements IHaveGoggleInformation {
+public class SolarHeaterBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 
     // Slot 0: item melting input. Slot 1: evaporation salt output (no external insertion).
     public final ItemStackHandler itemHandler = new ItemStackHandler(2) {
@@ -74,7 +74,7 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
         protected void onContentsChanged() { setChanged(); }
     };
 
-    // Routes fill(water) → waterTank, drain() → fluidTank. Exposed on all non-top faces.
+    // Routes fill(water) -> waterTank, drain() -> fluidTank. Exposed on all non-top faces.
     public final IFluidHandler combinedFluidHandler = new IFluidHandler() {
         @Override public int getTanks() { return 2; }
 
@@ -235,22 +235,8 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
         tag.put("Inventory", itemHandler.serializeNBT(registries));
         tag.putInt("Progress", progress);
         tag.putInt("EvaporationProgress", evaporationProgress);
-
-        FluidStack fluid = fluidTank.getFluid();
-        if (!fluid.isEmpty()) {
-            CompoundTag fluidTag = new CompoundTag();
-            fluidTag.putString("Fluid", BuiltInRegistries.FLUID.getKey(fluid.getFluid()).toString());
-            fluidTag.putInt("Amount", fluid.getAmount());
-            tag.put("FluidTank", fluidTag);
-        }
-
-        FluidStack water = waterTank.getFluid();
-        if (!water.isEmpty()) {
-            CompoundTag waterTag = new CompoundTag();
-            waterTag.putString("Fluid", BuiltInRegistries.FLUID.getKey(water.getFluid()).toString());
-            waterTag.putInt("Amount", water.getAmount());
-            tag.put("WaterTank", waterTag);
-        }
+        FluidTankNBTHelper.save(tag, "FluidTank", fluidTank);
+        FluidTankNBTHelper.save(tag, "WaterTank", waterTank);
     }
 
     @Override
@@ -259,20 +245,8 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
         if (tag.contains("Inventory")) itemHandler.deserializeNBT(registries, tag.getCompound("Inventory"));
         progress = tag.getInt("Progress");
         evaporationProgress = tag.getInt("EvaporationProgress");
-
-        if (tag.contains("FluidTank")) {
-            CompoundTag fluidTag = tag.getCompound("FluidTank");
-            ResourceLocation fluidId = ResourceLocation.parse(fluidTag.getString("Fluid"));
-            Fluid f = BuiltInRegistries.FLUID.getOptional(fluidId).orElse(Fluids.EMPTY);
-            if (f != Fluids.EMPTY) fluidTank.setFluid(new FluidStack(f, fluidTag.getInt("Amount")));
-        }
-
-        if (tag.contains("WaterTank")) {
-            CompoundTag waterTag = tag.getCompound("WaterTank");
-            ResourceLocation fluidId = ResourceLocation.parse(waterTag.getString("Fluid"));
-            Fluid f = BuiltInRegistries.FLUID.getOptional(fluidId).orElse(Fluids.EMPTY);
-            if (f != Fluids.EMPTY) waterTank.setFluid(new FluidStack(f, waterTag.getInt("Amount")));
-        }
+        FluidTankNBTHelper.load(tag, "FluidTank", fluidTank);
+        FluidTankNBTHelper.load(tag, "WaterTank", waterTank);
     }
 
     @Override
@@ -339,7 +313,4 @@ public class SolarHeaterBlockEntity extends net.minecraft.world.level.block.enti
 
         return true;
     }
-
-    public int getProgress() { return progress; }
-    public int getEvaporationProgress() { return evaporationProgress; }
 }

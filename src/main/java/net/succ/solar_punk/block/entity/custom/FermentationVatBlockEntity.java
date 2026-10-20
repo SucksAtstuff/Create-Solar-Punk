@@ -32,6 +32,7 @@ import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock.VatPosition;
 import net.succ.solar_punk.client.sound.FermentationVatSoundInstance;
 import net.succ.solar_punk.fluid.ModFluids;
+import net.succ.solar_punk.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -189,9 +190,8 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         }
 
         int batchScale    = width * width;
-        float heightMultiplier = (float) Math.pow((double) height / MAX_HEIGHT, 1.5);
-        int waterNeeded   = Math.max(1, (int)(Config.fermentationWaterPerBatch  * batchScale * heightMultiplier));
-        int biofuelOutput = Math.max(1, (int)(Config.fermentationBiofuelPerBatch * batchScale * heightMultiplier));
+        int waterNeeded   = scaledBatchAmount(Config.fermentationWaterPerBatch);
+        int biofuelOutput = scaledBatchAmount(Config.fermentationBiofuelPerBatch);
 
         boolean hasInput   = itemHandler.getStackInSlot(0).getCount() >= batchScale;
         boolean hasWater   = waterTank.getFluidAmount() >= waterNeeded;
@@ -218,6 +218,13 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
             progress = 0;
             setChanged();
         }
+    }
+
+    // A batch consumes one item per footprint block. Fluid amounts scale with the
+    // footprint and with height (taller vats are disproportionately better).
+    private int scaledBatchAmount(int perBlock) {
+        float heightMultiplier = (float) Math.pow((double) height / MAX_HEIGHT, 1.5);
+        return Math.max(1, (int) (perBlock * width * width * heightMultiplier));
     }
 
     private void setLit(boolean lit) {
@@ -269,22 +276,21 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         int cap = waterTank.getCapacity();
         CreateLang.translate("solar_punk.tooltip.fermentation_vat_header").forGoggles(tooltip);
 
-        if (ctrl.width < Config.fermentationVatMinWidth) {
+        if (width < Config.fermentationVatMinWidth) {
             CreateLang.translate("solar_punk.tooltip.vat_too_small")
                     .style(ChatFormatting.RED)
                     .forGoggles(tooltip, 1);
             return true;
         }
-        if (ctrl.height < Config.fermentationVatMinHeight) {
+        if (height < Config.fermentationVatMinHeight) {
             CreateLang.translate("solar_punk.tooltip.vat_too_short")
                     .style(ChatFormatting.RED)
                     .forGoggles(tooltip, 1);
             return true;
         }
 
-        int batchScale = ctrl.width * ctrl.width;
-        float heightMultiplier = (float) Math.pow((double) ctrl.height / MAX_HEIGHT, 1.5);
-        int biofuelPerBatch = Math.max(1, (int)(Config.fermentationBiofuelPerBatch * batchScale * heightMultiplier));
+        int batchScale = width * width;
+        int biofuelPerBatch = scaledBatchAmount(Config.fermentationBiofuelPerBatch);
         CreateLang.translate("solar_punk.tooltip.vat_batch_scale")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(batchScale).style(ChatFormatting.WHITE).component())

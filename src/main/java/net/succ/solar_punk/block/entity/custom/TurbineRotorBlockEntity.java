@@ -24,12 +24,12 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.ModBlocks;
-import net.succ.solar_punk.block.custom.AndesiteTurbineBladeBlock;
-import net.succ.solar_punk.block.custom.BrassTurbineBladeBlock;
+import net.succ.solar_punk.block.custom.TurbineBladeBlock;
 import net.succ.solar_punk.block.custom.TurbineRotorBlock;
 import net.succ.solar_punk.client.sound.TurbineSoundInstance;
 import net.succ.solar_punk.compat.northstar.NorthstarCompat;
 import net.succ.solar_punk.fluid.ModFluids;
+import net.succ.solar_punk.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -39,16 +39,18 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
 
     private static final int SCAN_INTERVAL = 40;
     private static final int MAX_HEIGHT = 20;
+    // Blade layers plus the cap, i.e. the largest turbineHeight a scan can report.
+    public static final int MAX_LAYERS = MAX_HEIGHT + 1;
     private static final float BASE_EFFICIENCY = 0.1f;
 
     // The turbine can be built along any of the 3 axes, not just vertical. "Growth"
     // is the direction blade layers stack in; the master rotor is the layer closest
     // to the negative growth direction (the "floor" end), the cap is at the positive
     // end. The 4 "arms" a layer's blades sit on are always exactly the 4 Direction
-    // values that aren't on the growth axis - Direction.getClockWise(axis) gives the
-    // engine's own canonical cycling order, chosen here to reproduce the original
-    // shipped arm order (East,South,West,North) exactly when axis=Y.
-    private static Direction growthPositive(Direction.Axis axis) {
+    // values that aren't on the growth axis, cycled with Direction.getClockWise(axis).
+    // For axis=Y this gives East, South, West, North, which is the arm order the saved
+    // layerBladeMask bits use, so don't reorder it.
+    public static Direction growthPositive(Direction.Axis axis) {
         return switch (axis) {
             case X -> Direction.EAST;
             case Y -> Direction.UP;
@@ -84,21 +86,16 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
 
     @OnlyIn(Dist.CLIENT)
     public void tickAudio() {
-        boolean active = getBlockState().getBlock() instanceof TurbineRotorBlock
-                && getBlockState().getValue(TurbineRotorBlock.ACTIVE);
-        if (active && (soundInstance == null || soundInstance.isStopped())) {
+        if (isActive() && (soundInstance == null || soundInstance.isStopped())) {
             soundInstance = new TurbineSoundInstance(this);
             Minecraft.getInstance().getSoundManager().play(soundInstance);
         }
     }
 
-    // Steam is the mod's own fuel; Liquid Hydrogen (Northstar Redux, soft compat, see
-    // NorthstarCompat) is an accepted alternative at the same rate - same steamPerTick
-    // math below either way, it just drains whatever's actually in the tank regardless
-    // of which of the two fluids that is. FluidTank.fill() already refuses a fluid that
-    // doesn't match what's currently stored once non-empty, so the two fuels can never
-    // mix in one tank - has to fully drain before switching, no extra code needed for
-    // that exclusivity.
+    // Steam is the mod's own fuel; Liquid Hydrogen (Northstar Redux, see NorthstarCompat)
+    // is accepted at the same rate. FluidTank.fill() refuses a fluid that doesn't match
+    // what's already stored, so the two can never mix: the tank has to drain fully
+    // before switching.
     private static boolean isTurbineFuel(FluidStack stack) {
         return stack.getFluid().isSame(ModFluids.STEAM_SOURCE.get())
                 || NorthstarCompat.isTurbineFuel(stack.getFluid());
@@ -123,9 +120,9 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
     private int condensateAccumulator = 0;
 
     // Fraction (0-1) of the steam demand actually being met, smoothed over ~1s so a
-    // lumpy pipe feed doesn't jitter the network. Scales SU capacity (not RPM, which
-    // would ripple speed changes through the whole network) - an underfed turbine
-    // otherwise gave full output from any trickle that kept the tank non-empty.
+    // lumpy pipe feed doesn't jitter the network. Scales SU capacity rather than RPM,
+    // since RPM changes would ripple through the whole network. Without it, any trickle
+    // that kept the tank non-empty would give full output.
     private static final float SUPPLY_SMOOTHING = 0.05f;
     private float steamSupply = 0f;
 
@@ -170,6 +167,11 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
 
     private boolean condensateFull() {
         return condensateTank.getFluidAmount() >= condensateTank.getCapacity();
+    }
+
+    private boolean isActive() {
+        BlockState state = getBlockState();
+        return state.getBlock() instanceof TurbineRotorBlock && state.getValue(TurbineRotorBlock.ACTIVE);
     }
 
     @Override
@@ -223,8 +225,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
 
         if (!structureValid || !isMaster || steamTank.isEmpty()) {
             steamSupply = 0f;
-            if (getBlockState().getBlock() instanceof TurbineRotorBlock b
-                    && getBlockState().getValue(TurbineRotorBlock.ACTIVE)) {
+            if (isActive()) {
                 setActive(false);
                 updateGeneratedRotation();
             }
@@ -232,8 +233,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         }
 
         if (condensateFull()) {
-            if (getBlockState().getBlock() instanceof TurbineRotorBlock b
-                    && getBlockState().getValue(TurbineRotorBlock.ACTIVE)) {
+            if (isActive()) {
                 setActive(false);
                 updateGeneratedRotation();
                 ModTriggers.fireNearby(level, worldPosition, ModTriggers.TURBINE_FLOODED);
@@ -247,8 +247,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         // Update speed BEFORE draining so getGeneratedSpeed() sees a non-empty tank.
         // Also fire immediately on the first active tick so the kinetic network wakes up,
         // seeding the supply from what's in the tank so a startup doesn't ramp from 0 SU.
-        boolean wasActive = getBlockState().getBlock() instanceof TurbineRotorBlock
-                && getBlockState().getValue(TurbineRotorBlock.ACTIVE);
+        boolean wasActive = isActive();
         if (!wasActive)
             steamSupply = Math.min(1f, (float) steamTank.getFluidAmount() / steamPerTick);
         if (!wasActive || level.getGameTime() % 20 == 0) {
@@ -296,10 +295,8 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
                 for (int dist = 1; dist <= 2; dist++) {
                     BlockPos pos = layerOrigin.relative(armDir, dist);
                     BlockState bs = level.getBlockState(pos);
-                    if (bs.is(ModBlocks.ANDESITE_TURBINE_BLADE.get()))
-                        level.setBlock(pos, bs.setValue(AndesiteTurbineBladeBlock.HIDDEN, hidden), 2);
-                    else if (bs.is(ModBlocks.BRASS_TURBINE_BLADE.get()))
-                        level.setBlock(pos, bs.setValue(BrassTurbineBladeBlock.HIDDEN, hidden), 2);
+                    if (bs.getBlock() instanceof TurbineBladeBlock)
+                        level.setBlock(pos, bs.setValue(TurbineBladeBlock.HIDDEN, hidden), 2);
                 }
             }
         }
@@ -422,7 +419,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
                     if (isAndesite) { andesite++; mask |= (1 << arm); }
                     else if (isBrass) { brass++; mask |= (1 << arm); typeMask |= (1 << arm); }
                     if (isAndesite || isBrass)
-                        syncBladeOrientation(bladePos, bs, isAndesite, axis, armDir);
+                        syncBladeOrientation(bladePos, bs, axis, armDir);
                 }
             }
             newMask[s] = mask;
@@ -447,15 +444,9 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
     // but keeps the idle model looking right regardless of how the blade was placed.
     // Guarded by an equality check so a correctly-oriented blade isn't rewritten (and
     // its chunk/light state churned) on every scan interval.
-    private void syncBladeOrientation(BlockPos pos, BlockState bs, boolean isAndesite,
-                                       Direction.Axis wantAxis, Direction wantFacing) {
-        Direction curFacing = isAndesite ? bs.getValue(AndesiteTurbineBladeBlock.FACING) : bs.getValue(BrassTurbineBladeBlock.FACING);
-        Direction.Axis curAxis = isAndesite ? bs.getValue(AndesiteTurbineBladeBlock.AXIS) : bs.getValue(BrassTurbineBladeBlock.AXIS);
-        if (curFacing == wantFacing && curAxis == wantAxis) return;
-        BlockState updated = isAndesite
-                ? bs.setValue(AndesiteTurbineBladeBlock.FACING, wantFacing).setValue(AndesiteTurbineBladeBlock.AXIS, wantAxis)
-                : bs.setValue(BrassTurbineBladeBlock.FACING, wantFacing).setValue(BrassTurbineBladeBlock.AXIS, wantAxis);
-        level.setBlock(pos, updated, 2);
+    private void syncBladeOrientation(BlockPos pos, BlockState bs, Direction.Axis wantAxis, Direction wantFacing) {
+        if (bs.getValue(TurbineBladeBlock.FACING) == wantFacing && bs.getValue(TurbineBladeBlock.AXIS) == wantAxis) return;
+        level.setBlock(pos, bs.setValue(TurbineBladeBlock.FACING, wantFacing).setValue(TurbineBladeBlock.AXIS, wantAxis), 2);
     }
 
     // Corrects a subordinate Rotor block's AXIS to match the structure it's actually
@@ -471,10 +462,8 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         level.setBlock(pos, bs.setValue(TurbineRotorBlock.AXIS, wantAxis), 2);
     }
 
-    // The perpendicular plane offset helper: growthDir/uDir/vDir form a 3-axis basis
-    // (u,v span the ring/floor/cap plane), so this is a strict generalization of the
-    // old literal x/y/z arithmetic - it reduces to exactly that when axis=Y (uDir=East,
-    // vDir=South, matching the original x/z offsets one-for-one).
+    // growthDir/uDir/vDir form a 3-axis basis: u and v span the ring/floor/cap plane,
+    // alongGrowth steps along the turbine's axis. For axis=Y, u is East and v is South.
     private BlockPos offset(Direction growthDir, Direction uDir, Direction vDir, int alongGrowth, int u, int v) {
         return worldPosition.relative(growthDir, alongGrowth).relative(uDir, u).relative(vDir, v);
     }
@@ -491,7 +480,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         return true;
     }
 
-    // Every position in the full 7×7 footprint must be casing — no rotor, no air.
+    // Every position in the full 7x7 footprint must be casing: no rotor, no air.
     private boolean validateFloor(Direction growthDir, Direction uDir, Direction vDir, int alongGrowth) {
         for (int u = -3; u <= 3; u++)
             for (int v = -3; v <= 3; v++)
@@ -499,7 +488,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         return true;
     }
 
-    // Every position in the 5×5 interior (excluding outer ring and center rotor) must be casing.
+    // Every position in the 5x5 interior (excluding outer ring and center rotor) must be casing.
     private boolean validateTopCap(Direction growthDir, Direction uDir, Direction vDir, int alongGrowth) {
         for (int u = -2; u <= 2; u++)
             for (int v = -2; v <= 2; v++) {
@@ -543,12 +532,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
 
         CreateLang.translate("solar_punk.tooltip.steam_turbine_header").forGoggles(tooltip);
 
-        if (!structureValid) {
-            CreateLang.translate("solar_punk.tooltip.turbine_invalid")
-                    .style(ChatFormatting.RED).forGoggles(tooltip, 1);
-            return true;
-        }
-        if (!isMaster) {
+        if (!structureValid || !isMaster) {
             CreateLang.translate("solar_punk.tooltip.turbine_invalid")
                     .style(ChatFormatting.RED).forGoggles(tooltip, 1);
             return true;
@@ -579,13 +563,9 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
                         .style(supplyPct >= 100 ? ChatFormatting.GREEN : ChatFormatting.GOLD).component())
                 .forGoggles(tooltip, 1);
 
-        // Own key, not the shared "solar_punk.tooltip.steam" one - Firebox Boiler and
-        // Solar Power Tower use that key too and are genuinely Steam-only, so their
-        // "Steam:" label needs to stay put. The Turbine's tank can hold either fuel now
-        // (Northstar Liquid Hydrogen, soft compat - see isTurbineFuel), so its label is
-        // the generic "Fuel:", with the fluid's own name appended once the tank
-        // actually holds something, so an empty tank just reads as a plain gauge
-        // instead of naming a fluid that isn't there.
+        // Own "Fuel:" key rather than the shared "Steam:" one, since this tank can also
+        // hold Liquid Hydrogen (see isTurbineFuel). The fluid's name is appended only
+        // while the tank holds something.
         LangBuilder steamLine = CreateLang.translate("solar_punk.tooltip.turbine_fuel")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(steamTank.getFluidAmount())

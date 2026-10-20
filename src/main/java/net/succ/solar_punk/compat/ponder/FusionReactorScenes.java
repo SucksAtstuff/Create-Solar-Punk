@@ -1,6 +1,5 @@
 package net.succ.solar_punk.compat.ponder;
 
-import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.BlockPos;
@@ -16,8 +15,7 @@ public class FusionReactorScenes {
     // the Core sits at the exact center, isCasingPosition() is the Casing shell and
     // isBlanketPosition() is the Blanket band. Matches the schematic laid out in ModPonderProvider.
     private static final BlockPos CORE = new BlockPos(4, 5, 4);
-    private static final int SHELL_RADIUS = 4;
-    private static final int BLANKET_RADIUS = 3;
+    private static final int SHELL_RADIUS = FusionReactorCoreBlockEntity.SCAN_RADIUS;
 
     private static void revealShell(SceneBuilder scene, SceneBuildingUtil util, boolean blanket) {
         for (int dx = -SHELL_RADIUS; dx <= SHELL_RADIUS; dx++)
@@ -28,10 +26,9 @@ public class FusionReactorScenes {
                         scene.world().showSection(util.select().position(CORE.offset(dx, dy, dz)), Direction.DOWN);
     }
 
-    // A "peek inside" cutaway wedge, used once the reactor has formed to open a clear
-    // window straight to the Core - the same front-facing diagonal the Casing Glass
-    // corner (dx+dz <= -5) sits in, just widened so there's an actual gap to see
-    // through rather than a single glass pane's worth of sightline.
+    // A cutaway wedge, hidden once the reactor has formed to open a clear view of the
+    // Core. It's the same front-facing diagonal as the Casing Glass corner (dx+dz <= -5),
+    // widened so there's an actual gap to see through.
     private static final int WEDGE_CUTOFF = -2;
 
     private static void setWedgeShown(SceneBuilder scene, SceneBuildingUtil util, boolean shown) {
@@ -73,7 +70,7 @@ public class FusionReactorScenes {
 
         scene.overlay().showText(90)
                 .text("Fill the inner ring band with Blanket Modules - it's an open gyroscope skeleton, not a sealed ball, so the Core stays visible through the gaps. Lithium Breeder for efficient fuel use, Beryllium Reflector for raw output, mixed in whatever ratio you want")
-                .pointAt(util.vector().centerOf(CORE.offset(-BLANKET_RADIUS, 0, 0)))
+                .pointAt(util.vector().centerOf(CORE.offset(-FusionReactorCoreBlockEntity.BLANKET_BAND_DIST, 0, 0)))
                 .attachKeyFrame();
         scene.idle(100);
 

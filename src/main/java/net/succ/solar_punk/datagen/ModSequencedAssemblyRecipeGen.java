@@ -4,16 +4,15 @@ import com.simibubi.create.api.data.recipe.SequencedAssemblyRecipeGen;
 import com.simibubi.create.content.kinetics.deployer.DeployerApplicationRecipe;
 import com.simibubi.create.content.kinetics.press.PressingRecipe;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
+
+import static net.succ.solar_punk.datagen.DatagenUtil.createItem;
 
 public class ModSequencedAssemblyRecipeGen extends SequencedAssemblyRecipeGen {
 
@@ -42,9 +41,5 @@ public class ModSequencedAssemblyRecipeGen extends SequencedAssemblyRecipeGen {
 
     public ModSequencedAssemblyRecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, SolarPunk.MODID);
-    }
-
-    private static Item createItem(String name) {
-        return BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create", name));
     }
 }

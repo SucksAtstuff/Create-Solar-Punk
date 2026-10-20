@@ -110,15 +110,10 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
                 20, 0.0f
         )));
 
-        // Hard-rock ore, not an evaporite. Uses the 2-arg OreConfiguration, which
-        // defaults discardOnAirExposureChance to 0.0f - same "never discard near air"
-        // behavior as Salt's explicit 0.0f below, just spelled the terse way since
-        // there's no other target list to line up against. Targets both stone- and
-        // deepslate-replaceable blocks since the Y range straddles the transition (both
-        // targets currently resolve to the same LITHIUM_ORE block state - a dedicated
-        // LITHIUM_DEEPSLATE_ORE block exists but isn't wired in here on purpose, left as
-        // a config/addon hook for anyone who wants a distinct deepslate variant or
-        // different Y-level tuning without touching this provider).
+        // Hard-rock ore. The 2-arg OreConfiguration never discards next to air, like Salt.
+        // The Y range straddles the deepslate transition, so it targets both stone and
+        // deepslate, but both currently place LITHIUM_ORE: DEEPSLATE_LITHIUM_ORE exists
+        // but isn't generated yet.
         context.register(LITHIUM_ORE_CONFIGURED, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(
                 List.of(
                         OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
@@ -175,10 +170,8 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
                 GenerationStep.Decoration.UNDERGROUND_ORES
         ));
 
-        // Universal underground ore, no custom biome tag - targets vanilla's own
-        // IS_OVERWORLD tag (every overworld biome, Nether/End excluded) instead of a
-        // mod-specific "has_lithium_deposits" tag, since Lithium represents a hard-rock
-        // pegmatite deposit, not a surface-climate-linked one like Salt.
+        // Lithium generates in every Overworld biome, unlike Salt, which is tied to
+        // hot, dry surface biomes.
         context.register(ADD_LITHIUM_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(
                 biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                 HolderSet.direct(placed.getOrThrow(LITHIUM_ORE_PLACED)),

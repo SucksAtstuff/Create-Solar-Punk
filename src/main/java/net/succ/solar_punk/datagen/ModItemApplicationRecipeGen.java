@@ -2,15 +2,14 @@ package net.succ.solar_punk.datagen;
 
 import com.simibubi.create.api.data.recipe.ItemApplicationRecipeGen;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 
 import java.util.concurrent.CompletableFuture;
+
+import static net.succ.solar_punk.datagen.DatagenUtil.createItem;
 
 public class ModItemApplicationRecipeGen extends ItemApplicationRecipeGen {
 
@@ -24,9 +23,7 @@ public class ModItemApplicationRecipeGen extends ItemApplicationRecipeGen {
         .require(Items.GLASS)
         .output(ModBlocks.TURBINE_CASING_GLASS.get()));
 
-    // Fusion Reactor Casing - Netherite Ingot applied to a Copper Block, same
-    // item-application convention as the Turbine Casing above but one tier up: copper
-    // distributes the heat, Netherite reinforces/hardens the shell on top of it.
+    // Fusion Reactor Casing: a Netherite Ingot applied to a Copper Block.
     GeneratedRecipe FUSION_REACTOR_CASING = create("fusion_reactor_casing", b -> b
         .require(Items.COPPER_BLOCK)
         .require(Items.NETHERITE_INGOT)
@@ -39,9 +36,5 @@ public class ModItemApplicationRecipeGen extends ItemApplicationRecipeGen {
 
     public ModItemApplicationRecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, SolarPunk.MODID);
-    }
-
-    private static Item createItem(String name) {
-        return BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create", name));
     }
 }

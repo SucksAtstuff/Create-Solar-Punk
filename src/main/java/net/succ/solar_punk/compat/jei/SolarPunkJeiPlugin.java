@@ -64,21 +64,9 @@ public class SolarPunkJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(
-                new ItemStack(ModBlocks.SOLAR_HEATER.get()),
-                SolarHeaterCategory.RECIPE_TYPE
-        );
-        registration.addRecipeCatalyst(
-                new ItemStack(ModBlocks.SOLAR_POWER_TOWER.get()),
-                SolarPowerTowerCategory.RECIPE_TYPE
-        );
-        registration.addRecipeCatalyst(
-                new ItemStack(ModBlocks.FERMENTATION_VAT.get()),
-                FermentationVatCategory.RECIPE_TYPE
-        );
-        registration.addRecipeCatalyst(
-                new ItemStack(ModBlocks.CRYSTALLIZER.get()),
-                CrystallizerCategory.RECIPE_TYPE
-        );
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.SOLAR_HEATER.get()), SolarHeaterCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.SOLAR_POWER_TOWER.get()), SolarPowerTowerCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.FERMENTATION_VAT.get()), FermentationVatCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.CRYSTALLIZER.get()), CrystallizerCategory.RECIPE_TYPE);
     }
 }

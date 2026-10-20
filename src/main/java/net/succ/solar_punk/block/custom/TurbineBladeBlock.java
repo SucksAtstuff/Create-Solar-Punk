@@ -10,23 +10,24 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class AndesiteTurbineBladeBlock extends Block implements IWrenchable {
+// Andesite and Brass Turbine Blades. Which one it is only matters to the turbine's
+// structure scan, which tells them apart by block.
+public class TurbineBladeBlock extends Block implements IWrenchable {
 
-    public static final BooleanProperty HIDDEN  = BooleanProperty.create("hidden");
-    // Which perpendicular direction the arm points - purely cosmetic for the idle
-    // (non-spinning) model. The structure scan never checks this, only the block
-    // type; the master rotor's scan keeps it (and AXIS) in sync once the blade is
-    // part of a formed turbine, so placement-time defaults barely matter.
+    // Set while the turbine is running, so the static blade hides and the rotor's
+    // renderer can draw the spinning one instead.
+    public static final BooleanProperty HIDDEN = BooleanProperty.create("hidden");
+    // Which direction the arm points. Only affects the idle model: the structure scan
+    // keeps it (and AXIS) in sync once the blade is part of a formed turbine.
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    // Which axis the turbine this blade belongs to spins on - determines which way
-    // the thin flat plate lies.
+    // Which axis the blade's turbine spins on, i.e. which way the thin plate lies.
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
 
     // Thin flat plate shapes, one per possible rotor axis (2/16 thick along that axis).
@@ -34,7 +35,7 @@ public class AndesiteTurbineBladeBlock extends Block implements IWrenchable {
     private static final VoxelShape SHAPE_AXIS_X = Block.box(0, 0, 0, 2, 16, 16);
     private static final VoxelShape SHAPE_AXIS_Z = Block.box(0, 0, 0, 16, 16, 2);
 
-    public AndesiteTurbineBladeBlock(Properties properties) {
+    public TurbineBladeBlock(Properties properties) {
         super(properties);
         registerDefaultState(defaultBlockState()
                 .setValue(FACING, Direction.EAST)

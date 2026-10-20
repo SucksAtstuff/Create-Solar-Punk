@@ -3,20 +3,19 @@ package net.succ.solar_punk.pollution;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeResolver;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -24,13 +23,13 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.succ.solar_punk.Config;
-import net.succ.solar_punk.SolarPunk;
+import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.compat.sable.SableCompat;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,14 +38,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
+// Global warming: every second, active pollution sources near players add pollution to
+// the chunks around them. Pollution slowly decays, leaves absorb some, and past
+// Config.biomeDecayThreshold a chunk's surface decays and its biome turns into the dead
+// biome. Once it drops back below, the chunk heals and its biome is restored.
 public class GlobalWarmingHandler {
 
-    public static final TagKey<Block> POLLUTION_SOURCES = TagKey.create(
-        Registries.BLOCK,
-        ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "pollution_sources")
-    );
-
+    // Blocks matched by Config.autoDetectKeywords, built lazily and reset on config reload.
     private static Set<Block> autoDetectedSources = null;
 
     public static void invalidateAutoDetectedCache() {
@@ -61,7 +62,7 @@ public class GlobalWarmingHandler {
         if (keywords != null && !keywords.isEmpty()) {
             for (Block block : BuiltInRegistries.BLOCK) {
                 String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
-                if (block.defaultBlockState().is(POLLUTION_SOURCES)) continue;
+                if (block.defaultBlockState().is(ModTags.Blocks.POLLUTION_SOURCES)) continue;
                 if (Config.pollutionBlacklist.contains(BuiltInRegistries.BLOCK.getKey(block).toString())) continue;
                 for (String keyword : keywords) {
                     if (path.contains(keyword)) {
@@ -73,6 +74,44 @@ public class GlobalWarmingHandler {
         }
         autoDetectedSources = result;
         return result;
+    }
+
+    /**
+     * Pollution per second this block emits right now, or -1 if it isn't an active
+     * source: not in the tag or auto-detected, unlit, or blacklisted.
+     */
+    public static int sourcePollution(BlockState state, Set<Block> autoSources) {
+        boolean inTag = state.is(ModTags.Blocks.POLLUTION_SOURCES);
+        if (!inTag && !autoSources.contains(state.getBlock())) return -1;
+        if (state.hasProperty(BlockStateProperties.LIT) && !state.getValue(BlockStateProperties.LIT)) return -1;
+
+        String blockId = BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
+        if (Config.pollutionBlacklist.contains(blockId)) return -1;
+        return inTag ? Config.perBlockPollution.getOrDefault(blockId, Config.pollutionPerSource)
+                     : Config.autoDetectPollution;
+    }
+
+    /**
+     * Calls {@code action} for every chunk whose nearest point is within {@code radius}
+     * blocks of {@code pos}. A radius of 0 means just the chunk {@code pos} is in.
+     */
+    public static void forEachChunkInRadius(BlockPos pos, int radius, Consumer<ChunkPos> action) {
+        ChunkPos center = new ChunkPos(pos);
+        int radiusChunks = radius > 0 ? (int) Math.ceil(radius / 16.0) : 0;
+        double radiusSq = (double) radius * radius;
+        for (int dx = -radiusChunks; dx <= radiusChunks; dx++) {
+            for (int dz = -radiusChunks; dz <= radiusChunks; dz++) {
+                ChunkPos chunk = new ChunkPos(center.x + dx, center.z + dz);
+                if (radius > 0) {
+                    int nearX = Math.max(chunk.getMinBlockX(), Math.min(pos.getX(), chunk.getMaxBlockX()));
+                    int nearZ = Math.max(chunk.getMinBlockZ(), Math.min(pos.getZ(), chunk.getMaxBlockZ()));
+                    double distSq = (double) (nearX - pos.getX()) * (nearX - pos.getX())
+                                  + (double) (nearZ - pos.getZ()) * (nearZ - pos.getZ());
+                    if (distSq > radiusSq) continue;
+                }
+                action.accept(chunk);
+            }
+        }
     }
 
     public static void onLevelTick(LevelTickEvent.Post event) {
@@ -102,9 +141,6 @@ public class GlobalWarmingHandler {
     private static Map<ChunkPos, Long> countActiveSources(ServerLevel level) {
         Map<ChunkPos, Long> totals = new HashMap<>();
         int viewDist = Math.min(level.getServer().getPlayerList().getViewDistance(), 16);
-        int radius = Config.pollutionRadiusBlocks;
-        int radiusChunks = (int) Math.ceil(radius / 16.0);
-        double radiusSq = (double) radius * radius;
         Set<Block> autoSources = getAutoDetectedSources();
 
         Set<ChunkPos> visited = new HashSet<>();
@@ -118,42 +154,17 @@ public class GlobalWarmingHandler {
                     LevelChunk chunk = level.getChunkSource().getChunkNow(cp.x, cp.z);
                     if (chunk == null) continue;
 
-                    for (Map.Entry<BlockPos, BlockEntity> beEntry : chunk.getBlockEntities().entrySet()) {
-                        BlockPos pos = beEntry.getKey();
-                        BlockState state = level.getBlockState(pos);
-
-                        boolean inTag = state.is(POLLUTION_SOURCES);
-                        boolean autoDetected = !inTag && autoSources.contains(state.getBlock());
-                        if (!inTag && !autoDetected) continue;
-                        if (!isActive(state)) continue;
-
-                        String blockId = BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
-                        if (Config.pollutionBlacklist.contains(blockId)) continue;
+                    for (BlockPos pos : chunk.getBlockEntities().keySet()) {
+                        int amount = sourcePollution(level.getBlockState(pos), autoSources);
+                        if (amount < 0) continue;
 
                         level.sendParticles(
                             ParticleTypes.LARGE_SMOKE,
                             pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5,
                             2, 0.15, 0.05, 0.15, 0.01
                         );
-
-                        int amount = inTag
-                            ? Config.perBlockPollution.getOrDefault(blockId, Config.pollutionPerSource)
-                            : Config.autoDetectPollution;
-
-                        // Spread pollution to every chunk whose nearest point is within radius blocks
-                        for (int rdx = -radiusChunks; rdx <= radiusChunks; rdx++) {
-                            for (int rdz = -radiusChunks; rdz <= radiusChunks; rdz++) {
-                                ChunkPos affected = new ChunkPos(cp.x + rdx, cp.z + rdz);
-                                if (radius > 0) {
-                                    int nearX = Math.max(affected.getMinBlockX(), Math.min(pos.getX(), affected.getMaxBlockX()));
-                                    int nearZ = Math.max(affected.getMinBlockZ(), Math.min(pos.getZ(), affected.getMaxBlockZ()));
-                                    double distSq = (double)(nearX - pos.getX()) * (nearX - pos.getX())
-                                                  + (double)(nearZ - pos.getZ()) * (nearZ - pos.getZ());
-                                    if (distSq > radiusSq) continue;
-                                }
-                                totals.merge(affected, (long) amount, Long::sum);
-                            }
-                        }
+                        forEachChunkInRadius(pos, Config.pollutionRadiusBlocks,
+                                affected -> totals.merge(affected, (long) amount, Long::sum));
                     }
                 }
             }
@@ -164,13 +175,6 @@ public class GlobalWarmingHandler {
         }
 
         return totals;
-    }
-
-    private static boolean isActive(BlockState state) {
-        if (state.hasProperty(BlockStateProperties.LIT)) {
-            return state.getValue(BlockStateProperties.LIT);
-        }
-        return true;
     }
 
     private static void handlePollutedChunks(ServerLevel level, PollutionSavedData data) {
@@ -196,7 +200,7 @@ public class GlobalWarmingHandler {
             ChunkPos chunkPos = entry.getKey();
             if (!level.isLoaded(chunkPos.getMiddleBlockPosition(64))) continue;
 
-            // Leaf absorption — trees slow the spread before they die off
+            // Leaf absorption: trees slow the spread before they die off
             if (Config.leafAbsorptionPerInterval > 0) {
                 long absorbed = countLeaves(level, chunkPos) * Config.leafAbsorptionPerInterval;
                 if (absorbed > 0) data.reducePollution(chunkPos, absorbed);
@@ -204,9 +208,7 @@ public class GlobalWarmingHandler {
 
             if (pollution >= threshold) {
                 // High pollution: decay blocks and convert biome
-                if (Config.blocksDecayedPerInterval > 0) {
-                    decayBlocks(level, chunkPos, level.random);
-                }
+                replaceSurfaceBlocks(level, chunkPos, GlobalWarmingHandler::getDecayReplacement);
                 if (allDead != null) {
                     ChunkAccess chunk = level.getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL, false);
                     if (chunk != null) {
@@ -218,9 +220,7 @@ public class GlobalWarmingHandler {
                 }
             } else {
                 // Below threshold: heal blocks gradually
-                if (Config.blocksDecayedPerInterval > 0) {
-                    healBlocks(level, chunkPos, level.random);
-                }
+                replaceSurfaceBlocks(level, chunkPos, GlobalWarmingHandler::getHealReplacement);
             }
         }
 
@@ -238,9 +238,8 @@ public class GlobalWarmingHandler {
             }
 
             // Keep healing blocks even after biome is restored, until pollution is gone
-            if (data.getPollution(chunkPos) > 0 && Config.blocksDecayedPerInterval > 0) {
-                healBlocks(level, chunkPos, level.random);
-            }
+            if (data.getPollution(chunkPos) > 0)
+                replaceSurfaceBlocks(level, chunkPos, GlobalWarmingHandler::getHealReplacement);
         }
 
         if (!biomesToResend.isEmpty()) {
@@ -265,9 +264,14 @@ public class GlobalWarmingHandler {
         return count;
     }
 
-    private static void decayBlocks(ServerLevel level, ChunkPos chunkPos, RandomSource random) {
+    // Picks Config.blocksDecayedPerInterval random columns in the chunk and replaces the
+    // first block near the surface that `replacement` has a replacement for.
+    private static void replaceSurfaceBlocks(ServerLevel level, ChunkPos chunkPos,
+                                             Function<BlockState, BlockState> replacement) {
+        if (Config.blocksDecayedPerInterval <= 0) return;
         LevelChunk chunk = level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
         if (chunk == null) return;
+        RandomSource random = level.random;
 
         for (int i = 0; i < Config.blocksDecayedPerInterval; i++) {
             int lx = random.nextInt(16);
@@ -276,46 +280,25 @@ public class GlobalWarmingHandler {
             int worldZ = chunkPos.getMinBlockZ() + lz;
             int surfaceY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, lx, lz);
 
-            // Scan down from the surface looking for the first replaceable block
             for (int dy = 0; dy >= -4; dy--) {
                 BlockPos pos = new BlockPos(worldX, surfaceY + dy, worldZ);
                 BlockState state = level.getBlockState(pos);
-                BlockState replacement = getDecayReplacement(state);
-                if (replacement == null) continue;
+                BlockState replaced = replacement.apply(state);
+                if (replaced == null) continue;
 
                 // Double-tall blocks: remove the upper half first
                 if (state.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)
                         && state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER) {
                     level.setBlock(pos.above(), Blocks.AIR.defaultBlockState(), 3);
                 }
-                level.setBlock(pos, replacement, 3);
+                level.setBlock(pos, replaced, 3);
                 break;
             }
         }
     }
 
-    private static void healBlocks(ServerLevel level, ChunkPos chunkPos, RandomSource random) {
-        LevelChunk chunk = level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
-        if (chunk == null) return;
-
-        for (int i = 0; i < Config.blocksDecayedPerInterval; i++) {
-            int lx = random.nextInt(16);
-            int lz = random.nextInt(16);
-            int worldX = chunkPos.getMinBlockX() + lx;
-            int worldZ = chunkPos.getMinBlockZ() + lz;
-            int surfaceY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, lx, lz);
-
-            for (int dy = 0; dy >= -4; dy--) {
-                BlockPos pos = new BlockPos(worldX, surfaceY + dy, worldZ);
-                BlockState state = level.getBlockState(pos);
-                BlockState replacement = getHealReplacement(state);
-                if (replacement == null) continue;
-                level.setBlock(pos, replacement, 3);
-                break;
-            }
-        }
-    }
-
+    // Reverses getDecayReplacement one step at a time. Never returns a double-tall block.
+    @Nullable
     private static BlockState getHealReplacement(BlockState state) {
         Block block = state.getBlock();
         if (block == ModBlocks.ASH_BLOCK.get()) {
@@ -336,10 +319,11 @@ public class GlobalWarmingHandler {
         return null;
     }
 
+    @Nullable
     private static BlockState getDecayReplacement(BlockState state) {
         Block block = state.getBlock();
 
-        // Ground cover decays: grass → dead_grass → ruined_dirt → ash
+        // Ground cover decays: grass -> dead_grass -> ruined_dirt -> ash
         if (block == Blocks.GRASS_BLOCK || block == Blocks.MYCELIUM || block == Blocks.PODZOL) {
             return ModBlocks.DEAD_GRASS_BLOCK.get().defaultBlockState();
         }

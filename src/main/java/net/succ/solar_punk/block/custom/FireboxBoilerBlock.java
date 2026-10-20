@@ -29,10 +29,9 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.FireboxBoilerBlockEntity;
 
-// Early-game, non-multiblock Steam source: burns any vanilla furnace fuel to boil
-// water into the mod's Steam fluid. Deliberately weak per-block (see
-// Config.fireboxBoilerSteamPerTick) so it bootstraps a Steam Turbine before a Solar
-// Power Tower is built, without ever being the block-efficient endgame choice.
+// Early-game Steam source: burns any furnace fuel to boil water into Steam. Weak on
+// purpose (see Config.fireboxBoilerSteamPerTick) so it bootstraps a Steam Turbine
+// before a Solar Power Tower, without replacing the tower.
 public class FireboxBoilerBlock extends Block implements IBE<FireboxBoilerBlockEntity>, IWrenchable {
 
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
@@ -56,13 +55,8 @@ public class FireboxBoilerBlock extends Block implements IBE<FireboxBoilerBlockE
                 .setValue(LIT, false);
     }
 
-    // Reuses vanilla's own furnace crackle (block.furnace.fire_crackle) rather than a
-    // bespoke sound - a Firebox Boiler genuinely is a furnace with extra plumbing, and
-    // Create's own Blaze Burner/boiler already lean on this same family of sound, so
-    // there's no case for spending an original clip on something that already has a
-    // perfect vanilla analog. Same 10%-per-animateTick-call chance and LIT gate vanilla's
-    // own FurnaceBlock#animateTick uses; only the pitch is lightly randomized (vanilla
-    // plays it dead flat at 1.0) so it doesn't read as a literal, unvaried copy-paste.
+    // Vanilla's furnace crackle, with the same 10% chance FurnaceBlock#animateTick uses.
+    // The pitch is lightly randomized so it doesn't sound like an exact copy.
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (state.getValue(LIT) && random.nextDouble() < 0.1) {

@@ -7,7 +7,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
+// Lets pipes connect to any Turbine Casing by proxying to the master rotor's tanks.
 public class TurbineCasingBlockEntity extends BlockEntity {
+
+    // How far along the turbine's axis the master rotor can be: every blade layer and the
+    // cap, plus the floor.
+    private static final int AXIAL_REACH = TurbineRotorBlockEntity.MAX_LAYERS + 2;
+    // The rotor is at the center of the 7x7 cross-section.
+    private static final int RADIAL_REACH = 3;
 
     public TurbineCasingBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -16,17 +23,12 @@ public class TurbineCasingBlockEntity extends BlockEntity {
     @Nullable
     public IFluidHandler getFluidHandler() {
         if (level == null) return null;
-        // The master rotor can be up to MAX_HEIGHT (plus the floor/cap layers) away
-        // along whichever axis the turbine actually grows on - Y for a turbine standing
-        // up, X or Z for one built on its side (see TurbineRotorBlockEntity#growthPositive/
-        // MAX_HEIGHT). This casing block has no stored axis of its own, so it tries all
-        // three: the long search range on one axis, the 7-wide footprint range on the
-        // other two.
-        IFluidHandler handler = searchForMaster(3, 23, 3);  // Y-axis growth (standing)
+        // The casing doesn't know which axis its turbine was built along, so try all three.
+        IFluidHandler handler = searchForMaster(RADIAL_REACH, AXIAL_REACH, RADIAL_REACH);  // standing (Y)
         if (handler != null) return handler;
-        handler = searchForMaster(23, 3, 3);                // X-axis growth (on its side)
+        handler = searchForMaster(AXIAL_REACH, RADIAL_REACH, RADIAL_REACH);                // on its side (X)
         if (handler != null) return handler;
-        return searchForMaster(3, 3, 23);                   // Z-axis growth (on its side)
+        return searchForMaster(RADIAL_REACH, RADIAL_REACH, AXIAL_REACH);                   // on its side (Z)
     }
 
     @Nullable

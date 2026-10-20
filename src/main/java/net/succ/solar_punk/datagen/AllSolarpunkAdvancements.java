@@ -8,7 +8,6 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.advancement.SolarpunkAdvancement;
 import net.succ.solar_punk.advancement.SolarpunkAdvancement.TaskType;

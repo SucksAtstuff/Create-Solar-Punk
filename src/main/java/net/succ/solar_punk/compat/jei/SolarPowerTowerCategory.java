@@ -1,59 +1,26 @@
 package net.succ.solar_punk.compat.jei;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
-import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.drawable.IDrawableAnimated;
-import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluids;
-import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.fluid.ModFluids;
 
-public class SolarPowerTowerCategory implements IRecipeCategory<SolarPowerTowerCategory.DisplayRecipe> {
+// One display-only entry per tower mode (Molten Salt and Steam).
+public class SolarPowerTowerCategory extends SolarPunkCategory<SolarPowerTowerCategory.DisplayRecipe> {
 
     public record DisplayRecipe(boolean steamMode) {}
 
-    public static final RecipeType<DisplayRecipe> RECIPE_TYPE =
-            RecipeType.create(SolarPunk.MODID, "solar_power_tower", DisplayRecipe.class);
+    public static final RecipeType<DisplayRecipe> RECIPE_TYPE = type("solar_power_tower", DisplayRecipe.class);
 
     public static final DisplayRecipe SALT_INSTANCE  = new DisplayRecipe(false);
     public static final DisplayRecipe STEAM_INSTANCE = new DisplayRecipe(true);
 
-    private static final int WIDTH  = 100;
-    private static final int HEIGHT = 40;
-
-    private final IDrawable icon;
-    private final IDrawableAnimated arrow;
-
     public SolarPowerTowerCategory(IGuiHelper guiHelper) {
-        this.icon = guiHelper.createDrawableItemStack(new ItemStack(ModBlocks.SOLAR_POWER_TOWER.get()));
-        this.arrow = guiHelper.createAnimatedRecipeArrow(200);
-    }
-
-    @Override
-    public RecipeType<DisplayRecipe> getRecipeType() {
-        return RECIPE_TYPE;
-    }
-
-    @Override
-    public Component getTitle() {
-        return Component.translatable("jei.solarpunk.category.solar_power_tower");
-    }
-
-    @Override public int getWidth()  { return WIDTH; }
-    @Override public int getHeight() { return HEIGHT; }
-
-    @Override
-    public IDrawable getIcon() {
-        return icon;
+        super(guiHelper, RECIPE_TYPE, ModBlocks.SOLAR_POWER_TOWER.get(), 100, 28);
     }
 
     @Override
@@ -67,10 +34,5 @@ public class SolarPowerTowerCategory implements IRecipeCategory<SolarPowerTowerC
                 .addFluidStack(recipe.steamMode()
                         ? ModFluids.STEAM_SOURCE.get()
                         : ModFluids.MOLTEN_SALT_SOURCE.get(), 1000);
-    }
-
-    @Override
-    public void draw(DisplayRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        arrow.draw(guiGraphics, 28, 12);
     }
 }

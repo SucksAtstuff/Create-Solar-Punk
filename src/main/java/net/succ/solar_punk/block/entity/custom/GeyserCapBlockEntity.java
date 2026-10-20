@@ -9,18 +9,15 @@ import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import java.util.List;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.ModBlocks;
-import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
 import net.succ.solar_punk.block.custom.GeyserCapBlock;
 import net.succ.solar_punk.sound.ModSounds;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
@@ -30,6 +27,8 @@ import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
+
+import java.util.List;
 
 public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implements GeoBlockEntity {
 
@@ -94,7 +93,7 @@ public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implement
 
         if (level.isClientSide) {
             if (time % 40 == 0 && getBlockState().getValue(GeyserCapBlock.LIT)) {
-                // See GeyserVentBlock#animateTick for the loudness-matching behind 0.15f.
+                // Same puff as GeyserVentBlockEntity, which skips itself while capped.
                 level.playLocalSound(
                         worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5,
                         ModSounds.GEYSER_PUFF.get(), SoundSource.BLOCKS,

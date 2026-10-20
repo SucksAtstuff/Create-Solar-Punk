@@ -23,6 +23,7 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
 import net.succ.solar_punk.client.sound.BrassPanelSoundInstance;
 import net.succ.solar_punk.util.EnergyFormat;
+import net.succ.solar_punk.util.SolarHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -81,12 +82,8 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
         }
 
         if (energyStorage.getEnergyStored() > 0) {
-            // Config.brassMaxExtract is a total-per-tick cap, not a per-face one - track
-            // the remaining budget across the whole loop so a panel touching several FE
-            // receivers at once can't multiply its output by however many faces are
-            // connected. Without this, each face got its own full extractEnergy() budget
-            // and the panel would happily drain its 100 000 FE buffer several times over
-            // the tooltip's stated rate for as long as that buffer lasted.
+            // Config.brassMaxExtract is a total per-tick cap shared across all faces, so a
+            // panel touching several receivers can't multiply its output.
             int remainingBudget = Config.brassMaxExtract;
             for (Direction dir : Direction.values()) {
                 if (remainingBudget <= 0) break;

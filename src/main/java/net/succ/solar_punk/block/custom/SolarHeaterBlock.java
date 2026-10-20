@@ -3,16 +3,16 @@ package net.succ.solar_punk.block.custom;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.Containers;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -131,10 +131,7 @@ public class SolarHeaterBlock extends Block implements IBE<SolarHeaterBlockEntit
     @Override
     @SuppressWarnings("unchecked")
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        // Used to be server-only (level.isClientSide -> null) - SolarHeaterBlockEntity#tick()
-        // now needs to run client-side too for tickAudio() (the shimmer ambience sound),
-        // matching BiofuelEngineBlock/BiomassGasifierBlock/BiofilterBlock. tick() itself
-        // still branches level.isClientSide right at the top before touching server state.
+        // Ticks on both sides: the client side drives the shimmer sound.
         if (type != ModBlockEntities.SOLAR_HEATER.get()) return null;
         return (BlockEntityTicker<T>) (BlockEntityTicker<SolarHeaterBlockEntity>) (l, p, s, be) -> be.tick();
     }

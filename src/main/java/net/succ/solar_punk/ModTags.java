@@ -15,12 +15,16 @@ public class ModTags {
         );
     }
 
-    // Fusion Reactor multiblock membership - see plan_for_fusion.md. Internal
-    // categorisation tags (not `c:`), same role for the reactor's fixed voxel-sphere
-    // scan that block-type `instanceof` checks play for the Turbine's structure scan:
-    // lets the scan accept either casing block (Fusion Reactor Casing or its Glass
-    // variant) and either blanket module type without hardcoding block classes.
+    // The reactor_* tags define Fusion Reactor membership: which blocks count as Casing
+    // (solid or glass) and as each blanket module type in FusionReactorCoreBlockEntity's
+    // structure scan.
     public static class Blocks {
+        // Blocks that pollute while active (see GlobalWarmingHandler).
+        public static final TagKey<Block> POLLUTION_SOURCES = TagKey.create(
+                Registries.BLOCK,
+                ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "pollution_sources")
+        );
+
         public static final TagKey<Block> REACTOR_CASING = TagKey.create(
                 Registries.BLOCK,
                 ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "reactor_casing")

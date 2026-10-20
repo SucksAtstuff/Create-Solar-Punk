@@ -84,7 +84,7 @@ public class KineticBatteryBlockEntity extends GeneratingKineticBlockEntity {
         boolean changed = false;
 
         if (currentlyLit) {
-            // Discharging — deplete charge each tick
+            // Discharging: deplete charge each tick
             chargeLevel -= (float) Config.kineticBatteryDischargeRate;
             if (chargeLevel < 0) chargeLevel = 0;
             changed = true;

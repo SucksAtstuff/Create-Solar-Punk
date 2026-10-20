@@ -1,7 +1,6 @@
 package net.succ.solar_punk.datagen;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -11,11 +10,12 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
@@ -23,11 +23,12 @@ import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.recipe.CrystallizerRecipe;
 import net.succ.solar_punk.recipe.SolarHeaterRecipe;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ModRecipeProvider extends RecipeProvider implements IConditionBuilder {
+import static net.succ.solar_punk.datagen.DatagenUtil.createItem;
+
+public class ModRecipeProvider extends RecipeProvider {
     public ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);
     }
@@ -36,14 +37,12 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
     protected void buildRecipes(RecipeOutput output) {
         solarHeating(output, "stone_to_lava", Ingredient.of(Items.STONE), new FluidStack(Fluids.LAVA, 1000));
         solarHeating(output, "cobblestone_to_lava", Ingredient.of(Items.COBBLESTONE), new FluidStack(Fluids.LAVA, 1000));
-        // Salt item gives 100 mB; block gives 1000 mB (vs 900 mB for 9 items — ~11% bonus for bulk)
+        // Salt item gives 100 mB; block gives 1000 mB (vs 900 mB for 9 items, an ~11% bonus for bulk)
         solarHeating(output, "salt_item_to_molten_salt", Ingredient.of(ModItems.SALT.get()), new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 100));
         solarHeating(output, "salt_to_molten_salt", Ingredient.of(ModBlocks.SALT_BLOCK.get().asItem()), new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 1000));
 
-        // Default Crystallizer recipe - just one datapack entry among however many a pack
-        // author adds. Deliberately much faster per-mB-of-input than the Solar Heater's
-        // evaporation trickle: this is the bulk/fast path once you have a real Molten Salt
-        // supply, not a replacement for the Heater's early-game trickle.
+        // Default Crystallizer recipe (datapacks can add more). Much faster than the Solar
+        // Heater's evaporation: it's the bulk path once you have a Molten Salt supply.
         crystallizing(output, "molten_salt_to_salt",
                 new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 100),
                 new FluidStack(Fluids.WATER, 50),
@@ -62,72 +61,17 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SALT.get(), 9)
                 .requires(ModBlocks.SALT_BLOCK.get())
                 .unlockedBy("has_salt_block", has(ModBlocks.SALT_BLOCK.get()))
-                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "salt_from_salt_block"));
+                .save(output, id("salt_from_salt_block"));
 
-        // Lithium ore chain — both Raw Lithium (mined) and Lithium Dust (crushed, see
-        // ModCrushingRecipeGen) smelt to the same ingot, matching the modded convention
-        // that dust is an equal-value alternate path, not a downgrade.
-        // Not using vanilla RecipeProvider's oreSmelting/oreBlasting helpers here — their
-        // .save() call passes an unnamespaced string, which lands in data/minecraft/recipe
-        // instead of data/solarpunk/recipe. Building the cooking recipes directly instead,
-        // same as every other recipe in this file, so they get properly namespaced IDs.
-        lithiumSmelting(output, ModItems.RAW_LITHIUM.get(), "raw_lithium");
-        lithiumSmelting(output, ModItems.LITHIUM_DUST.get(), "lithium_dust");
+        // Lithium ore chain: Raw Lithium and Lithium Dust both smelt to the same ingot.
+        // Not using vanilla's oreSmelting/oreBlasting helpers, which save under the
+        // minecraft namespace instead of solarpunk.
+        ingotSmelting(output, ModItems.RAW_LITHIUM.get(), "raw_lithium", ModItems.LITHIUM_INGOT.get(), "lithium");
+        ingotSmelting(output, ModItems.LITHIUM_DUST.get(), "lithium_dust", ModItems.LITHIUM_INGOT.get(), "lithium");
+        metalStorage(output, "lithium", ModItems.LITHIUM_NUGGET.get(), ModItems.LITHIUM_INGOT.get(), ModBlocks.LITHIUM_BLOCK.get());
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.LITHIUM_INGOT.get())
-                .pattern("NNN")
-                .pattern("NNN")
-                .pattern("NNN")
-                .define('N', ModItems.LITHIUM_NUGGET.get())
-                .unlockedBy("has_lithium_nugget", has(ModItems.LITHIUM_NUGGET.get()))
-                .save(output);
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.LITHIUM_NUGGET.get(), 9)
-                .requires(ModItems.LITHIUM_INGOT.get())
-                .unlockedBy("has_lithium_ingot", has(ModItems.LITHIUM_INGOT.get()))
-                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "lithium_nugget_from_ingot"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.LITHIUM_BLOCK.get())
-                .pattern("III")
-                .pattern("III")
-                .pattern("III")
-                .define('I', ModItems.LITHIUM_INGOT.get())
-                .unlockedBy("has_lithium_ingot", has(ModItems.LITHIUM_INGOT.get()))
-                .save(output);
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.LITHIUM_INGOT.get(), 9)
-                .requires(ModBlocks.LITHIUM_BLOCK.get())
-                .unlockedBy("has_lithium_block", has(ModBlocks.LITHIUM_BLOCK.get()))
-                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "lithium_ingot_from_block"));
-
-        // Beryllium Dust -> Ingot, same smelting/blasting pairing as the lithium chain.
-        berylliumSmelting(output, ModItems.BERYLLIUM_DUST.get(), "beryllium_dust");
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BERYLLIUM_INGOT.get())
-                .pattern("NNN")
-                .pattern("NNN")
-                .pattern("NNN")
-                .define('N', ModItems.BERYLLIUM_NUGGET.get())
-                .unlockedBy("has_beryllium_nugget", has(ModItems.BERYLLIUM_NUGGET.get()))
-                .save(output);
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.BERYLLIUM_NUGGET.get(), 9)
-                .requires(ModItems.BERYLLIUM_INGOT.get())
-                .unlockedBy("has_beryllium_ingot", has(ModItems.BERYLLIUM_INGOT.get()))
-                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "beryllium_nugget_from_ingot"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BERYLLIUM_BLOCK.get())
-                .pattern("III")
-                .pattern("III")
-                .pattern("III")
-                .define('I', ModItems.BERYLLIUM_INGOT.get())
-                .unlockedBy("has_beryllium_ingot", has(ModItems.BERYLLIUM_INGOT.get()))
-                .save(output);
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.BERYLLIUM_INGOT.get(), 9)
-                .requires(ModBlocks.BERYLLIUM_BLOCK.get())
-                .unlockedBy("has_beryllium_block", has(ModBlocks.BERYLLIUM_BLOCK.get()))
-                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "beryllium_ingot_from_block"));
+        ingotSmelting(output, ModItems.BERYLLIUM_DUST.get(), "beryllium_dust", ModItems.BERYLLIUM_INGOT.get(), "beryllium");
+        metalStorage(output, "beryllium", ModItems.BERYLLIUM_NUGGET.get(), ModItems.BERYLLIUM_INGOT.get(), ModBlocks.BERYLLIUM_BLOCK.get());
 
         // Turbine Rotor - kept cheap since a turbine needs one per blade layer plus the
         // cap. Shafts run through the column axis, and the Turbine Casing matches the
@@ -155,8 +99,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
                 .save(output);
 
-        // Brass-tier - the Crystallizer is the Solar Heater's more expensive, higher-throughput
-        // counterpart, so it's gated a tier up rather than reachable at the same point.
+        // Brass-tier, since the Crystallizer is the Solar Heater's faster, pricier counterpart.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CRYSTALLIZER.get())
                 .pattern("BGB")
                 .pattern("CIC")
@@ -168,8 +111,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_brass_casing", has(createItem("brass_casing")))
                 .save(output);
 
-        // Deliberately vanilla-tier (iron + furnace + bucket) - no Create alloys or Salt
-        // needed, so it's reachable before any other machine in the mod's progression.
+        // Vanilla-tier on purpose (iron, furnace, bucket) so it's the first machine you can make.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.FIREBOX_BOILER.get())
                 .pattern("III")
                 .pattern("IFI")
@@ -261,53 +203,64 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('S', createItem("shaft"))
                 .unlockedBy("has_brass_casing", has(createItem("brass_casing")))
                 .save(output);
-
-    }
-
-    private static Item createItem(String name) {
-        return BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("create", name));
     }
 
     private static void solarHeating(RecipeOutput output, String name, Ingredient ingredient, FluidStack result) {
         output.accept(
-                ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "solar_heating/" + name),
+                id("solar_heating/" + name),
                 new SolarHeaterRecipe(ingredient, result),
                 null
         );
     }
 
-    private static void lithiumSmelting(RecipeOutput output, Item input, String inputName) {
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.MISC,
-                        ModItems.LITHIUM_INGOT.get(), 0.7f, 200)
+    // Smelting and blasting recipes turning `input` into a metal ingot.
+    private static void ingotSmelting(RecipeOutput output, Item input, String inputName, Item ingot, String metal) {
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.MISC, ingot, 0.7f, 200)
                 .unlockedBy("has_" + inputName, has(input))
-                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID,
-                        "lithium_ingot_from_smelting_" + inputName));
+                .save(output, id(metal + "_ingot_from_smelting_" + inputName));
 
-        SimpleCookingRecipeBuilder.blasting(Ingredient.of(input), RecipeCategory.MISC,
-                        ModItems.LITHIUM_INGOT.get(), 0.7f, 100)
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(input), RecipeCategory.MISC, ingot, 0.7f, 100)
                 .unlockedBy("has_" + inputName, has(input))
-                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID,
-                        "lithium_ingot_from_blasting_" + inputName));
+                .save(output, id(metal + "_ingot_from_blasting_" + inputName));
     }
 
-    private static void berylliumSmelting(RecipeOutput output, Item input, String inputName) {
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.MISC,
-                        ModItems.BERYLLIUM_INGOT.get(), 0.7f, 200)
-                .unlockedBy("has_" + inputName, has(input))
-                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID,
-                        "beryllium_ingot_from_smelting_" + inputName));
+    // 9 nuggets <-> ingot <-> 9 ingots as a storage block.
+    private static void metalStorage(RecipeOutput output, String metal, Item nugget, Item ingot, ItemLike block) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ingot)
+                .pattern("NNN")
+                .pattern("NNN")
+                .pattern("NNN")
+                .define('N', nugget)
+                .unlockedBy("has_" + metal + "_nugget", has(nugget))
+                .save(output);
 
-        SimpleCookingRecipeBuilder.blasting(Ingredient.of(input), RecipeCategory.MISC,
-                        ModItems.BERYLLIUM_INGOT.get(), 0.7f, 100)
-                .unlockedBy("has_" + inputName, has(input))
-                .save(output, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID,
-                        "beryllium_ingot_from_blasting_" + inputName));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, nugget, 9)
+                .requires(ingot)
+                .unlockedBy("has_" + metal + "_ingot", has(ingot))
+                .save(output, id(metal + "_nugget_from_ingot"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, block)
+                .pattern("III")
+                .pattern("III")
+                .pattern("III")
+                .define('I', ingot)
+                .unlockedBy("has_" + metal + "_ingot", has(ingot))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ingot, 9)
+                .requires(block)
+                .unlockedBy("has_" + metal + "_block", has(block))
+                .save(output, id(metal + "_ingot_from_block"));
+    }
+
+    private static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, path);
     }
 
     private static void crystallizing(RecipeOutput output, String name, FluidStack inputA, FluidStack inputB,
                                        ItemStack result, FluidStack byproduct, int processingTime) {
         output.accept(
-                ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "crystallizing/" + name),
+                id("crystallizing/" + name),
                 new CrystallizerRecipe(inputA, inputB, result, byproduct, processingTime),
                 null
         );

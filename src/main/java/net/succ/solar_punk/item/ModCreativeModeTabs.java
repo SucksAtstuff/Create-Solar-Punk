@@ -15,7 +15,7 @@ public class ModCreativeModeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, SolarPunk.MODID);
 
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATE_SOLAR_POWERED_TAB =
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> SOLAR_PUNK_TAB =
             CREATIVE_MODE_TABS.register("solar_punk_tab", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.solar_punk"))
                     .withTabsBefore(CreativeModeTabs.COMBAT)

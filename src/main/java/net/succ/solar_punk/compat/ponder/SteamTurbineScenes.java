@@ -44,8 +44,8 @@ public class SteamTurbineScenes {
                 scene.world().showSection(util.select().position(new BlockPos(x, y, z)), Direction.DOWN);
     }
 
-    // X-axis analogs of the 4 helpers above, for a turbine grown East/West instead of
-    // up - the 7x7 ring now lies in the Y-Z plane at a given x.
+    // X-axis versions of the 4 helpers above, for a turbine built East/West instead of
+    // up: the 7x7 ring lies in the Y-Z plane at a given x.
     private static void showRingX(CreateSceneBuilder scene, SceneBuildingUtil util, int x) {
         for (int y = 0; y <= 6; y++)
             for (int z = 0; z <= 6; z++)
@@ -220,16 +220,15 @@ public class SteamTurbineScenes {
     }
 
     /**
-     * Scene 3 - shows a full 7-blade-layer, all-brass turbine.
-     * Layout: floor(y=1) + blades(y=2-8) + cap(y=9).
+     * Scene 3 - shows a maximum size, all-brass turbine.
+     * Layout: floor(y=1) + 20 blade layers(y=2-21) + cap(y=22).
      */
     public static void maxTurbine(SceneBuilder builder, SceneBuildingUtil util) {
         CreateSceneBuilder scene = new CreateSceneBuilder(builder);
         scene.title("turbine_max", "Maximum Size Turbine");
         scene.configureBasePlate(0, 0, 11);
-        // The true max structure (20 blade layers + floor + cap = 22 blocks tall) is far
-        // taller than any other scene in the mod - shrink and recenter the camera so the
-        // whole thing fits in the ponder view instead of only showing the lower portion.
+        // At 22 blocks tall this is far taller than any other scene, so shrink and
+        // recenter the camera to fit the whole thing in view.
         scene.scaleSceneView(0.4f);
         scene.setSceneOffsetY(-4f);
 
@@ -246,7 +245,7 @@ public class SteamTurbineScenes {
                 .attachKeyFrame();
         scene.idle(70);
 
-        // Blade layers 2-21 - the true maximum of 20 blade layers
+        // Blade layers 2-21, the maximum of 20
         for (int y = 2; y <= 21; y++) {
             scene.world().showSection(util.select().layer(y), Direction.DOWN);
             scene.idle(2);

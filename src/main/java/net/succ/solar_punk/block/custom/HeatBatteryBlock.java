@@ -17,8 +17,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.fluids.FluidUtil;
-import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.Config;
+import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 
 public class HeatBatteryBlock extends Block implements IBE<HeatBatteryBlockEntity>, IWrenchable {

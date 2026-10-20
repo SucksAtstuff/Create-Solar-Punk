@@ -14,22 +14,21 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
-import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
 import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
 import net.succ.solar_punk.client.sound.BiomassGasifierSoundInstance;
 import net.succ.solar_punk.item.ModItems;
@@ -84,10 +83,7 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
                     }
                     @Override
                     protected boolean isSideActive(BlockState state, Direction direction) {
-                        // Everywhere except the front (matches FACING - reserved for the
-                        // lit/output face) and the bottom (reserved for the input shaft,
-                        // see hasShaftTowards) - leaves back, top, and both sides. Matches
-                        // the Biofuel Engine's own scroll box placement.
+                        // Every side except the front (FACING) and the bottom (the shaft).
                         return direction != state.getValue(BiomassGasifierBlock.FACING)
                                 && direction != Direction.DOWN;
                     }
@@ -118,9 +114,8 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
     @Override
     public float calculateAddedStressCapacity() {
         float capacity = burnTimeRemaining > 0 ? Config.gasifierSu : 0;
-        // Must mirror KineticBlockEntity's base impl: keep lastCapacityProvided in sync.
-        // Without this, addSilently() on reload fails to subtract our contribution from
-        // unloadedCapacity, causing +1024 SU to accumulate on every world reload.
+        // Keep lastCapacityProvided in sync like KineticBlockEntity's base impl does.
+        // Without it, the network gains phantom SU on every world reload.
         this.lastCapacityProvided = capacity;
         return capacity;
     }

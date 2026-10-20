@@ -2,9 +2,7 @@ package net.succ.solar_punk.datagen;
 
 import com.simibubi.create.api.data.recipe.MillingRecipeGen;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.succ.solar_punk.SolarPunk;
@@ -12,11 +10,13 @@ import net.succ.solar_punk.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
 
+import static net.succ.solar_punk.datagen.DatagenUtil.itemTag;
+
 public class ModMillingRecipeGen extends MillingRecipeGen {
 
-    private static final TagKey<Item> LEAVES   = tag("minecraft", "leaves");
-    private static final TagKey<Item> SAPLINGS = tag("minecraft", "saplings");
-    private static final TagKey<Item> CROPS    = tag("c", "crops");
+    private static final TagKey<Item> LEAVES   = itemTag("minecraft", "leaves");
+    private static final TagKey<Item> SAPLINGS = itemTag("minecraft", "saplings");
+    private static final TagKey<Item> CROPS    = itemTag("c", "crops");
 
     GeneratedRecipe MILL_LEAVES = create("leaves_to_biomass", b -> b
         .duration(150)
@@ -35,9 +35,5 @@ public class ModMillingRecipeGen extends MillingRecipeGen {
 
     public ModMillingRecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, SolarPunk.MODID);
-    }
-
-    private static TagKey<Item> tag(String namespace, String path) {
-        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(namespace, path));
     }
 }

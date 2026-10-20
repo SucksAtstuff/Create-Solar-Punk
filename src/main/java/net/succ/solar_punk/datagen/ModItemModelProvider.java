@@ -2,12 +2,8 @@ package net.succ.solar_punk.datagen;
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredItem;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.item.ModItems;
@@ -31,10 +27,9 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.BERYLLIUM_INGOT.get());
         basicItem(ModItems.BERYLLIUM_NUGGET.get());
         basicItem(ModItems.PHOTOVOLTAIC_CELL.get());
-        // No separate incomplete texture yet, so it reuses the finished cell's
+        // No separate incomplete textures yet, so these reuse the finished items' models
         withExistingParent(ModItems.INCOMPLETE_PHOTOVOLTAIC_CELL.getId().getPath(), "item/generated")
                 .texture("layer0", ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "item/photovoltaic_cell"));
-        // Same for the mirror: shows the finished mirror's held-item model
         withExistingParent(ModItems.INCOMPLETE_SOLAR_MIRROR.getId().getPath(),
                 ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "block/solar_mirror"));
         basicItem(ModFluids.MOLTEN_SALT_BUCKET.get());
@@ -42,16 +37,5 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModFluids.FERTILIZER_BUCKET.get());
         basicItem(ModFluids.STEAM_BUCKET.get());
         basicItem(ModFluids.DEUTERIUM_BUCKET.get());
-
-    }
-    private ItemModelBuilder handheldItem(DeferredItem<?> item) {
-        return withExistingParent(item.getId().getPath(), ResourceLocation.parse("item/handheld"))
-                .texture("layer0", ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID,
-                        "item/" + item.getId().getPath()));
-    }
-
-    private ItemModelBuilder blockItemFromBlock(DeferredBlock<Block> block) {
-        return withExistingParent(block.getId().getPath(), ResourceLocation.fromNamespaceAndPath(
-                SolarPunk.MODID, "block/" + block.getId().getPath()));
     }
 }

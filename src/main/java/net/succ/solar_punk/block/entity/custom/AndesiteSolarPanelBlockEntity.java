@@ -4,20 +4,21 @@ import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEnti
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
-import net.createmod.catnip.math.VecHelper;
-import net.minecraft.core.Direction;
-import net.minecraft.world.phys.Vec3;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
 import com.simibubi.create.foundation.utility.CreateLang;
+import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
 
 import java.util.List;
+import net.succ.solar_punk.util.SolarHelper;
 
 public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity {
 

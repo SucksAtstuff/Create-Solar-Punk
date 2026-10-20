@@ -19,6 +19,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.client.sound.BiofilterSoundInstance;
+import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import net.succ.solar_punk.pollution.PollutionSavedData;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,6 +46,12 @@ public class BiofilterBlockEntity extends KineticBlockEntity implements IHaveGog
 
     public boolean isPowered() {
         return Math.abs(getSpeed()) > 0;
+    }
+
+    // Scales with speed rather than a flat rate, so a cheap 16 RPM feed doesn't clean as
+    // fast as a maxed-out network costing far more SU.
+    private long getAbsorptionPerSecond() {
+        return Math.round(Math.abs(getSpeed()) * Config.biofilterAbsorptionPerRpm);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -74,29 +81,9 @@ public class BiofilterBlockEntity extends KineticBlockEntity implements IHaveGog
 
         if (!Config.globalWarmingEnabled || !isPowered()) return;
 
-        int radius = Config.biofilterRadiusBlocks;
-        int radiusChunks = radius > 0 ? (int) Math.ceil(radius / 16.0) : 0;
-        double radiusSq = (double) radius * radius;
-        ChunkPos sourceChunk = new ChunkPos(worldPosition);
-        // Scales with actual rotational speed rather than a flat rate - a cheap 16 RPM
-        // feed and a maxed-out network shouldn't clean at the same rate for wildly
-        // different SU cost, same reasoning the Turbine's height/blade-ratio knobs use
-        // for scaling steam output.
-        long absorb = Math.round(Math.abs(getSpeed()) * Config.biofilterAbsorptionPerRpm);
-
-        for (int dx = -radiusChunks; dx <= radiusChunks; dx++) {
-            for (int dz = -radiusChunks; dz <= radiusChunks; dz++) {
-                ChunkPos affected = new ChunkPos(sourceChunk.x + dx, sourceChunk.z + dz);
-                if (radius > 0) {
-                    int nearX = Math.max(affected.getMinBlockX(), Math.min(worldPosition.getX(), affected.getMaxBlockX()));
-                    int nearZ = Math.max(affected.getMinBlockZ(), Math.min(worldPosition.getZ(), affected.getMaxBlockZ()));
-                    double distSq = (double)(nearX - worldPosition.getX()) * (nearX - worldPosition.getX())
-                                  + (double)(nearZ - worldPosition.getZ()) * (nearZ - worldPosition.getZ());
-                    if (distSq > radiusSq) continue;
-                }
-                data.reducePollution(affected, absorb);
-            }
-        }
+        long absorb = getAbsorptionPerSecond();
+        GlobalWarmingHandler.forEachChunkInRadius(worldPosition, Config.biofilterRadiusBlocks,
+                chunk -> data.reducePollution(chunk, absorb));
     }
 
     @Override
@@ -120,10 +107,9 @@ public class BiofilterBlockEntity extends KineticBlockEntity implements IHaveGog
                 .forGoggles(tooltip, 1);
 
         if (powered) {
-            long absorb = Math.round(Math.abs(getSpeed()) * Config.biofilterAbsorptionPerRpm);
             CreateLang.translate("solar_punk.tooltip.biofilter_removing")
                     .style(ChatFormatting.GRAY)
-                    .add(CreateLang.number(absorb).text("/s")
+                    .add(CreateLang.number(getAbsorptionPerSecond()).text("/s")
                             .style(ChatFormatting.GREEN).component())
                     .forGoggles(tooltip, 1);
         }

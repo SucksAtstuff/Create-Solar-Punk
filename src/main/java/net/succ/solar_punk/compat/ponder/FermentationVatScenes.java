@@ -15,11 +15,11 @@ import net.succ.solar_punk.item.ModItems;
 
 public class FermentationVatScenes {
 
-    // 2×2×3 vat: x=1-2, z=1-2, y=1-3. Bottom-left corner is the controller in ponder.
+    // 2x2x3 vat: x=1-2, z=1-2, y=1-3. Bottom-left corner is the controller in ponder.
     private static final BlockPos CONTROLLER = new BlockPos(1, 1, 1);
     private static final BlockPos TOP_2      = new BlockPos(1, 3, 1);
 
-    // 3×3×3 vat: x=1-3, z=1-3, y=1-3.
+    // 3x3x3 vat: x=1-3, z=1-3, y=1-3.
     private static final BlockPos CENTER_3   = new BlockPos(2, 2, 2);
     private static final BlockPos TOP_3      = new BlockPos(2, 3, 2);
 
@@ -47,7 +47,7 @@ public class FermentationVatScenes {
         scene.idle(80);
 
         scene.overlay().showText(60)
-                .text("The vat needs at least a 2×2 footprint to ferment anything")
+                .text("The vat needs at least a 2x2 footprint to ferment anything")
                 .pointAt(util.vector().centerOf(CONTROLLER))
                 .attachKeyFrame();
         scene.idle(70);
@@ -69,7 +69,7 @@ public class FermentationVatScenes {
         scene.idle(70);
 
         scene.overlay().showText(80)
-                .text("The vat ferments Biomass with water into Biofuel - a 2×2 vat consumes 4 Biomass per batch")
+                .text("The vat ferments Biomass with water into Biofuel - a 2x2 vat consumes 4 Biomass per batch")
                 .pointAt(util.vector().centerOf(CONTROLLER))
                 .attachKeyFrame();
         for (int y = 1; y <= 3; y++)
@@ -102,7 +102,7 @@ public class FermentationVatScenes {
         scene.idle(20);
 
         scene.overlay().showText(80)
-                .text("A larger footprint increases the batch size - a 2×2 vat processes 4 Biomass at once, a 3×3 processes 9")
+                .text("A larger footprint increases the batch size - a 2x2 vat processes 4 Biomass at once, a 3x3 processes 9")
                 .pointAt(util.vector().topOf(TOP_3))
                 .attachKeyFrame();
         scene.idle(90);
@@ -114,7 +114,7 @@ public class FermentationVatScenes {
         scene.idle(80);
 
         scene.overlay().showText(60)
-                .text("Tank capacity grows with each block added - taller vats hold more fluid")
+                .text("Taller vats produce super-linearly more Biofuel per batch - the same way a taller Solar Power Tower produces more. Tank capacity also grows with each block added")
                 .pointAt(util.vector().centerOf(CENTER_3))
                 .attachKeyFrame();
         scene.idle(70);

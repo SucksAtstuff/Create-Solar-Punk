@@ -29,39 +29,29 @@ import net.succ.solar_punk.client.sound.FusionReactorSoundInstance;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.sound.ModSounds;
+import net.succ.solar_punk.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-// Fusion Reactor centerpiece. Unlike the Turbine's stacking-rotor scan, this is a
-// single fixed-size voxel-sphere shell scan (Mekanism SPS-inspired, see
-// plan_for_fusion.md): the Core sits at the exact center, FusionReactorCasingBlock /
-// _GLASS must fill the outer surface of the shell at rounded-distance CASING_SHELL_DIST
-// (see isCasingPosition(); the player can already choose the see-through Casing Glass
-// variant there if they want a view in - it's in the same reactor_casing tag this
-// scan checks), while the two
-// blanket module types only need to fill the three great-circle rings of the band at
-// rounded-distance BLANKET_BAND_DIST - see isRingPosition(). The blanket band has no
-// glass equivalent, so leaving most of it open is what actually keeps the Core and its
-// floating-ring effect visible from outside, regardless of which Casing variant walls
-// off the rest. Everything strictly closer than the blanket band is left hollow for
-// the renderer's effect. No neighbour-changed plumbing (a radius-4 shell is far outside
-// vanilla neighbour notification range anyway) - just a periodic re-scan, same
-// convention as TurbineRotorBlockEntity's SCAN_INTERVAL.
+// Fusion Reactor centerpiece, sitting at the exact center of a fixed-size voxel sphere:
+//  - Casing (solid or glass, the reactor_casing tag) fills the outer surface of the shell
+//    at rounded distance CASING_SHELL_DIST, see isCasingPosition().
+//  - Blanket modules fill the three great-circle rings of the band at rounded distance
+//    BLANKET_BAND_DIST, see isBlanketPosition(). The rest of that band stays open, which
+//    keeps the Core's effect visible through Casing Glass.
+//  - Everything inside the blanket band is left hollow for the renderer's effect.
+// The structure is re-scanned every SCAN_INTERVAL ticks rather than on neighbour
+// updates, since the shell is far outside neighbour notification range anyway.
 public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 
-    // Public so FusionReactorScenes/ModPonderProvider can reuse the exact same
-    // shell-shape check the BE's own scan uses, instead of each place duplicating (and
-    // risking drifting from) this geometry.
-    public static final int SCAN_RADIUS = 4;
+    // Public so the Ponder scene and schematic build the exact same shape.
     public static final int CASING_SHELL_DIST = 4;
     public static final int BLANKET_BAND_DIST = 3;
+    public static final int SCAN_RADIUS = CASING_SHELL_DIST;
     private static final int SCAN_INTERVAL = 40;
 
-    // Only the Blanket band is gated to its three orthogonal great-circle rings
-    // (dx==0, dy==0, or dz==0) - the Casing shell is a full sphere, since Casing Glass
-    // already gives the player a see-through option there without needing gaps in the
-    // required positions.
+    // The three orthogonal great-circle rings (dx==0, dy==0 or dz==0) the Blanket fills.
     public static boolean isRingPosition(int dx, int dy, int dz) {
         return dx == 0 || dy == 0 || dz == 0;
     }
@@ -72,10 +62,8 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
 
     // Casing shell = the outer surface of the rounded-distance-4 band only, i.e. the
     // same hollow sphere WorldEdit's //hsphere or an online sphere generator gives.
-    // Positions in the band with no face neighbour outside it (the 24 at offsets like
-    // (0,2,3), tucked behind the blanket ring's diagonals) used to be required too,
-    // which made the reactor hard to build from a normal sphere template. They're now
-    // ignored, so old builds with Casing there still form.
+    // Band positions with no face neighbour outside it (the 24 at offsets like (0,2,3))
+    // aren't required, but Casing there is still allowed.
     public static boolean isCasingPosition(int dx, int dy, int dz) {
         if (roundedDist(dx, dy, dz) != CASING_SHELL_DIST) return false;
         return roundedDist(dx + 1, dy, dz) > CASING_SHELL_DIST || roundedDist(dx - 1, dy, dz) > CASING_SHELL_DIST
@@ -91,19 +79,14 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
     public int lithiumModuleCount = 0;
     public int berylliumModuleCount = 0;
     // 0 = pure Lithium blanket (calm, efficient), 1 = pure Beryllium blanket (hot, max
-    // output) - see the Tunable knob section of plan_for_fusion.md. Drives the
-    // renderer's ring color/pulse and the animateTick particle color.
+    // output). Drives the power loop's rates, the renderer's color/speed and the
+    // particle color.
     public float blanketEfficiency = 0f;
 
-    // Goggle tooltip stats - see addToGoggleTooltip() and plan_for_fusion.md's
-    // Advancement/goggle-tooltip/JEI section. steam/deuterium/lithium are the actual
-    // amounts runPowerLoop() moved *this tick* (0 whenever it's idle for any reason -
-    // unformed, unthrottled, out of fuel, or a full steam tank), not a theoretical max,
-    // so goggling a stalled reactor honestly reads "nothing is happening" rather than
-    // showing what it could produce under ideal conditions. breedingEfficiencyPercent
-    // is different: it's a property of the blanket composition alone (the
-    // Config-interpolated breeder_floor_ratio), so it's set in scanStructure() and
-    // stays meaningful even while the power loop itself is idle.
+    // Goggle tooltip stats. steam/deuterium/lithium are what runPowerLoop() actually
+    // moved this tick (0 whenever it's idle), so a stalled reactor reads as stalled.
+    // breedingEfficiencyPercent depends only on the blanket composition, so it's set in
+    // scanStructure() and stays meaningful while idle.
     public int steamOutputPerTick = 0;
     public int deuteriumUsedPerTick = 0;
     public int lithiumUsedPerTick = 0;
@@ -111,24 +94,18 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
 
     private int scanCooldown = 1;
 
-    // Highest redstone signal found on any exterior Casing block during the last
-    // structure scan - see scanStructure()'s CASING_SHELL_DIST branch and
-    // runPowerLoop()'s throttle. Refreshed on the same SCAN_INTERVAL cadence as the
-    // structure scan itself, not read live every tick, since scanning all 186 shell
-    // positions for redstone every single tick would be wasteful.
+    // Highest redstone signal on any Casing block during the last structure scan, used as
+    // runPowerLoop()'s throttle. Only refreshed every SCAN_INTERVAL, since checking all
+    // 186 shell positions every tick would be wasteful.
     private int cachedShellSignal = 0;
 
     // -------------------------------------------------------------------------
-    // Power loop - see plan_for_fusion.md's Output/Fuel chain/Config knobs sections.
-    // Direct steam output, fed by Deuterium (fluid) + Lithium (item), converted
-    // internally at a rate the Config knobs interpolate by blanketEfficiency. There is
-    // no Tritium item/fluid - the Lithium->Tritium conversion only ever exists as the
-    // math in runPowerLoop() below.
+    // Power loop: Deuterium (fluid) + Lithium (item) in, Steam out, at rates the Config
+    // knobs interpolate by blanketEfficiency. There is no Tritium item or fluid, the
+    // Lithium -> Tritium breeding only exists as math in runPowerLoop().
     // -------------------------------------------------------------------------
 
-    // 1 Lithium Dust's worth of mB-equivalent fuel value, matching the mod's existing
-    // item<->mB convention (Solar Heater's water_per_salt_mb). Not a Config knob itself -
-    // it's just the unit conversion the five real knobs are expressed in.
+    // How many mB of fuel one Lithium Dust counts as.
     private static final int LITHIUM_DUST_MB_EQUIVALENT = 250;
 
     public final FluidTank steamTank = new FluidTank(Config.fusionReactorSteamTank) {
@@ -145,8 +122,7 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         protected void onContentsChanged() { setChanged(); }
     };
 
-    // Slot 0: Lithium Dust input. No output slot - Lithium is consumed internally, it
-    // never comes back out as anything.
+    // Slot 0: Lithium Dust input. There's no output slot.
     public final ItemStackHandler itemHandler = new ItemStackHandler(1) {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
@@ -191,12 +167,9 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         }
     };
 
-    // mB-equivalent of Lithium currently "loaded" from consumed Dust items, topped up
-    // a whole item at a time (furnace-fuel style) since Lithium can't be drained
-    // fractionally the way Deuterium can.
+    // mB of Lithium loaded from consumed Dust, topped up a whole item at a time
+    // (furnace-fuel style) since an item can't be drained fractionally like Deuterium.
     private float lithiumBufferMb = 0f;
-
-    public float getLithiumBufferMb() { return lithiumBufferMb; }
 
     // Why the power loop did or didn't run on its last tick - read by the Status display
     // source so a stalled reactor says what to fix instead of just reading 0 mB/t.
@@ -244,25 +217,18 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
 
             if (formed != wasFormed) {
                 setChanged();
-                // Flips the block's own FORMED property so its model swaps between the
-                // visible placeholder cube and no geometry at all (see
-                // FusionReactorCoreBlock/ModBlockStateProvider) - separate from the BE
-                // data sync below, which pushes formed/blanketEfficiency/module counts
-                // for the renderer and goggle tooltip to read.
+                // FORMED swaps the block model between the cube and no geometry (see
+                // FusionReactorCoreBlock). The BE data is synced separately below.
                 level.setBlock(worldPosition, getBlockState().setValue(FusionReactorCoreBlock.FORMED, formed), 3);
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
                 if (formed) ModTriggers.fireNearby(level, worldPosition, ModTriggers.REACTOR_BUILT);
             }
         }
 
-        // Runs every tick, not just on the (infrequent) structure-scan cadence above -
-        // otherwise steam would only ever get produced once every SCAN_INTERVAL ticks.
         runPowerLoop();
 
-        // Plain BlockEntity, not a SmartBlockEntity - unlike the Turbine/extractors it
-        // has no built-in periodic client sync, so without this the new goggle-tooltip
-        // stats (steamOutputPerTick etc.) would only ever reach the client once, on
-        // chunk load or the next `formed` toggle, and then sit stale forever.
+        // Plain BlockEntity with no built-in client sync, so push the goggle stats
+        // periodically.
         if (level.getGameTime() % 20 == 0)
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
     }
@@ -279,12 +245,8 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         int steamRoom = steamTank.getCapacity() - steamTank.getFluidAmount();
         if (steamRoom <= 0) { stallPowerLoop(Status.STEAM_FULL); return; }
 
-        // Fuel-injection-rate throttle (plan_for_fusion.md's secondary, independent
-        // lever on top of the blanket-ratio knob) - a redstone signal anywhere on the
-        // exterior Casing shell, not a new block/GUI (and not the Core itself, which is
-        // buried at dead center and unreachable once built - see scanStructure()). No
-        // signal at all means the reactor idles at 0% and pulls no fuel; a lever or
-        // comparator at full strength (15) means full throttle.
+        // Fuel injection throttle: a redstone signal anywhere on the Casing shell. No
+        // signal idles the reactor at 0%, full strength (15) is full throttle.
         float throttle = cachedShellSignal / 15f;
         if (throttle <= 0) { stallPowerLoop(Status.NO_SIGNAL); return; }
 
@@ -297,14 +259,13 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         double fuelPerSteam = Config.reactorFuelPerSteamMb
                 * (1 + (Config.reactorBerylliumFuelWasteMultiplier - 1) * t);
         double breederRatio = 1 - (1 - Config.reactorBreederFloorRatio) * t;
-        // mB of Deuterium / Lithium-equivalent needed per mB of steam at this ratio -
-        // split so Deuterium and the Lithium that actually converts are drawn 1:1, with
-        // the rest of the drawn Lithium accounted for as waste (breederRatio < 1).
+        // mB of Deuterium / Lithium needed per mB of steam. Deuterium and the Lithium that
+        // actually breeds are drawn 1:1; the rest of the drawn Lithium is waste
+        // (breederRatio < 1).
         double deuteriumPerSteam = fuelPerSteam / (1 + 1 / breederRatio);
         double lithiumPerSteam = deuteriumPerSteam / breederRatio;
 
-        // Keep the Lithium buffer topped up a whole Dust at a time - Lithium is a
-        // discrete item, not a fluid, so it can't be drained fractionally like Deuterium.
+        // Top the Lithium buffer up a whole Dust at a time.
         while (lithiumBufferMb < desiredSteam * lithiumPerSteam && !itemHandler.getStackInSlot(0).isEmpty()) {
             itemHandler.extractItem(0, 1, false);
             lithiumBufferMb += LITHIUM_DUST_MB_EQUIVALENT;
@@ -331,9 +292,8 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         setChanged();
     }
 
-    // Zeroes the goggle-tooltip production stats whenever the loop can't run this tick
-    // for any reason, so a stalled reactor honestly reads as producing nothing instead
-    // of showing the last tick it actually ran.
+    // Zeroes the goggle stats whenever the loop can't run, so a stalled reactor reads as
+    // producing nothing instead of showing the last tick it ran.
     private void stallPowerLoop(Status reason) {
         status = reason;
         if (steamOutputPerTick == 0 && deuteriumUsedPerTick == 0 && lithiumUsedPerTick == 0) return;
@@ -343,12 +303,11 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         setChanged();
     }
 
-    // Startup -> loop -> shutdown sequencing for the Core's ambience. The startup and
-    // shutdown clips are one-shots that just play out; the loop only starts once the
-    // startup clip has genuinely finished on its own (checked via SoundManager#isActive,
-    // not a hardcoded duration) rather than being started alongside it, and switching to
-    // formed=false at any point - mid-startup or mid-loop alike - cuts off whatever's
-    // currently playing and plays the shutdown clip instead.
+    // Startup -> loop -> shutdown sequencing for the Core's ambience. The loop starts
+    // once the startup clip has finished (SoundManager#isActive), and unforming at any
+    // point cuts off whatever is playing and plays the shutdown clip. Volumes are
+    // matched to the other machine sounds (see MachineSoundInstance); the loop is the
+    // loudest clip and runs continuously, so it's the quietest.
     @OnlyIn(Dist.CLIENT)
     private void tickAudio() {
         if (level == null) return;
@@ -356,24 +315,16 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
 
         if (formed && !clientWasFormed) {
             if (activeSound != null) activeSound.requestStop();
-            // fusion_reactor_startup.ogg mean -14.4 dB vs electric_motor_buzz.ogg's
-            // -34.2 dB baseline (ffmpeg volumedetect) - a loudness match against
-            // BrassPanelSoundInstance's 0.75f lands around 0.08f.
             activeSound = new FusionReactorSoundInstance(ModSounds.FUSION_REACTOR_STARTUP.get(), this, false, false, 0.08f);
             soundManager.play(activeSound);
             audioInStartupPhase = true;
         } else if (!formed && clientWasFormed) {
             if (activeSound != null) activeSound.requestStop();
-            // fusion_reactor_shutdown.ogg mean -11.7 dB vs the same -34.2 dB baseline -
-            // matched loudness lands around 0.06f.
             activeSound = new FusionReactorSoundInstance(ModSounds.FUSION_REACTOR_SHUTDOWN.get(), this, false, false, 0.06f);
             soundManager.play(activeSound);
             audioInStartupPhase = false;
         } else if (formed && audioInStartupPhase && activeSound != null && !soundManager.isActive(activeSound)) {
             audioInStartupPhase = false;
-            // reactor_on_loop.ogg mean -10.3 dB vs the same -34.2 dB baseline - the
-            // hottest of the mod's clips, and this one runs continuously rather than
-            // playing once, so it gets the most conservative match: ~0.05f.
             activeSound = new FusionReactorSoundInstance(ModSounds.REACTOR_ON_LOOP.get(), this, true, true, 0.05f);
             soundManager.play(activeSound);
         }
@@ -395,19 +346,13 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
                         BlockState state = level.getBlockState(pos);
                         if (state.is(ModTags.Blocks.REACTOR_CASING)) {
                             casingFound++;
-                            // Goggle-tooltip proxy (see FusionReactorCasingBlockEntity) -
-                            // pushed here rather than each Casing block searching for its
-                            // own Core, since this loop already visits every one of them.
+                            // Tell the Casing where its Core is (see
+                            // FusionReactorCasingBlockEntity), since we visit them all anyway.
                             if (level.getBlockEntity(pos) instanceof FusionReactorCasingBlockEntity casingBE)
                                 casingBE.setCorePos(worldPosition);
                         }
-                        // Fuel-injection-rate throttle input (see runPowerLoop()) - the
-                        // Core itself sits buried at dead center, sealed off by this
-                        // exact shell, so it can never be a place a player can put a
-                        // lever. Checking every exterior Casing block instead means a
-                        // lever/comparator anywhere on the outside of the finished
-                        // sphere works, which is the only surface actually reachable
-                        // once the reactor is built.
+                        // Throttle input for runPowerLoop(). The Casing is the only part
+                        // reachable once the reactor is built.
                         int sig = level.getBestNeighborSignal(pos);
                         if (sig > shellSignal) shellSignal = sig;
                     } else if (isBlanketPosition(dx, dy, dz)) {
@@ -427,8 +372,6 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         formed = blanketRequired > 0 && casingFound == casingRequired && blanketFound == blanketRequired;
         cachedShellSignal = shellSignal;
 
-        // A property of the blanket composition alone, not of runPowerLoop()'s
-        // instantaneous output - see the field comment above.
         breedingEfficiencyPercent = formed
                 ? (float) (1 - (1 - Config.reactorBreederFloorRatio) * blanketEfficiency) * 100f
                 : 0f;

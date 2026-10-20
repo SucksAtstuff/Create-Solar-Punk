@@ -23,6 +23,7 @@ import net.succ.solar_punk.block.custom.FireboxBoilerBlock;
 import net.succ.solar_punk.fluid.ModFluids;
 
 import java.util.List;
+import net.succ.solar_punk.util.FluidTankNBTHelper;
 
 public class FireboxBoilerBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 
@@ -60,8 +61,8 @@ public class FireboxBoilerBlockEntity extends BlockEntity implements IHaveGoggle
         protected void onContentsChanged() { setChanged(); }
     };
 
-    // Routes fill(water) → waterTank, drain() → steamTank. Exposed on every side -
-    // unlike the Solar Heater there's no sky check to protect, so no face is blocked.
+    // Routes fill(water) -> waterTank, drain() -> steamTank. Exposed on every side,
+    // since unlike the Solar Heater there's no sky check to protect.
     public final IFluidHandler combinedFluidHandler = new IFluidHandler() {
         @Override public int getTanks() { return 2; }
 
@@ -109,8 +110,8 @@ public class FireboxBoilerBlockEntity extends BlockEntity implements IHaveGoggle
         // no point burning coal with no water to boil or nowhere for the steam to go.
         if (burnTimeRemaining <= 0 && hasWater && hasRoom) {
             ItemStack fuel = itemHandler.getStackInSlot(0);
-            // getBurnTime(null): same "generic" recipe type vanilla's own isFuel() checks
-            // against - respects modded fuel values, unlike the deprecated static fuel map.
+            // getBurnTime(null) uses the same generic recipe type as vanilla's isFuel(),
+            // so modded fuel values are respected.
             int ticks = fuel.isEmpty() ? 0 : fuel.getBurnTime(null);
             if (ticks > 0) {
                 itemHandler.extractItem(0, 1, false);
