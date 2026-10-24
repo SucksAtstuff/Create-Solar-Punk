@@ -5,7 +5,7 @@
       "item": "create:industrial_iron_block"
     },
     {
-      "item": "create:zinc_ingot"
+      "tag": "c:ingots/zinc"
     }
   ],
   "results": [

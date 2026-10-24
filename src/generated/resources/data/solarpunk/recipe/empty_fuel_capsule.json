@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "tag": "c:glass_panes/colorless"
+    },
+    "I": {
+      "tag": "c:plates/iron"
+    }
+  },
+  "pattern": [
+    "I",
+    "G",
+    "I"
+  ],
+  "result": {
+    "count": 4,
+    "id": "solarpunk:empty_fuel_capsule"
+  }
+}

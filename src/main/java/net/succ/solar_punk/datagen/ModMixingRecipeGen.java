@@ -3,14 +3,18 @@ package net.succ.solar_punk.datagen;
 import com.simibubi.create.api.data.recipe.MixingRecipeGen;
 import com.simibubi.create.content.processing.recipe.HeatCondition;
 import net.minecraft.core.HolderLookup;
+import net.neoforged.neoforge.common.Tags;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
+import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
+
+import static net.succ.solar_punk.datagen.DatagenUtil.anySalt;
 
 public class ModMixingRecipeGen extends MixingRecipeGen {
 
@@ -24,7 +28,7 @@ public class ModMixingRecipeGen extends MixingRecipeGen {
     // electrode: it's both an ingredient and a result, so it comes back every cycle.
     GeneratedRecipe WATER_TO_DEUTERIUM = create("water_to_deuterium", b -> b
         .require(Fluids.WATER, 1000)
-        .require(Items.COPPER_INGOT)
+        .require(Tags.Items.INGOTS_COPPER)
         .output(ModFluids.DEUTERIUM_SOURCE.get(), 250)
         .output(Items.COPPER_INGOT, 1)
         .requiresHeat(HeatCondition.HEATED));
@@ -34,7 +38,7 @@ public class ModMixingRecipeGen extends MixingRecipeGen {
     // it much slower than mining Lithium Ore.
     GeneratedRecipe SALT_BRINE_TO_LITHIUM = create("salt_brine_to_lithium", b -> b
         .require(Fluids.WATER, 250)
-        .require(ModItems.SALT.get())
+        .require(anySalt())
         .duration(600)
         .output(ModItems.LITHIUM_DUST.get(), 1)
         .output(0.05f, ModItems.BERYLLIUM_DUST.get(), 1)

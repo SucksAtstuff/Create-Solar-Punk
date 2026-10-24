@@ -6,10 +6,10 @@
       "item": "create:andesite_alloy"
     },
     "C": {
-      "item": "create:copper_sheet"
+      "tag": "c:plates/copper"
     },
     "G": {
-      "item": "minecraft:glass_pane"
+      "tag": "c:glass_panes/colorless"
     }
   },
   "pattern": [

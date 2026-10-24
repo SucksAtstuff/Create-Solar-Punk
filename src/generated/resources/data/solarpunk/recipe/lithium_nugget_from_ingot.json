@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "solarpunk:lithium_ingot"
+      "tag": "c:ingots/lithium"
     }
   ],
   "result": {

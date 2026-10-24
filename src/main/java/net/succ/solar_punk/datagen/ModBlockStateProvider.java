@@ -98,6 +98,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get(),
                 new UncheckedModelFile(modLoc("block/beryllium_reflector_module")));
 
+        // Particle Accelerator pipes: hand-crafted Blockbench models, turned by FACING.
+        facingCustomModelBlock(ModBlocks.PARTICLE_ACCELERATOR_PIPE);
+        facingCustomModelBlock(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND);
+        facingCustomModelBlock(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND_MIRRORED);
+        facingCustomModelBlock(ModBlocks.PARTICLE_ACCELERATOR_PIPE_DIAGONAL);
+
         // A hand-crafted cube while unformed, and a model with no geometry once formed so
         // the block doesn't hide FusionReactorCoreRenderer's effect. The item uses the cube.
         ModelFile fusionReactorCoreCube = new UncheckedModelFile(modLoc("block/fusion_reactor_core"));
@@ -136,6 +142,16 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 .build());
 
         if (generateItem) simpleBlockItem(block.get(), unlit);
+    }
+
+    // A hand-crafted model with no lit variant, rotated on Y for HORIZONTAL_FACING.
+    private void facingCustomModelBlock(DeferredBlock<? extends Block> block) {
+        ModelFile model = new UncheckedModelFile(modLoc("block/" + block.getId().getPath()));
+        getVariantBuilder(block.get()).forAllStates(state -> ConfiguredModel.builder()
+                .modelFile(model)
+                .rotationY(horizontalYRot(state.getValue(BlockStateProperties.HORIZONTAL_FACING)))
+                .build());
+        simpleBlockItem(block.get(), model);
     }
 
     // Like litCustomModelBlock but also rotates the model for an AXIS property (X/Y/Z).

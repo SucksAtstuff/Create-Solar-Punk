@@ -1,7 +1,7 @@
 {
   "type": "create:sequenced_assembly",
   "ingredient": {
-    "item": "minecraft:glass_pane"
+    "tag": "c:glass_panes/colorless"
   },
   "results": [
     {
@@ -32,7 +32,7 @@
           "item": "solarpunk:incomplete_photovoltaic_cell"
         },
         {
-          "item": "create:copper_sheet"
+          "tag": "c:plates/copper"
         }
       ],
       "results": [

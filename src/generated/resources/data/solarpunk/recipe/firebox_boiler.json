@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "B": {
-      "item": "minecraft:bucket"
+      "tag": "c:buckets/empty"
     },
     "F": {
-      "item": "minecraft:furnace"
+      "tag": "c:player_workstations/furnaces"
     },
     "I": {
-      "item": "minecraft:iron_ingot"
+      "tag": "c:ingots/iron"
     }
   },
   "pattern": [

@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.fluid.ModFluids;
@@ -22,23 +23,11 @@ public class ModItemTagProvider extends ItemTagsProvider {
     private static final TagKey<Item> BLAZE_BURNER_FUEL_REGULAR = itemTag("create", "blaze_burner_fuel/regular");
 
     // Custom c: sub-tags not predefined in NeoForge
-    private static final TagKey<Item> GEMS_SALT = itemTag("c", "gems/salt");
-    private static final TagKey<Item> STORAGE_BLOCKS_SALT = itemTag("c", "storage_blocks/salt");
-    private static final TagKey<Item> STORAGE_BLOCKS_LITHIUM = itemTag("c", "storage_blocks/lithium");
-    private static final TagKey<Item> STORAGE_BLOCKS_BERYLLIUM = itemTag("c", "storage_blocks/beryllium");
     private static final TagKey<Item> BUCKETS_BIOFUEL = itemTag("c", "buckets/biofuel");
     private static final TagKey<Item> BUCKETS_MOLTEN_SALT = itemTag("c", "buckets/molten_salt");
     private static final TagKey<Item> BUCKETS_FERTILIZER = itemTag("c", "buckets/fertilizer");
     private static final TagKey<Item> BIO_FUELS = itemTag("c", "bio_fuels");
     private static final TagKey<Item> BUCKETS_STEAM = itemTag("c", "buckets/steam");
-    private static final TagKey<Item> ORES_LITHIUM = itemTag("c", "ores/lithium");
-    private static final TagKey<Item> RAW_MATERIALS_LITHIUM = itemTag("c", "raw_materials/lithium");
-    private static final TagKey<Item> INGOTS_LITHIUM = itemTag("c", "ingots/lithium");
-    private static final TagKey<Item> NUGGETS_LITHIUM = itemTag("c", "nuggets/lithium");
-    private static final TagKey<Item> DUSTS_LITHIUM = itemTag("c", "dusts/lithium");
-    private static final TagKey<Item> DUSTS_BERYLLIUM = itemTag("c", "dusts/beryllium");
-    private static final TagKey<Item> INGOTS_BERYLLIUM = itemTag("c", "ingots/beryllium");
-    private static final TagKey<Item> NUGGETS_BERYLLIUM = itemTag("c", "nuggets/beryllium");
 
     public ModItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
                               CompletableFuture<TagLookup<Block>> blockTagProvider,
@@ -48,39 +37,40 @@ public class ModItemTagProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        // Salt: a crystalline mineral, compatible with other mods that use c:gems/salt
         tag(Tags.Items.GEMS).add(ModItems.SALT.get());
-        tag(GEMS_SALT).add(ModItems.SALT.get());
+        tag(ModTags.Items.GEMS_SALT).add(ModItems.SALT.get());
+        tag(ModTags.Items.DUSTS_SALT).add(ModItems.SALT.get());
+        tag(ModTags.Items.SALT).add(ModItems.SALT.get());
 
         // Salt block item
         tag(Tags.Items.STORAGE_BLOCKS).add(ModBlocks.SALT_BLOCK.get().asItem());
-        tag(STORAGE_BLOCKS_SALT).add(ModBlocks.SALT_BLOCK.get().asItem());
+        tag(ModTags.Items.STORAGE_BLOCKS_SALT).add(ModBlocks.SALT_BLOCK.get().asItem());
 
         // Lithium ore chain: the standard c:raw_materials, c:ingots, c:nuggets and c:dusts tags
         tag(Tags.Items.ORES).add(ModBlocks.LITHIUM_ORE.get().asItem());
-        tag(ORES_LITHIUM).add(ModBlocks.LITHIUM_ORE.get().asItem());
+        tag(ModTags.Items.ORES_LITHIUM).add(ModBlocks.LITHIUM_ORE.get().asItem());
         tag(Tags.Items.RAW_MATERIALS).add(ModItems.RAW_LITHIUM.get());
-        tag(RAW_MATERIALS_LITHIUM).add(ModItems.RAW_LITHIUM.get());
+        tag(ModTags.Items.RAW_MATERIALS_LITHIUM).add(ModItems.RAW_LITHIUM.get());
         tag(Tags.Items.INGOTS).add(ModItems.LITHIUM_INGOT.get());
-        tag(INGOTS_LITHIUM).add(ModItems.LITHIUM_INGOT.get());
+        tag(ModTags.Items.INGOTS_LITHIUM).add(ModItems.LITHIUM_INGOT.get());
         tag(Tags.Items.NUGGETS).add(ModItems.LITHIUM_NUGGET.get());
-        tag(NUGGETS_LITHIUM).add(ModItems.LITHIUM_NUGGET.get());
+        tag(ModTags.Items.NUGGETS_LITHIUM).add(ModItems.LITHIUM_NUGGET.get());
         tag(Tags.Items.DUSTS).add(ModItems.LITHIUM_DUST.get());
-        tag(DUSTS_LITHIUM).add(ModItems.LITHIUM_DUST.get());
+        tag(ModTags.Items.DUSTS_LITHIUM).add(ModItems.LITHIUM_DUST.get());
 
         // Beryllium: no ore of its own (see ModItems), just the dust byproduct
         tag(Tags.Items.DUSTS).add(ModItems.BERYLLIUM_DUST.get());
-        tag(DUSTS_BERYLLIUM).add(ModItems.BERYLLIUM_DUST.get());
+        tag(ModTags.Items.DUSTS_BERYLLIUM).add(ModItems.BERYLLIUM_DUST.get());
         tag(Tags.Items.INGOTS).add(ModItems.BERYLLIUM_INGOT.get());
-        tag(INGOTS_BERYLLIUM).add(ModItems.BERYLLIUM_INGOT.get());
+        tag(ModTags.Items.INGOTS_BERYLLIUM).add(ModItems.BERYLLIUM_INGOT.get());
         tag(Tags.Items.NUGGETS).add(ModItems.BERYLLIUM_NUGGET.get());
-        tag(NUGGETS_BERYLLIUM).add(ModItems.BERYLLIUM_NUGGET.get());
+        tag(ModTags.Items.NUGGETS_BERYLLIUM).add(ModItems.BERYLLIUM_NUGGET.get());
 
         // Storage blocks
         tag(Tags.Items.STORAGE_BLOCKS).add(ModBlocks.LITHIUM_BLOCK.get().asItem())
                 .add(ModBlocks.BERYLLIUM_BLOCK.get().asItem());
-        tag(STORAGE_BLOCKS_LITHIUM).add(ModBlocks.LITHIUM_BLOCK.get().asItem());
-        tag(STORAGE_BLOCKS_BERYLLIUM).add(ModBlocks.BERYLLIUM_BLOCK.get().asItem());
+        tag(ModTags.Items.STORAGE_BLOCKS_LITHIUM).add(ModBlocks.LITHIUM_BLOCK.get().asItem());
+        tag(ModTags.Items.STORAGE_BLOCKS_BERYLLIUM).add(ModBlocks.BERYLLIUM_BLOCK.get().asItem());
 
         // Biomass: biofuel feedstock
         tag(BIO_FUELS).add(ModItems.BIOMASS.get()).add(ModItems.BIOMASS_PELLET.get());

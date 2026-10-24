@@ -28,6 +28,7 @@ import net.succ.solar_punk.block.custom.GeyserCapBlock;
 import net.succ.solar_punk.block.custom.GeyserVentBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.KineticBatteryBlock;
+import net.succ.solar_punk.block.custom.ParticleAcceleratorPipeBlock;
 import net.succ.solar_punk.block.custom.KineticSprinklerBlock;
 import net.succ.solar_punk.block.custom.KineticSprinklerItem;
 import net.succ.solar_punk.block.custom.SolarHeaterBlock;
@@ -299,6 +300,29 @@ public class ModBlocks {
                     .strength(6.0f, 1200.0f)
                     .noOcclusion()
                     .pushReaction(PushReaction.BLOCK)));
+
+    // Particle Accelerator ring pieces. Models only for now, no ring logic yet.
+    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE = registerBlock("particle_accelerator_pipe",
+            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), true));
+
+    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE_BEND = registerBlock("particle_accelerator_pipe_bend",
+            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), false));
+
+    // The same bend curving the other way (block models can rotate but not mirror).
+    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE_BEND_MIRRORED = registerBlock("particle_accelerator_pipe_bend_mirrored",
+            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), false));
+
+    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE_DIAGONAL = registerBlock("particle_accelerator_pipe_diagonal",
+            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), false));
+
+    private static BlockBehaviour.Properties acceleratorPipeProperties() {
+        return BlockBehaviour.Properties.of()
+                .mapColor(MapColor.METAL)
+                .requiresCorrectToolForDrops()
+                .strength(4.0f, 8.0f)
+                .sound(SoundType.METAL)
+                .noOcclusion();
+    }
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

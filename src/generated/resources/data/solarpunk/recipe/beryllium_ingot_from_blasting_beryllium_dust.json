@@ -4,7 +4,7 @@
   "cookingtime": 100,
   "experience": 0.7,
   "ingredient": {
-    "item": "solarpunk:beryllium_dust"
+    "tag": "c:dusts/beryllium"
   },
   "result": {
     "count": 1,

@@ -4,13 +4,13 @@
   "category": "misc",
   "key": {
     "B": {
-      "item": "solarpunk:beryllium_ingot"
+      "tag": "c:ingots/beryllium"
     },
     "L": {
-      "item": "solarpunk:lithium_ingot"
+      "tag": "c:ingots/lithium"
     },
     "N": {
-      "item": "minecraft:netherite_ingot"
+      "tag": "c:ingots/netherite"
     },
     "P": {
       "item": "create:precision_mechanism"

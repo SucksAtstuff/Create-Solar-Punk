@@ -1,7 +1,7 @@
 {
   "type": "solarpunk:solar_heating",
   "ingredient": {
-    "item": "solarpunk:salt_block"
+    "tag": "c:storage_blocks/salt"
   },
   "result": {
     "amount": 1000,

@@ -126,7 +126,7 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
     public final ItemStackHandler itemHandler = new ItemStackHandler(1) {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            return stack.is(ModItems.LITHIUM_DUST.get());
+            return stack.is(ModTags.Items.DUSTS_LITHIUM);
         }
 
         @Override

@@ -5,7 +5,7 @@
       "item": "solarpunk:turbine_casing"
     },
     {
-      "item": "minecraft:glass"
+      "tag": "c:glass_blocks/colorless"
     }
   ],
   "results": [

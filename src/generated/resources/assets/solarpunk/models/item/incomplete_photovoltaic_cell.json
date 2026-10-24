@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "solarpunk:item/photovoltaic_cell"
+    "layer0": "solarpunk:item/incomplete_photovoltaic_cell"
   }
 }

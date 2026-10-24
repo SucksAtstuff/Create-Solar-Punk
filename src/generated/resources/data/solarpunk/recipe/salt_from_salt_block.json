@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "solarpunk:salt_block"
+      "tag": "c:storage_blocks/salt"
     }
   ],
   "result": {

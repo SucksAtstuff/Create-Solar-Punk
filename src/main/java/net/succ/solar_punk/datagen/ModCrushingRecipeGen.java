@@ -2,10 +2,12 @@ package net.succ.solar_punk.datagen;
 
 import com.simibubi.create.api.data.recipe.CrushingRecipeGen;
 import net.minecraft.core.HolderLookup;
+import net.neoforged.neoforge.common.Tags;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.succ.solar_punk.SolarPunk;
+import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
@@ -44,7 +46,7 @@ public class ModCrushingRecipeGen extends CrushingRecipeGen {
     // salt brine Mixing recipe (see ModMixingRecipeGen), riding on Lithium production.
     GeneratedRecipe CRUSH_RAW_LITHIUM = create("raw_lithium_to_dust", b -> b
         .duration(200)
-        .require(ModItems.RAW_LITHIUM.get())
+        .require(ModTags.Items.RAW_MATERIALS_LITHIUM)
         .output(ModItems.LITHIUM_DUST.get(), 1)
         .output(0.15f, ModItems.BERYLLIUM_DUST.get(), 1));
 

@@ -4,7 +4,7 @@
   "category": "misc",
   "key": {
     "L": {
-      "item": "solarpunk:lithium_ingot"
+      "tag": "c:ingots/lithium"
     },
     "T": {
       "item": "create:fluid_tank"

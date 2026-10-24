@@ -2,9 +2,11 @@ package net.succ.solar_punk.datagen;
 
 import com.simibubi.create.api.data.recipe.MechanicalCraftingRecipeGen;
 import net.minecraft.core.HolderLookup;
+import net.neoforged.neoforge.common.Tags;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Items;
 import net.succ.solar_punk.SolarPunk;
+import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.item.ModItems;
 
@@ -45,7 +47,7 @@ public class ModMechanicalCraftingRecipeGen extends MechanicalCraftingRecipeGen 
                     .patternLine("LLL")
                     .patternLine("LTL")
                     .patternLine("LLL")
-                    .key('L', ModItems.LITHIUM_INGOT.get())
+                    .key('L', ModTags.Items.INGOTS_LITHIUM)
                     .key('T', createItem("fluid_tank")));
 
     // Reflector bounces neutrons back, so its core is a Copper Sheet plate.
@@ -58,8 +60,8 @@ public class ModMechanicalCraftingRecipeGen extends MechanicalCraftingRecipeGen 
                     .patternLine("BBB")
                     .patternLine("BSB")
                     .patternLine("BBB")
-                    .key('B', ModItems.BERYLLIUM_INGOT.get())
-                    .key('S', createItem("copper_sheet")));
+                    .key('B', ModTags.Items.INGOTS_BERYLLIUM)
+                    .key('S', ModTags.Items.PLATES_COPPER));
 
     // Brass Solar Panel - brass-tier, so it needs Photovoltaic Cells (sequenced
     // assembly) and a mechanical crafter instead of a crafting table.
@@ -71,11 +73,11 @@ public class ModMechanicalCraftingRecipeGen extends MechanicalCraftingRecipeGen 
                     .patternLine("GGG")
                     .patternLine("PHP")
                     .patternLine("EBE")
-                    .key('G', Items.GLASS_PANE)
+                    .key('G', Tags.Items.GLASS_PANES_COLORLESS)
                     .key('P', ModItems.PHOTOVOLTAIC_CELL.get())
                     .key('H', createItem("brass_casing"))
                     .key('E', createItem("electron_tube"))
-                    .key('B', createItem("brass_sheet")));
+                    .key('B', ModTags.Items.PLATES_BRASS));
 
     // Biofuel Engine
     //   B C B
@@ -86,7 +88,7 @@ public class ModMechanicalCraftingRecipeGen extends MechanicalCraftingRecipeGen 
                     .patternLine("BCB")
                     .patternLine("SFS")
                     .patternLine("BCB")
-                    .key('B', createItem("brass_sheet"))
+                    .key('B', ModTags.Items.PLATES_BRASS)
                     .key('C', createItem("brass_casing"))
                     .key('S', createItem("shaft"))
                     .key('F', createItem("flywheel")));
@@ -104,7 +106,7 @@ public class ModMechanicalCraftingRecipeGen extends MechanicalCraftingRecipeGen 
                     .patternLine("IPI")
                     .patternLine("QIQ")
                     .key('Q', Items.QUARTZ_BLOCK)
-                    .key('I', createItem("iron_sheet"))
+                    .key('I', ModTags.Items.PLATES_IRON)
                     .key('P', createItem("precision_mechanism")));
 
     // Fusion Reactor Core - both fuel-chain ingots ring a Netherite Ingot at the
@@ -119,9 +121,9 @@ public class ModMechanicalCraftingRecipeGen extends MechanicalCraftingRecipeGen 
                     .patternLine("LBNBL")
                     .patternLine("PLBLP")
                     .key('P', createItem("precision_mechanism"))
-                    .key('L', ModItems.LITHIUM_INGOT.get())
-                    .key('B', ModItems.BERYLLIUM_INGOT.get())
-                    .key('N', Items.NETHERITE_INGOT));
+                    .key('L', ModTags.Items.INGOTS_LITHIUM)
+                    .key('B', ModTags.Items.INGOTS_BERYLLIUM)
+                    .key('N', Tags.Items.INGOTS_NETHERITE));
 
     public ModMechanicalCraftingRecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, SolarPunk.MODID);

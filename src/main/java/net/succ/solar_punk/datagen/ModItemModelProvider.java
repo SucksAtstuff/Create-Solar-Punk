@@ -27,11 +27,16 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.BERYLLIUM_INGOT.get());
         basicItem(ModItems.BERYLLIUM_NUGGET.get());
         basicItem(ModItems.PHOTOVOLTAIC_CELL.get());
-        // No separate incomplete textures yet, so these reuse the finished items' models
-        withExistingParent(ModItems.INCOMPLETE_PHOTOVOLTAIC_CELL.getId().getPath(), "item/generated")
-                .texture("layer0", ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "item/photovoltaic_cell"));
+        basicItem(ModItems.INCOMPLETE_PHOTOVOLTAIC_CELL.get());
+        // No separate incomplete texture yet, so this reuses the finished block's model
         withExistingParent(ModItems.INCOMPLETE_SOLAR_MIRROR.getId().getPath(),
                 ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "block/solar_mirror"));
+        basicItem(ModItems.ELECTROMAGNET_COIL.get());
+        basicItem(ModItems.INCOMPLETE_ELECTROMAGNET_COIL.get());
+        basicItem(ModItems.SUPERCONDUCTING_COIL.get());
+        basicItem(ModItems.INCOMPLETE_SUPERCONDUCTING_COIL.get());
+        basicItem(ModItems.EMPTY_FUEL_CAPSULE.get());
+        basicItem(ModItems.TRITIUM_CAPSULE.get());
         basicItem(ModFluids.MOLTEN_SALT_BUCKET.get());
         basicItem(ModFluids.BIOFUEL_BUCKET.get());
         basicItem(ModFluids.FERTILIZER_BUCKET.get());

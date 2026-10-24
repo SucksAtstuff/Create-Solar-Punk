@@ -21,6 +21,23 @@ Higher-tier machines now need real Create processing instead of just a crafting 
 
 **For modpack makers:** the Brass Solar Panel, Biofuel Engine, Solar Mirror, Solar Power Tower and Fusion Reactor Core recipes have new IDs, under `mechanical_crafting/` or `sequenced_assembly/`. Update any recipe overrides that point at the old ones.
 
+### Materials From Other Mods
+
+Recipes now accept the same material from other mods, so salt, lithium, beryllium, metal ingots, Create's sheets and glass from any mod all work. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/48
+
+- Salt from Northstar and Create: Food works anywhere Solarpunk Salt does, and Solarpunk Salt works in their recipes too.
+- The Fusion Reactor accepts Lithium Dust from other mods.
+- The Solar Heater now turns any stone (Andesite, Diorite, Granite, Deepslate, Tuff) and any cobblestone into Lava, not just plain Stone and Cobblestone.
+
+### Particle Accelerator Parts (Work in Progress)
+
+The first pieces of the upcoming Particle Accelerator are in. They can be crafted but don't do anything yet.
+
+- **Electromagnet Coil:** made by sequenced assembly: Lightning Rod, then deploy two Copper Sheets, press, and deploy an Electron Tube.
+- **Superconducting Coil:** made by sequenced assembly from an Electromagnet Coil: deploy a Beryllium Ingot, fill with Deuterium, press, and deploy a Lithium Ingot. Like the Precision Mechanism, it sometimes fails and gives back scrap.
+- **Empty Fuel Capsule:** crafted from 2 Iron Sheets and a Glass Pane, gives 4.
+- **Tritium Capsule:** a future fusion fuel, with no way to get it yet.
+
 ### Turbine Blades
 
 - New model and textures for the Andesite and Brass Turbine Blades.

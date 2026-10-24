@@ -65,7 +65,11 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.FUSION_REACTOR_CASING_GLASS.get())
                 .add(ModBlocks.LITHIUM_BREEDER_MODULE.get())
                 .add(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get())
-                .add(ModBlocks.FUSION_REACTOR_CORE.get());
+                .add(ModBlocks.FUSION_REACTOR_CORE.get())
+                .add(ModBlocks.PARTICLE_ACCELERATOR_PIPE.get())
+                .add(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND.get())
+                .add(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND_MIRRORED.get())
+                .add(ModBlocks.PARTICLE_ACCELERATOR_PIPE_DIAGONAL.get());
 
         tag(BlockTags.MINEABLE_WITH_SHOVEL)
                 .add(ModBlocks.ASH_BLOCK.get())

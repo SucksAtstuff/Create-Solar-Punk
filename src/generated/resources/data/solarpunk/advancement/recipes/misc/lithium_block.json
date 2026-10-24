@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "solarpunk:lithium_ingot"
+            "items": "#c:ingots/lithium"
           }
         ]
       },

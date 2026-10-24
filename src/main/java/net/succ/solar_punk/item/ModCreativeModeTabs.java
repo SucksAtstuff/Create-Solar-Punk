@@ -58,6 +58,10 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.BIOMASS_PELLET.get());
                         output.accept(ModItems.BIOCHAR.get());
                         output.accept(ModItems.PHOTOVOLTAIC_CELL.get());
+                        output.accept(ModItems.ELECTROMAGNET_COIL.get());
+                        output.accept(ModItems.SUPERCONDUCTING_COIL.get());
+                        output.accept(ModItems.EMPTY_FUEL_CAPSULE.get());
+                        output.accept(ModItems.TRITIUM_CAPSULE.get());
                         output.accept(ModBlocks.TURBINE_CASING.get());
                         output.accept(ModBlocks.TURBINE_CASING_GLASS.get());
                         output.accept(ModBlocks.TURBINE_ROTOR.get());
@@ -68,6 +72,10 @@ public class ModCreativeModeTabs {
                         output.accept(ModBlocks.LITHIUM_BREEDER_MODULE.get());
                         output.accept(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get());
                         output.accept(ModBlocks.FUSION_REACTOR_CORE.get());
+                        output.accept(ModBlocks.PARTICLE_ACCELERATOR_PIPE.get());
+                        output.accept(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND.get());
+                        output.accept(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND_MIRRORED.get());
+                        output.accept(ModBlocks.PARTICLE_ACCELERATOR_PIPE_DIAGONAL.get());
                         output.accept(ModFluids.MOLTEN_SALT_BUCKET.get());
                         output.accept(ModFluids.BIOFUEL_BUCKET.get());
                         output.accept(ModFluids.FERTILIZER_BUCKET.get());

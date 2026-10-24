@@ -63,6 +63,29 @@ public class ModItems {
     public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_SOLAR_MIRROR = ITEMS.register("incomplete_solar_mirror",
             () -> new SequencedAssemblyItem(new Item.Properties()));
 
+    // Particle Accelerator components (see docs/PARTICLE_ACCELERATOR_PLAN.md), both made
+    // by sequenced assembly. The Superconducting Coil is built on top of an Electromagnet
+    // Coil and needs the fusion chain's materials.
+    public static final DeferredItem<Item> ELECTROMAGNET_COIL = ITEMS.register("electromagnet_coil",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_ELECTROMAGNET_COIL = ITEMS.register("incomplete_electromagnet_coil",
+            () -> new SequencedAssemblyItem(new Item.Properties()));
+
+    public static final DeferredItem<Item> SUPERCONDUCTING_COIL = ITEMS.register("superconducting_coil",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_SUPERCONDUCTING_COIL = ITEMS.register("incomplete_superconducting_coil",
+            () -> new SequencedAssemblyItem(new Item.Properties()));
+
+    // Fuel capsules: the Particle Accelerator's Collector fills an Empty Fuel Capsule with
+    // Tritium, and the Fusion Reactor will burn it and hand the empty capsule back. No use yet.
+    public static final DeferredItem<Item> EMPTY_FUEL_CAPSULE = ITEMS.register("empty_fuel_capsule",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> TRITIUM_CAPSULE = ITEMS.register("tritium_capsule",
+            () -> new Item(new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

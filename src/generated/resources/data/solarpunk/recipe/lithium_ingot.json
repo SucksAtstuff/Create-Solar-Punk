@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "N": {
-      "item": "solarpunk:lithium_nugget"
+      "tag": "c:nuggets/lithium"
     }
   },
   "pattern": [
