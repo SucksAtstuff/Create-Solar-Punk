@@ -29,14 +29,13 @@ Recipes now accept the same material from other mods, so salt, lithium, berylliu
 - The Fusion Reactor accepts Lithium Dust from other mods.
 - The Solar Heater now turns any stone (Andesite, Diorite, Granite, Deepslate, Tuff) and any cobblestone into Lava, not just plain Stone and Cobblestone.
 
-### Particle Accelerator Parts (Work in Progress)
+### Particle Accelerator
 
-The first pieces of the upcoming Particle Accelerator are in. They can be crafted but don't do anything yet.
-
-- **Electromagnet Coil:** made by sequenced assembly: Lightning Rod, then deploy two Copper Sheets, press, and deploy an Electron Tube.
-- **Superconducting Coil:** made by sequenced assembly from an Electromagnet Coil: deploy a Beryllium Ingot, fill with Deuterium, press, and deploy a Lithium Ingot. Like the Precision Mechanism, it sometimes fails and gives back scrap.
-- **Empty Fuel Capsule:** crafted from 2 Iron Sheets and a Glass Pane, gives 4.
-- **Tritium Capsule:** a future fusion fuel, with no way to get it yet.
+- New endgame machine: a ring of glass pipes, powered by rotation, that smashes items together into new materials. Watch the two beams race around and collide as each recipe finishes.
+- New blocks: **Particle Accelerator Pipe** (one item for every shape, press Alt to pick) and **Particle Accelerator Input**.
+- New items: **Electromagnet Coil**, **Superconducting Coil**, **Empty Fuel Capsule** and **Tritium Capsule**.
+- JEI, Ponder, goggle and Display Link support. Datapacks can add their own recipes.
+- The ring hums higher as the beams speed up, and you can hear them collide.
 
 ### Turbine Blades
 
@@ -47,12 +46,20 @@ The first pieces of the upcoming Particle Accelerator are in. They can be crafte
 ### Fusion Reactor
 
 - The Fusion Reactor's Casing shell now matches a standard hollow sphere, so you can build it straight from WorldEdit's `//hsphere` or an online sphere generator. Reactors built the old way still work.
+- Now burns **Tritium Capsules** from the Particle Accelerator, and its Breeder Modules slowly make more.
+- Now drops its contents when broken.
 
 ### Tooltips and Ponder
 
 - Fixed outdated item tooltips for the Solar Panels, Solar Power Tower, Solar Mirror, Steam Turbine, Kinetic Sprinkler, Heat Battery, Solar Heater and Biofilter.
 - The Crystallizer's tooltip now actually shows up, and the Fusion Reactor Core and both blanket modules have tooltips.
 - Fixed wrong Ponder text: the Fusion Reactor scene no longer mentions the removed Extractor blocks, the turbine scene now says one blade per arm, and the Biomass Gasifier scene gives the correct burn time.
+- Every Ponder scene has been redone to be clearer and walk through each machine step by step.
+- Ponder scenes no longer play machine sounds.
+
+### Sounds
+
+- Machine sounds now fade with distance and come from the machine's direction, instead of being heard at full volume from far away.
 
 ### Solar Power in Space
 

@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.PonderHelper;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -162,6 +163,7 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
 
     @OnlyIn(Dist.CLIENT)
     public void tickAudio() {
+        if (PonderHelper.isPonder(level)) return;  // Ponder scenes stay silent
         if (isController() && getBlockState().getValue(FermentationVatBlock.LIT)
                 && (soundInstance == null || soundInstance.isStopped())) {
             soundInstance = new FermentationVatSoundInstance(this);

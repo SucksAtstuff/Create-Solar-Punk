@@ -145,6 +145,8 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_REACTOR_FUEL_PER_STEAM_MB;
     private static final ModConfigSpec.DoubleValue CFG_REACTOR_BERYLLIUM_FUEL_WASTE_MULTIPLIER;
     private static final ModConfigSpec.DoubleValue CFG_REACTOR_BREEDER_FLOOR_RATIO;
+    private static final ModConfigSpec.IntValue CFG_REACTOR_TRITIUM_CAPSULE_MB;
+    private static final ModConfigSpec.DoubleValue CFG_REACTOR_BREEDER_CAPTURE_RATIO;
 
     // -------------------------------------------------------------------------
     // Tanks
@@ -380,6 +382,16 @@ public class Config {
                 "composition (1.0 = no waste at pure-Lithium). Default 0.5 widens the Deuterium:Lithium",
                 "draw ratio from 1:1 at pure-Lithium to 1:2 at pure-Beryllium.")
                 .defineInRange("reactor_breeder_floor_ratio", 0.5, 0.01, 1.0);
+        CFG_REACTOR_TRITIUM_CAPSULE_MB = BUILDER.comment(
+                "mB of fuel one Tritium Capsule counts as (one Lithium Dust is 250 mB). Tritium burns 1:1",
+                "with Deuterium with none of Lithium's breeding waste. Default 16000 is twice the 32 Lithium",
+                "the Particle Accelerator's Tritium recipe uses.")
+                .defineInRange("reactor_tritium_capsule_mb", 16000, 1, 1_000_000);
+        CFG_REACTOR_BREEDER_CAPTURE_RATIO = BUILDER.comment(
+                "Share of the Tritium the blanket breeds while burning Lithium that's captured into Empty",
+                "Fuel Capsules in the reactor, scaled by the share of Lithium Breeder Modules. Default 0.02",
+                "is a slow trickle, so the Particle Accelerator stays the main source of Tritium.")
+                .defineInRange("reactor_breeder_capture_ratio", 0.02, 0.0, 1.0);
         BUILDER.pop();
 
         BUILDER.pop(); // machines
@@ -529,6 +541,8 @@ public class Config {
 
     public static int reactorSteamPerLayerPerTick, reactorFuelPerSteamMb;
     public static double reactorLithiumOutputRatio, reactorBerylliumFuelWasteMultiplier, reactorBreederFloorRatio;
+    public static int reactorTritiumCapsuleMb;
+    public static double reactorBreederCaptureRatio;
 
     public static int heatBatteryTank, biofuelEngineTank;
     public static int fermentationVatTankPerBlock, solarPowerTowerTankPerBlock;
@@ -627,6 +641,8 @@ public class Config {
         reactorFuelPerSteamMb                = CFG_REACTOR_FUEL_PER_STEAM_MB.get();
         reactorBerylliumFuelWasteMultiplier  = CFG_REACTOR_BERYLLIUM_FUEL_WASTE_MULTIPLIER.get();
         reactorBreederFloorRatio             = CFG_REACTOR_BREEDER_FLOOR_RATIO.get();
+        reactorTritiumCapsuleMb              = CFG_REACTOR_TRITIUM_CAPSULE_MB.get();
+        reactorBreederCaptureRatio           = CFG_REACTOR_BREEDER_CAPTURE_RATIO.get();
 
         turbineSteamTank        = CFG_TURBINE_STEAM_TANK.get();
         turbineCondensateTank   = CFG_TURBINE_CONDENSATE_TANK.get();

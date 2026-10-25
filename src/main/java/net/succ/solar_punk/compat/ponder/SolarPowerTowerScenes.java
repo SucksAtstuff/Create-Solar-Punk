@@ -2,11 +2,13 @@ package net.succ.solar_punk.compat.ponder;
 
 import com.simibubi.create.AllItems;
 import net.createmod.catnip.math.Pointing;
+import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -25,6 +27,14 @@ public class SolarPowerTowerScenes {
     private static final BlockPos TOP        = new BlockPos(6, 3, 6);
     private static final BlockPos BOT        = new BlockPos(6, 1, 6);
 
+    /** Builds the tower up one 3x3 layer at a time. */
+    private static void buildTower(SceneBuilder scene, SceneBuildingUtil util) {
+        for (int y = 1; y <= 3; y++) {
+            scene.world().showSection(util.select().fromTo(5, y, 5, 7, y, 7), Direction.DOWN);
+            scene.idle(6);
+        }
+    }
+
     /** Shows all 27 tower blocks with no idle between them so they all exist at the same render frame. */
     private static void showTower(SceneBuilder scene, SceneBuildingUtil util) {
         for (int y = 1; y <= 3; y++)
@@ -40,24 +50,30 @@ public class SolarPowerTowerScenes {
         scene.world().showSection(util.select().layer(0), Direction.UP);
         scene.idle(10);
 
-        showTower(scene, util);
-        scene.idle(20);
+        buildTower(scene, util);
+        scene.idle(15);
 
         scene.overlay().showText(70)
                 .text("Stack Solar Power Tower blocks vertically - they merge into a single multiblock")
                 .pointAt(util.vector().topOf(TOP))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
+        scene.overlay().showOutline(PonderPalette.GREEN, "tower", util.select().fromTo(5, 1, 5, 7, 3, 7), 70);
         scene.overlay().showText(70)
                 .text("The tower requires at least a 3x3 footprint and 3 blocks tall to produce anything")
                 .pointAt(util.vector().centerOf(CENTER))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
+        scene.overlay().showControls(util.vector().blockSurface(BOT, Direction.WEST), Pointing.LEFT, 60)
+                .withItem(new ItemStack(Items.WATER_BUCKET));
         scene.overlay().showText(60)
                 .text("Pipe water in through any side face to fill the water tank")
                 .pointAt(util.vector().centerOf(BOT))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.world().modifyBlockEntity(CONTROLLER, SolarPowerTowerBlockEntity.class, be ->
                 be.waterTank.fill(new FluidStack(Fluids.WATER, 16000), IFluidHandler.FluidAction.EXECUTE));
@@ -66,6 +82,7 @@ public class SolarPowerTowerScenes {
         scene.overlay().showText(80)
                 .text("During the day with a clear sky, the tower converts water into Molten Salt - rain and night stop production")
                 .pointAt(util.vector().topOf(TOP))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.world().modifyBlock(BOT,    s -> s.setValue(SolarPowerTowerBlock.LIT, true), false);
         scene.world().modifyBlock(CENTER, s -> s.setValue(SolarPowerTowerBlock.LIT, true), false);
@@ -78,12 +95,16 @@ public class SolarPowerTowerScenes {
         scene.overlay().showText(70)
                 .text("Solar Mirrors placed nearby link to the tower automatically and boost output - see the Solar Mirrors scene for details")
                 .pointAt(util.vector().centerOf(CENTER))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
+        scene.overlay().showControls(util.vector().blockSurface(BOT, Direction.NORTH), Pointing.RIGHT, 60)
+                .withItem(new ItemStack(ModFluids.MOLTEN_SALT_BUCKET.get()));
         scene.overlay().showText(60)
                 .text("Drain the Molten Salt from the output and pipe it to a Heat Battery")
                 .pointAt(util.vector().centerOf(BOT))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(70);
 
@@ -101,15 +122,19 @@ public class SolarPowerTowerScenes {
         scene.overlay().showText(70)
                 .text("Right-click the tower with a Wrench to switch it to Steam mode - the stored fluid is cleared on switch")
                 .pointAt(util.vector().centerOf(CENTER))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.world().modifyBlockEntity(CONTROLLER, SolarPowerTowerBlockEntity.class, be ->
                 be.steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), 8000),
                         IFluidHandler.FluidAction.EXECUTE));
         scene.idle(80);
 
+        scene.overlay().showControls(util.vector().blockSurface(BOT, Direction.NORTH), Pointing.RIGHT, 60)
+                .withItem(new ItemStack(ModFluids.STEAM_BUCKET.get()));
         scene.overlay().showText(60)
                 .text("In Steam mode the tower produces Steam directly - pipe it to a Steam Turbine or other consumer")
                 .pointAt(util.vector().centerOf(BOT))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(70);
 
@@ -144,6 +169,7 @@ public class SolarPowerTowerScenes {
         scene.overlay().showText(70)
                 .text("Solar Mirrors are freestanding - place them on the ground, they don't attach to the tower")
                 .pointAt(util.vector().centerOf(CENTER))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
@@ -153,6 +179,7 @@ public class SolarPowerTowerScenes {
         scene.overlay().showText(80)
                 .text("A mirror links automatically if it has open sky above it and a clear line of sight to the tower")
                 .pointAt(util.vector().centerOf(MIRRORS[0]))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
 
@@ -163,6 +190,7 @@ public class SolarPowerTowerScenes {
         scene.overlay().showText(80)
                 .text("The search radius scales with the tower's height, and taller towers can track more mirrors at once")
                 .pointAt(util.vector().topOf(TOP))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
 
@@ -175,18 +203,21 @@ public class SolarPowerTowerScenes {
         scene.overlay().showText(90)
                 .text("Each linked mirror's post turns to face the tower, and its plate tilts to bisect the sun and the tower - tracking the sun all day")
                 .pointAt(util.vector().centerOf(CENTER))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(100);
 
         scene.overlay().showText(80)
                 .text("Efficiency follows a triangle curve peaking at an optimal mirror count for the field - doubling past that drops it back to zero")
                 .pointAt(util.vector().centerOf(CENTER))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
 
         scene.overlay().showText(60)
                 .text("Check a linked tower with Goggles to see its mirror count and current efficiency")
                 .pointAt(util.vector().centerOf(CENTER))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(70);
 

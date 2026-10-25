@@ -62,6 +62,7 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND.get());
         dropSelf(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND_MIRRORED.get());
         dropSelf(ModBlocks.PARTICLE_ACCELERATOR_PIPE_DIAGONAL.get());
+        dropSelf(ModBlocks.PARTICLE_ACCELERATOR_INPUT.get());
     }
 
     @Override

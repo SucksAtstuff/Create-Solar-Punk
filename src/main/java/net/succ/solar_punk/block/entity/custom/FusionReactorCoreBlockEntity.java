@@ -1,9 +1,10 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.PonderHelper;
+import net.neoforged.neoforge.items.IItemHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.platform.CatnipServices;
-import net.createmod.ponder.api.level.PonderLevel;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -100,9 +101,10 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
     private int cachedShellSignal = 0;
 
     // -------------------------------------------------------------------------
-    // Power loop: Deuterium (fluid) + Lithium (item) in, Steam out, at rates the Config
-    // knobs interpolate by blanketEfficiency. There is no Tritium item or fluid, the
-    // Lithium -> Tritium breeding only exists as math in runPowerLoop().
+    // Power loop: Deuterium (fluid) + Lithium or Tritium (items) in, Steam out, at rates
+    // the Config knobs interpolate by blanketEfficiency. Lithium is bred into Tritium
+    // inside the reactor (math in runPowerLoop()); Tritium Capsules from the Particle
+    // Accelerator skip that step, and the Breeder Modules slowly fill Empty Fuel Capsules.
     // -------------------------------------------------------------------------
 
     // How many mB of fuel one Lithium Dust counts as.
@@ -122,11 +124,19 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         protected void onContentsChanged() { setChanged(); }
     };
 
-    // Slot 0: Lithium Dust input. There's no output slot.
-    public final ItemStackHandler itemHandler = new ItemStackHandler(1) {
+    public static final int SLOT_LITHIUM = 0, SLOT_TRITIUM = 1, SLOT_EMPTY_CAPSULES = 2, SLOT_BRED_TRITIUM = 3;
+
+    // Lithium Dust in, Tritium Capsules in, Empty Fuel Capsules (burnt ones come out
+    // here, and the breeder refills the ones sitting here), and bred Tritium Capsules out.
+    public final ItemStackHandler inventory = new ItemStackHandler(4) {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            return stack.is(ModTags.Items.DUSTS_LITHIUM);
+            return switch (slot) {
+                case SLOT_LITHIUM -> stack.is(ModTags.Items.DUSTS_LITHIUM);
+                case SLOT_TRITIUM, SLOT_BRED_TRITIUM -> stack.is(ModItems.TRITIUM_CAPSULE.get());
+                case SLOT_EMPTY_CAPSULES -> stack.is(ModItems.EMPTY_FUEL_CAPSULE.get());
+                default -> false;
+            };
         }
 
         @Override
@@ -134,6 +144,28 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
 
         @Override
         protected void onContentsChanged(int slot) { setChanged(); }
+    };
+
+    // What pipes, funnels and the Casing see: fuel and empty capsules can be put in, and
+    // empty capsules and bred Tritium can be taken out.
+    public final IItemHandler itemHandler = new IItemHandler() {
+        @Override public int getSlots() { return inventory.getSlots(); }
+        @Override public ItemStack getStackInSlot(int slot) { return inventory.getStackInSlot(slot); }
+        @Override public int getSlotLimit(int slot) { return inventory.getSlotLimit(slot); }
+        @Override public boolean isItemValid(int slot, ItemStack stack) {
+            return slot != SLOT_BRED_TRITIUM && inventory.isItemValid(slot, stack);
+        }
+
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            return slot == SLOT_BRED_TRITIUM ? stack : inventory.insertItem(slot, stack, simulate);
+        }
+
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return slot == SLOT_EMPTY_CAPSULES || slot == SLOT_BRED_TRITIUM
+                    ? inventory.extractItem(slot, amount, simulate) : ItemStack.EMPTY;
+        }
     };
 
     public final IFluidHandler combinedFluidHandler = new IFluidHandler() {
@@ -170,6 +202,12 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
     // mB of Lithium loaded from consumed Dust, topped up a whole item at a time
     // (furnace-fuel style) since an item can't be drained fractionally like Deuterium.
     private float lithiumBufferMb = 0f;
+    // Same for Tritium, a whole capsule at a time.
+    private float tritiumBufferMb = 0f;
+    // Tritium the Breeder Modules have captured towards the next capsule.
+    private float bredTritiumMb = 0f;
+    // Which fuel the power loop burned last tick, for the goggles.
+    public boolean burningTritium = false;
 
     // Why the power loop did or didn't run on its last tick - read by the Status display
     // source so a stalled reactor says what to fix instead of just reading 0 mB/t.
@@ -184,7 +222,12 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
 
     // Buffered Lithium plus every Lithium Dust still waiting in the input slot, in mB.
     public float getLithiumSupplyMb() {
-        return lithiumBufferMb + itemHandler.getStackInSlot(0).getCount() * LITHIUM_DUST_MB_EQUIVALENT;
+        return lithiumBufferMb + inventory.getStackInSlot(SLOT_LITHIUM).getCount() * LITHIUM_DUST_MB_EQUIVALENT;
+    }
+
+    // Buffered Tritium plus every Tritium Capsule waiting in the input slot, in mB.
+    public float getTritiumSupplyMb() {
+        return tritiumBufferMb + inventory.getStackInSlot(SLOT_TRITIUM).getCount() * (float) Config.reactorTritiumCapsuleMb;
     }
 
     // Client-only ambience state - see tickAudio(). Not saved/synced; each client just
@@ -204,8 +247,7 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
     public void tick() {
         if (level == null) return;
         if (level.isClientSide) {
-            if (!(level instanceof PonderLevel))
-                CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> this.tickAudio());
+            CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> this.tickAudio());
             return;
         }
 
@@ -265,31 +307,76 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         double deuteriumPerSteam = fuelPerSteam / (1 + 1 / breederRatio);
         double lithiumPerSteam = deuteriumPerSteam / breederRatio;
 
-        // Top the Lithium buffer up a whole Dust at a time.
-        while (lithiumBufferMb < desiredSteam * lithiumPerSteam && !itemHandler.getStackInSlot(0).isEmpty()) {
-            itemHandler.extractItem(0, 1, false);
-            lithiumBufferMb += LITHIUM_DUST_MB_EQUIVALENT;
+        // Tritium Capsules go first. Tritium is what Lithium breeds into, so it burns 1:1
+        // with Deuterium, with none of the breeding waste.
+        boolean tritium = tritiumBufferMb > 0 || canLoadTritiumCapsule();
+        double fuelPerSteam2 = tritium ? deuteriumPerSteam : lithiumPerSteam;
+
+        // Top the buffer up a whole item at a time.
+        if (tritium) {
+            while (tritiumBufferMb < desiredSteam * fuelPerSteam2 && canLoadTritiumCapsule()) {
+                inventory.extractItem(SLOT_TRITIUM, 1, false);
+                // hand the capsule back, empty
+                inventory.insertItem(SLOT_EMPTY_CAPSULES, new ItemStack(ModItems.EMPTY_FUEL_CAPSULE.get()), false);
+                tritiumBufferMb += Config.reactorTritiumCapsuleMb;
+            }
+        } else {
+            while (lithiumBufferMb < desiredSteam * fuelPerSteam2 && !inventory.getStackInSlot(SLOT_LITHIUM).isEmpty()) {
+                inventory.extractItem(SLOT_LITHIUM, 1, false);
+                lithiumBufferMb += LITHIUM_DUST_MB_EQUIVALENT;
+            }
         }
+        float buffer = tritium ? tritiumBufferMb : lithiumBufferMb;
 
         double byDeuterium = deuteriumPerSteam > 0 ? deuteriumTank.getFluidAmount() / deuteriumPerSteam : Double.MAX_VALUE;
-        double byLithium = lithiumPerSteam > 0 ? lithiumBufferMb / lithiumPerSteam : Double.MAX_VALUE;
-        int actualSteam = (int) Math.min(desiredSteam, Math.floor(Math.min(byDeuterium, byLithium)));
+        double byFuel = fuelPerSteam2 > 0 ? buffer / fuelPerSteam2 : Double.MAX_VALUE;
+        int actualSteam = (int) Math.min(desiredSteam, Math.floor(Math.min(byDeuterium, byFuel)));
         if (actualSteam <= 0) {
             stallPowerLoop(byDeuterium < 1 ? Status.NO_DEUTERIUM : Status.NO_LITHIUM);
             return;
         }
 
         int deuteriumUsed = (int) Math.round(actualSteam * deuteriumPerSteam);
-        int lithiumUsed = (int) Math.round(actualSteam * lithiumPerSteam);
+        int fuelUsed = (int) Math.round(actualSteam * fuelPerSteam2);
         deuteriumTank.drain(deuteriumUsed, IFluidHandler.FluidAction.EXECUTE);
-        lithiumBufferMb -= actualSteam * lithiumPerSteam;
+        if (tritium) {
+            tritiumBufferMb -= actualSteam * fuelPerSteam2;
+        } else {
+            lithiumBufferMb -= actualSteam * fuelPerSteam2;
+            // Lithium bred into Tritium, 1:1 with the Deuterium it fuses with
+            captureBredTritium(actualSteam * deuteriumPerSteam, totalModules);
+        }
         steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), actualSteam), IFluidHandler.FluidAction.EXECUTE);
 
         steamOutputPerTick = actualSteam;
         deuteriumUsedPerTick = deuteriumUsed;
-        lithiumUsedPerTick = lithiumUsed;
+        lithiumUsedPerTick = fuelUsed;
+        burningTritium = tritium;
         status = Status.RUNNING;
         setChanged();
+    }
+
+    // A capsule can be loaded when there's one waiting and room to hand the empty back.
+    private boolean canLoadTritiumCapsule() {
+        if (inventory.getStackInSlot(SLOT_TRITIUM).isEmpty()) return false;
+        ItemStack empties = inventory.getStackInSlot(SLOT_EMPTY_CAPSULES);
+        return empties.isEmpty() || empties.getCount() < empties.getMaxStackSize();
+    }
+
+    // The Breeder Modules capture a little of the Tritium the blanket breeds into Empty
+    // Fuel Capsules sitting in the reactor - a slow trickle, scaled by how much of the
+    // blanket is Lithium Breeder Modules.
+    private void captureBredTritium(double bredMb, int totalModules) {
+        if (lithiumModuleCount <= 0 || Config.reactorBreederCaptureRatio <= 0) return;
+        int capsuleMb = Config.reactorTritiumCapsuleMb;
+        bredTritiumMb = (float) Math.min(capsuleMb,
+                bredTritiumMb + bredMb * Config.reactorBreederCaptureRatio * lithiumModuleCount / totalModules);
+        if (bredTritiumMb < capsuleMb || inventory.getStackInSlot(SLOT_EMPTY_CAPSULES).isEmpty()) return;
+        ItemStack capsule = new ItemStack(ModItems.TRITIUM_CAPSULE.get());
+        if (!inventory.insertItem(SLOT_BRED_TRITIUM, capsule, true).isEmpty()) return;
+        inventory.extractItem(SLOT_EMPTY_CAPSULES, 1, false);
+        inventory.insertItem(SLOT_BRED_TRITIUM, capsule, false);
+        bredTritiumMb -= capsuleMb;
     }
 
     // Zeroes the goggle stats whenever the loop can't run, so a stalled reactor reads as
@@ -310,6 +397,7 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
     // loudest clip and runs continuously, so it's the quietest.
     @OnlyIn(Dist.CLIENT)
     private void tickAudio() {
+        if (PonderHelper.isPonder(level)) return;  // Ponder scenes stay silent
         if (level == null) return;
         var soundManager = Minecraft.getInstance().getSoundManager();
 
@@ -396,8 +484,11 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         tag.putFloat("BlanketEfficiency", blanketEfficiency);
         FluidTankNBTHelper.save(tag, "SteamTank", steamTank);
         FluidTankNBTHelper.save(tag, "DeuteriumTank", deuteriumTank);
-        tag.put("Inventory", itemHandler.serializeNBT(registries));
+        tag.put("Inventory", inventory.serializeNBT(registries));
         tag.putFloat("LithiumBufferMb", lithiumBufferMb);
+        tag.putFloat("TritiumBufferMb", tritiumBufferMb);
+        tag.putFloat("BredTritiumMb", bredTritiumMb);
+        tag.putBoolean("BurningTritium", burningTritium);
         tag.putInt("CachedShellSignal", cachedShellSignal);
         tag.putInt("SteamOutputPerTick", steamOutputPerTick);
         tag.putInt("DeuteriumUsedPerTick", deuteriumUsedPerTick);
@@ -414,8 +505,18 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         blanketEfficiency = tag.getFloat("BlanketEfficiency");
         FluidTankNBTHelper.load(tag, "SteamTank", steamTank);
         FluidTankNBTHelper.load(tag, "DeuteriumTank", deuteriumTank);
-        if (tag.contains("Inventory")) itemHandler.deserializeNBT(registries, tag.getCompound("Inventory"));
+        if (tag.contains("Inventory")) {
+            // Read into a copy first: reactors saved before Tritium had a 1-slot inventory,
+            // and deserializing straight in would shrink this one to 1 slot.
+            ItemStackHandler saved = new ItemStackHandler();
+            saved.deserializeNBT(registries, tag.getCompound("Inventory"));
+            for (int slot = 0; slot < inventory.getSlots(); slot++)
+                inventory.setStackInSlot(slot, slot < saved.getSlots() ? saved.getStackInSlot(slot) : ItemStack.EMPTY);
+        }
         lithiumBufferMb = tag.getFloat("LithiumBufferMb");
+        tritiumBufferMb = tag.getFloat("TritiumBufferMb");
+        bredTritiumMb = tag.getFloat("BredTritiumMb");
+        burningTritium = tag.getBoolean("BurningTritium");
         cachedShellSignal = tag.getInt("CachedShellSignal");
         steamOutputPerTick = tag.getInt("SteamOutputPerTick");
         deuteriumUsedPerTick = tag.getInt("DeuteriumUsedPerTick");
@@ -448,7 +549,8 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
 
         CreateLang.translate("solar_punk.tooltip.reactor_fuel_draw")
                 .style(ChatFormatting.GRAY)
-                .add(Component.literal(deuteriumUsedPerTick + " D / " + lithiumUsedPerTick + " Li mB/t")
+                .add(Component.literal(deuteriumUsedPerTick + " D / " + lithiumUsedPerTick
+                                + (burningTritium ? " T mB/t" : " Li mB/t"))
                         .withStyle(ChatFormatting.YELLOW))
                 .forGoggles(tooltip, 1);
 

@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.custom;
 
+import net.succ.solar_punk.util.PonderHelper;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
@@ -59,7 +60,7 @@ public class FireboxBoilerBlock extends Block implements IBE<FireboxBoilerBlockE
     // The pitch is lightly randomized so it doesn't sound like an exact copy.
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (state.getValue(LIT) && random.nextDouble() < 0.1) {
+        if (state.getValue(LIT) && random.nextDouble() < 0.1 && !PonderHelper.isPonder(level)) {
             level.playLocalSound(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5,
                     SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS,
                     1.0f, 0.9f + random.nextFloat() * 0.2f, false);

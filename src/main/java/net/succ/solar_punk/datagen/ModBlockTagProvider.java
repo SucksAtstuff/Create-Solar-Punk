@@ -69,7 +69,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.PARTICLE_ACCELERATOR_PIPE.get())
                 .add(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND.get())
                 .add(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND_MIRRORED.get())
-                .add(ModBlocks.PARTICLE_ACCELERATOR_PIPE_DIAGONAL.get());
+                .add(ModBlocks.PARTICLE_ACCELERATOR_PIPE_DIAGONAL.get())
+                .add(ModBlocks.PARTICLE_ACCELERATOR_INPUT.get());
 
         tag(BlockTags.MINEABLE_WITH_SHOVEL)
                 .add(ModBlocks.ASH_BLOCK.get())

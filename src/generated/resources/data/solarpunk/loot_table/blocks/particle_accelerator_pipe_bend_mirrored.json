@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "solarpunk:particle_accelerator_pipe_bend_mirrored"
+          "name": "solarpunk:particle_accelerator_pipe"
         }
       ],
       "rolls": 1.0

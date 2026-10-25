@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.PonderHelper;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -86,6 +87,9 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
 
     @OnlyIn(Dist.CLIENT)
     public void tickAudio() {
+        // Ponder scenes stay silent. Create's KineticBlockEntity.tick() calls this too,
+        // so the check lives here rather than at the call site.
+        if (PonderHelper.isPonder(level)) return;
         if (isActive() && (soundInstance == null || soundInstance.isStopped())) {
             soundInstance = new TurbineSoundInstance(this);
             Minecraft.getInstance().getSoundManager().play(soundInstance);

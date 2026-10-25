@@ -1,0 +1,25 @@
+{
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "solarpunk:electromagnet_coil"
+    },
+    "G": {
+      "tag": "c:glass_panes/colorless"
+    },
+    "I": {
+      "item": "create:industrial_iron_block"
+    }
+  },
+  "pattern": [
+    "IGI",
+    "GEG",
+    "IGI"
+  ],
+  "result": {
+    "count": 8,
+    "id": "solarpunk:particle_accelerator_pipe"
+  }
+}

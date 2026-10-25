@@ -1,5 +1,6 @@
 package net.succ.solar_punk.display;
 
+import net.succ.solar_punk.block.entity.custom.ParticleAcceleratorInputBlockEntity;
 import com.simibubi.create.api.behaviour.display.DisplaySource;
 import com.simibubi.create.api.registry.CreateRegistries;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
@@ -84,6 +85,27 @@ public class ModDisplaySources {
                     core -> Component.literal(Math.round(core.steamTank.getFluidAmount() * 100f / core.steamTank.getCapacity()) + "%")
                             .withStyle(ChatFormatting.WHITE)));
 
+    // Tritium Capsules waiting in the reactor, as mB of fuel (like the Lithium supply)
+    public static final DeferredHolder<DisplaySource, DisplaySource> FUSION_REACTOR_TRITIUM_SUPPLY = register("fusion_reactor_tritium_supply",
+            () -> new NumericLineDisplaySource<>(ModDisplaySources::reactorCore,
+                    core -> Component.literal((int) core.getTritiumSupplyMb() + " mB").withStyle(ChatFormatting.GREEN)));
+
+    // --- Particle Accelerator ---
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> PARTICLE_ACCELERATOR_STATUS = register("particle_accelerator_status",
+            () -> new NumericLineDisplaySource<>(ModDisplaySources::acceleratorInput,
+                    ParticleAcceleratorInputBlockEntity::getStatusLine));
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> PARTICLE_ACCELERATOR_RECIPE = register("particle_accelerator_recipe",
+            () -> new NumericLineDisplaySource<>(ModDisplaySources::acceleratorInput,
+                    input -> input.getRecipeResult().isEmpty()
+                            ? Component.literal("None").withStyle(ChatFormatting.GRAY)
+                            : input.getRecipeResult().getHoverName().copy().withStyle(ChatFormatting.GOLD)));
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> PARTICLE_ACCELERATOR_PROGRESS = register("particle_accelerator_progress",
+            () -> new PercentDisplaySource<>(ModDisplaySources::acceleratorInput,
+                    ParticleAcceleratorInputBlockEntity::getProgressFraction));
+
     private static DeferredHolder<DisplaySource, DisplaySource> register(String name, Supplier<DisplaySource> source) {
         return DISPLAY_SOURCES.register(name, source);
     }
@@ -103,6 +125,11 @@ public class ModDisplaySources {
     @Nullable
     private static SolarPowerTowerBlockEntity towerController(DisplayLinkContext context) {
         return context.getSourceBlockEntity() instanceof SolarPowerTowerBlockEntity tower ? tower.getControllerBE() : null;
+    }
+
+    @Nullable
+    private static ParticleAcceleratorInputBlockEntity acceleratorInput(DisplayLinkContext context) {
+        return context.getSourceBlockEntity() instanceof ParticleAcceleratorInputBlockEntity be ? be : null;
     }
 
     // The Core is buried once the reactor is built, so these sources are linked to the

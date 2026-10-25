@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.PonderHelper;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.ChatFormatting;
@@ -216,8 +217,9 @@ public class CrystallizerBlockEntity extends BlockEntity implements IHaveGoggleI
 
             // One quench hiss per finished cycle rather than a looping hum. Volume is
             // matched to the other machine sounds (see MachineSoundInstance).
-            level.playSound(null, worldPosition, ModSounds.STEAM_HISS.get(), SoundSource.BLOCKS,
-                    0.27f, 0.9f + level.getRandom().nextFloat() * 0.2f);
+            if (!PonderHelper.isPonder(level))
+                level.playSound(null, worldPosition, ModSounds.STEAM_HISS.get(), SoundSource.BLOCKS,
+                        0.27f, 0.9f + level.getRandom().nextFloat() * 0.2f);
         }
 
         if (level.getGameTime() % 20 == 0)

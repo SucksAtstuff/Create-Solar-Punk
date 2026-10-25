@@ -73,9 +73,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get());
                         output.accept(ModBlocks.FUSION_REACTOR_CORE.get());
                         output.accept(ModBlocks.PARTICLE_ACCELERATOR_PIPE.get());
-                        output.accept(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND.get());
-                        output.accept(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND_MIRRORED.get());
-                        output.accept(ModBlocks.PARTICLE_ACCELERATOR_PIPE_DIAGONAL.get());
+                        output.accept(ModBlocks.PARTICLE_ACCELERATOR_INPUT.get());
                         output.accept(ModFluids.MOLTEN_SALT_BUCKET.get());
                         output.accept(ModFluids.BIOFUEL_BUCKET.get());
                         output.accept(ModFluids.FERTILIZER_BUCKET.get());

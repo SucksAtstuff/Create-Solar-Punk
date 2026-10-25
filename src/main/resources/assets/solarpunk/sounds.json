@@ -82,5 +82,17 @@
                 "stream": true
             }
         ]
+    },
+    "particle_accelerator_hum": {
+        "subtitle": "subtitles.solarpunk.particle_accelerator_hum",
+        "sounds": [
+            "solarpunk:particle_accelerator_hum"
+        ]
+    },
+    "particle_collision": {
+        "subtitle": "subtitles.solarpunk.particle_collision",
+        "sounds": [
+            "solarpunk:particle_collision"
+        ]
     }
 }

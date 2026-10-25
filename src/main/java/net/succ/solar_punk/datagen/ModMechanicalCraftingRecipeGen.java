@@ -125,6 +125,40 @@ public class ModMechanicalCraftingRecipeGen extends MechanicalCraftingRecipeGen 
                     .key('B', ModTags.Items.INGOTS_BERYLLIUM)
                     .key('N', Tags.Items.INGOTS_NETHERITE));
 
+    // Particle Accelerator Pipe - one item for every pipe shape. Rings take hundreds, so
+    // it gives 8: Industrial Iron for the stands, Glass Panes for the see-through tube
+    // and an Electromagnet Coil for the magnets that steer the beam.
+    //   I G I
+    //   G E G
+    //   I G I
+    GeneratedRecipe PARTICLE_ACCELERATOR_PIPE = create(() -> ModBlocks.PARTICLE_ACCELERATOR_PIPE.get())
+            .returns(8)
+            .recipe(b -> b
+                    .patternLine("IGI")
+                    .patternLine("GEG")
+                    .patternLine("IGI")
+                    .key('I', createItem("industrial_iron_block"))
+                    .key('G', Tags.Items.GLASS_PANES_COLORLESS)
+                    .key('E', ModItems.ELECTROMAGNET_COIL.get()));
+
+    // Particle Accelerator Input - one per ring, so it's the expensive part: a pipe with
+    // Superconducting Coils, a Precision Mechanism for the controls, a Brass Funnel for
+    // the item port, a Brass Casing and a Shaft for power from below.
+    //   S P S
+    //   F A C
+    //   S H S
+    GeneratedRecipe PARTICLE_ACCELERATOR_INPUT = create(() -> ModBlocks.PARTICLE_ACCELERATOR_INPUT.get())
+            .recipe(b -> b
+                    .patternLine("SPS")
+                    .patternLine("FAC")
+                    .patternLine("SHS")
+                    .key('S', ModItems.SUPERCONDUCTING_COIL.get())
+                    .key('P', createItem("precision_mechanism"))
+                    .key('F', createItem("brass_funnel"))
+                    .key('A', ModBlocks.PARTICLE_ACCELERATOR_PIPE.get())
+                    .key('C', createItem("brass_casing"))
+                    .key('H', createItem("shaft")));
+
     public ModMechanicalCraftingRecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, SolarPunk.MODID);
     }

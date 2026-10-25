@@ -1,11 +1,16 @@
 package net.succ.solar_punk.compat.ponder;
 
+import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
+import net.succ.solar_punk.fluid.ModFluids;
+import net.succ.solar_punk.item.ModItems;
 
 public class FusionReactorScenes {
 
@@ -62,6 +67,7 @@ public class FusionReactorScenes {
         scene.overlay().showText(90)
                 .text("The Fusion Reactor Core sits at the exact center of a fixed spherical shell - it doesn't grow taller like the Steam Turbine, it's always this one size")
                 .pointAt(util.vector().centerOf(CORE))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(100);
 
@@ -71,6 +77,7 @@ public class FusionReactorScenes {
         scene.overlay().showText(90)
                 .text("Fill the inner ring band with Blanket Modules - it's an open gyroscope skeleton, not a sealed ball, so the Core stays visible through the gaps. Lithium Breeder for efficient fuel use, Beryllium Reflector for raw output, mixed in whatever ratio you want")
                 .pointAt(util.vector().centerOf(CORE.offset(-FusionReactorCoreBlockEntity.BLANKET_BAND_DIST, 0, 0)))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(100);
 
@@ -80,6 +87,7 @@ public class FusionReactorScenes {
         scene.overlay().showText(80)
                 .text("Enclose the whole shell in Fusion Reactor Casing - swap in Casing Glass anywhere for a clear view straight through to the open Blanket band underneath")
                 .pointAt(util.vector().centerOf(CORE.offset(0, 0, SHELL_RADIUS)))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
 
@@ -93,6 +101,7 @@ public class FusionReactorScenes {
         scene.overlay().showText(80)
                 .text("Once the shell and blanket band are complete, the reactor lights up - check it with Goggles to see its status and blanket mix")
                 .pointAt(util.vector().topOf(CORE))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
 
@@ -102,6 +111,7 @@ public class FusionReactorScenes {
         scene.overlay().showText(100)
                 .text("The Core itself disappears once the reactor is fully formed - all that's left floating here is the glowing rings and crackling energy")
                 .pointAt(util.vector().centerOf(CORE))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(110);
 
@@ -114,11 +124,46 @@ public class FusionReactorScenes {
                 .attachKeyFrame();
         scene.idle(100);
 
+        // The reactor is fed and drained through its Casing; point at the shell's front face
+        BlockPos shellFront = CORE.offset(0, 0, -SHELL_RADIUS);
+
+        scene.overlay().showControls(util.vector().blockSurface(shellFront, Direction.NORTH), Pointing.LEFT, 80)
+                .withItem(new ItemStack(ModFluids.DEUTERIUM_BUCKET.get()));
+        scene.overlay().showControls(util.vector().topOf(shellFront), Pointing.DOWN, 80)
+                .withItem(new ItemStack(ModItems.LITHIUM_DUST.get()));
         scene.overlay().showText(80)
-                .text("Feed it with Deuterium and Lithium - both come from Basin recipes, Heated Water + Copper for Deuterium, Superheated Water + Salt for Lithium")
-                .pointAt(util.vector().centerOf(CORE))
+                .text("Pipe Deuterium and feed Lithium Dust into any Casing block. Both come from Basin mixing: Deuterium from heated Water and Copper, Lithium from superheated Water and Salt")
+                .pointAt(util.vector().blockSurface(shellFront, Direction.NORTH))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
+
+        scene.overlay().showControls(util.vector().topOf(shellFront), Pointing.DOWN, 80)
+                .withItem(new ItemStack(ModItems.TRITIUM_CAPSULE.get()));
+        scene.overlay().showText(80)
+                .text("Tritium Capsules from a Particle Accelerator burn before Lithium, with no breeding waste. The empty capsules come back out")
+                .pointAt(util.vector().topOf(shellFront))
+                .placeNearTarget()
+                .attachKeyFrame();
+        scene.idle(90);
+
+        scene.overlay().showControls(util.vector().blockSurface(shellFront, Direction.NORTH), Pointing.LEFT, 70)
+                .withItem(new ItemStack(Items.LEVER));
+        scene.effects().indicateRedstone(shellFront);
+        scene.overlay().showText(70)
+                .text("A Redstone signal on any Casing block sets the throttle - a stronger signal burns more fuel. No signal, no power")
+                .pointAt(util.vector().blockSurface(shellFront, Direction.NORTH))
+                .placeNearTarget()
+                .attachKeyFrame();
+        scene.idle(80);
+
+        scene.overlay().showControls(util.vector().blockSurface(shellFront, Direction.NORTH), Pointing.LEFT, 70)
+                .withItem(new ItemStack(ModFluids.STEAM_BUCKET.get()));
+        scene.overlay().showText(70)
+                .text("Steam comes out of any Casing block - enough for a whole bank of Steam Turbines")
+                .pointAt(util.vector().blockSurface(shellFront, Direction.NORTH))
+                .placeNearTarget();
+        scene.idle(80);
 
         scene.markAsFinished();
     }

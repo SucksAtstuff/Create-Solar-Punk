@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.PonderHelper;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.platform.CatnipServices;
@@ -117,6 +118,7 @@ public class SolarHeaterBlockEntity extends BlockEntity implements IHaveGoggleIn
 
     @OnlyIn(Dist.CLIENT)
     public void tickAudio() {
+        if (PonderHelper.isPonder(level)) return;  // Ponder scenes stay silent
         boolean lit = getBlockState().getValue(SolarHeaterBlock.LIT);
         if (lit && (soundInstance == null || soundInstance.isStopped())) {
             soundInstance = new SolarHeaterSoundInstance(this);

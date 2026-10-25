@@ -1,5 +1,6 @@
 package net.succ.solar_punk;
 
+import net.succ.solar_punk.block.custom.AcceleratorRing;
 import com.simibubi.create.api.behaviour.display.DisplaySource;
 import com.simibubi.create.api.boiler.BoilerHeater;
 import com.simibubi.create.api.stress.BlockStressValues;
@@ -24,7 +25,9 @@ import net.succ.solar_punk.display.ModDisplaySources;
 import net.succ.solar_punk.fluid.ModFluidTypes;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.item.ModCreativeModeTabs;
+import net.succ.solar_punk.item.ModDataComponents;
 import net.succ.solar_punk.item.ModItems;
+import net.succ.solar_punk.network.SelectPipeShapePayload;
 import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
 import net.succ.solar_punk.sound.ModSounds;
@@ -39,6 +42,7 @@ public class SolarPunk {
         ModFluidTypes.register(modEventBus);
         ModFluids.register(modEventBus);
         ModItems.register(modEventBus);
+        ModDataComponents.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
@@ -53,6 +57,7 @@ public class SolarPunk {
         modEventBus.addListener(Config::onLoad);
         modEventBus.addListener(SolarPunk::registerCapabilities);
         modEventBus.addListener(SolarPunk::commonSetup);
+        modEventBus.addListener(SelectPipeShapePayload::register);
 
         NeoForge.EVENT_BUS.addListener(GlobalWarmingHandler::onLevelTick);
 
@@ -64,6 +69,12 @@ public class SolarPunk {
                 Capabilities.ItemHandler.BLOCK,
                 ModBlockEntities.SOLAR_HEATER.get(),
                 (be, side) -> be.itemHandler
+        );
+        // Particle Accelerator Input: items only through its side cap (null side = internal access)
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(),
+                (be, side) -> side == null || side == AcceleratorRing.capSide(be.getBlockState()) ? be.capHandler : null
         );
         // Top face intentionally blocked: a pipe there would block the sky check.
         event.registerBlockEntity(
@@ -194,6 +205,8 @@ public class SolarPunk {
             // so the Casing registration is what actually matters post-construction.
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CORE.get(), ModDisplaySources.FUSION_REACTOR_LITHIUM_BUFFER.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_LITHIUM_BUFFER.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CORE.get(), ModDisplaySources.FUSION_REACTOR_TRITIUM_SUPPLY.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_TRITIUM_SUPPLY.get());
             // The rest are Casing-only (Casing and Casing Glass share this BE type) - read
             // from the outside of the shell, never the buried Core.
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_STATUS.get());
@@ -201,6 +214,10 @@ public class SolarPunk {
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_THROTTLE.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_DEUTERIUM.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_STEAM_TANK.get());
+
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), ModDisplaySources.PARTICLE_ACCELERATOR_STATUS.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), ModDisplaySources.PARTICLE_ACCELERATOR_RECIPE.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), ModDisplaySources.PARTICLE_ACCELERATOR_PROGRESS.get());
 
             // Generators: capacity and generated RPM for stress tooltips
             BlockStressValues.CAPACITIES.register(ModBlocks.ANDESITE_SOLAR_PANEL.get(),

@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.PonderHelper;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.platform.CatnipServices;
@@ -116,6 +117,7 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
 
     @OnlyIn(Dist.CLIENT)
     public void tickAudio() {
+        if (PonderHelper.isPonder(level)) return;  // Ponder scenes stay silent
         if (getBlockState().getValue(BrassSolarPanelBlock.LIT)
                 && (soundInstance == null || soundInstance.isStopped())) {
             soundInstance = new BrassPanelSoundInstance(this);

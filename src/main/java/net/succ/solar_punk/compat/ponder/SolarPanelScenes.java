@@ -1,6 +1,7 @@
 package net.succ.solar_punk.compat.ponder;
 
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
+import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.BlockPos;
@@ -15,97 +16,111 @@ public class SolarPanelScenes {
         scene.title("andesite_panel_usage", "Andesite Solar Panel");
         scene.configureBasePlate(0, 0, 5);
 
-        BlockPos panelPos = new BlockPos(2, 2, 2);
-        BlockPos shaftPos = new BlockPos(2, 1, 2);
+        BlockPos panel = new BlockPos(2, 2, 2);
+        BlockPos shaft = new BlockPos(2, 1, 2);
+        var both = util.select().position(panel).add(util.select().position(shaft));
 
         scene.world().showSection(util.select().layer(0), Direction.UP);
         scene.idle(10);
-        scene.world().showSection(util.select().position(shaftPos), Direction.DOWN);
-        scene.idle(10);
-        scene.world().showSection(util.select().position(panelPos), Direction.DOWN);
+        scene.world().showSection(util.select().position(shaft), Direction.DOWN);
+        scene.idle(5);
+        scene.world().showSection(util.select().position(panel), Direction.DOWN);
         scene.idle(20);
 
         scene.overlay().showText(70)
-                .text("The Andesite Solar Panel generates Rotational Force from sunlight")
-                .pointAt(util.vector().topOf(panelPos))
+                .text("The Andesite Solar Panel turns sunlight into Rotational Force")
+                .pointAt(util.vector().topOf(panel))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
+        scene.world().setKineticSpeed(both, 8f);
+        scene.world().modifyBlock(panel, s -> s.setValue(AndesiteSolarPanelBlock.LIT, true), false);
         scene.overlay().showText(70)
-                .text("It outputs rotation downwards - connect a shaft or machine directly below")
-                .pointAt(util.vector().centerOf(shaftPos))
+                .text("At dawn and dusk it gives 8 RPM and 1024 SU of stress capacity...")
+                .pointAt(util.vector().topOf(panel))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
-        scene.world().setKineticSpeed(util.select().position(shaftPos), 8f);
-        scene.world().setKineticSpeed(util.select().position(panelPos), 8f);
-        scene.world().modifyBlock(panelPos,
-                state -> state.setValue(AndesiteSolarPanelBlock.LIT, true), false);
+        scene.world().setKineticSpeed(both, 16f);
+        scene.effects().indicateSuccess(panel);
         scene.overlay().showText(70)
-                .text("At dawn and dusk: 8 RPM with 1024 SU of stress capacity")
-                .pointAt(util.vector().topOf(panelPos))
-                .attachKeyFrame();
+                .text("...and at noon in clear weather, 16 RPM and 4096 SU")
+                .pointAt(util.vector().topOf(panel))
+                .placeNearTarget();
         scene.idle(80);
 
-        scene.world().setKineticSpeed(util.select().position(shaftPos), 16f);
-        scene.world().setKineticSpeed(util.select().position(panelPos), 16f);
-        scene.overlay().showText(70)
-                .text("At noon in clear weather: 16 RPM with 4096 SU of stress capacity")
-                .pointAt(util.vector().topOf(panelPos))
-                .attachKeyFrame();
-        scene.idle(80);
-
+        scene.overlay().showOutline(PonderPalette.GREEN, "shaft", util.select().position(shaft), 60);
         scene.overlay().showText(60)
-                .text("Rain reduces output to dawn levels - night stops generation entirely")
-                .pointAt(util.vector().topOf(panelPos))
-                .attachKeyFrame();
+                .text("Rotation comes out of the bottom")
+                .pointAt(util.vector().centerOf(shaft))
+                .placeNearTarget();
         scene.idle(70);
 
-        scene.overlay().showText(60)
-                .text("The panel must have a clear view of the sky directly above to function")
-                .pointAt(util.vector().topOf(panelPos))
+        scene.world().setKineticSpeed(both, 8f);
+        scene.overlay().showText(70)
+                .text("Rain drops it back to dawn levels")
+                .pointAt(util.vector().topOf(panel))
+                .placeNearTarget()
                 .attachKeyFrame();
-        scene.idle(70);
+        scene.idle(80);
+
+        scene.world().setKineticSpeed(both, 0f);
+        scene.world().modifyBlock(panel, s -> s.setValue(AndesiteSolarPanelBlock.LIT, false), false);
+        scene.overlay().showText(70)
+                .colored(PonderPalette.RED)
+                .text("At night, or with anything above it blocking the sky, it stops")
+                .pointAt(util.vector().topOf(panel))
+                .placeNearTarget();
+        scene.idle(80);
 
         scene.markAsFinished();
     }
 
-    public static void brassUsage(SceneBuilder scene, SceneBuildingUtil util) {
+    public static void brassUsage(SceneBuilder builder, SceneBuildingUtil util) {
+        CreateSceneBuilder scene = new CreateSceneBuilder(builder);
         scene.title("brass_panel_usage", "Brass Solar Panel");
         scene.configureBasePlate(0, 0, 5);
 
-        BlockPos panelPos = new BlockPos(2, 1, 2);
+        BlockPos panel = new BlockPos(2, 1, 2);
 
         scene.world().showSection(util.select().layer(0), Direction.UP);
         scene.idle(10);
-        scene.world().showSection(util.select().position(panelPos), Direction.DOWN);
+        scene.world().showSection(util.select().position(panel), Direction.DOWN);
         scene.idle(20);
 
         scene.overlay().showText(70)
-                .text("The Brass Solar Panel generates Forge Energy (FE) directly from sunlight")
-                .pointAt(util.vector().topOf(panelPos))
+                .text("The Brass Solar Panel turns sunlight straight into Forge Energy (FE)")
+                .pointAt(util.vector().topOf(panel))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
+        scene.world().modifyBlock(panel, s -> s.setValue(BrassSolarPanelBlock.LIT, true), false);
+        scene.effects().indicateSuccess(panel);
         scene.overlay().showText(70)
-                .text("Connect cables or conduits to any face to transfer the generated power")
-                .pointAt(util.vector().centerOf(panelPos))
+                .text("It makes 40 FE/t at dawn and dusk, and 80 FE/t at noon in clear weather")
+                .pointAt(util.vector().topOf(panel))
+                .placeNearTarget()
                 .attachKeyFrame();
-        scene.world().modifyBlock(panelPos,
-                state -> state.setValue(BrassSolarPanelBlock.LIT, true), false);
         scene.idle(80);
 
+        scene.overlay().showOutline(PonderPalette.GREEN, "sides", util.select().position(panel), 70);
         scene.overlay().showText(70)
-                .text("At dawn and dusk: 40 FE/t - at noon in clear weather: 80 FE/t")
-                .pointAt(util.vector().topOf(panelPos))
+                .text("Connect cables to any side to draw the power. It keeps a buffer, so it can be drained at night")
+                .pointAt(util.vector().blockSurface(panel, Direction.WEST))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
-        scene.overlay().showText(60)
-                .text("Rain reduces output to dawn levels - the panel must have clear sky access above it")
-                .pointAt(util.vector().topOf(panelPos))
-                .attachKeyFrame();
-        scene.idle(70);
+        scene.world().modifyBlock(panel, s -> s.setValue(BrassSolarPanelBlock.LIT, false), false);
+        scene.overlay().showText(70)
+                .colored(PonderPalette.RED)
+                .text("Rain drops it to dawn levels. At night, or with the sky blocked, it stops")
+                .pointAt(util.vector().topOf(panel))
+                .placeNearTarget();
+        scene.idle(80);
 
         scene.markAsFinished();
     }

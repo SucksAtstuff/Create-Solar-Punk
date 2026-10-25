@@ -1,5 +1,8 @@
 package net.succ.solar_punk.datagen;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.succ.solar_punk.block.custom.PipeShape;
+import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -99,10 +102,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 new UncheckedModelFile(modLoc("block/beryllium_reflector_module")));
 
         // Particle Accelerator pipes: hand-crafted Blockbench models, turned by FACING.
-        facingCustomModelBlock(ModBlocks.PARTICLE_ACCELERATOR_PIPE);
-        facingCustomModelBlock(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND);
-        facingCustomModelBlock(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND_MIRRORED);
-        facingCustomModelBlock(ModBlocks.PARTICLE_ACCELERATOR_PIPE_DIAGONAL);
+        facingCustomModelBlock(ModBlocks.PARTICLE_ACCELERATOR_PIPE, false);
+        facingCustomModelBlock(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND, false);
+        facingCustomModelBlock(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND_MIRRORED, false);
+        facingCustomModelBlock(ModBlocks.PARTICLE_ACCELERATOR_PIPE_DIAGONAL, false);
+        facingCustomModelBlock(ModBlocks.PARTICLE_ACCELERATOR_INPUT, true);
+        acceleratorPipeItemModel();
 
         // A hand-crafted cube while unformed, and a model with no geometry once formed so
         // the block doesn't hide FusionReactorCoreRenderer's effect. The item uses the cube.
@@ -145,13 +150,28 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     // A hand-crafted model with no lit variant, rotated on Y for HORIZONTAL_FACING.
-    private void facingCustomModelBlock(DeferredBlock<? extends Block> block) {
+    private void facingCustomModelBlock(DeferredBlock<? extends Block> block, boolean generateItem) {
         ModelFile model = new UncheckedModelFile(modLoc("block/" + block.getId().getPath()));
         getVariantBuilder(block.get()).forAllStates(state -> ConfiguredModel.builder()
                 .modelFile(model)
                 .rotationY(horizontalYRot(state.getValue(BlockStateProperties.HORIZONTAL_FACING)))
                 .build());
-        simpleBlockItem(block.get(), model);
+        if (generateItem) simpleBlockItem(block.get(), model);
+    }
+
+    // The pipe item shows the shape it's set to: the "shape" item property is the
+    // PipeShape's ordinal (registered in ModClientEvents), and each override swaps in
+    // that shape's block model.
+    private void acceleratorPipeItemModel() {
+        ItemModelBuilder builder = itemModels().getBuilder(ModBlocks.PARTICLE_ACCELERATOR_PIPE.getId().getPath())
+                .parent(new UncheckedModelFile(modLoc("block/particle_accelerator_pipe")));
+        for (PipeShape shape : PipeShape.values()) {
+            if (shape == PipeShape.STRAIGHT) continue;
+            builder.override()
+                    .predicate(modLoc("shape"), shape.ordinal())
+                    .model(new UncheckedModelFile(modLoc("block/" + BuiltInRegistries.BLOCK.getKey(shape.block()).getPath())))
+                    .end();
+        }
     }
 
     // Like litCustomModelBlock but also rotates the model for an AXIS property (X/Y/Z).

@@ -1,5 +1,9 @@
 package net.succ.solar_punk;
 
+import net.succ.solar_punk.client.renderer.AcceleratorParticleRenderer;
+import net.minecraft.resources.ResourceLocation;
+import net.succ.solar_punk.item.ParticleAcceleratorPipeItem;
+import net.minecraft.client.renderer.item.ItemProperties;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.KineticStats;
@@ -102,6 +106,9 @@ public class ModClientEvents {
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntities.ANDESITE_SOLAR_PANEL.get(), HalfShaftRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.BIOFILTER.get(), HalfShaftRenderer::new);
+        // The Accelerator Input's filter slot and the particle running around its ring. The
+        // shaft below is the neighbour's, so there's no shaft to draw here.
+        event.registerBlockEntityRenderer(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), AcceleratorParticleRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.BIOFUEL_ENGINE.get(), HalfShaftRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.BIOMASS_GASIFIER.get(), HalfShaftRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.GEYSER_CAP.get(), GeyserCapRenderer::new);
@@ -120,6 +127,11 @@ public class ModClientEvents {
             ModSpriteShifts.init();
             PonderIndex.addPlugin(new SolarPunkPonderPlugin());
             registerTooltips();
+
+            // Which shape the Particle Accelerator Pipe item is set to, for its item model
+            ItemProperties.register(ModBlocks.PARTICLE_ACCELERATOR_PIPE.get().asItem(),
+                    ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "shape"),
+                    (stack, level, entity, seed) -> ParticleAcceleratorPipeItem.getShape(stack).ordinal());
 
             // Only the Turbine Rotor gets a Flywheel visualizer, since it really is a full
             // shaft. Half-shaft machines use HalfShaftRenderer instead.
@@ -150,6 +162,8 @@ public class ModClientEvents {
         tip(ModBlocks.FUSION_REACTOR_CORE::get);
         tip(ModBlocks.LITHIUM_BREEDER_MODULE::get);
         tip(ModBlocks.BERYLLIUM_REFLECTOR_MODULE::get);
+        tip(ModBlocks.PARTICLE_ACCELERATOR_PIPE::get);
+        tip(ModBlocks.PARTICLE_ACCELERATOR_INPUT::get);
     }
 
     private static void tip(Supplier<? extends Block> block) {

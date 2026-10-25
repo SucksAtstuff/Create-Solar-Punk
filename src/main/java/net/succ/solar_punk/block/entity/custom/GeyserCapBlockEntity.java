@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.PonderHelper;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity.RotationDirection;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -92,7 +93,7 @@ public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implement
         long time = level.getGameTime();
 
         if (level.isClientSide) {
-            if (time % 40 == 0 && getBlockState().getValue(GeyserCapBlock.LIT)) {
+            if (time % 40 == 0 && getBlockState().getValue(GeyserCapBlock.LIT) && !PonderHelper.isPonder(level)) {
                 // Same puff as GeyserVentBlockEntity, which skips itself while capped.
                 level.playLocalSound(
                         worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5,

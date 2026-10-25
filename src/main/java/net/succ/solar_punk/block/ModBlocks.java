@@ -28,7 +28,9 @@ import net.succ.solar_punk.block.custom.GeyserCapBlock;
 import net.succ.solar_punk.block.custom.GeyserVentBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.KineticBatteryBlock;
+import net.succ.solar_punk.block.custom.ParticleAcceleratorInputBlock;
 import net.succ.solar_punk.block.custom.ParticleAcceleratorPipeBlock;
+import net.succ.solar_punk.item.ParticleAcceleratorPipeItem;
 import net.succ.solar_punk.block.custom.KineticSprinklerBlock;
 import net.succ.solar_punk.block.custom.KineticSprinklerItem;
 import net.succ.solar_punk.block.custom.SolarHeaterBlock;
@@ -302,18 +304,25 @@ public class ModBlocks {
                     .pushReaction(PushReaction.BLOCK)));
 
     // Particle Accelerator ring pieces. Models only for now, no ring logic yet.
-    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE = registerBlock("particle_accelerator_pipe",
-            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), true));
+    // One item places every pipe shape (picked from a radial menu, see PipeShape), so the
+    // bends and diagonal are registered without items of their own.
+    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE = registerBlockCustomItem("particle_accelerator_pipe",
+            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), ParticleAcceleratorPipeBlock.Kind.STRAIGHT),
+            block -> new ParticleAcceleratorPipeItem(block, new Item.Properties()));
 
-    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE_BEND = registerBlock("particle_accelerator_pipe_bend",
-            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), false));
+    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE_BEND = BLOCKS.register("particle_accelerator_pipe_bend",
+            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), ParticleAcceleratorPipeBlock.Kind.ANGLED));
 
     // The same bend curving the other way (block models can rotate but not mirror).
-    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE_BEND_MIRRORED = registerBlock("particle_accelerator_pipe_bend_mirrored",
-            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), false));
+    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE_BEND_MIRRORED = BLOCKS.register("particle_accelerator_pipe_bend_mirrored",
+            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), ParticleAcceleratorPipeBlock.Kind.ANGLED));
 
-    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE_DIAGONAL = registerBlock("particle_accelerator_pipe_diagonal",
-            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), false));
+    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE_DIAGONAL = BLOCKS.register("particle_accelerator_pipe_diagonal",
+            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), ParticleAcceleratorPipeBlock.Kind.ANGLED));
+
+    // Where shaft power enters the ring (the shaft hookup comes with the ring logic).
+    public static final DeferredBlock<ParticleAcceleratorInputBlock> PARTICLE_ACCELERATOR_INPUT = registerBlock("particle_accelerator_input",
+            () -> new ParticleAcceleratorInputBlock(acceleratorPipeProperties()));
 
     private static BlockBehaviour.Properties acceleratorPipeProperties() {
         return BlockBehaviour.Properties.of()

@@ -16,18 +16,24 @@ import net.succ.solar_punk.SolarPunk;
 // "jei.solarpunk.category.<id>", and an animated arrow between inputs and outputs.
 public abstract class SolarPunkCategory<T> implements IRecipeCategory<T> {
 
-    private static final int HEIGHT = 40;
+    private static final int DEFAULT_HEIGHT = 40;
     private static final int ARROW_Y = 12;
 
     private final RecipeType<T> recipeType;
     private final int width;
+    private final int height;
     private final int arrowX;
     private final IDrawable icon;
     private final IDrawableAnimated arrow;
 
     protected SolarPunkCategory(IGuiHelper guiHelper, RecipeType<T> recipeType, ItemLike machine, int width, int arrowX) {
+        this(guiHelper, recipeType, machine, width, DEFAULT_HEIGHT, arrowX);
+    }
+
+    protected SolarPunkCategory(IGuiHelper guiHelper, RecipeType<T> recipeType, ItemLike machine, int width, int height, int arrowX) {
         this.recipeType = recipeType;
         this.width = width;
+        this.height = height;
         this.arrowX = arrowX;
         this.icon = guiHelper.createDrawableItemStack(new ItemStack(machine));
         this.arrow = guiHelper.createAnimatedRecipeArrow(200);
@@ -48,7 +54,7 @@ public abstract class SolarPunkCategory<T> implements IRecipeCategory<T> {
     }
 
     @Override public int getWidth()  { return width; }
-    @Override public int getHeight() { return HEIGHT; }
+    @Override public int getHeight() { return height; }
 
     @Override
     public IDrawable getIcon() {

@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.PonderHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -20,7 +21,7 @@ public class GeyserVentBlockEntity extends BlockEntity {
     public void tick() {
         if (level == null) return;
         if (level.getGameTime() % 40 != 0) return;
-        if (!level.isClientSide) return;
+        if (!level.isClientSide || PonderHelper.isPonder(level)) return;
 
         // A Geyser Cap on top plays the same sound itself, so don't double up.
         if (level.getBlockState(worldPosition.above()).is(ModBlocks.GEYSER_CAP.get())) return;

@@ -24,11 +24,17 @@ public class ModLangProvider extends LanguageProvider {
         add("jei.solarpunk.category.solar_power_tower", "Solar Power Tower");
         add("jei.solarpunk.category.fermentation_vat", "Fermentation Vat");
         add("jei.solarpunk.category.crystallizing", "Crystallizer");
+        add("jei.solarpunk.category.particle_accelerator", "Particle Accelerator");
+        add("jei.solarpunk.particle_accelerator.diameter", "Ring diameter: %s+");
+        add("jei.solarpunk.particle_accelerator.stress", "Stress: %s SU (at min diameter)");
+        add("jei.solarpunk.particle_accelerator.speed", "Min speed: %s RPM");
 
         // Sound subtitles - format: subtitles.solarpunk.<sound event path>, referenced by
         // sounds.json. One entry per SoundEvent registered in ModSounds.
         add("subtitles.solarpunk.alternator", "Solar panel hums");
         add("subtitles.solarpunk.geyser_puff", "Geyser puffs");
+        add("subtitles.solarpunk.particle_accelerator_hum", "Particle Accelerator hums");
+        add("subtitles.solarpunk.particle_collision", "Particles collide");
         add("subtitles.solarpunk.biofuel_engine_loop", "Biofuel Engine running");
         add("subtitles.solarpunk.biofilter_loop", "Biofilter filtering");
         add("subtitles.solarpunk.biomass_gasifier_loop", "Biomass Gasifier burning");
@@ -50,6 +56,15 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.biofilter_status", "Status: ");
         add("create.solar_punk.tooltip.biofilter_pollution", "Chunk Pollution: ");
         add("create.solar_punk.tooltip.biofilter_removing", "Removing: ");
+
+        add("create.solar_punk.tooltip.accelerator_header", "Particle Accelerator");
+        add("create.solar_punk.tooltip.accelerator_ring", "Ring: ");
+        add("create.solar_punk.tooltip.accelerator_diameter", "Diameter: ");
+        add("create.solar_punk.tooltip.accelerator_recipe", "Recipe: ");
+        add("create.solar_punk.tooltip.accelerator_progress", "Progress: ");
+        add("create.solar_punk.tooltip.accelerator_too_small", "Ring too small: needs %1$s+ wide");
+        add("create.solar_punk.tooltip.accelerator_too_slow", "Too slow: needs %1$s RPM");
+        add("create.solar_punk.tooltip.accelerator_overstressed", "Overstressed");
 
         add("create.solar_punk.tooltip.sprinkler_header", "Sprinkler");
         add("create.solar_punk.tooltip.sprinkler_status", "Status: ");
@@ -83,6 +98,10 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.display_source.fusion_reactor_throttle", "Fusion Reactor Throttle");
         add("solarpunk.display_source.fusion_reactor_deuterium", "Fusion Reactor Deuterium");
         add("solarpunk.display_source.fusion_reactor_steam_tank", "Fusion Reactor Steam Tank");
+        add("solarpunk.display_source.fusion_reactor_tritium_supply", "Fusion Reactor Tritium Supply");
+        add("solarpunk.display_source.particle_accelerator_status", "Particle Accelerator Status");
+        add("solarpunk.display_source.particle_accelerator_recipe", "Particle Accelerator Recipe");
+        add("solarpunk.display_source.particle_accelerator_progress", "Particle Accelerator Progress");
 
         add("create.solar_punk.tooltip.fermentation_vat_header", "Fermentation Vat");
         add("create.solar_punk.tooltip.vat_too_small", "Needs at least 2x2 footprint");
@@ -201,9 +220,21 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.turbine_rotor.tooltip.condition1", "Valid 7x7 structure with Turbine Blades");
         add("block.solarpunk.turbine_rotor.tooltip.behaviour1", "Output grows with height and blade quality. Condensed water must be piped out of any casing face, or the turbine stops when it fills up.");
 
-        add("block.solarpunk.fusion_reactor_core.tooltip.summary", "Heart of the _Fusion Reactor_. Goes at the center of a sphere of _Fusion Reactor Casing_ with rings of _Blanket Modules_ inside, and turns _Deuterium_ and _Lithium Dust_ into _Steam_.");
+        add("block.solarpunk.particle_accelerator_pipe.tooltip.summary", "Builds the ring of a _Particle Accelerator_. One pipe places every shape: _straight_, _bends_ and _diagonals_.");
+        add("block.solarpunk.particle_accelerator_pipe.tooltip.condition1", "Hold the Toolbelt key (Alt)");
+        add("block.solarpunk.particle_accelerator_pipe.tooltip.behaviour1", "Opens a menu to pick the _shape_ it places.");
+        add("block.solarpunk.particle_accelerator_pipe.tooltip.condition2", "When placed next to the ring");
+        add("block.solarpunk.particle_accelerator_pipe.tooltip.behaviour2", "Turns itself to _connect_ to the pipes around it. A _Wrench_ turns it by hand.");
+        add("block.solarpunk.particle_accelerator_input.tooltip.summary", "The heart of a _Particle Accelerator_. Smashes items together in a _closed ring_ of pipes to make new materials.");
+        add("block.solarpunk.particle_accelerator_input.tooltip.condition1", "When powered from below");
+        add("block.solarpunk.particle_accelerator_input.tooltip.behaviour1", "Crafts whatever its contents match, if the ring is _wide enough_ and spins _fast enough_. Bigger rings draw more _stress_.");
+        add("block.solarpunk.particle_accelerator_input.tooltip.condition2", "Items");
+        add("block.solarpunk.particle_accelerator_input.tooltip.behaviour2", "Go in and come back out through the _side cap_. Its _filter slot_ picks which recipe to make.");
+        add("block.solarpunk.fusion_reactor_core.tooltip.summary", "Heart of the _Fusion Reactor_. Goes at the center of a sphere of _Fusion Reactor Casing_ with rings of _Blanket Modules_ inside, and turns _Deuterium_ and _Lithium Dust_ or _Tritium Capsules_ into _Steam_.");
         add("block.solarpunk.fusion_reactor_core.tooltip.condition1", "When the structure is complete");
         add("block.solarpunk.fusion_reactor_core.tooltip.behaviour1", "A _redstone signal_ on any Casing block sets the throttle; no signal means idle. Pipe fuel in and Steam out through any Casing block.");
+        add("block.solarpunk.fusion_reactor_core.tooltip.condition2", "When given Tritium Capsules");
+        add("block.solarpunk.fusion_reactor_core.tooltip.behaviour2", "Burns them before _Lithium_, with no breeding waste, and hands back the _Empty Fuel Capsules_. Breeder Modules slowly refill empty capsules left inside.");
 
         add("block.solarpunk.lithium_breeder_module.tooltip.summary", "_Fusion Reactor_ blanket module. More Lithium in the blanket means a lower, steadier output that uses fuel more efficiently.");
         add("block.solarpunk.beryllium_reflector_module.tooltip.summary", "_Fusion Reactor_ blanket module. More Beryllium in the blanket burns fuel faster for more _Steam_.");

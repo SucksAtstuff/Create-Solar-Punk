@@ -20,6 +20,8 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> FERMENTATION_VAT_BUBBLING = register("fermentation_vat_bubbling");
     public static final DeferredHolder<SoundEvent, SoundEvent> SOLAR_HEATER_SHIMMER = register("solar_heater_shimmer");
     public static final DeferredHolder<SoundEvent, SoundEvent> TURBINE_LOOP = register("turbine_loop");
+    public static final DeferredHolder<SoundEvent, SoundEvent> PARTICLE_ACCELERATOR_HUM = register("particle_accelerator_hum");
+    public static final DeferredHolder<SoundEvent, SoundEvent> PARTICLE_COLLISION = register("particle_collision");
 
     // One-shot quench hiss, played once per Crystallizer cycle.
     public static final DeferredHolder<SoundEvent, SoundEvent> STEAM_HISS = register("steam_hiss");

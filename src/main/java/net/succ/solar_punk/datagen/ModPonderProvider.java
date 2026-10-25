@@ -1,5 +1,8 @@
 package net.succ.solar_punk.datagen;
 
+import net.succ.solar_punk.compat.ponder.FermentationVatScenes;
+import net.succ.solar_punk.compat.ponder.ParticleAcceleratorScenes;
+import net.minecraft.core.BlockPos;
 import com.google.common.hash.Hashing;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -97,10 +100,16 @@ public class ModPonderProvider implements DataProvider {
                 .addBlock(1, 2, 2, "create:shaft", "axis", "x")
                 .addBlock(3, 2, 2, "create:shaft", "axis", "x"));
 
-        // 2x2x3 minimum working vat: x=1-2, z=1-2, y=1-3
-        SCHEMATICS.put("fermentation_vat/usage",   addVatLayers(new SceneStructure().withBasePlate(), 2, 3));
-        // 3x3x3 larger vat to show scaling
-        SCHEMATICS.put("fermentation_vat/scaling", addVatLayers(new SceneStructure().withBasePlate(), 3, 3));
+        // 2x2x4, the smallest vat that ferments, and a 3x3x6 one to show scaling.
+        // Sizes live in FermentationVatScenes so the scene and schematic can't drift apart.
+        SCHEMATICS.put("fermentation_vat/usage", addVatLayers(new SceneStructure().withBasePlate(),
+                FermentationVatScenes.USAGE_WIDTH, FermentationVatScenes.USAGE_HEIGHT));
+        SCHEMATICS.put("fermentation_vat/scaling", addVatLayers(new SceneStructure().withBasePlate(),
+                FermentationVatScenes.SCALING_WIDTH, FermentationVatScenes.SCALING_HEIGHT));
+
+        // 20-block octagon ring around a 10x10 plate, laid out in ParticleAcceleratorScenes.RING
+        SCHEMATICS.put("particle_accelerator/ring", addAcceleratorRing(new SceneStructure(10, 3, 10)));
+        SCHEMATICS.put("particle_accelerator/crafting", addAcceleratorRing(new SceneStructure(10, 3, 10)));
 
         // floor + 3 blade layers + cap = 5 total layers; 7x7x7 schematic
         SCHEMATICS.put("turbine_rotor/structure",
@@ -281,6 +290,16 @@ public class ModPonderProvider implements DataProvider {
         return s;
     }
 
+    // The scenes' octagon ring on a plate, with a shaft in the floor under the Input.
+    private static SceneStructure addAcceleratorRing(SceneStructure s) {
+        BlockPos shaft = ParticleAcceleratorScenes.SHAFT;
+        s.withBasePlateExcept(shaft.getX(), shaft.getZ());
+        s.addBlock(shaft.getX(), shaft.getY(), shaft.getZ(), "create:shaft", "axis", "y");
+        for (ParticleAcceleratorScenes.Piece piece : ParticleAcceleratorScenes.RING)
+            s.addBlock(piece.x(), 1, piece.z(), "solarpunk:" + piece.block(), "facing", piece.facing());
+        return s;
+    }
+
     // Builds the reactor centered at local (4,5,4), using FusionReactorCoreBlockEntity's
     // isCasingPosition()/isBlanketPosition(). The shell is solid Casing with a Casing
     // Glass window in the corner facing the default Ponder camera (dx+dz <= -5). The
@@ -323,10 +342,15 @@ public class ModPonderProvider implements DataProvider {
         }
 
         SceneStructure withBasePlate() {
+            return withBasePlateExcept(-1, -1);
+        }
+
+        // A plate with one hole, for something set into the floor (e.g. a shaft)
+        SceneStructure withBasePlateExcept(int holeX, int holeZ) {
             int idx = getOrAddPalette("minecraft:smooth_stone", Map.of());
             for (int x = 0; x < sizeX; x++)
                 for (int z = 0; z < sizeZ; z++)
-                    placeBlock(idx, x, 0, z);
+                    if (x != holeX || z != holeZ) placeBlock(idx, x, 0, z);
             return this;
         }
 

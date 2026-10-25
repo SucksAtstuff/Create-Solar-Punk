@@ -34,6 +34,7 @@
     "solarpunk:particle_accelerator_pipe",
     "solarpunk:particle_accelerator_pipe_bend",
     "solarpunk:particle_accelerator_pipe_bend_mirrored",
-    "solarpunk:particle_accelerator_pipe_diagonal"
+    "solarpunk:particle_accelerator_pipe_diagonal",
+    "solarpunk:particle_accelerator_input"
   ]
 }

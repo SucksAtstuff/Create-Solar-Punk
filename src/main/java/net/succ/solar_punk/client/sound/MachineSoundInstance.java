@@ -20,10 +20,10 @@ import net.neoforged.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class MachineSoundInstance extends AbstractTickableSoundInstance {
 
-    // LINEAR attenuation should already fade these out at ~16 blocks, but it doesn't
-    // reliably (sounds were reported audible from 200+ blocks, possibly due to Sable's
-    // listener handling), so the range is also enforced here. 20 gives a little
-    // headroom over the intended 16.
+    // LINEAR attenuation fades these out at ~16 blocks, but only for mono files: stereo
+    // sounds play non-positionally, which is why they were once audible from 200+ blocks.
+    // Every sound file must stay mono. The range is still enforced here as a backstop;
+    // 20 gives a little headroom over the intended 16.
     private static final double MAX_DISTANCE_SQ = 20.0 * 20.0;
 
     protected final BlockEntity blockEntity;

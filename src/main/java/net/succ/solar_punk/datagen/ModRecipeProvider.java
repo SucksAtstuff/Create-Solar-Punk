@@ -1,5 +1,8 @@
 package net.succ.solar_punk.datagen;
 
+import java.util.List;
+import net.succ.solar_punk.recipe.ParticleAcceleratorRecipe;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -44,6 +47,15 @@ public class ModRecipeProvider extends RecipeProvider {
         // Salt item gives 100 mB; block gives 1000 mB (vs 900 mB for 9 items, an ~11% bonus for bulk)
         solarHeating(output, "salt_item_to_molten_salt", anySalt(), new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 100));
         solarHeating(output, "salt_to_molten_salt", Ingredient.of(ModTags.Items.STORAGE_BLOCKS_SALT), new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 1000));
+
+        // Particle Accelerator: Tritium bred from Lithium, with Beryllium as the neutron
+        // source, caught in an Empty Fuel Capsule. PLACEHOLDER numbers until the recipe
+        // balance is decided: 17+ wide ring, 8192 SU at 128 RPM, 20 seconds at minimum speed.
+        particleAccelerator(output, "tritium_capsule",
+                List.of(new SizedIngredient(Ingredient.of(ModTags.Items.INGOTS_LITHIUM), 32),
+                        new SizedIngredient(Ingredient.of(ModTags.Items.INGOTS_BERYLLIUM), 4),
+                        new SizedIngredient(Ingredient.of(ModItems.EMPTY_FUEL_CAPSULE.get()), 1)),
+                new ItemStack(ModItems.TRITIUM_CAPSULE.get()), 17, 8192, 128, 400);
 
         // Default Crystallizer recipe (datapacks can add more). Much faster than the Solar
         // Heater's evaporation: it's the bulk path once you have a Molten Salt supply.
@@ -274,6 +286,15 @@ public class ModRecipeProvider extends RecipeProvider {
 
     private static ResourceLocation id(String path) {
         return ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, path);
+    }
+
+    private static void particleAccelerator(RecipeOutput output, String name, List<SizedIngredient> ingredients,
+                                            ItemStack result, int minDiameter, float stress, int minSpeed, int processingTime) {
+        output.accept(
+                id("particle_accelerator/" + name),
+                new ParticleAcceleratorRecipe(ingredients, result, minDiameter, stress, minSpeed, processingTime),
+                null
+        );
     }
 
     private static void crystallizing(RecipeOutput output, String name, FluidStack inputA, FluidStack inputB,

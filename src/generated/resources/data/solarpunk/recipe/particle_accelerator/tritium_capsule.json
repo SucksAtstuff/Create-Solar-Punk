@@ -1,0 +1,25 @@
+{
+  "type": "solarpunk:particle_accelerator",
+  "ingredients": [
+    {
+      "count": 32,
+      "tag": "c:ingots/lithium"
+    },
+    {
+      "count": 4,
+      "tag": "c:ingots/beryllium"
+    },
+    {
+      "count": 1,
+      "item": "solarpunk:empty_fuel_capsule"
+    }
+  ],
+  "min_diameter": 17,
+  "min_speed": 128,
+  "processing_time": 400,
+  "result": {
+    "count": 1,
+    "id": "solarpunk:tritium_capsule"
+  },
+  "stress": 8192.0
+}

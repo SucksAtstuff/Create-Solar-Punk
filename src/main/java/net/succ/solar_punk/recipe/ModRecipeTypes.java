@@ -29,6 +29,11 @@ public class ModRecipeTypes {
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CrystallizerRecipe>> CRYSTALLIZING_SERIALIZER =
             serializer("crystallizing", CrystallizerRecipe.CODEC, CrystallizerRecipe.STREAM_CODEC);
 
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ParticleAcceleratorRecipe>> PARTICLE_ACCELERATOR =
+            type("particle_accelerator");
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ParticleAcceleratorRecipe>> PARTICLE_ACCELERATOR_SERIALIZER =
+            serializer("particle_accelerator", ParticleAcceleratorRecipe.CODEC, ParticleAcceleratorRecipe.STREAM_CODEC);
+
     private static <T extends Recipe<?>> DeferredHolder<RecipeType<?>, RecipeType<T>> type(String name) {
         return RECIPE_TYPES.register(name, () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, name)));
     }

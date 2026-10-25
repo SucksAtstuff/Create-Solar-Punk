@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.PonderHelper;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity.RotationDirection;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
@@ -122,6 +123,9 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
 
     @OnlyIn(Dist.CLIENT)
     public void tickAudio() {
+        // Ponder scenes stay silent. Create's KineticBlockEntity.tick() calls this too,
+        // so the check lives here rather than at the call site.
+        if (PonderHelper.isPonder(level)) return;
         if (getBlockState().getValue(BiomassGasifierBlock.LIT)
                 && (soundInstance == null || soundInstance.isStopped())) {
             soundInstance = new BiomassGasifierSoundInstance(this);
