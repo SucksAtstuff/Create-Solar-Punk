@@ -136,6 +136,8 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_HEAT_BATTERY_MAX_HEAT;
     private static final ModConfigSpec.IntValue CFG_HEAT_BATTERY_HEAT_PER_MB;
     private static final ModConfigSpec.IntValue CFG_HEAT_BATTERY_HEAT_DECAY;
+    private static final ModConfigSpec.IntValue CFG_HEAT_BATTERY_NEW_AGE_MAX_TEMPERATURE;
+    private static final ModConfigSpec.DoubleValue CFG_HEAT_BATTERY_NEW_AGE_HEAT_RATE;
 
     private static final ModConfigSpec.IntValue CFG_SPRINKLER_FLUID_PER_CYCLE;
     private static final ModConfigSpec.IntValue CFG_SPRINKLER_RANGE;
@@ -347,6 +349,17 @@ public class Config {
         CFG_HEAT_BATTERY_MAX_HEAT   = BUILDER.comment("Maximum heat the battery can store").defineInRange("max_heat", 80_000, 1000, 10_000_000);
         CFG_HEAT_BATTERY_HEAT_PER_MB = BUILDER.comment("Heat units gained per mB of molten salt consumed").defineInRange("heat_per_mb", 10, 1, 10_000);
         CFG_HEAT_BATTERY_HEAT_DECAY  = BUILDER.comment("Heat units lost per tick (passive dissipation)").defineInRange("heat_decay_per_tick", 2, 0, 10_000);
+        CFG_HEAT_BATTERY_NEW_AGE_MAX_TEMPERATURE = BUILDER.comment(
+                "Create: New Age compat. A Heat Battery acts as a New Age heat block whose temperature",
+                "rises with its charge, up to this at full. It trades heat with touching New Age heat",
+                "blocks towards that temperature: a full one heats their pipes, an empty one soaks heat",
+                "up. Default 1000 is enough for a Superheated New Age Heater and far below the 10000",
+                "where their parts overheat.")
+                .defineInRange("new_age_max_temperature", 1000, 1, 1_000_000);
+        CFG_HEAT_BATTERY_NEW_AGE_HEAT_RATE = BUILDER.comment(
+                "Heat Battery heat per unit of New Age heat, in both directions. Default 1.0 means a full",
+                "battery runs a Superheated New Age Heater (500 heat/s) for a few minutes.")
+                .defineInRange("new_age_heat_rate", 1.0, 0.001, 1000.0);
         BUILDER.pop();
 
         BUILDER.push("kinetic_sprinkler");
@@ -537,6 +550,8 @@ public class Config {
     public static int gasifierBurnTicks, pelletBurnTicks, pelletBiocharAmount;
     public static int biofuelConsumeMb, biofuelConsumePeriod;
     public static int heatBatteryMaxHeat, heatBatteryHeatPerMb, heatBatteryHeatDecay;
+    public static int heatBatteryNewAgeMaxTemperature;
+    public static double heatBatteryNewAgeHeatRate;
     public static int sprinklerFluidPerCycle, sprinklerRange;
 
     public static int reactorSteamPerLayerPerTick, reactorFuelPerSteamMb;
@@ -632,6 +647,8 @@ public class Config {
         heatBatteryMaxHeat   = CFG_HEAT_BATTERY_MAX_HEAT.get();
         heatBatteryHeatPerMb = CFG_HEAT_BATTERY_HEAT_PER_MB.get();
         heatBatteryHeatDecay = CFG_HEAT_BATTERY_HEAT_DECAY.get();
+        heatBatteryNewAgeMaxTemperature = CFG_HEAT_BATTERY_NEW_AGE_MAX_TEMPERATURE.get();
+        heatBatteryNewAgeHeatRate = CFG_HEAT_BATTERY_NEW_AGE_HEAT_RATE.get();
 
         sprinklerFluidPerCycle = CFG_SPRINKLER_FLUID_PER_CYCLE.get();
         sprinklerRange         = CFG_SPRINKLER_RANGE.get();

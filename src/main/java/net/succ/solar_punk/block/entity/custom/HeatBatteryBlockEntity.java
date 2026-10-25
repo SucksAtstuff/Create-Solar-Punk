@@ -16,6 +16,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
+import net.succ.solar_punk.compat.newage.NewAgeHeat;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.fluid.ModFluids;
 
@@ -70,6 +71,7 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
             level.setBlock(worldPosition, getBlockState().setValue(HeatBatteryBlock.HEAT, newHeat), 3);
         }
 
+        if (afterCharge()) changed = true;
         if (changed) setChanged();
 
         if (level.getGameTime() % 20 == 0) {
@@ -89,6 +91,14 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
     }
 
     public int getHeatStored() { return heatStored; }
+
+    /** Hook for subclasses, run each server tick after charging and decay. Returns whether heat changed. */
+    protected boolean afterCharge() { return false; }
+
+    /** Adds (or with a negative amount, takes) heat, kept within the battery's capacity. */
+    public void addHeat(int amount) {
+        heatStored = Math.max(0, Math.min(Config.heatBatteryMaxHeat, heatStored + amount));
+    }
 
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -121,6 +131,16 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
                         .style(ChatFormatting.GOLD)
                         .component())
                 .forGoggles(tooltip, 1);
+
+        if (NewAgeHeat.LOADED) {
+            CreateLang.translate("solar_punk.tooltip.new_age_temperature")
+                    .style(ChatFormatting.GRAY)
+                    .add(CreateLang.number(Math.round(NewAgeHeat.temperature(this)))
+                            .text(" / " + Config.heatBatteryNewAgeMaxTemperature)
+                            .style(ChatFormatting.GOLD)
+                            .component())
+                    .forGoggles(tooltip, 1);
+        }
 
         CreateLang.translate("solar_punk.tooltip.molten_salt")
                 .style(ChatFormatting.GRAY)

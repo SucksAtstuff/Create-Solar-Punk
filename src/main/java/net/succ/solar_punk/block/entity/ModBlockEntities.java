@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity;
 
+import net.succ.solar_punk.compat.newage.NewAgeHeat;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
@@ -90,7 +91,7 @@ public class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HeatBatteryBlockEntity>> HEAT_BATTERY =
             BLOCK_ENTITIES.register("heat_battery", () -> BlockEntityType.Builder
-                    .of((pos, state) -> new HeatBatteryBlockEntity(ModBlockEntities.HEAT_BATTERY.get(), pos, state), ModBlocks.HEAT_BATTERY.get())
+                    .of(NewAgeHeat::createBattery, ModBlocks.HEAT_BATTERY.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SolarPowerTowerBlockEntity>> SOLAR_POWER_TOWER =

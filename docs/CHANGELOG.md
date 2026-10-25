@@ -2,6 +2,8 @@
 
 > **Back up your world before updating.** This is a big update, so make a copy of your world (and your server's config folder) first, just in case.
 
+> Now built for **Create 6.0.10**. Update Create alongside this version.
+
 ### Recipe Overhaul
 
 Higher-tier machines now need real Create processing instead of just a crafting table, so the mod's progression follows Create's own: cheap to get started, then sheets, assembly lines and Precision Mechanisms as you move up.
@@ -28,6 +30,7 @@ Recipes now accept the same material from other mods, so salt, lithium, berylliu
 - Salt from Northstar and Create: Food works anywhere Solarpunk Salt does, and Solarpunk Salt works in their recipes too.
 - The Fusion Reactor accepts Lithium Dust from other mods.
 - The Solar Heater now turns any stone (Andesite, Diorite, Granite, Deepslate, Tuff) and any cobblestone into Lava, not just plain Stone and Cobblestone.
+- **Create: New Age:** the Heat Battery now trades heat with New Age's heat pipes and machines. A charged battery heats them, and an emptier one soaks up their heat. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/49
 
 ### Particle Accelerator
 

@@ -80,6 +80,7 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.heat_battery_header", "Heat Battery");
         add("create.solar_punk.tooltip.heat_level", "Level: ");
         add("create.solar_punk.tooltip.heat_stored", "Heat: ");
+        add("create.solar_punk.tooltip.new_age_temperature", "New Age Temperature: ");
         add("create.solar_punk.tooltip.molten_salt", "Molten Salt: ");
         add("create.solar_punk.tooltip.steam", "Steam: ");
         add("create.solar_punk.tooltip.tower_mode", "Mode: ");
@@ -181,6 +182,8 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.heat_battery.tooltip.summary", "Stores thermal energy as _Molten Salt_ and supplies heat to a _Boiler_ placed above it.");
         add("block.solarpunk.heat_battery.tooltip.condition1", "When filled with Molten Salt");
         add("block.solarpunk.heat_battery.tooltip.behaviour1", "Heats the boiler above, _superheating_ it while at least a quarter charged. Stored heat slowly fades.");
+        add("block.solarpunk.heat_battery.tooltip.condition2", "With Create: New Age");
+        add("block.solarpunk.heat_battery.tooltip.behaviour2", "Trades heat with touching _heat pipes_ and machines. A charged battery heats them, and an emptier one soaks up their heat.");
 
         add("block.solarpunk.kinetic_battery.tooltip.summary", "Stores _Rotational Force_ for later use. Useful for buffering intermittent generators like solar panels.");
         add("block.solarpunk.kinetic_battery.tooltip.condition1", "When connected to a spinning network");
