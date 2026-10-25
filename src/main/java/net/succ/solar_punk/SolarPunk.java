@@ -70,11 +70,17 @@ public class SolarPunk {
                 ModBlockEntities.SOLAR_HEATER.get(),
                 (be, side) -> be.itemHandler
         );
-        // Particle Accelerator Input: items only through its side cap (null side = internal access)
+        // Particle Accelerator Input: items through the cap, the opposite side and the top, so
+        // one face can feed it while another pulls results out. Not through the pipe ends or
+        // the shaft underneath (null side = internal access).
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(),
-                (be, side) -> side == null || side == AcceleratorRing.capSide(be.getBlockState()) ? be.capHandler : null
+                (be, side) -> {
+                    if (side == null || side == Direction.UP) return be.capHandler;
+                    Direction cap = AcceleratorRing.capSide(be.getBlockState());
+                    return side == cap || side == cap.getOpposite() ? be.capHandler : null;
+                }
         );
         // Top face intentionally blocked: a pipe there would block the sky check.
         event.registerBlockEntity(

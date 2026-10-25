@@ -1,0 +1,17 @@
+{
+  "type": "solarpunk:particle_accelerator",
+  "ingredients": [
+    {
+      "count": 64,
+      "item": "solarpunk:biochar"
+    }
+  ],
+  "min_diameter": 15,
+  "min_speed": 128,
+  "processing_time": 800,
+  "result": {
+    "count": 1,
+    "id": "minecraft:diamond"
+  },
+  "stress": 24576.0
+}

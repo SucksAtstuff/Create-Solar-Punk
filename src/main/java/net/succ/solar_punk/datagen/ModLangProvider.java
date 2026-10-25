@@ -229,7 +229,7 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.particle_accelerator_input.tooltip.condition1", "When powered from below");
         add("block.solarpunk.particle_accelerator_input.tooltip.behaviour1", "Crafts whatever its contents match, if the ring is _wide enough_ and spins _fast enough_. Bigger rings draw more _stress_.");
         add("block.solarpunk.particle_accelerator_input.tooltip.condition2", "Items");
-        add("block.solarpunk.particle_accelerator_input.tooltip.behaviour2", "Go in and come back out through the _side cap_. Its _filter slot_ picks which recipe to make.");
+        add("block.solarpunk.particle_accelerator_input.tooltip.behaviour2", "Go in and come back out through the _cap_, the _opposite side_ or the _top_, so you can feed one face and empty another. The _filter slot_ on the cap picks which recipe to make.");
         add("block.solarpunk.fusion_reactor_core.tooltip.summary", "Heart of the _Fusion Reactor_. Goes at the center of a sphere of _Fusion Reactor Casing_ with rings of _Blanket Modules_ inside, and turns _Deuterium_ and _Lithium Dust_ or _Tritium Capsules_ into _Steam_.");
         add("block.solarpunk.fusion_reactor_core.tooltip.condition1", "When the structure is complete");
         add("block.solarpunk.fusion_reactor_core.tooltip.behaviour1", "A _redstone signal_ on any Casing block sets the throttle; no signal means idle. Pipe fuel in and Steam out through any Casing block.");

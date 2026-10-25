@@ -384,9 +384,9 @@ public class Config {
                 .defineInRange("reactor_breeder_floor_ratio", 0.5, 0.01, 1.0);
         CFG_REACTOR_TRITIUM_CAPSULE_MB = BUILDER.comment(
                 "mB of fuel one Tritium Capsule counts as (one Lithium Dust is 250 mB). Tritium burns 1:1",
-                "with Deuterium with none of Lithium's breeding waste. Default 16000 is twice the 32 Lithium",
-                "the Particle Accelerator's Tritium recipe uses.")
-                .defineInRange("reactor_tritium_capsule_mb", 16000, 1, 1_000_000);
+                "with Deuterium with none of Lithium's breeding waste. Default 32000 is four times the 32",
+                "Lithium Dust the Particle Accelerator's Tritium recipe uses.")
+                .defineInRange("reactor_tritium_capsule_mb", 32000, 1, 1_000_000);
         CFG_REACTOR_BREEDER_CAPTURE_RATIO = BUILDER.comment(
                 "Share of the Tritium the blanket breeds while burning Lithium that's captured into Empty",
                 "Fuel Capsules in the reactor, scaled by the share of Lithium Breeder Modules. Default 0.02",

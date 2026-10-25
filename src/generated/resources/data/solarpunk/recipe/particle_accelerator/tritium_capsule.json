@@ -3,7 +3,7 @@
   "ingredients": [
     {
       "count": 32,
-      "tag": "c:ingots/lithium"
+      "tag": "c:dusts/lithium"
     },
     {
       "count": 4,
@@ -14,12 +14,12 @@
       "item": "solarpunk:empty_fuel_capsule"
     }
   ],
-  "min_diameter": 17,
+  "min_diameter": 9,
   "min_speed": 128,
-  "processing_time": 400,
+  "processing_time": 600,
   "result": {
     "count": 1,
     "id": "solarpunk:tritium_capsule"
   },
-  "stress": 8192.0
+  "stress": 16384.0
 }

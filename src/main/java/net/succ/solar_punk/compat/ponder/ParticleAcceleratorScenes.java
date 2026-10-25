@@ -164,7 +164,7 @@ public class ParticleAcceleratorScenes {
         var cap = util.vector().blockSurface(INPUT, Direction.NORTH);
         scene.overlay().showControls(cap, Pointing.DOWN, 80).withItem(new ItemStack(ModItems.LITHIUM_INGOT.get()));
         scene.overlay().showText(80)
-                .text("Items go in through the side cap with Funnels, Belts or Hoppers. Like a Basin, any order works")
+                .text("Items go in through the cap, the opposite side or the top, with Funnels, Belts or Hoppers. Like a Basin, any order works")
                 .pointAt(cap)
                 .placeNearTarget()
                 .attachKeyFrame();
@@ -193,7 +193,7 @@ public class ParticleAcceleratorScenes {
         scene.world().modifyBlockEntity(INPUT, ParticleAcceleratorInputBlockEntity.class,
                 ParticleAcceleratorInputBlockEntity::ponderFinishCraft);
         scene.overlay().showText(80)
-                .text("...and collide in the Input exactly as it finishes. The result comes back out of the side cap")
+                .text("...and collide in the Input exactly as it finishes. Pull the result out of any of those faces")
                 .pointAt(util.vector().topOf(INPUT))
                 .placeNearTarget()
                 .attachKeyFrame();

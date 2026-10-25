@@ -48,14 +48,32 @@ public class ModRecipeProvider extends RecipeProvider {
         solarHeating(output, "salt_item_to_molten_salt", anySalt(), new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 100));
         solarHeating(output, "salt_to_molten_salt", Ingredient.of(ModTags.Items.STORAGE_BLOCKS_SALT), new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 1000));
 
-        // Particle Accelerator: Tritium bred from Lithium, with Beryllium as the neutron
-        // source, caught in an Empty Fuel Capsule. PLACEHOLDER numbers until the recipe
-        // balance is decided: 17+ wide ring, 8192 SU at 128 RPM, 20 seconds at minimum speed.
+        // Particle Accelerator. The smallest closed ring is 5 wide; nothing is made there, so
+        // recipes step up 9 -> 15 -> 21 with how rare the result is. Times are at minimum
+        // speed and halve at double it.
+        // Tritium bred from Lithium, with Beryllium as the neutron source, caught in an Empty
+        // Fuel Capsule. The capsule is worth 4x the Lithium that goes in (reactor_tritium_capsule_mb),
+        // so one ring at 256 RPM keeps a pure-Lithium-blanket reactor running.
         particleAccelerator(output, "tritium_capsule",
-                List.of(new SizedIngredient(Ingredient.of(ModTags.Items.INGOTS_LITHIUM), 32),
+                List.of(new SizedIngredient(Ingredient.of(ModTags.Items.DUSTS_LITHIUM), 32),
                         new SizedIngredient(Ingredient.of(ModTags.Items.INGOTS_BERYLLIUM), 4),
                         new SizedIngredient(Ingredient.of(ModItems.EMPTY_FUEL_CAPSULE.get()), 1)),
-                new ItemStack(ModItems.TRITIUM_CAPSULE.get()), 17, 8192, 128, 400);
+                new ItemStack(ModItems.TRITIUM_CAPSULE.get()), 9, 16384, 128, 600);
+        // Carbon compressed into Diamond, using the Biomass Gasifier's byproduct. Biochar is
+        // easy to farm, so this sits behind a bigger ring and a lot of SU.
+        particleAccelerator(output, "diamond",
+                List.of(new SizedIngredient(Ingredient.of(ModItems.BIOCHAR.get()), 64)),
+                new ItemStack(Items.DIAMOND), 15, 24576, 128, 800);
+        particleAccelerator(output, "echo_shard",
+                List.of(new SizedIngredient(Ingredient.of(Items.SCULK), 8),
+                        new SizedIngredient(Ingredient.of(Tags.Items.GEMS_AMETHYST), 4)),
+                new ItemStack(Items.ECHO_SHARD), 15, 24576, 128, 800);
+        // Scrap, not an ingot, so the vanilla 4 Scrap + 4 Gold step still applies.
+        particleAccelerator(output, "netherite_scrap",
+                List.of(new SizedIngredient(Ingredient.of(Tags.Items.INGOTS_GOLD), 16),
+                        new SizedIngredient(Ingredient.of(Tags.Items.NETHERRACKS), 16),
+                        new SizedIngredient(Ingredient.of(Tags.Items.GEMS_QUARTZ), 4)),
+                new ItemStack(Items.NETHERITE_SCRAP), 21, 32768, 192, 1200);
 
         // Default Crystallizer recipe (datapacks can add more). Much faster than the Solar
         // Heater's evaporation: it's the bulk path once you have a Molten Salt supply.

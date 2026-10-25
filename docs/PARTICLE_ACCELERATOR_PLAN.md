@@ -62,42 +62,32 @@ A ring that isn't a closed loop just doesn't run (goggles on the Input say "Not 
 
 ## Recipes
 
-Recipes should focus on making **finite** resources renewable and on feeding the mod's own systems. Numbers below are placeholders, to be tuned by ring size and SU cost.
+Recipes make **finite** resources renewable and feed the mod's own systems. The smallest closed ring is 5 wide and has no recipe, so it's for learning how the ring works (or for cheap modpack recipes). Recipes then step up by how rare the result is. Times are at minimum speed and halve at double it. SU grows with the ring's diameter past the minimum.
 
-| Inputs | Output | Notes |
-|---|---|---|
-| 64 Lithium | 1 Tritium | Key recipe. Tritium replaces Lithium in the Fusion Reactor and lasts much longer. |
-| 64 Logs | 1 Diamond | Concern: tree farms are trivial, so this needs a high SU cost or a large minimum ring size. |
-| 32 Gold + 32 Iron | 1 Netherite Ingot | Concern: skips the ancient debris gate entirely. Consider requiring netherite scrap or debris as one input. |
-| Waste / byproducts | Useful materials | Idea: recycle rotten flesh, gravel, compost or the mod's own byproducts. "Nothing is wasted" fits the theme well. |
+| Inputs | Output | Diameter | SU | RPM | Time |
+|---|---|---|---|---|---|
+| 32 Lithium Dust + 4 Beryllium Ingots + 1 Empty Fuel Capsule | 1 Tritium Capsule | 9 | 16384 | 128 | 30 s |
+| 64 Biochar | 1 Diamond | 15 | 24576 | 128 | 40 s |
+| 8 Sculk + 4 Amethyst Shards | 1 Echo Shard | 15 | 24576 | 128 | 40 s |
+| 16 Gold Ingots + 16 Netherrack + 4 Nether Quartz | 1 Netherite Scrap | 21 | 32768 | 192 | 60 s |
+
+- **Tritium** is worth 32000 mB in the Fusion Reactor (`reactor_tritium_capsule_mb`), 4x the Lithium that goes in. A pure-Lithium blanket burns a capsule in about 24 s, so one ring at 256 RPM keeps it running. A Beryllium-heavy reactor burns one in about 5 s and needs several rings or Lithium on the side. The Breeder Modules' 2% trickle stays a bonus.
+- **Netherite** gives Scrap, not an ingot, so the vanilla Scrap + Gold step still applies.
+- **Diamond** uses Biochar, which is easy to farm, so it sits behind a bigger ring and more SU.
 
 ### Balance rule of thumb
 
 Any recipe that turns a cheap, easily automated item into a rare one must be expensive, gated by ring size, or both. Otherwise the ring becomes the only thing anyone builds.
 
-## What's Missing / Open Questions
+## Items
 
-### Needs to exist first
+The Input takes and gives items through its cap, the side opposite the cap and its top, so one face can feed it while another empties it. The pipe ends and the shaft underneath have no item access.
 
-- **Tritium Capsule** (done, no use yet). Made in the ring from Lithium, Beryllium and an Empty Fuel Capsule (also done, crafted from Iron Sheets and a Glass Pane). The Fusion Reactor should hand the empty capsule back when it burns one, and its Breeder Modules can slowly fill capsules as a small byproduct.
-- **Fusion Reactor accepts Tritium.** The reactor has to take Tritium as an alternative to Lithium, with a much higher fuel value, and probably ignore or bypass the breeder blanket math when running on it.
-- **Custom recipe type** (done). `solarpunk:particle_accelerator`: up to 9 ingredients with counts, one result, minimum diameter, SU at that diameter, minimum RPM and processing time. JEI category and datagen helper. The Tritium recipe uses placeholder numbers for now.
+## Technical Notes
 
-### Design decisions still open
-
-- **Recipe numbers.** Minimum diameter, SU and RPM for each recipe.
-- **No size cap.** Recipes decide what ring size is needed, including custom ones from modpack makers.
-
-### Technical risks
-
-- **Chunk borders.** Large rings will span several chunks. If part of the ring is unloaded, it should pause, not count as broken (done: the ring scan reports "Partly unloaded" and pauses).
+- **Chunk borders.** If part of the ring is unloaded, it pauses ("Partly unloaded") instead of counting as broken.
 - **Validation cost.** The Input rescans its ring every 2 seconds (like the turbine and fusion reactor), not every tick.
-- **Controller** (done). The Accelerator Input's block entity holds the ring state, inventory, recipe and stress.
-- **Rendering** (done). One renderer on the Input draws two beams (cyan and amber) running around the ring in opposite directions along the tube's centre line (through bend curves and diagonals), emissive so they glow through the see-through pipes. Their positions come from the craft's progress (progress squared times a whole number of laps), so they speed up and meet back in the Input exactly as the craft finishes, where the collision flashes and throws sparks.
-
-## Nice to Have
-
-- **Display Link support** for charge, speed, current recipe and ring status, matching the Fusion Reactor display sources.
-- **Ponder scenes** for building a ring, and running a recipe.
-- **Goggle info** showing ring size, SU demand, current RPM, charge and loop status.
-- **Sound design** for spin-up hum, collision, and the open-end warning.
+- **Controller.** The Input's block entity holds the ring state, inventory, recipe and stress.
+- **Rendering.** One renderer on the Input draws two beams (cyan and amber) running around the ring in opposite directions along the tube's centre line (through bend curves and diagonals), emissive so they glow through the see-through pipes. Their positions come from the craft's progress (progress squared times a whole number of laps), so they speed up and meet back in the Input exactly as the craft finishes, where the collision flashes and throws sparks.
+- **Sound.** A hum whose pitch follows the beams, fading in and out, and a collision sound at impact.
+- **Integration.** JEI category, Ponder scenes, goggle info, item tooltips and Display Link sources (status, recipe, progress). Datapacks can add recipes; there's no size cap.
