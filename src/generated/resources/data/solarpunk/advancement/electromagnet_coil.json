@@ -1,0 +1,34 @@
+{
+  "parent": "solarpunk:steam_turbine",
+  "criteria": {
+    "0": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:electromagnet_coil"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancement.solarpunk.electromagnet_coil.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:electromagnet_coil"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.electromagnet_coil"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

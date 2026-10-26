@@ -1,0 +1,27 @@
+{
+  "parent": "solarpunk:particle_accelerator",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:accelerator_collision"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancement.solarpunk.particle_collision.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:particle_accelerator_pipe"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.particle_collision"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

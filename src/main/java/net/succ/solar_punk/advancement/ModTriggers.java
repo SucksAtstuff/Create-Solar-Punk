@@ -34,6 +34,14 @@ public class ModTriggers {
             TRIGGERS.register("turbine_flooded", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> REACTOR_BUILT =
             TRIGGERS.register("reactor_built", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> TRITIUM_BRED =
+            TRIGGERS.register("tritium_bred", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> ACCELERATOR_BUILT =
+            TRIGGERS.register("accelerator_built", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> ACCELERATOR_COLLISION =
+            TRIGGERS.register("accelerator_collision", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> ACCELERATOR_BIG_RING =
+            TRIGGERS.register("accelerator_big_ring", SolarpunkTrigger::new);
 
     public static void register(IEventBus bus) {
         TRIGGERS.register(bus);
@@ -41,9 +49,14 @@ public class ModTriggers {
 
     public static void fireNearby(Level level, BlockPos pos,
             DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> trigger) {
+        fireNearby(level, pos, trigger, 16);
+    }
+
+    public static void fireNearby(Level level, BlockPos pos,
+            DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> trigger, double radius) {
         if (level.isClientSide()) return;
         Vec3 center = Vec3.atCenterOf(pos);
-        ((ServerLevel) level).getPlayers(p -> p.distanceToSqr(center) < 256.0)
+        ((ServerLevel) level).getPlayers(p -> p.distanceToSqr(center) < radius * radius)
                 .forEach(p -> trigger.get().trigger(p));
     }
 }

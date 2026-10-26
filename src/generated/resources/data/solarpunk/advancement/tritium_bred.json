@@ -1,0 +1,27 @@
+{
+  "parent": "solarpunk:fusion_reactor",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:tritium_bred"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancement.solarpunk.tritium_bred.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:lithium_breeder_module"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.tritium_bred"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

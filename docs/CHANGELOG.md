@@ -1,3 +1,10 @@
+# 2.1.0-1.21.1
+
+## New
+
+- New advancements for the Particle Accelerator: crafting the coils, closing your first ring, your first collision, getting a Tritium Capsule and running a huge ring.
+- New Fusion Reactor advancement for breeding your own Tritium.
+
 # 2.0.0-1.21.1
 
 > **Back up your world before updating.** This is a big update, so make a copy of your world (and your server's config folder) first, just in case.

@@ -35,6 +35,7 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.AcceleratorRing;
 import net.succ.solar_punk.client.sound.AcceleratorHumSoundInstance;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
@@ -64,6 +65,8 @@ public class ParticleAcceleratorInputBlockEntity extends KineticBlockEntity impl
     private static final double AVERAGE_BEAM_SPEED = 1.5;
     private static final int SCAN_INTERVAL = 40;
     private static final int RECIPE_CHECK_INTERVAL = 10;
+    // Ring size for the big ring advancement, the Netherite Scrap tier
+    private static final int BIG_RING_DIAMETER = 21;
 
     public final ItemStackHandler inputInv = new ItemStackHandler(SLOTS) {
         @Override
@@ -157,6 +160,8 @@ public class ParticleAcceleratorInputBlockEntity extends KineticBlockEntity impl
         AcceleratorRing.Result result = AcceleratorRing.scan(level, worldPosition);
         // An unloaded part of the ring pauses it rather than counting as broken
         if (result.status() == ringStatus && result.path().equals(ringPath)) return;
+        if (result.status() == AcceleratorRing.Status.FORMED && ringStatus != AcceleratorRing.Status.FORMED)
+            ModTriggers.fireNearby(level, worldPosition, ModTriggers.ACCELERATOR_BUILT, triggerRadius(result.size()));
         ringStatus = result.status();
         diameter = result.diameter();
         ringPath = result.path();
@@ -243,9 +248,18 @@ public class ParticleAcceleratorInputBlockEntity extends KineticBlockEntity impl
         consumeIngredients(r);
         ItemHandlerHelper.insertItem(outputInv, result, false);
         level.blockEvent(worldPosition, getBlockState().getBlock(), COLLISION_EVENT, 0);
+        double radius = triggerRadius(ringPath.size());
+        ModTriggers.fireNearby(level, worldPosition, ModTriggers.ACCELERATOR_COLLISION, radius);
+        if (diameter >= BIG_RING_DIAMETER)
+            ModTriggers.fireNearby(level, worldPosition, ModTriggers.ACCELERATOR_BIG_RING, radius);
         progress = 0;
         contentsChanged = true;
         sendData();
+    }
+
+    // Rings get big, so count anyone near any part of it, not just near the Input
+    private static double triggerRadius(int ringSize) {
+        return 16 + ringSize / 2.0;
     }
 
     /** Takes each ingredient's count from the input slots, in the same order matches() counts them. */

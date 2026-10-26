@@ -1,0 +1,34 @@
+{
+  "parent": "solarpunk:electromagnet_coil",
+  "criteria": {
+    "0": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:superconducting_coil"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancement.solarpunk.superconducting_coil.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:superconducting_coil"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.superconducting_coil"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
