@@ -1,10 +1,10 @@
 package net.succ.solar_punk.block.custom;
 
+import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.Containers;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -55,10 +55,8 @@ public class BiomassGasifierBlock extends KineticBlock implements IBE<BiomassGas
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof BiomassGasifierBlockEntity be) {
-            for (int i = 0; i < be.itemHandler.getSlots(); i++)
-                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), be.itemHandler.getStackInSlot(i));
-        }
+        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof BiomassGasifierBlockEntity be)
+            ItemHelper.dropContents(level, pos, be.itemHandler);
         super.onRemove(state, level, pos, newState, movedByPiston);
     }
 

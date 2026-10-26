@@ -1,5 +1,9 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.succ.solar_punk.util.GoggleHelper;
+import net.succ.solar_punk.util.AutomationItemHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.ChatFormatting;
@@ -38,6 +42,11 @@ public class FireboxBoilerBlockEntity extends BlockEntity implements IHaveGoggle
         @Override
         protected void onContentsChanged(int slot) { setChanged(); }
     };
+
+    // Hoppers and funnels can add fuel, and take out what isn't fuel (a Lava Bucket's
+    // empty bucket)
+    public final IItemHandler automationHandler = new AutomationItemHandler(itemHandler,
+            slot -> true, (slot, stack) -> !AbstractFurnaceBlockEntity.isFuel(stack));
 
     // Output tank for Steam. No external insertion - only this BE's tick() fills it.
     public final FluidTank steamTank = new FluidTank(Config.fireboxBoilerTank) {
@@ -114,14 +123,22 @@ public class FireboxBoilerBlockEntity extends BlockEntity implements IHaveGoggle
             // so modded fuel values are respected.
             int ticks = fuel.isEmpty() ? 0 : fuel.getBurnTime(null);
             if (ticks > 0) {
+                // Like a furnace, a Lava Bucket leaves its empty bucket behind
+                ItemStack remainder = fuel.getCraftingRemainingItem();
                 itemHandler.extractItem(0, 1, false);
+                if (!remainder.isEmpty()) {
+                    if (itemHandler.getStackInSlot(0).isEmpty()) itemHandler.setStackInSlot(0, remainder);
+                    else Block.popResource(level, worldPosition.above(), remainder);
+                }
                 burnTimeRemaining = ticks;
                 setChanged();
             }
         }
 
-        boolean lit = burnTimeRemaining > 0;
-        if (lit && hasWater && hasRoom) {
+        // Only lit while it's actually boiling: out of water or with the steam tank full,
+        // the fire waits (keeping its burn time) and the sound and pollution stop
+        boolean lit = burnTimeRemaining > 0 && hasWater && hasRoom;
+        if (lit) {
             burnTimeRemaining--;
             waterTank.drain(rate, IFluidHandler.FluidAction.EXECUTE);
             steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), rate), IFluidHandler.FluidAction.EXECUTE);
@@ -183,21 +200,8 @@ public class FireboxBoilerBlockEntity extends BlockEntity implements IHaveGoggle
                     .forGoggles(tooltip, 1);
         }
 
-        CreateLang.translate("solar_punk.tooltip.water")
-                .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(waterTank.getFluidAmount())
-                        .text(" / " + Config.fireboxBoilerTank + " mB")
-                        .style(ChatFormatting.AQUA)
-                        .component())
-                .forGoggles(tooltip, 1);
-
-        CreateLang.translate("solar_punk.tooltip.steam")
-                .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(steamTank.getFluidAmount())
-                        .text(" / " + Config.fireboxBoilerTank + " mB")
-                        .style(ChatFormatting.AQUA)
-                        .component())
-                .forGoggles(tooltip, 1);
+        GoggleHelper.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
+        GoggleHelper.tank(tooltip, "steam", steamTank, ChatFormatting.AQUA);
 
         return true;
     }

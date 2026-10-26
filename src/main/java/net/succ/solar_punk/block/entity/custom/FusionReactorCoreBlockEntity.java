@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.AutomationItemHandler;
 import net.succ.solar_punk.util.PonderHelper;
 import net.neoforged.neoforge.items.IItemHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
@@ -148,25 +149,9 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
 
     // What pipes, funnels and the Casing see: fuel and empty capsules can be put in, and
     // empty capsules and bred Tritium can be taken out.
-    public final IItemHandler itemHandler = new IItemHandler() {
-        @Override public int getSlots() { return inventory.getSlots(); }
-        @Override public ItemStack getStackInSlot(int slot) { return inventory.getStackInSlot(slot); }
-        @Override public int getSlotLimit(int slot) { return inventory.getSlotLimit(slot); }
-        @Override public boolean isItemValid(int slot, ItemStack stack) {
-            return slot != SLOT_BRED_TRITIUM && inventory.isItemValid(slot, stack);
-        }
-
-        @Override
-        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            return slot == SLOT_BRED_TRITIUM ? stack : inventory.insertItem(slot, stack, simulate);
-        }
-
-        @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return slot == SLOT_EMPTY_CAPSULES || slot == SLOT_BRED_TRITIUM
-                    ? inventory.extractItem(slot, amount, simulate) : ItemStack.EMPTY;
-        }
-    };
+    public final IItemHandler itemHandler = new AutomationItemHandler(inventory,
+            slot -> slot != SLOT_BRED_TRITIUM,
+            (slot, stack) -> slot == SLOT_EMPTY_CAPSULES || slot == SLOT_BRED_TRITIUM);
 
     public final IFluidHandler combinedFluidHandler = new IFluidHandler() {
         @Override public int getTanks() { return 2; }
@@ -275,9 +260,9 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
     }
 
-    // The actual power loop: Deuterium + Lithium in, Steam out, rate interpolated by
-    // blanketEfficiency between the pure-Lithium and pure-Beryllium extremes the five
-    // Config knobs describe. Throttles to whichever fuel is scarcer this tick rather
+    // The actual power loop: Deuterium + Lithium (or Tritium) in, Steam out, rate
+    // interpolated by blanketEfficiency between the pure-Lithium and pure-Beryllium
+    // extremes the Config knobs describe. Throttles to whichever fuel is scarcer this tick rather
     // than assuming both are available, and never overflows the steam tank.
     private void runPowerLoop() {
         int totalModules = lithiumModuleCount + berylliumModuleCount;
@@ -308,8 +293,10 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         double lithiumPerSteam = deuteriumPerSteam / breederRatio;
 
         // Tritium Capsules go first. Tritium is what Lithium breeds into, so it burns 1:1
-        // with Deuterium, with none of the breeding waste.
-        boolean tritium = tritiumBufferMb > 0 || canLoadTritiumCapsule();
+        // with Deuterium, with none of the breeding waste. A leftover too small for even
+        // 1 mB of steam doesn't count, or the reactor would stall on it instead of moving
+        // on to Lithium; it's kept for when the next capsule loads.
+        boolean tritium = tritiumBufferMb >= deuteriumPerSteam || canLoadTritiumCapsule();
         double fuelPerSteam2 = tritium ? deuteriumPerSteam : lithiumPerSteam;
 
         // Top the buffer up a whole item at a time.

@@ -10,8 +10,8 @@ import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.compat.cosmonautics.CosmonauticsSolar;
 import net.succ.solar_punk.compat.sereneseasons.SeasonalSolar;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Shared sunlight checks for every solar block. All of them go through here so space
@@ -44,11 +44,12 @@ public final class SolarHelper {
     private static final int SKY_SCAN_LIMIT = 64;
 
     // Space sky checks walk up to SKY_SCAN_LIMIT blocks and Brass Panels ask every tick,
-    // so results are reused for a second.
+    // so results are reused for a second. Concurrent since in singleplayer the client
+    // thread (goggles) and the server thread both check.
     private static final int SKY_CACHE_TICKS = 20;
     private static final int SKY_CACHE_MAX = 4096;
     private record SkyResult(boolean clear, long stamp) {}
-    private static final Map<GlobalPos, SkyResult> SKY_CACHE = new HashMap<>();
+    private static final Map<GlobalPos, SkyResult> SKY_CACHE = new ConcurrentHashMap<>();
 
     public enum DayPhase { NIGHT, MORNING, NOON, EVENING }
 
@@ -70,6 +71,20 @@ public final class SolarHelper {
         if (progress < EVENING_PROGRESS) return DayPhase.NOON;
         if (progress < NIGHT_PROGRESS)   return DayPhase.EVENING;
         return DayPhase.NIGHT;
+    }
+
+    /**
+     * A solar block's base output for the current sunlight: {@code dawn} in the morning
+     * and evening (and at noon in the rain), {@code noon} at a clear noon, and 0 at night
+     * or with the sky blocked. Seasons and space aren't applied, see {@link #outputMultiplier}.
+     */
+    public static float byPhase(Level level, BlockPos pos, float dawn, float noon) {
+        if (!hasSkyAccess(level, pos)) return 0;
+        return switch (getPhase(level, pos)) {
+            case MORNING, EVENING -> dawn;
+            case NOON -> isRaining(level) ? dawn : noon;
+            case NIGHT -> 0;
+        };
     }
 
     /** True during the daylight half of the cycle (always true in always-sunny dimensions). */

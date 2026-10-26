@@ -1,21 +1,17 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.GeneratorHelper;
 import net.succ.solar_punk.util.PonderHelper;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity.RotationDirection;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
-import com.simibubi.create.foundation.utility.CreateLang;
-import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.ModBlocks;
@@ -48,21 +44,8 @@ public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implement
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
-        rotationDirection = new ScrollOptionBehaviour<>(RotationDirection.class,
-                CreateLang.translateDirect("contraptions.windmill.rotation_direction"),
-                this,
-                new ValueBoxTransform.Sided() {
-                    @Override
-                    protected Vec3 getSouthLocation() {
-                        return VecHelper.voxelSpace(8, 8, 15.5);
-                    }
-                    @Override
-                    protected boolean isSideActive(BlockState state, Direction direction) {
-                        return direction.getAxis() == state.getValue(GeyserCapBlock.FACING).getAxis();
-                    }
-                }
-        );
-        rotationDirection.withCallback($ -> this.updateGeneratedRotation());
+        rotationDirection = GeneratorHelper.rotationDirection(this, 8, (state, direction) ->
+                direction.getAxis() == state.getValue(GeyserCapBlock.FACING).getAxis());
         behaviours.add(rotationDirection);
     }
 
@@ -73,9 +56,7 @@ public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implement
     @Override
     public float getGeneratedSpeed() {
         if (!hasVent()) return 0;
-        float speed = Config.geyserCapRpm;
-        if (rotationDirection.get() == RotationDirection.COUNTER_CLOCKWISE) speed = -speed;
-        return speed;
+        return GeneratorHelper.directed(Config.geyserCapRpm, rotationDirection);
     }
 
     @Override

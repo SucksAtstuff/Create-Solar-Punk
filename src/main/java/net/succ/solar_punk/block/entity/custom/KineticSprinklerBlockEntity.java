@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.GoggleHelper;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -122,13 +123,8 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
                 .forGoggles(tooltip, 1);
 
         boolean fertilizer = hasFertilizer();
-        CreateLang.translate(fertilizer ? "solar_punk.tooltip.fertilizer" : "solar_punk.tooltip.water")
-                .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(fluidTank.getFluidAmount())
-                        .text(" / " + Config.sprinklerTank + " mB")
-                        .style(fertilizer ? ChatFormatting.GREEN : ChatFormatting.AQUA)
-                        .component())
-                .forGoggles(tooltip, 1);
+        GoggleHelper.tank(tooltip, fertilizer ? "fertilizer" : "water", fluidTank,
+                fertilizer ? ChatFormatting.GREEN : ChatFormatting.AQUA);
 
         return true;
     }

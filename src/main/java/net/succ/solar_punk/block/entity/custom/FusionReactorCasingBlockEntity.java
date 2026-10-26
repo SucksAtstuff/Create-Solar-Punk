@@ -18,7 +18,7 @@ import java.util.List;
 // The Core sits buried at the center of the sealed sphere, so once the reactor is built
 // nothing can reach it. Every Casing block remembers where its Core is (set by the
 // Core's scanStructure()) and proxies goggles, fluids (Deuterium in, Steam out) and
-// items (Lithium Dust in) through to it.
+// items (Lithium Dust and capsules in, empty and bred capsules out) through to it.
 public class FusionReactorCasingBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 
     private BlockPos corePos = null;

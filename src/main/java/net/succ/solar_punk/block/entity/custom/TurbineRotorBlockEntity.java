@@ -1,13 +1,13 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import net.succ.solar_punk.util.PonderHelper;
+import net.succ.solar_punk.util.GoggleHelper;
+import net.succ.solar_punk.client.sound.MachineSoundInstance;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.lang.LangBuilder;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -87,13 +87,10 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
 
     @OnlyIn(Dist.CLIENT)
     public void tickAudio() {
-        // Ponder scenes stay silent. Create's KineticBlockEntity.tick() calls this too,
-        // so the check lives here rather than at the call site.
-        if (PonderHelper.isPonder(level)) return;
-        if (isActive() && (soundInstance == null || soundInstance.isStopped())) {
-            soundInstance = new TurbineSoundInstance(this);
-            Minecraft.getInstance().getSoundManager().play(soundInstance);
-        }
+        // Create's KineticBlockEntity.tick() calls this too, so Ponder's silence is
+        // handled in keepPlaying() rather than at the call site
+        soundInstance = MachineSoundInstance.keepPlaying(level, soundInstance, isActive(),
+                () -> new TurbineSoundInstance(this));
     }
 
     // Steam is the mod's own fuel; Liquid Hydrogen (Northstar Redux, see NorthstarCompat)
@@ -570,23 +567,15 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         // Own "Fuel:" key rather than the shared "Steam:" one, since this tank can also
         // hold Liquid Hydrogen (see isTurbineFuel). The fluid's name is appended only
         // while the tank holds something.
-        LangBuilder steamLine = CreateLang.translate("solar_punk.tooltip.turbine_fuel")
-                .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(steamTank.getFluidAmount())
-                        .text(" / " + steamTank.getCapacity() + " mB")
-                        .style(ChatFormatting.AQUA).component());
+        LangBuilder steamLine = GoggleHelper.tankLine("turbine_fuel",
+                steamTank.getFluidAmount(), steamTank.getCapacity(), ChatFormatting.AQUA);
         if (!steamTank.isEmpty())
             steamLine.add(Component.literal(" (").withStyle(ChatFormatting.DARK_GRAY)
                     .append(steamTank.getFluid().getHoverName().copy().withStyle(ChatFormatting.DARK_AQUA))
                     .append(Component.literal(")").withStyle(ChatFormatting.DARK_GRAY)));
         steamLine.forGoggles(tooltip, 1);
 
-        CreateLang.translate("solar_punk.tooltip.water")
-                .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(condensateTank.getFluidAmount())
-                        .text(" / " + condensateTank.getCapacity() + " mB")
-                        .style(ChatFormatting.BLUE).component())
-                .forGoggles(tooltip, 1);
+        GoggleHelper.tank(tooltip, "water", condensateTank, ChatFormatting.BLUE);
 
         if (condensateFull())
             CreateLang.translate("solar_punk.tooltip.condensate_full")

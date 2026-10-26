@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.GoggleHelper;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.ChatFormatting;
@@ -7,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -92,6 +94,15 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
 
     public int getHeatStored() { return heatStored; }
 
+    /** The heat level as shown on goggles and Display Links. */
+    public MutableComponent getHeatLevelText() {
+        return switch (getHeatLevel()) {
+            case 2 -> Component.literal("Superheated").withStyle(ChatFormatting.RED);
+            case 1 -> Component.literal("Heated").withStyle(ChatFormatting.YELLOW);
+            default -> Component.literal("None").withStyle(ChatFormatting.DARK_GRAY);
+        };
+    }
+
     /** Hook for subclasses, run each server tick after charging and decay. Returns whether heat changed. */
     protected boolean afterCharge() { return false; }
 
@@ -114,14 +125,9 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         CreateLang.translate("solar_punk.tooltip.heat_battery_header").forGoggles(tooltip);
 
-        Component levelText = switch (getHeatLevel()) {
-            case 2 -> Component.literal("Superheated").withStyle(ChatFormatting.RED);
-            case 1 -> Component.literal("Heated").withStyle(ChatFormatting.YELLOW);
-            default -> Component.literal("None").withStyle(ChatFormatting.DARK_GRAY);
-        };
         CreateLang.translate("solar_punk.tooltip.heat_level")
                 .style(ChatFormatting.GRAY)
-                .add(levelText)
+                .add(getHeatLevelText())
                 .forGoggles(tooltip, 1);
 
         CreateLang.translate("solar_punk.tooltip.heat_stored")
@@ -142,13 +148,7 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
                     .forGoggles(tooltip, 1);
         }
 
-        CreateLang.translate("solar_punk.tooltip.molten_salt")
-                .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(fluidTank.getFluidAmount())
-                        .text(" / " + Config.heatBatteryTank + " mB")
-                        .style(ChatFormatting.AQUA)
-                        .component())
-                .forGoggles(tooltip, 1);
+        GoggleHelper.tank(tooltip, "molten_salt", fluidTank, ChatFormatting.AQUA);
 
         return true;
     }

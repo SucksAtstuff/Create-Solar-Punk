@@ -1,12 +1,12 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import net.succ.solar_punk.util.PonderHelper;
+import net.succ.solar_punk.util.GoggleHelper;
+import net.succ.solar_punk.client.sound.MachineSoundInstance;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -163,12 +163,9 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
 
     @OnlyIn(Dist.CLIENT)
     public void tickAudio() {
-        if (PonderHelper.isPonder(level)) return;  // Ponder scenes stay silent
-        if (isController() && getBlockState().getValue(FermentationVatBlock.LIT)
-                && (soundInstance == null || soundInstance.isStopped())) {
-            soundInstance = new FermentationVatSoundInstance(this);
-            Minecraft.getInstance().getSoundManager().play(soundInstance);
-        }
+        soundInstance = MachineSoundInstance.keepPlaying(level, soundInstance,
+                isController() && getBlockState().getValue(FermentationVatBlock.LIT),
+                () -> new FermentationVatSoundInstance(this));
     }
 
     public void tick() {
@@ -275,7 +272,6 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         if (ctrl == null) return false;
         if (ctrl != this) return ctrl.addToGoggleTooltip(tooltip, isPlayerSneaking);
 
-        int cap = waterTank.getCapacity();
         CreateLang.translate("solar_punk.tooltip.fermentation_vat_header").forGoggles(tooltip);
 
         if (width < Config.fermentationVatMinWidth) {
@@ -314,17 +310,8 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
                     .forGoggles(tooltip, 1);
         }
 
-        CreateLang.translate("solar_punk.tooltip.water")
-                .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(waterTank.getFluidAmount())
-                        .text(" / " + cap + " mB").style(ChatFormatting.AQUA).component())
-                .forGoggles(tooltip, 1);
-
-        CreateLang.translate("solar_punk.tooltip.biofuel")
-                .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(biofuelTank.getFluidAmount())
-                        .text(" / " + cap + " mB").style(ChatFormatting.GREEN).component())
-                .forGoggles(tooltip, 1);
+        GoggleHelper.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
+        GoggleHelper.tank(tooltip, "biofuel", biofuelTank, ChatFormatting.GREEN);
 
         return true;
     }

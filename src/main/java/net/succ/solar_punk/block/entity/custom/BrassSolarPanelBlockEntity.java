@@ -1,11 +1,10 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import net.succ.solar_punk.util.PonderHelper;
+import net.succ.solar_punk.client.sound.MachineSoundInstance;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -58,12 +57,7 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
     }
 
     private int getGeneratedFE() {
-        if (!SolarHelper.hasSkyAccess(level, worldPosition)) return 0;
-        int base = switch (SolarHelper.getPhase(level, worldPosition)) {
-            case MORNING, EVENING -> Config.brassMorningFe;
-            case NOON -> SolarHelper.isRaining(level) ? Config.brassMorningFe : Config.brassNoonFe;
-            case NIGHT -> 0;
-        };
+        float base = SolarHelper.byPhase(level, worldPosition, Config.brassMorningFe, Config.brassNoonFe);
         if (base == 0) return 0;
         return Math.round(base * SolarHelper.outputMultiplier(level, worldPosition));
     }
@@ -117,12 +111,8 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
 
     @OnlyIn(Dist.CLIENT)
     public void tickAudio() {
-        if (PonderHelper.isPonder(level)) return;  // Ponder scenes stay silent
-        if (getBlockState().getValue(BrassSolarPanelBlock.LIT)
-                && (soundInstance == null || soundInstance.isStopped())) {
-            soundInstance = new BrassPanelSoundInstance(this);
-            Minecraft.getInstance().getSoundManager().play(soundInstance);
-        }
+        soundInstance = MachineSoundInstance.keepPlaying(level, soundInstance,
+                getBlockState().getValue(BrassSolarPanelBlock.LIT), () -> new BrassPanelSoundInstance(this));
     }
 
     @Override

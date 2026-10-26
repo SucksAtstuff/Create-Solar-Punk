@@ -68,7 +68,7 @@ public class SolarPunk {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 ModBlockEntities.SOLAR_HEATER.get(),
-                (be, side) -> be.itemHandler
+                (be, side) -> be.automationHandler
         );
         // Particle Accelerator Input: items through the cap, the opposite side and the top, so
         // one face can feed it while another pulls results out. Not through the pipe ends or
@@ -107,7 +107,7 @@ public class SolarPunk {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 ModBlockEntities.FIREBOX_BOILER.get(),
-                (be, side) -> be.itemHandler
+                (be, side) -> be.automationHandler
         );
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
@@ -135,7 +135,7 @@ public class SolarPunk {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 ModBlockEntities.BIOMASS_GASIFIER.get(),
-                (be, side) -> be.itemHandler
+                (be, side) -> be.automationHandler
         );
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
@@ -179,7 +179,7 @@ public class SolarPunk {
         // The Core itself is buried at dead center of the sealed Casing sphere and
         // unreachable by any pipe/hopper once the reactor is built - the direct Core
         // registrations above only ever matter mid-construction, before the shell
-        // closes. Every exterior Casing block proxies through to the same tanks/slot.
+        // closes. Every exterior Casing block proxies through to the same tanks and slots.
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 ModBlockEntities.FUSION_REACTOR_CASING.get(),

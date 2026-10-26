@@ -1,6 +1,6 @@
 package net.succ.solar_punk.block.custom;
 
-import net.minecraft.world.Containers;
+import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -60,10 +60,8 @@ public class FusionReactorCoreBlock extends Block implements IBE<FusionReactorCo
     // Drops its fuel and capsules (Tritium Capsules are worth keeping)
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof FusionReactorCoreBlockEntity be) {
-            for (int i = 0; i < be.inventory.getSlots(); i++)
-                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), be.inventory.getStackInSlot(i));
-        }
+        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof FusionReactorCoreBlockEntity be)
+            ItemHelper.dropContents(level, pos, be.inventory);
         super.onRemove(state, level, pos, newState, movedByPiston);
     }
 

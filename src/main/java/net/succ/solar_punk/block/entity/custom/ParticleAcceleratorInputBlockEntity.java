@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.client.sound.MachineSoundInstance;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
@@ -12,7 +13,6 @@ import dev.engine_room.flywheel.lib.transform.TransformStack;
 import net.createmod.catnip.math.AngleHelper;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -50,7 +50,8 @@ import java.util.List;
 // The Particle Accelerator's controller. Rescans its ring every 2 seconds, picks a recipe
 // from what's in its input slots (Basin-style: any slots, any order), draws stress for it
 // and puts the result in its output slots. Items go in and come out through the side cap,
-// where the filter slot also sits.
+// the side opposite it and the top (see SolarPunk.registerCapabilities); the filter slot
+// sits on the cap.
 public class ParticleAcceleratorInputBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation {
 
     public static final int SLOTS = 9;
@@ -77,7 +78,7 @@ public class ParticleAcceleratorInputBlockEntity extends KineticBlockEntity impl
             setChanged();
         }
     };
-    /** What the side cap exposes: insert into the input slots, extract from the output slots. */
+    /** What automation sees: insert into the input slots, extract from the output slots. */
     public final IItemHandler capHandler = new CapHandler();
 
     private FilteringBehaviour filtering;
@@ -348,7 +349,7 @@ public class ParticleAcceleratorInputBlockEntity extends KineticBlockEntity impl
 
     // --- Display Link readouts (server side) ---
 
-    /** One-word state of the accelerator, saying what's wrong when it isn't crafting. */
+    /** Short state of the accelerator, saying what's wrong when it isn't crafting. */
     public MutableComponent getStatusLine() {
         return switch (ringStatus) {
             case OPEN -> Component.literal("Ring not closed").withStyle(ChatFormatting.RED);
@@ -412,12 +413,10 @@ public class ParticleAcceleratorInputBlockEntity extends KineticBlockEntity impl
     @Override
     @OnlyIn(Dist.CLIENT)
     public void tickAudio() {
-        if (PonderHelper.isPonder(level)) return;  // Ponder scenes stay silent
+        if (PonderHelper.isPonder(level)) return;  // silences Create's kinetic sounds too
         super.tickAudio();
-        if (isRunning() && (humSound == null || humSound.isStopped())) {
-            humSound = new AcceleratorHumSoundInstance(this);
-            Minecraft.getInstance().getSoundManager().play(humSound);
-        }
+        humSound = MachineSoundInstance.keepPlaying(level, humSound, isRunning(),
+                () -> new AcceleratorHumSoundInstance(this));
     }
 
     /** Whole laps each beam makes per craft, so the average speed stays about the same on any ring. */
@@ -537,7 +536,7 @@ public class ParticleAcceleratorInputBlockEntity extends KineticBlockEntity impl
         return true;
     }
 
-    /** The side cap: inputs can only be inserted, outputs only extracted (so funnels take the result). */
+    /** Inputs can only be inserted and outputs only extracted, so funnels take the result. */
     private class CapHandler implements IItemHandler {
         @Override public int getSlots() { return SLOTS * 2; }
 

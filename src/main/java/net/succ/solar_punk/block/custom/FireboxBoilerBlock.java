@@ -1,5 +1,7 @@
 package net.succ.solar_punk.block.custom;
 
+import com.simibubi.create.foundation.item.ItemHelper;
+import net.succ.solar_punk.util.MachineInteractions;
 import net.succ.solar_punk.util.PonderHelper;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
@@ -8,7 +10,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -26,7 +27,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.FireboxBoilerBlockEntity;
 
@@ -70,45 +70,22 @@ public class FireboxBoilerBlock extends Block implements IBE<FireboxBoilerBlockE
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
                                               Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.isClientSide) return ItemInteractionResult.SUCCESS;
         if (!(level.getBlockEntity(pos) instanceof FireboxBoilerBlockEntity be))
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-
-        // Bucket fill/empty - water in, steam out
-        if (FluidUtil.interactWithFluidHandler(player, hand, be.combinedFluidHandler)) {
-            return ItemInteractionResult.SUCCESS;
-        }
-
-        ItemStack simResult = be.itemHandler.insertItem(0, stack, true);
-        if (simResult.getCount() < stack.getCount()) {
-            ItemStack remaining = be.itemHandler.insertItem(0, stack, false);
-            if (!player.isCreative()) player.setItemInHand(hand, remaining);
-            be.setChanged();
-            return ItemInteractionResult.SUCCESS;
-        }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return MachineInteractions.useItem(level, player, hand, stack, be, be.combinedFluidHandler, be.itemHandler, 0);
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                                                Player player, BlockHitResult hit) {
-        if (level.isClientSide) return InteractionResult.SUCCESS;
         if (!(level.getBlockEntity(pos) instanceof FireboxBoilerBlockEntity be)) return InteractionResult.PASS;
-        ItemStack extracted = be.itemHandler.extractItem(0, 64, false);
-        if (!extracted.isEmpty()) {
-            player.getInventory().add(extracted);
-            be.setChanged();
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.PASS;
+        return MachineInteractions.takeOut(level, player, be, be.itemHandler, 0);
     }
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof FireboxBoilerBlockEntity be) {
-            for (int i = 0; i < be.itemHandler.getSlots(); i++)
-                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), be.itemHandler.getStackInSlot(i));
-        }
+        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof FireboxBoilerBlockEntity be)
+            ItemHelper.dropContents(level, pos, be.itemHandler);
         super.onRemove(state, level, pos, newState, movedByPiston);
     }
 

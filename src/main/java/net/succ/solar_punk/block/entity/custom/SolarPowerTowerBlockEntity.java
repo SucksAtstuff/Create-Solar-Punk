@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.GoggleHelper;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -394,10 +395,20 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         sync();
     }
 
+    // setRemoved() also runs when the chunk just unloads, and the mirrors should stay
+    // linked through that
+    private boolean chunkUnloading = false;
+
+    @Override
+    public void onChunkUnloaded() {
+        chunkUnloading = true;
+        super.onChunkUnloaded();
+    }
+
     @Override
     public void setRemoved() {
         super.setRemoved();
-        if (level != null && !level.isClientSide && isController())
+        if (!chunkUnloading && level != null && !level.isClientSide && isController())
             clearMirrorRegistrations();
     }
 
@@ -497,28 +508,13 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         if (ctrl == null) return false;
         if (ctrl != this) return ctrl.addToGoggleTooltip(tooltip, isPlayerSneaking);
 
-        int cap = waterTank.getCapacity();
         CreateLang.translate("solar_punk.tooltip.solar_power_tower_header").forGoggles(tooltip);
 
-        CreateLang.translate("solar_punk.tooltip.water")
-                .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(waterTank.getFluidAmount())
-                        .text(" / " + cap + " mB").style(ChatFormatting.AQUA).component())
-                .forGoggles(tooltip, 1);
-
-        if (ctrl.steamMode) {
-            CreateLang.translate("solar_punk.tooltip.steam")
-                    .style(ChatFormatting.GRAY)
-                    .add(CreateLang.number(steamTank.getFluidAmount())
-                            .text(" / " + cap + " mB").style(ChatFormatting.WHITE).component())
-                    .forGoggles(tooltip, 1);
-        } else {
-            CreateLang.translate("solar_punk.tooltip.molten_salt")
-                    .style(ChatFormatting.GRAY)
-                    .add(CreateLang.number(saltTank.getFluidAmount())
-                            .text(" / " + cap + " mB").style(ChatFormatting.GOLD).component())
-                    .forGoggles(tooltip, 1);
-        }
+        GoggleHelper.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
+        if (ctrl.steamMode)
+            GoggleHelper.tank(tooltip, "steam", steamTank, ChatFormatting.WHITE);
+        else
+            GoggleHelper.tank(tooltip, "molten_salt", saltTank, ChatFormatting.GOLD);
 
         CreateLang.translate("solar_punk.tooltip.tower_mode")
                 .style(ChatFormatting.GRAY)

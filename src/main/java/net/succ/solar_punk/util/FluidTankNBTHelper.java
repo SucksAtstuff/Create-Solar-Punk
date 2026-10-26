@@ -19,7 +19,12 @@ public final class FluidTankNBTHelper {
     }
 
     public static void load(CompoundTag tag, String key, FluidTank tank) {
-        if (!tag.contains(key)) return;
+        // save() skips empty tanks, so a missing key means empty. Clearing matters for
+        // client sync packets, which load into a tank that may still hold the old fluid.
+        if (!tag.contains(key)) {
+            tank.setFluid(FluidStack.EMPTY);
+            return;
+        }
         CompoundTag t = tag.getCompound(key);
         BuiltInRegistries.FLUID.getOptional(ResourceLocation.parse(t.getString("Fluid")))
                 .filter(fluid -> fluid != Fluids.EMPTY)

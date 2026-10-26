@@ -1,11 +1,11 @@
 package net.succ.solar_punk.block.custom;
 
+import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.fluids.tank.FluidTankBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.Containers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -67,11 +67,8 @@ public class FermentationVatBlock extends Block implements EntityBlock, IWrencha
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock())) {
             if (level.getBlockEntity(pos) instanceof FermentationVatBlockEntity be) {
-                if (be.isController()) {
-                    for (int i = 0; i < be.itemHandler.getSlots(); i++)
-                        Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(),
-                                be.itemHandler.getStackInSlot(i));
-                }
+                if (be.isController())
+                    ItemHelper.dropContents(level, pos, be.itemHandler);
                 ConnectivityHandler.splitMulti(be);
             }
         }

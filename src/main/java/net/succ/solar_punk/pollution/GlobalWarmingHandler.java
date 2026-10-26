@@ -180,12 +180,12 @@ public class GlobalWarmingHandler {
     private static void handlePollutedChunks(ServerLevel level, PollutionSavedData data) {
         long threshold = Config.biomeDecayThreshold;
 
-        Optional<Holder.Reference<Biome>> deadBiomeHolder = level.registryAccess()
-            .registry(Registries.BIOME)
-            .flatMap(reg -> reg.getHolder(ResourceKey.create(
-                Registries.BIOME,
-                ResourceLocation.parse(Config.deadBiome)
-            )));
+        // tryParse: dead_biome isn't validated, and a typo shouldn't throw every interval
+        ResourceLocation deadBiomeId = ResourceLocation.tryParse(Config.deadBiome);
+        Optional<Holder.Reference<Biome>> deadBiomeHolder = deadBiomeId == null ? Optional.empty()
+            : level.registryAccess()
+                .registry(Registries.BIOME)
+                .flatMap(reg -> reg.getHolder(ResourceKey.create(Registries.BIOME, deadBiomeId)));
 
         Holder<Biome> deadBiome = deadBiomeHolder.orElse(null);
         BiomeResolver allDead = deadBiome != null ? (x, y, z, sampler) -> deadBiome : null;

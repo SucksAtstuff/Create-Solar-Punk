@@ -5,11 +5,16 @@ import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.succ.solar_punk.util.PonderHelper;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Supplier;
 
 // Looping machine ambience, positioned at the block and kept alive while the block's
 // LIT state is true. Subclasses only pick the sound and volume, and can override
@@ -39,6 +44,20 @@ public class MachineSoundInstance extends AbstractTickableSoundInstance {
         this.y = be.getBlockPos().getY() + 0.5;
         this.z = be.getBlockPos().getZ() + 0.5;
         this.attenuation = Attenuation.LINEAR;
+    }
+
+    /**
+     * Called from a machine's tickAudio(): starts a fresh sound from {@code create} while
+     * {@code running} and nothing is playing, and returns what's playing now, for the
+     * machine to keep. Ponder scenes stay silent.
+     */
+    public static <T extends MachineSoundInstance> T keepPlaying(Level level, @Nullable T current, boolean running,
+                                                                 Supplier<T> create) {
+        if (!running || PonderHelper.isPonder(level)) return current;
+        if (current != null && !current.isStopped()) return current;
+        T sound = create.get();
+        Minecraft.getInstance().getSoundManager().play(sound);
+        return sound;
     }
 
     protected boolean isRunning() {
