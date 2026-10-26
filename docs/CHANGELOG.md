@@ -9,6 +9,7 @@
 ### Particle Accelerator
 
 - New endgame machine: a ring of glass pipes, powered by rotation, that smashes items together into new materials. Watch the two beams race around and collide as each recipe finishes.
+- Bigger rings unlock rarer results: Leather from Rotten Flesh, Tritium Capsules for the Fusion Reactor, Diamonds, Echo Shards and Netherite Scrap.
 - New blocks: **Particle Accelerator Pipe** (one item for every shape, press Alt to pick) and **Particle Accelerator Input**.
 - New items: **Electromagnet Coil**, **Superconducting Coil**, **Empty Fuel Capsule** and **Tritium Capsule**.
 - JEI, Ponder, goggle and Display Link support. Datapacks can add their own recipes.
