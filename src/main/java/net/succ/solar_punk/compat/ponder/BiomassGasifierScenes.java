@@ -1,6 +1,8 @@
 package net.succ.solar_punk.compat.ponder;
 
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
+import net.createmod.catnip.math.Pointing;
+import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.BlockPos;
@@ -22,43 +24,70 @@ public class BiomassGasifierScenes {
 
         scene.world().showSection(util.select().layer(0), Direction.UP);
         scene.idle(10);
-
-        scene.world().showSection(util.select().position(SHAFT), Direction.UP);
+        scene.world().showSection(util.select().position(SHAFT), Direction.DOWN);
+        scene.idle(5);
         scene.world().showSection(util.select().position(MACHINE), Direction.DOWN);
         scene.idle(20);
 
         scene.overlay().showText(70)
-                .text("The Biomass Gasifier burns Biomass to generate Rotational Force")
-                .pointAt(util.vector().centerOf(MACHINE))
+                .text("The Biomass Gasifier burns Biomass to make Rotational Force")
+                .pointAt(util.vector().topOf(MACHINE))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
+        scene.overlay().showControls(util.vector().topOf(MACHINE), Pointing.DOWN, 70)
+                .withItem(new ItemStack(ModItems.BIOMASS.get()));
+        scene.overlay().showText(70)
+                .text("Feed it Biomass with a Funnel, Hopper or Chute")
+                .pointAt(util.vector().topOf(MACHINE))
+                .placeNearTarget()
+                .attachKeyFrame();
         scene.world().modifyBlockEntity(MACHINE, BiomassGasifierBlockEntity.class, be ->
                 be.itemHandler.setStackInSlot(0, new ItemStack(ModItems.BIOMASS.get(), 8)));
-        scene.overlay().showText(60)
-                .text("Add Biomass into the top slot - each piece burns for 15 seconds")
-                .pointAt(util.vector().topOf(MACHINE))
-                .attachKeyFrame();
-        scene.idle(70);
+        scene.idle(80);
 
         scene.world().modifyBlock(MACHINE, s -> s.setValue(BiomassGasifierBlock.LIT, true), false);
-        scene.world().setKineticSpeed(util.select().position(MACHINE), 8f);
-        scene.world().setKineticSpeed(util.select().position(SHAFT), 8f);
+        scene.world().setKineticSpeed(util.select().position(MACHINE).add(util.select().position(SHAFT)), 8f);
+        scene.effects().indicateSuccess(MACHINE);
         scene.overlay().showText(70)
-                .text("While burning, it outputs 8 RPM with 2048 SU of stress capacity")
+                .text("While burning it gives 8 RPM and 2048 SU of stress capacity")
                 .pointAt(util.vector().centerOf(MACHINE))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
+        scene.overlay().showOutline(PonderPalette.GREEN, "shaft", util.select().position(SHAFT), 60);
         scene.overlay().showText(60)
-                .text("Rotation exits downward - connect a shaft or machine directly below")
+                .text("Rotation comes out of the bottom")
                 .pointAt(util.vector().centerOf(SHAFT))
-                .attachKeyFrame();
+                .placeNearTarget();
         scene.idle(70);
 
+        scene.overlay().showControls(util.vector().topOf(MACHINE), Pointing.DOWN, 70)
+                .withItem(new ItemStack(ModItems.BIOMASS_PELLET.get()));
         scene.overlay().showText(70)
-                .text("Output is intermittent - use a Kinetic Battery to buffer power between refills")
+                .text("Biomass Pellets burn twice as long, and leave twice the Biochar")
+                .pointAt(util.vector().topOf(MACHINE))
+                .placeNearTarget()
+                .attachKeyFrame();
+        scene.idle(80);
+
+        scene.overlay().showControls(util.vector().blockSurface(MACHINE, Direction.WEST), Pointing.LEFT, 70)
+                .withItem(new ItemStack(ModItems.BIOCHAR.get()));
+        scene.overlay().showText(70)
+                .text("Burnt fuel leaves Biochar behind. Pull it out with a Funnel or Chute, or the Gasifier pauses when it's full")
+                .pointAt(util.vector().blockSurface(MACHINE, Direction.WEST))
+                .placeNearTarget();
+        scene.idle(80);
+
+        scene.world().modifyBlock(MACHINE, s -> s.setValue(BiomassGasifierBlock.LIT, false), false);
+        scene.world().setKineticSpeed(util.select().position(MACHINE).add(util.select().position(SHAFT)), 0f);
+        scene.overlay().showText(70)
+                .colored(PonderPalette.RED)
+                .text("Without fuel it stops. A Kinetic Battery can keep things running between refills")
                 .pointAt(util.vector().centerOf(MACHINE))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 

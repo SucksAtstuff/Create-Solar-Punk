@@ -1,0 +1,93 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "item": "solarpunk:electromagnet_coil"
+  },
+  "loops": 4,
+  "results": [
+    {
+      "chance": 90.0,
+      "id": "solarpunk:superconducting_coil"
+    },
+    {
+      "chance": 5.0,
+      "id": "solarpunk:electromagnet_coil"
+    },
+    {
+      "chance": 3.0,
+      "id": "solarpunk:beryllium_nugget"
+    },
+    {
+      "chance": 2.0,
+      "id": "solarpunk:lithium_nugget"
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_superconducting_coil"
+        },
+        {
+          "tag": "c:ingots/beryllium"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_superconducting_coil"
+        }
+      ]
+    },
+    {
+      "type": "create:filling",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_superconducting_coil"
+        },
+        {
+          "type": "neoforge:single",
+          "amount": 250,
+          "fluid": "solarpunk:deuterium"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_superconducting_coil"
+        }
+      ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_superconducting_coil"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_superconducting_coil"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_superconducting_coil"
+        },
+        {
+          "tag": "c:ingots/lithium"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_superconducting_coil"
+        }
+      ]
+    }
+  ],
+  "transitional_item": {
+    "id": "solarpunk:incomplete_superconducting_coil"
+  }
+}

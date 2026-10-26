@@ -26,11 +26,15 @@
     "solarpunk:turbine_rotor",
     "solarpunk:andesite_turbine_blade",
     "solarpunk:brass_turbine_blade",
-    "solarpunk:turbine_rotor",
     "solarpunk:fusion_reactor_casing",
     "solarpunk:fusion_reactor_casing_glass",
     "solarpunk:lithium_breeder_module",
     "solarpunk:beryllium_reflector_module",
-    "solarpunk:fusion_reactor_core"
+    "solarpunk:fusion_reactor_core",
+    "solarpunk:particle_accelerator_pipe",
+    "solarpunk:particle_accelerator_pipe_bend",
+    "solarpunk:particle_accelerator_pipe_bend_mirrored",
+    "solarpunk:particle_accelerator_pipe_diagonal",
+    "solarpunk:particle_accelerator_input"
   ]
 }

@@ -12,7 +12,7 @@ public class FusionReactorStatusDisplaySource extends SingleLineDisplaySource {
 
     @Override
     protected MutableComponent provideLine(DisplayLinkContext context, DisplayTargetStats stats) {
-        FusionReactorCoreBlockEntity core = FusionReactorDisplayHelper.core(context);
+        FusionReactorCoreBlockEntity core = ModDisplaySources.reactorCore(context);
         if (core == null) return EMPTY_LINE;
 
         return switch (core.getStatus()) {
@@ -23,7 +23,7 @@ public class FusionReactorStatusDisplaySource extends SingleLineDisplaySource {
             case LOW_SIGNAL   -> Component.literal("Idle: redstone signal too low").withStyle(ChatFormatting.GRAY);
             case STEAM_FULL   -> Component.literal("Stalled: steam tank full").withStyle(ChatFormatting.YELLOW);
             case NO_DEUTERIUM -> Component.literal("Out of Deuterium").withStyle(ChatFormatting.RED);
-            case NO_LITHIUM   -> Component.literal("Out of Lithium").withStyle(ChatFormatting.RED);
+            case NO_LITHIUM   -> Component.literal("Out of fuel").withStyle(ChatFormatting.RED);
         };
     }
 

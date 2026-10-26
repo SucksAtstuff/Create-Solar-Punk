@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "solarpunk:salt"
+            "items": "#c:dusts/salt"
           }
         ]
       },

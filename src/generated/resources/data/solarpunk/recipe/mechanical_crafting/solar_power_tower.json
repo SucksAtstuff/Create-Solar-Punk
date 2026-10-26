@@ -1,0 +1,25 @@
+{
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
+  "category": "misc",
+  "key": {
+    "I": {
+      "tag": "c:plates/iron"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
+    },
+    "Q": {
+      "item": "minecraft:quartz_block"
+    }
+  },
+  "pattern": [
+    "QIQ",
+    "IPI",
+    "QIQ"
+  ],
+  "result": {
+    "count": 2,
+    "id": "solarpunk:solar_power_tower"
+  }
+}

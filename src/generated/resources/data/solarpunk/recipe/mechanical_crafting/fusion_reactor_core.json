@@ -1,0 +1,28 @@
+{
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
+  "category": "misc",
+  "key": {
+    "B": {
+      "tag": "c:ingots/beryllium"
+    },
+    "L": {
+      "tag": "c:ingots/lithium"
+    },
+    "N": {
+      "tag": "c:ingots/netherite"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
+    }
+  },
+  "pattern": [
+    "PLBLP",
+    "LBNBL",
+    "PLBLP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "solarpunk:fusion_reactor_core"
+  }
+}

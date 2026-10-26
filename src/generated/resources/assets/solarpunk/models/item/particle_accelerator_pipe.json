@@ -1,0 +1,23 @@
+{
+  "parent": "solarpunk:block/particle_accelerator_pipe",
+  "overrides": [
+    {
+      "model": "solarpunk:block/particle_accelerator_pipe_bend",
+      "predicate": {
+        "solarpunk:shape": 1.0
+      }
+    },
+    {
+      "model": "solarpunk:block/particle_accelerator_pipe_diagonal",
+      "predicate": {
+        "solarpunk:shape": 2.0
+      }
+    },
+    {
+      "model": "solarpunk:block/particle_accelerator_pipe_bend_mirrored",
+      "predicate": {
+        "solarpunk:shape": 3.0
+      }
+    }
+  ]
+}

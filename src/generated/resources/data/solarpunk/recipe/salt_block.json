@@ -2,9 +2,17 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "S": {
-      "item": "solarpunk:salt"
-    }
+    "S": [
+      {
+        "tag": "c:dusts/salt"
+      },
+      {
+        "tag": "c:gems/salt"
+      },
+      {
+        "tag": "c:salt"
+      }
+    ]
   },
   "pattern": [
     "SSS",

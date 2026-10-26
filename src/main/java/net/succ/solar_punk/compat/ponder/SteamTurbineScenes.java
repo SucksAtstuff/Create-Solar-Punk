@@ -1,11 +1,16 @@
 package net.succ.solar_punk.compat.ponder;
 
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
+import net.createmod.catnip.math.Pointing;
+import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.succ.solar_punk.fluid.ModFluids;
 
 public class SteamTurbineScenes {
 
@@ -44,8 +49,8 @@ public class SteamTurbineScenes {
                 scene.world().showSection(util.select().position(new BlockPos(x, y, z)), Direction.DOWN);
     }
 
-    // X-axis analogs of the 4 helpers above, for a turbine grown East/West instead of
-    // up - the 7x7 ring now lies in the Y-Z plane at a given x.
+    // X-axis versions of the 4 helpers above, for a turbine built East/West instead of
+    // up: the 7x7 ring lies in the Y-Z plane at a given x.
     private static void showRingX(CreateSceneBuilder scene, SceneBuildingUtil util, int x) {
         for (int y = 0; y <= 6; y++)
             for (int z = 0; z <= 6; z++)
@@ -93,6 +98,7 @@ public class SteamTurbineScenes {
         scene.overlay().showText(80)
                 .text("Start with a sealed floor - fill the entire 7x7 footprint with Turbine Casing, including the center")
                 .pointAt(util.vector().centerOf(new BlockPos(3, 1, 3)))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
 
@@ -106,6 +112,7 @@ public class SteamTurbineScenes {
         scene.overlay().showText(80)
                 .text("Above the floor, build ring-only layers with a Rotor at center and Turbine Blades in the plus pattern")
                 .pointAt(util.vector().centerOf(new BlockPos(4, 2, 3)))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
 
@@ -128,6 +135,7 @@ public class SteamTurbineScenes {
         scene.overlay().showText(60)
                 .text("Stack as many blade layers as you want - each adds more throughput")
                 .pointAt(util.vector().topOf(ROTOR_3))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(70);
 
@@ -141,12 +149,16 @@ public class SteamTurbineScenes {
         scene.overlay().showText(80)
                 .text("Seal the top the same way as the floor - full 7x7 of Turbine Casing with the Rotor at center")
                 .pointAt(util.vector().topOf(CAP_ROTOR_5))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
 
+        scene.overlay().showControls(util.vector().blockSurface(new BlockPos(0, 3, 3), Direction.WEST), Pointing.LEFT, 80)
+                .withItem(new ItemStack(ModFluids.STEAM_BUCKET.get()));
         scene.overlay().showText(80)
                 .text("Pipe Steam into any face of the outer casing wall - condensate water drains from any casing face too")
                 .pointAt(util.vector().centerOf(ROTOR_3))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
 
@@ -154,6 +166,7 @@ public class SteamTurbineScenes {
         scene.overlay().showText(60)
                 .text("Rotational power exits from the top face of the cap rotor - connect a shaft directly above")
                 .pointAt(util.vector().topOf(CAP_ROTOR_5))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(70);
 
@@ -193,26 +206,33 @@ public class SteamTurbineScenes {
         scene.overlay().showText(80)
                 .text("As steam drives the rotor it condenses back into water - this condensate collects inside the turbine")
                 .pointAt(util.vector().centerOf(ROTOR_3))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
 
         scene.overlay().showText(70)
                 .text("Check the condensate water level at any time using Engineer's Goggles on any Rotor block")
                 .pointAt(util.vector().centerOf(ROTOR_3))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
         scene.world().setKineticSpeed(util.select().fromTo(ROTOR_3, CAP_ROTOR_5), 0f);
 
         scene.overlay().showText(80)
+                .colored(PonderPalette.RED)
                 .text("When the condensate tank is full the turbine shuts down automatically - no more steam is consumed until the water is drained")
                 .pointAt(util.vector().centerOf(ROTOR_3))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
 
+        scene.overlay().showControls(util.vector().blockSurface(new BlockPos(0, 3, 3), Direction.WEST), Pointing.LEFT, 70)
+                .withItem(new ItemStack(Items.WATER_BUCKET));
         scene.overlay().showText(70)
                 .text("Pipe the condensate water out of any casing face to drain it - the turbine restarts as soon as there is room")
                 .pointAt(util.vector().centerOf(new BlockPos(0, 2, 3)))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
@@ -220,16 +240,15 @@ public class SteamTurbineScenes {
     }
 
     /**
-     * Scene 3 - shows a full 7-blade-layer, all-brass turbine.
-     * Layout: floor(y=1) + blades(y=2-8) + cap(y=9).
+     * Scene 3 - shows a maximum size, all-brass turbine.
+     * Layout: floor(y=1) + 20 blade layers(y=2-21) + cap(y=22).
      */
     public static void maxTurbine(SceneBuilder builder, SceneBuildingUtil util) {
         CreateSceneBuilder scene = new CreateSceneBuilder(builder);
         scene.title("turbine_max", "Maximum Size Turbine");
         scene.configureBasePlate(0, 0, 11);
-        // The true max structure (20 blade layers + floor + cap = 22 blocks tall) is far
-        // taller than any other scene in the mod - shrink and recenter the camera so the
-        // whole thing fits in the ponder view instead of only showing the lower portion.
+        // At 22 blocks tall this is far taller than any other scene, so shrink and
+        // recenter the camera to fit the whole thing in view.
         scene.scaleSceneView(0.4f);
         scene.setSceneOffsetY(-4f);
 
@@ -243,10 +262,11 @@ public class SteamTurbineScenes {
         scene.overlay().showText(60)
                 .text("The sealed floor is a full 7x7 of Turbine Casing with no rotor - it anchors the structure from below")
                 .pointAt(util.vector().centerOf(new BlockPos(3, 1, 3)))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(70);
 
-        // Blade layers 2-21 - the true maximum of 20 blade layers
+        // Blade layers 2-21, the maximum of 20
         for (int y = 2; y <= 21; y++) {
             scene.world().showSection(util.select().layer(y), Direction.DOWN);
             scene.idle(2);
@@ -256,12 +276,14 @@ public class SteamTurbineScenes {
         scene.overlay().showText(80)
                 .text("A taller turbine consumes more Steam per tick but produces proportionally more SU - height is the main throughput lever")
                 .pointAt(util.vector().topOf(new BlockPos(3, 21, 3)))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
 
         scene.overlay().showText(70)
                 .text("Fill every blade slot with Brass Blades for the best Steam-to-SU efficiency")
                 .pointAt(util.vector().centerOf(new BlockPos(5, 11, 3)))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
@@ -273,18 +295,21 @@ public class SteamTurbineScenes {
         scene.overlay().showText(80)
                 .text("Cap the top identically to the floor - full 7x7 Casing with the Rotor at center. Power exits from the top of this rotor")
                 .pointAt(util.vector().topOf(new BlockPos(3, 22, 3)))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
 
         scene.overlay().showText(70)
                 .text("Replace any casing with Turbine Casing Glass anywhere in the structure to see inside - still valid")
                 .pointAt(util.vector().centerOf(new BlockPos(0, 11, 3)))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
         scene.overlay().showText(70)
                 .text("20 blade layers, all Brass - this is the true maximum, and it can power an entire base")
                 .pointAt(util.vector().topOf(new BlockPos(3, 22, 3)))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
@@ -316,6 +341,7 @@ public class SteamTurbineScenes {
         scene.overlay().showText(90)
                 .text("The Steam Turbine doesn't have to stand up - the same shell also works lying on the East/West or North/South axis")
                 .pointAt(util.vector().centerOf(new BlockPos(1, 3, 3)))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(100);
 
@@ -331,6 +357,7 @@ public class SteamTurbineScenes {
         scene.overlay().showText(80)
                 .text("Place the first Rotor against the face pointing the way you want it to grow - the whole structure follows that axis")
                 .pointAt(util.vector().centerOf(masterRotor))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
 
@@ -344,6 +371,7 @@ public class SteamTurbineScenes {
         scene.overlay().showText(80)
                 .text("It works exactly the same way from there - pipe in Steam, and power exits from the far Rotor")
                 .pointAt(util.vector().centerOf(capRotor))
+                .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
 

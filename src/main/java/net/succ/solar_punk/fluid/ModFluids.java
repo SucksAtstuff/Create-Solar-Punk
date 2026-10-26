@@ -1,8 +1,9 @@
 package net.succ.solar_punk.fluid;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -13,13 +14,15 @@ import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.function.Supplier;
 
+// Each fluid is a source + flowing fluid, a fluid block, a bucket and the properties
+// tying them together. The properties are declared after the parts because they
+// reference them; the parts only read the properties lazily.
 public class ModFluids {
     public static final DeferredRegister<Fluid> FLUIDS =
             DeferredRegister.create(BuiltInRegistries.FLUID, SolarPunk.MODID);
@@ -30,7 +33,7 @@ public class ModFluids {
             () -> new BaseFlowingFluid.Flowing(ModFluids.MOLTEN_SALT_PROPERTIES));
 
     public static final DeferredBlock<LiquidBlock> MOLTEN_SALT_BLOCK = ModBlocks.BLOCKS.register("molten_salt",
-            () -> new LiquidBlock(MOLTEN_SALT_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.WATER)
+            () -> new LiquidBlock(MOLTEN_SALT_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)
                     .mapColor(MapColor.COLOR_CYAN)));
 
     public static final DeferredItem<BucketItem> MOLTEN_SALT_BUCKET = ModItems.ITEMS.registerItem("molten_salt_bucket",
@@ -50,7 +53,7 @@ public class ModFluids {
             () -> new BaseFlowingFluid.Flowing(ModFluids.BIOFUEL_PROPERTIES));
 
     public static final DeferredBlock<LiquidBlock> BIOFUEL_BLOCK = ModBlocks.BLOCKS.register("biofuel",
-            () -> new LiquidBlock(BIOFUEL_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.WATER)
+            () -> new LiquidBlock(BIOFUEL_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)
                     .mapColor(MapColor.COLOR_GREEN)));
 
     public static final DeferredItem<BucketItem> BIOFUEL_BUCKET = ModItems.ITEMS.registerItem("biofuel_bucket",
@@ -70,7 +73,7 @@ public class ModFluids {
             () -> new BaseFlowingFluid.Flowing(ModFluids.FERTILIZER_PROPERTIES));
 
     public static final DeferredBlock<LiquidBlock> FERTILIZER_BLOCK = ModBlocks.BLOCKS.register("fertilizer",
-            () -> new LiquidBlock(FERTILIZER_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.WATER)
+            () -> new LiquidBlock(FERTILIZER_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)
                     .mapColor(MapColor.COLOR_GREEN)));
 
     public static final DeferredItem<BucketItem> FERTILIZER_BUCKET = ModItems.ITEMS.registerItem("fertilizer_bucket",
@@ -90,7 +93,7 @@ public class ModFluids {
             () -> new BaseFlowingFluid.Flowing(ModFluids.STEAM_PROPERTIES));
 
     public static final DeferredBlock<LiquidBlock> STEAM_BLOCK = ModBlocks.BLOCKS.register("steam",
-            () -> new LiquidBlock(STEAM_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.WATER)
+            () -> new LiquidBlock(STEAM_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)
                     .mapColor(MapColor.SNOW)));
 
     public static final DeferredItem<BucketItem> STEAM_BUCKET = ModItems.ITEMS.registerItem("steam_bucket",
@@ -110,7 +113,7 @@ public class ModFluids {
             () -> new BaseFlowingFluid.Flowing(ModFluids.DEUTERIUM_PROPERTIES));
 
     public static final DeferredBlock<LiquidBlock> DEUTERIUM_BLOCK = ModBlocks.BLOCKS.register("deuterium",
-            () -> new LiquidBlock(DEUTERIUM_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.WATER)
+            () -> new LiquidBlock(DEUTERIUM_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)
                     .mapColor(MapColor.COLOR_BLUE)));
 
     public static final DeferredItem<BucketItem> DEUTERIUM_BUCKET = ModItems.ITEMS.registerItem("deuterium_bucket",

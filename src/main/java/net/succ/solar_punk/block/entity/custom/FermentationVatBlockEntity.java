@@ -1,11 +1,12 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.GoggleHelper;
+import net.succ.solar_punk.client.sound.MachineSoundInstance;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -32,6 +33,7 @@ import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock.VatPosition;
 import net.succ.solar_punk.client.sound.FermentationVatSoundInstance;
 import net.succ.solar_punk.fluid.ModFluids;
+import net.succ.solar_punk.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -161,11 +163,9 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
 
     @OnlyIn(Dist.CLIENT)
     public void tickAudio() {
-        if (isController() && getBlockState().getValue(FermentationVatBlock.LIT)
-                && (soundInstance == null || soundInstance.isStopped())) {
-            soundInstance = new FermentationVatSoundInstance(this);
-            Minecraft.getInstance().getSoundManager().play(soundInstance);
-        }
+        soundInstance = MachineSoundInstance.keepPlaying(level, soundInstance,
+                isController() && getBlockState().getValue(FermentationVatBlock.LIT),
+                () -> new FermentationVatSoundInstance(this));
     }
 
     public void tick() {
@@ -189,9 +189,8 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         }
 
         int batchScale    = width * width;
-        float heightMultiplier = (float) Math.pow((double) height / MAX_HEIGHT, 1.5);
-        int waterNeeded   = Math.max(1, (int)(Config.fermentationWaterPerBatch  * batchScale * heightMultiplier));
-        int biofuelOutput = Math.max(1, (int)(Config.fermentationBiofuelPerBatch * batchScale * heightMultiplier));
+        int waterNeeded   = scaledBatchAmount(Config.fermentationWaterPerBatch);
+        int biofuelOutput = scaledBatchAmount(Config.fermentationBiofuelPerBatch);
 
         boolean hasInput   = itemHandler.getStackInSlot(0).getCount() >= batchScale;
         boolean hasWater   = waterTank.getFluidAmount() >= waterNeeded;
@@ -218,6 +217,13 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
             progress = 0;
             setChanged();
         }
+    }
+
+    // A batch consumes one item per footprint block. Fluid amounts scale with the
+    // footprint and with height (taller vats are disproportionately better).
+    private int scaledBatchAmount(int perBlock) {
+        float heightMultiplier = (float) Math.pow((double) height / MAX_HEIGHT, 1.5);
+        return Math.max(1, (int) (perBlock * width * width * heightMultiplier));
     }
 
     private void setLit(boolean lit) {
@@ -266,25 +272,23 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         if (ctrl == null) return false;
         if (ctrl != this) return ctrl.addToGoggleTooltip(tooltip, isPlayerSneaking);
 
-        int cap = waterTank.getCapacity();
         CreateLang.translate("solar_punk.tooltip.fermentation_vat_header").forGoggles(tooltip);
 
-        if (ctrl.width < Config.fermentationVatMinWidth) {
+        if (width < Config.fermentationVatMinWidth) {
             CreateLang.translate("solar_punk.tooltip.vat_too_small")
                     .style(ChatFormatting.RED)
                     .forGoggles(tooltip, 1);
             return true;
         }
-        if (ctrl.height < Config.fermentationVatMinHeight) {
+        if (height < Config.fermentationVatMinHeight) {
             CreateLang.translate("solar_punk.tooltip.vat_too_short")
                     .style(ChatFormatting.RED)
                     .forGoggles(tooltip, 1);
             return true;
         }
 
-        int batchScale = ctrl.width * ctrl.width;
-        float heightMultiplier = (float) Math.pow((double) ctrl.height / MAX_HEIGHT, 1.5);
-        int biofuelPerBatch = Math.max(1, (int)(Config.fermentationBiofuelPerBatch * batchScale * heightMultiplier));
+        int batchScale = width * width;
+        int biofuelPerBatch = scaledBatchAmount(Config.fermentationBiofuelPerBatch);
         CreateLang.translate("solar_punk.tooltip.vat_batch_scale")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(batchScale).style(ChatFormatting.WHITE).component())
@@ -306,17 +310,8 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
                     .forGoggles(tooltip, 1);
         }
 
-        CreateLang.translate("solar_punk.tooltip.water")
-                .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(waterTank.getFluidAmount())
-                        .text(" / " + cap + " mB").style(ChatFormatting.AQUA).component())
-                .forGoggles(tooltip, 1);
-
-        CreateLang.translate("solar_punk.tooltip.biofuel")
-                .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(biofuelTank.getFluidAmount())
-                        .text(" / " + cap + " mB").style(ChatFormatting.GREEN).component())
-                .forGoggles(tooltip, 1);
+        GoggleHelper.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
+        GoggleHelper.tank(tooltip, "biofuel", biofuelTank, ChatFormatting.GREEN);
 
         return true;
     }

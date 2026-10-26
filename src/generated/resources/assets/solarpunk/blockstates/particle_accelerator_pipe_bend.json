@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "solarpunk:block/particle_accelerator_pipe_bend",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "solarpunk:block/particle_accelerator_pipe_bend"
+    },
+    "facing=south": {
+      "model": "solarpunk:block/particle_accelerator_pipe_bend",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "solarpunk:block/particle_accelerator_pipe_bend",
+      "y": 270
+    }
+  }
+}

@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_brass_ingot": {
+    "has_brass_sheet": {
       "conditions": {
         "items": [
           {
-            "items": "create:brass_ingot"
+            "items": "#c:plates/brass"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_brass_ingot"
+      "has_brass_sheet"
     ]
   ],
   "rewards": {

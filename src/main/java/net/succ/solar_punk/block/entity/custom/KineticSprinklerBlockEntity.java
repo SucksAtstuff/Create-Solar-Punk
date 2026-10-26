@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.GoggleHelper;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -8,10 +9,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
@@ -25,18 +24,19 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.fluid.ModFluids;
-
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
+import net.succ.solar_punk.util.FluidTankNBTHelper;
 
 public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, GeoBlockEntity {
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
+    // How far down each column is searched for farmland or crops.
     private static final int SCAN_DEPTH = 5;
 
     public final FluidTank fluidTank = new FluidTank(Config.sprinklerTank) {
@@ -123,13 +123,8 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
                 .forGoggles(tooltip, 1);
 
         boolean fertilizer = hasFertilizer();
-        CreateLang.translate(fertilizer ? "solar_punk.tooltip.fertilizer" : "solar_punk.tooltip.water")
-                .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(fluidTank.getFluidAmount())
-                        .text(" / " + Config.sprinklerTank + " mB")
-                        .style(fertilizer ? ChatFormatting.GREEN : ChatFormatting.AQUA)
-                        .component())
-                .forGoggles(tooltip, 1);
+        GoggleHelper.tank(tooltip, fertilizer ? "fertilizer" : "water", fluidTank,
+                fertilizer ? ChatFormatting.GREEN : ChatFormatting.AQUA);
 
         return true;
     }
@@ -145,25 +140,13 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
     @Override
     protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.write(tag, registries, clientPacket);
-        FluidStack fluid = fluidTank.getFluid();
-        if (!fluid.isEmpty()) {
-            CompoundTag fluidTag = new CompoundTag();
-            fluidTag.putString("Fluid", BuiltInRegistries.FLUID.getKey(fluid.getFluid()).toString());
-            fluidTag.putInt("Amount", fluid.getAmount());
-            tag.put("FluidTank", fluidTag);
-        }
+        FluidTankNBTHelper.save(tag, "FluidTank", fluidTank);
     }
 
     @Override
     protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.read(tag, registries, clientPacket);
-        if (tag.contains("FluidTank")) {
-            CompoundTag fluidTag = tag.getCompound("FluidTank");
-            ResourceLocation fluidId = ResourceLocation.parse(fluidTag.getString("Fluid"));
-            Fluid f = BuiltInRegistries.FLUID.getOptional(fluidId).orElse(Fluids.EMPTY);
-            if (f != Fluids.EMPTY)
-                fluidTank.setFluid(new FluidStack(f, fluidTag.getInt("Amount")));
-        }
+        FluidTankNBTHelper.load(tag, "FluidTank", fluidTank);
     }
 
     @Override

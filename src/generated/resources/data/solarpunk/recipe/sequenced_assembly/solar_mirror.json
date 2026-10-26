@@ -1,0 +1,61 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "tag": "c:plates/iron"
+  },
+  "results": [
+    {
+      "id": "solarpunk:solar_mirror"
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_solar_mirror"
+        },
+        {
+          "tag": "c:glass_panes/colorless"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_solar_mirror"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_solar_mirror"
+        },
+        {
+          "item": "create:cogwheel"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_solar_mirror"
+        }
+      ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_solar_mirror"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_solar_mirror"
+        }
+      ]
+    }
+  ],
+  "transitional_item": {
+    "id": "solarpunk:incomplete_solar_mirror"
+  }
+}

@@ -10,22 +10,15 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
 import org.joml.Matrix4f;
 
-// The reactor's "cool visual" - see the Visuals section of plan_for_fusion.md. Entirely
-// code-only, no textures: a low-poly glowing sphere at the exact center, with three
-// armillary-sphere rings orbiting around it, all drawn with RenderType.lightning() (the
-// same untextured, additively-blended, vertex-colored render type vanilla uses for
-// lightning bolts). Only draws once FusionReactorCoreBlockEntity reports the
-// shell/blanket scan formed. Color and speed both track blanketEfficiency: calmer
-// blue-white and a slower spin/pulse at Lithium-heavy composition, hotter orange-white
-// and faster at Beryllium-heavy composition.
+// The reactor's core visual, drawn entirely in code with no textures: a low-poly glowing
+// sphere at the center with three armillary rings orbiting it, all drawn with
+// RenderType.lightning() (untextured, additive, vertex-colored, like lightning bolts).
+// Only drawn while the reactor is formed. Color and speed track blanketEfficiency:
+// calmer blue-white and slower when Lithium-heavy, hotter orange-white and faster when
+// Beryllium-heavy.
 //
-// Every face (sphere and rings alike) is emitted twice, once with its normal winding and
-// once reversed, via the shared quad() helper - this geometry is static in world space,
-// not billboarded, so with only one winding it's only visible from whichever side that
-// winding happens to face once backface culling kicks in, which is exactly the "only
-// shows up from some angles" bug. Emitting both windings makes every face visible from
-// either side regardless of the render type's cull state, at the cost of double the
-// vertices - trivial for a single small effect like this.
+// Every face is emitted with both windings (see quad()). The geometry isn't billboarded,
+// so with one winding backface culling would hide it from some angles.
 public class FusionReactorCoreRenderer implements BlockEntityRenderer<FusionReactorCoreBlockEntity> {
 
     private static final int RING_SEGMENTS = 48;
@@ -124,9 +117,8 @@ public class FusionReactorCoreRenderer implements BlockEntityRenderer<FusionReac
         poseStack.popPose();
     }
 
-    // Emits a quad twice - once as given, once with reversed winding - so it renders
-    // from both sides no matter which way backface culling ends up facing. See the
-    // class doc for why this matters here.
+    // Emits a quad twice, once as given and once with reversed winding, so it renders
+    // from both sides.
     private static void quad(VertexConsumer vb, Matrix4f mat, float[] v0, float[] v1, float[] v2, float[] v3,
                               float r, float g, float b, float alpha) {
         vb.addVertex(mat, v0[0], v0[1], v0[2]).setColor(r, g, b, alpha);

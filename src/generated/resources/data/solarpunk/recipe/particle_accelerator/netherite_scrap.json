@@ -1,0 +1,25 @@
+{
+  "type": "solarpunk:particle_accelerator",
+  "ingredients": [
+    {
+      "count": 16,
+      "tag": "c:ingots/gold"
+    },
+    {
+      "count": 16,
+      "tag": "c:netherracks"
+    },
+    {
+      "count": 4,
+      "tag": "c:gems/quartz"
+    }
+  ],
+  "min_diameter": 21,
+  "min_speed": 192,
+  "processing_time": 1200,
+  "result": {
+    "count": 1,
+    "id": "minecraft:netherite_scrap"
+  },
+  "stress": 32768.0
+}

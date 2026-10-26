@@ -78,13 +78,9 @@ public class ModFluidTypes {
                             .temperature(373)
             ));
 
-    // Heavy hydrogen, extracted from water by the Deuterium Extractor (see
-    // plan_for_fusion.md's Fuel chain section) - the cheap, non-bottleneck half of the
-    // reactor's fuel pair. Reuses the water still/flow sprites like Biofuel/Fertilizer/
-    // Steam do, but the tint has to actually read as distinct from plain water since
-    // getTintColor() just multiplies the water sprite directly (no separate texture) -
-    // vanilla water's own default tint is ~0x3F76E4, so anything close to that blue is
-    // indistinguishable. Goes electric cyan-violet instead, well outside that range.
+    // Heavy hydrogen, mixed from water (see ModMixingRecipeGen.WATER_TO_DEUTERIUM): the
+    // cheap half of the Fusion Reactor's fuel. The tint multiplies the water sprite, so
+    // it's a violet well away from water's own blue (~0x3F76E4) to stay distinguishable.
     public static final Supplier<FluidType> DEUTERIUM_TYPE = FLUID_TYPES.register("deuterium",
             () -> new BaseFluidType(
                     WATER_STILL,

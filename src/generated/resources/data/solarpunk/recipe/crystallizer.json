@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "B": {
-      "item": "create:brass_ingot"
+      "tag": "c:plates/brass"
     },
     "C": {
       "item": "create:brass_casing"
     },
     "G": {
-      "item": "minecraft:glass_pane"
+      "tag": "c:glass_panes/colorless"
     },
     "I": {
       "item": "create:fluid_tank"

@@ -30,6 +30,7 @@ public class DataGenerators {
         generator.addProvider(event.includeServer(), new ModCompactingRecipeGen(output, lookupProvider));
         generator.addProvider(event.includeServer(), new ModItemApplicationRecipeGen(output, lookupProvider));
         generator.addProvider(event.includeServer(), new ModMechanicalCraftingRecipeGen(output, lookupProvider));
+        generator.addProvider(event.includeServer(), new ModSequencedAssemblyRecipeGen(output, lookupProvider));
         ModBlockTagProvider blockTagProvider = generator.addProvider(event.includeServer(),
                 new ModBlockTagProvider(output, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(),
@@ -47,7 +48,7 @@ public class DataGenerators {
         generator.addProvider(event.includeClient(), new ModItemModelProvider(output, existingFileHelper));
         generator.addProvider(event.includeClient(), new ModLangProvider(output));
 
-        // Ponder schematics (client assets — loaded by resource manager)
+        // Ponder schematics (client assets, loaded by the resource manager)
         generator.addProvider(event.includeClient(), new ModPonderProvider(output));
     }
 }

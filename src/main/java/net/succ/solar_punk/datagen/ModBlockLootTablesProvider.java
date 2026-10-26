@@ -58,6 +58,11 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.LITHIUM_BREEDER_MODULE.get());
         dropSelf(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get());
         dropSelf(ModBlocks.FUSION_REACTOR_CORE.get());
+        dropSelf(ModBlocks.PARTICLE_ACCELERATOR_PIPE.get());
+        dropSelf(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND.get());
+        dropSelf(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND_MIRRORED.get());
+        dropSelf(ModBlocks.PARTICLE_ACCELERATOR_PIPE_DIAGONAL.get());
+        dropSelf(ModBlocks.PARTICLE_ACCELERATOR_INPUT.get());
     }
 
     @Override

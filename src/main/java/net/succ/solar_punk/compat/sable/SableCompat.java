@@ -1,16 +1,13 @@
 package net.succ.solar_punk.compat.sable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.succ.solar_punk.Config;
 import net.succ.solar_punk.pollution.GlobalWarmingHandler;
-
+import org.joml.Vector3dc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,15 +50,10 @@ public final class SableCompat {
             Class<?> levelPlotClass = Class.forName("dev.ryanhcode.sable.sublevel.plot.LevelPlot");
             mGetChunkMin = levelPlotClass.getMethod("getChunkMin");
             mGetChunkMax = levelPlotClass.getMethod("getChunkMax");
-            // LevelPlot keeps its own PlotChunkHolder[] storage, entirely separate from
-            // the host ServerLevel's own ChunkSource - a sublevel's actual block data
-            // never lives in the host level's chunks at the plot's coordinates, so it
-            // has to be read through the plot itself, not through `level`.
+            // A sub-level's blocks live in the plot's own chunk storage, not the host
+            // level's chunks. getChunk() takes a plot-local ChunkPos, while
+            // getChunkMin/getChunkMax return global ones, hence toLocal().
             mGetChunk = levelPlotClass.getMethod("getChunk", ChunkPos.class);
-            // getChunk() takes a *local*, plot-relative ChunkPos (validated against
-            // [0, 2^logSize) internally by getChunkHolder) - getChunkMin/getChunkMax
-            // above return *global* dimension coordinates, so every getChunk call needs
-            // to go through toLocal() first or it always misses (out of range -> null).
             mToLocal = levelPlotClass.getMethod("toLocal", ChunkPos.class);
         } catch (Exception e) {
             // Sable present in ModList but reflection failed - disable quietly
@@ -75,7 +67,7 @@ public final class SableCompat {
      * resulting amounts to {@code totals} keyed by the sublevel's real-world ChunkPos rather than
      * the reserved plot-chunk coordinates, so pollution appears where the airship actually is.
      */
-    public static void countSubLevelSources(ServerLevel level, Map<ChunkPos, Long> totals, Set<net.minecraft.world.level.block.Block> autoSources) {
+    public static void countSubLevelSources(ServerLevel level, Map<ChunkPos, Long> totals, Set<Block> autoSources) {
         if (!initialized) init();
         if (mGetContainer == null) return;
 
@@ -89,7 +81,7 @@ public final class SableCompat {
             for (Object subLevel : subLevels) {
                 // Get the sublevel's logical position in the parent world
                 Object pose = mLogicalPose.invoke(subLevel);
-                org.joml.Vector3dc pos = (org.joml.Vector3dc) mPosition.invoke(pose);
+                Vector3dc pos = (Vector3dc) mPosition.invoke(pose);
                 ChunkPos worldChunk = new ChunkPos(BlockPos.containing(pos.x(), pos.y(), pos.z()));
 
                 // Scan the plot chunks that back this sublevel
@@ -99,34 +91,18 @@ public final class SableCompat {
 
                 for (int cx = plotMin.x; cx <= plotMax.x; cx++) {
                     for (int cz = plotMin.z; cz <= plotMax.z; cz++) {
-                        // Read through the plot, not `level.getChunkSource()` - the host
-                        // level has nothing at these coordinates, the plot's own holder
-                        // array is where the sublevel's actual chunks live. getChunk()
-                        // needs a local pos, so convert the global cx/cz through toLocal
-                        // first - passing the global pos straight through always misses.
+                        // Read through the plot (with a plot-local pos), not the host
+                        // level, which has nothing at these coordinates.
                         ChunkPos localPos = (ChunkPos) mToLocal.invoke(plot, new ChunkPos(cx, cz));
                         LevelChunk chunk = (LevelChunk) mGetChunk.invoke(plot, localPos);
                         if (chunk == null) continue;
 
-                        for (Map.Entry<BlockPos, BlockEntity> entry : chunk.getBlockEntities().entrySet()) {
-                            // Same reason: the block state at this pos only exists in the
-                            // plot's chunk, not in `level` at these coordinates.
-                            BlockState state = chunk.getBlockState(entry.getKey());
+                        for (BlockPos bePos : chunk.getBlockEntities().keySet()) {
+                            // Same reason: the block state only exists in the plot's chunk.
+                            BlockState state = chunk.getBlockState(bePos);
 
-                            boolean inTag = state.is(GlobalWarmingHandler.POLLUTION_SOURCES);
-                            boolean autoDetected = !inTag && autoSources.contains(state.getBlock());
-                            if (!inTag && !autoDetected) continue;
-
-                            // Respect the LIT property the same way the main scan does
-                            if (state.hasProperty(BlockStateProperties.LIT) && !state.getValue(BlockStateProperties.LIT)) continue;
-
-                            String blockId = BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
-                            if (Config.pollutionBlacklist.contains(blockId)) continue;
-
-                            int amount = inTag
-                                    ? Config.perBlockPollution.getOrDefault(blockId, Config.pollutionPerSource)
-                                    : Config.autoDetectPollution;
-
+                            int amount = GlobalWarmingHandler.sourcePollution(state, autoSources);
+                            if (amount < 0) continue;
                             totals.merge(worldChunk, (long) amount, Long::sum);
                         }
                     }

@@ -1,0 +1,34 @@
+{
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "solarpunk:particle_accelerator_pipe"
+    },
+    "C": {
+      "item": "create:brass_casing"
+    },
+    "F": {
+      "item": "create:brass_funnel"
+    },
+    "H": {
+      "item": "create:shaft"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
+    },
+    "S": {
+      "item": "solarpunk:superconducting_coil"
+    }
+  },
+  "pattern": [
+    "SPS",
+    "FAC",
+    "SHS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "solarpunk:particle_accelerator_input"
+  }
+}

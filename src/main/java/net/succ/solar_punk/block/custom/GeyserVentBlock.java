@@ -24,12 +24,8 @@ public class GeyserVentBlock extends Block implements IBE<GeyserVentBlockEntity>
         double cy = pos.getY() + 1.0;
         double cz = pos.getZ() + 0.5;
 
-        // The puff sound used to live here too, but animateTick only fires when the
-        // client's particle system happens to randomly sample this exact block position
-        // (see GeyserVentBlockEntity for why that made the sound extremely rare without a
-        // Geyser Cap on top) - it now runs on GeyserVentBlockEntity's real per-tick
-        // schedule instead. This method still handles the dense steam/water/mist burst
-        // below, which is just ambient flourish and doesn't need to land on an exact beat.
+        // Particles only. The puff sound is played from GeyserVentBlockEntity, since
+        // animateTick only fires when the client randomly samples this block.
 
         // Dense steam column
         for (int i = 0; i < 20 + random.nextInt(10); i++) {

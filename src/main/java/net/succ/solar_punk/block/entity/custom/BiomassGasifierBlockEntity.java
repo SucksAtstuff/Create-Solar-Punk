@@ -1,23 +1,23 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.neoforged.neoforge.items.IItemHandler;
+import net.succ.solar_punk.client.sound.MachineSoundInstance;
+import net.succ.solar_punk.util.GeneratorHelper;
+import net.succ.solar_punk.util.AutomationItemHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity.RotationDirection;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
 import com.simibubi.create.foundation.utility.CreateLang;
-import net.createmod.catnip.math.VecHelper;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -29,7 +29,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
-import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
 import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
 import net.succ.solar_punk.client.sound.BiomassGasifierSoundInstance;
 import net.succ.solar_punk.item.ModItems;
@@ -61,6 +60,9 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
         }
     };
 
+    // Hoppers and funnels put fuel in and take the Biochar out
+    public final IItemHandler automationHandler = AutomationItemHandler.inputOutput(itemHandler, 0, 1);
+
     private int burnTimeRemaining = 0;
 
     @OnlyIn(Dist.CLIENT)
@@ -74,26 +76,9 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
-        rotationDirection = new ScrollOptionBehaviour<>(RotationDirection.class,
-                CreateLang.translateDirect("contraptions.windmill.rotation_direction"),
-                this,
-                new ValueBoxTransform.Sided() {
-                    @Override
-                    protected Vec3 getSouthLocation() {
-                        return VecHelper.voxelSpace(8, 8, 15.5);
-                    }
-                    @Override
-                    protected boolean isSideActive(BlockState state, Direction direction) {
-                        // Everywhere except the front (matches FACING - reserved for the
-                        // lit/output face) and the bottom (reserved for the input shaft,
-                        // see hasShaftTowards) - leaves back, top, and both sides. Matches
-                        // the Biofuel Engine's own scroll box placement.
-                        return direction != state.getValue(BiomassGasifierBlock.FACING)
-                                && direction != Direction.DOWN;
-                    }
-                }
-        );
-        rotationDirection.withCallback($ -> this.updateGeneratedRotation());
+        // Every side except the front (FACING) and the bottom (the shaft)
+        rotationDirection = GeneratorHelper.rotationDirection(this, 8, (state, direction) ->
+                direction != state.getValue(BiomassGasifierBlock.FACING) && direction != Direction.DOWN);
         behaviours.add(rotationDirection);
     }
 
@@ -110,28 +95,24 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
     @Override
     public float getGeneratedSpeed() {
         if (burnTimeRemaining <= 0) return 0;
-        float speed = Config.gasifierRpm;
-        if (rotationDirection.get() == RotationDirection.COUNTER_CLOCKWISE) speed = -speed;
-        return speed;
+        return GeneratorHelper.directed(Config.gasifierRpm, rotationDirection);
     }
 
     @Override
     public float calculateAddedStressCapacity() {
         float capacity = burnTimeRemaining > 0 ? Config.gasifierSu : 0;
-        // Must mirror KineticBlockEntity's base impl: keep lastCapacityProvided in sync.
-        // Without this, addSilently() on reload fails to subtract our contribution from
-        // unloadedCapacity, causing +1024 SU to accumulate on every world reload.
+        // Keep lastCapacityProvided in sync like KineticBlockEntity's base impl does.
+        // Without it, the network gains phantom SU on every world reload.
         this.lastCapacityProvided = capacity;
         return capacity;
     }
 
     @OnlyIn(Dist.CLIENT)
     public void tickAudio() {
-        if (getBlockState().getValue(BiomassGasifierBlock.LIT)
-                && (soundInstance == null || soundInstance.isStopped())) {
-            soundInstance = new BiomassGasifierSoundInstance(this);
-            Minecraft.getInstance().getSoundManager().play(soundInstance);
-        }
+        // Create's KineticBlockEntity.tick() calls this too, so Ponder's silence is
+        // handled in keepPlaying() rather than at the call site
+        soundInstance = MachineSoundInstance.keepPlaying(level, soundInstance,
+                getBlockState().getValue(BiomassGasifierBlock.LIT), () -> new BiomassGasifierSoundInstance(this));
     }
 
     @Override
@@ -167,6 +148,9 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
                 setChanged();
             }
         }
+
+        // Goggles read the client's copy (fuel, Biochar, burn time)
+        if (level.getGameTime() % 20 == 0) sendData();
 
         boolean active = burnTimeRemaining > 0;
         if (active != wasActive) {

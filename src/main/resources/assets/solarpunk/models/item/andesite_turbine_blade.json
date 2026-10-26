@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "solarpunk:item/andesite_turbine"
-  }
+  "parent": "solarpunk:block/andesite_turbine_blade"
 }

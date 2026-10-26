@@ -1,5 +1,7 @@
 package net.succ.solar_punk.item;
 
+import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
+import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -18,8 +20,9 @@ public class ModItems {
     public static final DeferredItem<Item> BIOMASS_PELLET = ITEMS.register("biomass_pellet",
             () -> new Item(new Item.Properties()));
 
-    public static final DeferredItem<BiocharItem> BIOCHAR = ITEMS.register("biochar",
-            () -> new BiocharItem(new Item.Properties()));
+    // Works like Bone Meal.
+    public static final DeferredItem<BoneMealItem> BIOCHAR = ITEMS.register("biochar",
+            () -> new BoneMealItem(new Item.Properties()));
 
     // Lithium ore chain: mined from Lithium Ore (drops Raw Lithium) or produced
     // directly as Lithium Dust via ModMixingRecipeGen.SALT_BRINE_TO_LITHIUM (Water +
@@ -46,6 +49,41 @@ public class ModItems {
             () -> new Item(new Item.Properties()));
 
     public static final DeferredItem<Item> BERYLLIUM_NUGGET = ITEMS.register("beryllium_nugget",
+            () -> new Item(new Item.Properties()));
+
+    // Brass-tier solar component, made by sequenced assembly (see
+    // ModSequencedAssemblyRecipeGen). The incomplete items are what Create shows on the
+    // belt between steps.
+    public static final DeferredItem<Item> PHOTOVOLTAIC_CELL = ITEMS.register("photovoltaic_cell",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_PHOTOVOLTAIC_CELL = ITEMS.register("incomplete_photovoltaic_cell",
+            () -> new SequencedAssemblyItem(new Item.Properties()));
+
+    public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_SOLAR_MIRROR = ITEMS.register("incomplete_solar_mirror",
+            () -> new SequencedAssemblyItem(new Item.Properties()));
+
+    // Particle Accelerator components (see docs/PARTICLE_ACCELERATOR_PLAN.md), both made
+    // by sequenced assembly. The Superconducting Coil is built on top of an Electromagnet
+    // Coil and needs the fusion chain's materials.
+    public static final DeferredItem<Item> ELECTROMAGNET_COIL = ITEMS.register("electromagnet_coil",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_ELECTROMAGNET_COIL = ITEMS.register("incomplete_electromagnet_coil",
+            () -> new SequencedAssemblyItem(new Item.Properties()));
+
+    public static final DeferredItem<Item> SUPERCONDUCTING_COIL = ITEMS.register("superconducting_coil",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_SUPERCONDUCTING_COIL = ITEMS.register("incomplete_superconducting_coil",
+            () -> new SequencedAssemblyItem(new Item.Properties()));
+
+    // Fuel capsules: the Particle Accelerator's Collector fills an Empty Fuel Capsule with
+    // Tritium, and the Fusion Reactor will burn it and hand the empty capsule back. No use yet.
+    public static final DeferredItem<Item> EMPTY_FUEL_CAPSULE = ITEMS.register("empty_fuel_capsule",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> TRITIUM_CAPSULE = ITEMS.register("tritium_capsule",
             () -> new Item(new Item.Properties()));
 
     public static void register(IEventBus eventBus) {

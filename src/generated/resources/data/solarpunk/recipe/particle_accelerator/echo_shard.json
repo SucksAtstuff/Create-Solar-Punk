@@ -1,0 +1,21 @@
+{
+  "type": "solarpunk:particle_accelerator",
+  "ingredients": [
+    {
+      "count": 8,
+      "item": "minecraft:sculk"
+    },
+    {
+      "count": 4,
+      "tag": "c:gems/amethyst"
+    }
+  ],
+  "min_diameter": 15,
+  "min_speed": 128,
+  "processing_time": 800,
+  "result": {
+    "count": 1,
+    "id": "minecraft:echo_shard"
+  },
+  "stress": 24576.0
+}

@@ -16,8 +16,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.Config;
+import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.KineticBatteryBlockEntity;
 
 public class KineticBatteryBlock extends KineticBlock implements IBE<KineticBatteryBlockEntity> {

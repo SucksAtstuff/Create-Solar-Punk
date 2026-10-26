@@ -1,34 +1,31 @@
 package net.succ.solar_punk.datagen;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.ModTags;
+import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
-import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
+import static net.succ.solar_punk.datagen.DatagenUtil.blockTag;
+
 public class ModBlockTagProvider extends BlockTagsProvider {
 
-    private static final TagKey<Block> STORAGE_BLOCKS_SALT =
-            TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/salt"));
-    private static final TagKey<Block> ORES_LITHIUM =
-            TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "ores/lithium"));
-    private static final TagKey<Block> STORAGE_BLOCKS_LITHIUM =
-            TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/lithium"));
-    private static final TagKey<Block> STORAGE_BLOCKS_BERYLLIUM =
-            TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "storage_blocks/beryllium"));
+    private static final TagKey<Block> STORAGE_BLOCKS_SALT = blockTag("c", "storage_blocks/salt");
+    private static final TagKey<Block> ORES_LITHIUM = blockTag("c", "ores/lithium");
+    private static final TagKey<Block> STORAGE_BLOCKS_LITHIUM = blockTag("c", "storage_blocks/lithium");
+    private static final TagKey<Block> STORAGE_BLOCKS_BERYLLIUM = blockTag("c", "storage_blocks/beryllium");
 
     public ModBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
                                @Nullable ExistingFileHelper existingFileHelper) {
@@ -64,12 +61,16 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.TURBINE_ROTOR.get())
                 .add(ModBlocks.ANDESITE_TURBINE_BLADE.get())
                 .add(ModBlocks.BRASS_TURBINE_BLADE.get())
-                .add(ModBlocks.TURBINE_ROTOR.get())
                 .add(ModBlocks.FUSION_REACTOR_CASING.get())
                 .add(ModBlocks.FUSION_REACTOR_CASING_GLASS.get())
                 .add(ModBlocks.LITHIUM_BREEDER_MODULE.get())
                 .add(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get())
-                .add(ModBlocks.FUSION_REACTOR_CORE.get());
+                .add(ModBlocks.FUSION_REACTOR_CORE.get())
+                .add(ModBlocks.PARTICLE_ACCELERATOR_PIPE.get())
+                .add(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND.get())
+                .add(ModBlocks.PARTICLE_ACCELERATOR_PIPE_BEND_MIRRORED.get())
+                .add(ModBlocks.PARTICLE_ACCELERATOR_PIPE_DIAGONAL.get())
+                .add(ModBlocks.PARTICLE_ACCELERATOR_INPUT.get());
 
         tag(BlockTags.MINEABLE_WITH_SHOVEL)
                 .add(ModBlocks.ASH_BLOCK.get())
@@ -83,8 +84,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         tag(STORAGE_BLOCKS_LITHIUM).add(ModBlocks.LITHIUM_BLOCK.get());
         tag(STORAGE_BLOCKS_BERYLLIUM).add(ModBlocks.BERYLLIUM_BLOCK.get());
 
-        // Mid-late-game hard-rock ore - gated behind iron tools, unlike Salt which needs
-        // no tool tier at all.
+        // Mid-late-game ore, gated behind iron tools.
         tag(BlockTags.NEEDS_IRON_TOOL).add(ModBlocks.LITHIUM_ORE.get()).add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get());
         tag(Tags.Blocks.ORES).add(ModBlocks.LITHIUM_ORE.get()).add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get());
         tag(ORES_LITHIUM).add(ModBlocks.LITHIUM_ORE.get()).add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get());
@@ -92,14 +92,14 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         tag(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE).add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get());
         tag(Tags.Blocks.ORE_RATES_SINGULAR).add(ModBlocks.LITHIUM_ORE.get()).add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get());
 
-        // Fusion Reactor multiblock membership - see ModTags and plan_for_fusion.md.
+        // Fusion Reactor multiblock membership, see ModTags.
         tag(ModTags.Blocks.REACTOR_CASING)
                 .add(ModBlocks.FUSION_REACTOR_CASING.get())
                 .add(ModBlocks.FUSION_REACTOR_CASING_GLASS.get());
         tag(ModTags.Blocks.REACTOR_BLANKET_LITHIUM).add(ModBlocks.LITHIUM_BREEDER_MODULE.get());
         tag(ModTags.Blocks.REACTOR_BLANKET_BERYLLIUM).add(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get());
 
-        tag(GlobalWarmingHandler.POLLUTION_SOURCES)
+        var pollutionSources = tag(ModTags.Blocks.POLLUTION_SOURCES)
                 .add(Blocks.CAMPFIRE, Blocks.SOUL_CAMPFIRE, Blocks.FURNACE, Blocks.BLAST_FURNACE, Blocks.SMOKER,
                      ModBlocks.BIOFUEL_ENGINE.get(), ModBlocks.BIOMASS_GASIFIER.get(), ModBlocks.FIREBOX_BOILER.get())
                 .addOptional(ResourceLocation.fromNamespaceAndPath("create", "lit_blaze_burner"))
@@ -107,23 +107,9 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 // Create Diesel Generators
                 .addOptional(ResourceLocation.fromNamespaceAndPath("createdieselgenerators", "diesel_engine"))
                 .addOptional(ResourceLocation.fromNamespaceAndPath("createdieselgenerators", "large_diesel_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("createdieselgenerators", "huge_diesel_engine"))
-                // Create Aeronautics portable engines (one per dye colour)
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "white_portable_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "orange_portable_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "magenta_portable_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "light_blue_portable_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "yellow_portable_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "lime_portable_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "pink_portable_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "gray_portable_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "light_gray_portable_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "cyan_portable_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "purple_portable_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "blue_portable_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "brown_portable_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "green_portable_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "red_portable_engine"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("simulated", "black_portable_engine"));
+                .addOptional(ResourceLocation.fromNamespaceAndPath("createdieselgenerators", "huge_diesel_engine"));
+        // Create Aeronautics portable engines, one per dye colour
+        for (DyeColor colour : DyeColor.values())
+            pollutionSources.addOptional(ResourceLocation.fromNamespaceAndPath("simulated", colour.getName() + "_portable_engine"));
     }
 }

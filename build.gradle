@@ -15,16 +15,15 @@ repositories {
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
     maven { url = "https://maven.blamejared.com" } // JEI
     maven { url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" } // GeckoLib
-    exclusiveContent { // Create: Cosmonautics, Sable, Create Aeronautics (test_cosmonautics only)
+    exclusiveContent { // Cosmonautics, Sable, Aeronautics, New Age (test_cosmonautics / test_new_age only)
         forRepository { maven { url = "https://api.modrinth.com/maven" } }
         filter { includeGroup "maven.modrinth" }
     }
 }
 
-// See test_cosmonautics in gradle.properties.
+// See test_cosmonautics and test_new_age in gradle.properties.
 def testCosmonautics = project.findProperty('test_cosmonautics')?.toString()?.toBoolean() ?: false
-def devCreateVersion = testCosmonautics ? cosmonautics_create_version : create_version
-def devFlywheelVersion = testCosmonautics ? cosmonautics_flywheel_version : flywheel_version
+def testNewAge = project.findProperty('test_new_age')?.toString()?.toBoolean() ?: false
 
 base {
     archivesName = mod_id
@@ -110,10 +109,10 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 
 dependencies {
-    implementation("com.simibubi.create:create-${minecraft_version}:${devCreateVersion}:slim") { transitive = false }
+    implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
     implementation("net.createmod.ponder:ponder-neoforge:${ponder_version}")
-    compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${devFlywheelVersion}")
-    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${devFlywheelVersion}")
+    compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${flywheel_version}")
+    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")
     implementation("com.tterrag.registrate:Registrate:${registrate_version}")
 
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
@@ -127,6 +126,14 @@ dependencies {
         runtimeOnly("maven.modrinth:micg1iTH:${cosmonautics_version}")
         runtimeOnly("maven.modrinth:T9PomCSv:${sable_version}")
         runtimeOnly("maven.modrinth:oWaK0Q19:${aeronautics_version}")
+    }
+
+    // Create: New Age heat compat. Compile-only so NewAgeHeatBatteryBlockEntity can implement
+    // their heat interface; it's never shipped or required, and that class only loads when
+    // New Age is installed. test_new_age also puts it in dev runs.
+    compileOnly("maven.modrinth:create-new-age:${new_age_version}") { transitive = false }
+    if (testNewAge) {
+        runtimeOnly("maven.modrinth:create-new-age:${new_age_version}")
     }
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository

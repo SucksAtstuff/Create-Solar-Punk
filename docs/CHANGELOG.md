@@ -1,10 +1,90 @@
-# 1.2.0-1.21.1
+# 2.0.0-1.21.1
+
+> **Back up your world before updating.** This is a big update, so make a copy of your world (and your server's config folder) first, just in case.
+
+> Now built for **Create 6.0.10**. Update Create alongside this version.
+
+## New
+
+### Particle Accelerator
+
+- New endgame machine: a ring of glass pipes, powered by rotation, that smashes items together into new materials. Watch the two beams race around and collide as each recipe finishes.
+- Bigger rings unlock rarer results: Leather from Rotten Flesh, Tritium Capsules for the Fusion Reactor, Diamonds, Echo Shards and Netherite Scrap.
+- New blocks: **Particle Accelerator Pipe** (one item for every shape, press Alt to pick) and **Particle Accelerator Input**.
+- New items: **Electromagnet Coil**, **Superconducting Coil**, **Empty Fuel Capsule** and **Tritium Capsule**.
+- JEI, Ponder, goggle and Display Link support. Datapacks can add their own recipes.
+- The ring hums higher as the beams speed up, and you can hear them collide.
 
 ### Solar Power in Space
 
 Solar blocks now work in space with Create: Cosmonautics, and follow the real sun just like they do in the Overworld. In deep space, Solar Panels, the Solar Heater, and the Solar Power Tower track where the sun actually is: turn your station away from it and they go dark, fly into a planet's shadow and it's night, and your station's own hull can shade them. Stations are built as ships with Create Aeronautics, and the panels follow the ship as it turns, so "up" is always the ship's up. Goggles show the panel's real output wherever it is. There's no weather in space. On the Moon they follow the Moon's own day and night instead of the Overworld's, and never get rained on. Cosmonautics is optional, and this was built against Cosmonautics 26.08.307.
 
 Other space mods and modpacks can add their dimensions to the `solarpunk:always_sunny` (constant sunshine, no weather) or `solarpunk:no_weather` (normal day and night, no weather) dimension type tags with a datapack. Two new config options under `[space]`: `output_multiplier` boosts solar output in deep space, and `real_sun` can be turned off to make deep space always sunny instead of following the real sun.
+
+## Changes
+
+### Fusion Reactor
+
+- The Fusion Reactor's Casing shell now matches a standard hollow sphere, so you can build it straight from WorldEdit's `//hsphere` or an online sphere generator. Reactors built the old way still work.
+- Now burns **Tritium Capsules** from the Particle Accelerator, and its Breeder Modules slowly make more.
+- Now drops its contents when broken.
+
+### Recipe Overhaul
+
+Higher-tier machines now need real Create processing instead of just a crafting table, so the mod's progression follows Create's own: cheap to get started, then sheets, assembly lines and Precision Mechanisms as you move up.
+
+**New: Photovoltaic Cell**, made by sequenced assembly: Glass Pane, then deploy Polished Rose Quartz, deploy a Copper Sheet, and press. It's used in the Brass Solar Panel.
+
+- **Andesite Solar Panel:** now uses Iron Sheets.
+- **Solar Heater:** Copper Ingots replaced with Copper Sheets.
+- **Crystallizer** and **Heat Battery:** Brass Ingots replaced with Brass Sheets.
+- **Brass Solar Panel:** now made in a Mechanical Crafter, with Photovoltaic Cells, a Brass Casing, Electron Tubes and a Brass Sheet.
+- **Biofuel Engine:** now made in a Mechanical Crafter, with Brass Sheets instead of Ingots.
+- **Solar Mirror:** now made by sequenced assembly: Iron Sheet, then deploy a Glass Pane, deploy a Cogwheel, and press.
+- **Solar Power Tower:** now made in a Mechanical Crafter with a Precision Mechanism, and gives 2 blocks per craft.
+- **Fusion Reactor Core:** now made in a Mechanical Crafter, with 4 Precision Mechanisms added.
+- **Lithium Breeder Module:** 8 Lithium Ingots around a Fluid Tank.
+- **Beryllium Reflector Module:** 8 Beryllium Ingots around a Copper Sheet.
+
+**For modpack makers:** the Brass Solar Panel, Biofuel Engine, Solar Mirror, Solar Power Tower and Fusion Reactor Core recipes have new IDs, under `mechanical_crafting/` or `sequenced_assembly/`. Update any recipe overrides that point at the old ones.
+
+### Turbine Blades
+
+- New model and textures for the Andesite and Brass Turbine Blades.
+- Blades now show their 3D model when held, dropped, and in your inventory.
+- Placing a blade now puts its second half to your right instead of straight ahead.
+
+## Compatibility
+
+- Salt from Northstar and Create: Food works anywhere Solarpunk Salt does, and Solarpunk Salt works in their recipes too.
+- The Fusion Reactor accepts Lithium Dust from other mods.
+- The Solar Heater now turns any stone (Andesite, Diorite, Granite, Deepslate, Tuff) and any cobblestone into Lava, not just plain Stone and Cobblestone.
+- **Create: New Age:** the Heat Battery now trades heat with New Age's heat pipes and machines. A charged battery heats them, and an emptier one soaks up their heat. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/49
+
+## Polish
+
+### Tooltips and Ponder
+
+- Fixed outdated item tooltips for the Solar Panels, Solar Power Tower, Solar Mirror, Steam Turbine, Kinetic Sprinkler, Heat Battery, Solar Heater and Biofilter.
+- The Crystallizer's tooltip now actually shows up, and the Fusion Reactor Core and both blanket modules have tooltips.
+- Fixed wrong Ponder text: the Fusion Reactor scene no longer mentions the removed Extractor blocks, the turbine scene now says one blade per arm, and the Biomass Gasifier scene gives the correct burn time.
+- Every Ponder scene has been redone to be clearer and walk through each machine step by step.
+- Ponder scenes no longer play machine sounds.
+
+### Sounds
+
+- Machine sounds now fade with distance and come from the machine's direction, instead of being heard at full volume from far away.
+
+## Bug Fixes
+
+- Recipes now accept the same material from other mods, so salt, lithium, beryllium, metal ingots, Create's sheets and glass from any mod all work. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/48
+- Hoppers and funnels now only take products out of the Solar Heater, Biomass Gasifier and Firebox Boiler, instead of also pulling out their fuel or the item being melted.
+- The Solar Heater and Crystallizer no longer delete items when their output tank holds a different fluid.
+- Evaporated Salt can now be taken out of the Solar Heater by hand.
+- Taking items out of a machine with a full inventory drops them instead of deleting them.
+- The Firebox Boiler now gives back the empty bucket from Lava Buckets, and stops looking lit while it's out of water.
+- Goggles no longer show a tank as full after it empties, and the Biomass Gasifier's goggle readings now update.
+- Solar Power Towers no longer lose their mirrors when their chunk unloads.
 
 # 1.1.1-1.21.1
 

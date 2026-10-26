@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.GoggleHelper;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -30,12 +31,11 @@ import net.succ.solar_punk.fluid.ModFluids;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import net.succ.solar_punk.util.FluidTankNBTHelper;
+import net.succ.solar_punk.util.SolarHelper;
 
 public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowerBlockEntity>
         implements IHaveGoggleInformation {
-
-    // Max height per footprint width: index 1→5, 2→10, 3→20
-    private static final int[] MAX_HEIGHTS = {0, 5, 10, 20};
 
     public  boolean steamMode           = false;
     private float saltAccumulator      = 0f;
@@ -149,11 +149,15 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
 
     @Override
     public int getMaxLength(Direction.Axis longAxis, int width) {
-        if (longAxis != Direction.Axis.Y) return MAX_WIDTH;
+        return longAxis == Direction.Axis.Y ? maxHeight(width) : MAX_WIDTH;
+    }
+
+    // Wider towers can be built taller: 1 wide -> 5, 2 wide -> 10, 3 wide -> 20.
+    private static int maxHeight(int width) {
         return switch (width) {
-            case 2 -> MAX_HEIGHTS[2];
-            case 3 -> MAX_HEIGHTS[3];
-            default -> MAX_HEIGHTS[1];
+            case 2 -> 10;
+            case 3 -> 20;
+            default -> 5;
         };
     }
 
@@ -213,68 +217,54 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
             return;
         }
 
-        float efficiency = mirrorEfficiency();
-        // Rate scales super-linearly with height (exponent 1.5) so taller towers are
-        // always more block-efficient than multiple short ones. baseRate is 9 at max
-        // size (3×3×20, full sun, full mirror field); the mode multiplier below scales
-        // that into a final mB/t and is config-exposed (generators.solar_power_tower).
-        // Steam default 7/3 → 21 mB/t at max, matching one max-height Steam Turbine.
-        // Salt default 2.0 → 18 mB/t at max, but only while isSunActive() (roughly the
-        // daylight half of the day/night cycle - see below). A charged Heat Battery
-        // drains a steady 1 mB/t around the clock, day or night, so 18 mB/t of daytime
-        // output averages out to 9 mB/t over a full cycle: enough to hold 9 Heat
-        // Batteries (a max-size boiler's worth) superheated continuously, provided the
-        // salt tank has room to bank the daytime surplus for use overnight.
-        int maxH = switch (width) { case 2 -> MAX_HEIGHTS[2]; case 3 -> MAX_HEIGHTS[3]; default -> MAX_HEIGHTS[1]; };
-        float heightFraction = (float) height / maxH;
-        float baseRate = (width * width) * (float) Math.pow(heightFraction, 1.5) * efficiency;
-        float rate = steamMode ? baseRate * (float) Config.solarPowerTowerSteamMultiplier
-                               : baseRate * (float) Config.solarPowerTowerSaltMultiplier;
+        // Rate scales super-linearly with height (exponent 1.5) so a tall tower is always
+        // more block-efficient than several short ones. baseRate is 9 at max size (3x3x20,
+        // full sun, full mirror field), and the configurable mode multipliers turn it into
+        // mB/t: steam defaults to 21 mB/t (one max-height Steam Turbine), salt to 18 mB/t.
+        // Salt is only made by day, while a charged Heat Battery drains 1 mB/t around the
+        // clock, so 18 mB/t averages out to 9 mB/t: enough for 9 Heat Batteries (a max-size
+        // boiler) if the tank has room to bank the daytime surplus.
+        float heightFraction = (float) height / maxHeight(width);
+        float baseRate = (width * width) * (float) Math.pow(heightFraction, 1.5) * mirrorEfficiency();
+        float rate = baseRate * (float) (steamMode ? Config.solarPowerTowerSteamMultiplier : Config.solarPowerTowerSaltMultiplier);
         rate *= SolarHelper.outputMultiplier(level, worldPosition);
         if (steamMode) {
             saltAccumulator = 0f;
-            boolean hasSpaceForOne = steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), 1),
-                    IFluidHandler.FluidAction.SIMULATE) >= 1;
-            boolean hasWaterForOne = waterTank.getFluidAmount() >= width * width;
-            lastGenerationRate = (hasSpaceForOne && hasWaterForOne) ? rate : 0f;
-            if (hasSpaceForOne && hasWaterForOne) steamAccumulator += rate;
-            int steamToAdd = (int) steamAccumulator;
-            if (steamToAdd >= 1) {
-                int maxByWater = waterTank.getFluidAmount() / (width * width);
-                int maxBySpace = steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), steamToAdd),
-                        IFluidHandler.FluidAction.SIMULATE);
-                int actualToAdd = Math.min(steamToAdd, Math.min(maxByWater, maxBySpace));
-                if (actualToAdd >= 1) {
-                    waterTank.drain(actualToAdd * width * width, IFluidHandler.FluidAction.EXECUTE);
-                    steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), actualToAdd),
-                            IFluidHandler.FluidAction.EXECUTE);
-                    steamAccumulator -= actualToAdd;
-                }
-            }
+            steamAccumulator = produce(steamTank, ModFluids.STEAM_SOURCE.get(), rate, steamAccumulator);
         } else {
             steamAccumulator = 0f;
-            boolean hasSpaceForOne = saltTank.fill(new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 1),
-                    IFluidHandler.FluidAction.SIMULATE) >= 1;
-            boolean hasWaterForOne = waterTank.getFluidAmount() >= width * width;
-            lastGenerationRate = (hasSpaceForOne && hasWaterForOne) ? rate : 0f;
-            if (hasSpaceForOne && hasWaterForOne) saltAccumulator += rate;
-            int saltToAdd = (int) saltAccumulator;
-            if (saltToAdd >= 1) {
-                int maxByWater = waterTank.getFluidAmount() / (width * width);
-                int maxBySpace = saltTank.fill(new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), saltToAdd),
-                        IFluidHandler.FluidAction.SIMULATE);
-                int actualToAdd = Math.min(saltToAdd, Math.min(maxByWater, maxBySpace));
-                if (actualToAdd >= 1) {
-                    waterTank.drain(actualToAdd * width * width, IFluidHandler.FluidAction.EXECUTE);
-                    saltTank.fill(new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), actualToAdd),
-                            IFluidHandler.FluidAction.EXECUTE);
-                    saltAccumulator -= actualToAdd;
-                }
-            }
+            saltAccumulator = produce(saltTank, ModFluids.MOLTEN_SALT_SOURCE.get(), rate, saltAccumulator);
         }
 
         setLit(true);
         if (level.getGameTime() % 20 == 0) sync();
+    }
+
+    // Adds rate mB/t of fluid to the output tank, carrying fractions over in the
+    // accumulator. Every mB costs one mB of water per footprint block. Returns the new
+    // accumulator value. (Fully qualified because IMultiBlockEntityContainer.Fluid
+    // shadows the import.)
+    private float produce(FluidTank output, net.minecraft.world.level.material.Fluid fluid,
+                          float rate, float accumulator) {
+        int waterPerMb = width * width;
+        boolean hasSpaceForOne = output.fill(new FluidStack(fluid, 1), IFluidHandler.FluidAction.SIMULATE) >= 1;
+        boolean hasWaterForOne = waterTank.getFluidAmount() >= waterPerMb;
+        boolean running = hasSpaceForOne && hasWaterForOne;
+        lastGenerationRate = running ? rate : 0f;
+        if (running) accumulator += rate;
+
+        int toAdd = (int) accumulator;
+        if (toAdd >= 1) {
+            int maxByWater = waterTank.getFluidAmount() / waterPerMb;
+            int maxBySpace = output.fill(new FluidStack(fluid, toAdd), IFluidHandler.FluidAction.SIMULATE);
+            int actualToAdd = Math.min(toAdd, Math.min(maxByWater, maxBySpace));
+            if (actualToAdd >= 1) {
+                waterTank.drain(actualToAdd * waterPerMb, IFluidHandler.FluidAction.EXECUTE);
+                output.fill(new FluidStack(fluid, actualToAdd), IFluidHandler.FluidAction.EXECUTE);
+                accumulator -= actualToAdd;
+            }
+        }
+        return accumulator;
     }
 
     private boolean isSunActive() {
@@ -318,7 +308,7 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
 
         cachedMirrorCount = registeredMirrors.size();
         setChanged();
-        sync(); // goggle tooltip reads the client's synced copy, not the server BE directly
+        sync(); // the goggle tooltip reads the client's synced copy
     }
 
     private void tryRegisterMirror(BlockPos pos) {
@@ -353,10 +343,8 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
     }
 
     private boolean hasSkyAndLineOfSight(BlockPos mirrorPos) {
-        // canSeeSky checks the sky light value AT the given position. The mirror now
-        // occupies two cells (see SolarMirrorBlock's lower/upper halves) and, like any
-        // non-fully-transparent block, each one absorbs a point of its own incoming
-        // skylight - so genuinely open air only starts two cells above the mirror's base.
+        // canSeeSky checks the sky light AT the given position, and both of the mirror's
+        // cells absorb skylight, so open air starts two cells above its base.
         if (!SolarHelper.canSeeSky(level, mirrorPos.above().above())) return false;
 
         BlockPos receiverPos = worldPosition.above(Math.max(height - 1, 0));
@@ -364,13 +352,9 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         Vec3 from = Vec3.atCenterOf(mirrorPos).add(0, 0.75, 0); // roughly the panel/hinge height
         Vec3 to = Vec3.atCenterOf(receiverPos);
 
-        // The mirror's collision shape now closely follows its model (post + a wide box
-        // approximating the panel's swing), which means a ray leaving from anywhere near
-        // the panel is very likely to start inside its own hitbox. Rather than hunting for
-        // an origin point that dodges it, just skip past hits on the mirror's own two
-        // cells and keep casting from there. The upper half's panel-sweep box is nearly a
-        // full block wide, so the nudge needs enough distance and attempts to actually
-        // clear it - a couple of tiny steps isn't enough and silently fails every mirror.
+        // The ray starts inside the mirror's own collision box (post plus the plate's swept
+        // volume), so skip past hits on the mirror's two cells and keep casting. The plate
+        // box is nearly a block wide, so this needs enough steps to clear it.
         for (int i = 0; i < 16; i++) {
             ClipContext ctx = new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty());
             HitResult result = level.clip(ctx);
@@ -381,10 +365,8 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
                 from = blockHit.getLocation().add(to.subtract(from).normalize().scale(0.2));
                 continue;
             }
-            // A BLOCK hit is only fine if it landed on this same tower - the ray is aimed
-            // at one specific column of the tower's face, but on a footprint wider than 1
-            // it will often clip a *different* block of the same structure first.
-            // Anything belonging to a different tower or the world is a real obstruction.
+            // On a wide tower the ray often hits a different block of this same tower
+            // first, which is fine. Anything else is a real obstruction.
             if (!level.getBlockState(hitPos).is(ModBlocks.SOLAR_POWER_TOWER.get())) return false;
             return level.getBlockEntity(hitPos) instanceof SolarPowerTowerBlockEntity hitTower
                     && worldPosition.equals(hitTower.getController());
@@ -413,10 +395,20 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         sync();
     }
 
+    // setRemoved() also runs when the chunk just unloads, and the mirrors should stay
+    // linked through that
+    private boolean chunkUnloading = false;
+
+    @Override
+    public void onChunkUnloaded() {
+        chunkUnloading = true;
+        super.onChunkUnloaded();
+    }
+
     @Override
     public void setRemoved() {
         super.setRemoved();
-        if (level != null && !level.isClientSide && isController())
+        if (!chunkUnloading && level != null && !level.isClientSide && isController())
             clearMirrorRegistrations();
     }
 
@@ -427,11 +419,9 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         super.removeController(keepContents);
     }
 
-    // Triangle curve: ramps 0→100% up to the optimal mirror count, then falls back to 0% at 2× optimal.
-    // Optimal scales linearly from 0 up to the tracked-mirror cap as this tower's own field radius
-    // approaches the configured max radius - a maxed-out tower's field is by design the 100% point.
-    // (Scaling off the field's circumference instead would peak well under the cap for any tower,
-    // since mirrorRadius() is itself capped independently of the tracked-mirror limit.)
+    // Triangle curve: ramps 0 -> 100% up to the optimal mirror count, then falls back to 0%
+    // at 2x optimal. Optimal scales linearly up to the tracked-mirror cap as this tower's
+    // field radius approaches the configured max radius.
     private float mirrorEfficiency() {
         if (cachedMirrorCount == 0) return 0f;
         float radiusFraction = (float) mirrorRadius() / Config.solarPowerTowerMirrorMaxRadius;
@@ -444,7 +434,15 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
     public float getEfficiency() { return mirrorEfficiency(); }
     public float getGenerationRate() { return lastGenerationRate; }
 
-    public void syncToClients() { sync(); }
+    // Wrenching switches between Molten Salt and Steam output, discarding whatever the
+    // old output tank held. Returns the new mode.
+    public boolean toggleSteamMode() {
+        steamMode = !steamMode;
+        (steamMode ? saltTank : steamTank).setFluid(FluidStack.EMPTY);
+        setChanged();
+        sync();
+        return steamMode;
+    }
 
     private void setLit(boolean lit) {
         if (level == null) return;
@@ -510,28 +508,13 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         if (ctrl == null) return false;
         if (ctrl != this) return ctrl.addToGoggleTooltip(tooltip, isPlayerSneaking);
 
-        int cap = waterTank.getCapacity();
         CreateLang.translate("solar_punk.tooltip.solar_power_tower_header").forGoggles(tooltip);
 
-        CreateLang.translate("solar_punk.tooltip.water")
-                .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(waterTank.getFluidAmount())
-                        .text(" / " + cap + " mB").style(ChatFormatting.AQUA).component())
-                .forGoggles(tooltip, 1);
-
-        if (ctrl.steamMode) {
-            CreateLang.translate("solar_punk.tooltip.steam")
-                    .style(ChatFormatting.GRAY)
-                    .add(CreateLang.number(steamTank.getFluidAmount())
-                            .text(" / " + cap + " mB").style(ChatFormatting.WHITE).component())
-                    .forGoggles(tooltip, 1);
-        } else {
-            CreateLang.translate("solar_punk.tooltip.molten_salt")
-                    .style(ChatFormatting.GRAY)
-                    .add(CreateLang.number(saltTank.getFluidAmount())
-                            .text(" / " + cap + " mB").style(ChatFormatting.GOLD).component())
-                    .forGoggles(tooltip, 1);
-        }
+        GoggleHelper.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
+        if (ctrl.steamMode)
+            GoggleHelper.tank(tooltip, "steam", steamTank, ChatFormatting.WHITE);
+        else
+            GoggleHelper.tank(tooltip, "molten_salt", saltTank, ChatFormatting.GOLD);
 
         CreateLang.translate("solar_punk.tooltip.tower_mode")
                 .style(ChatFormatting.GRAY)

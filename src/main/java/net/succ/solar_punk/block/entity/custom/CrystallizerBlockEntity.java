@@ -1,5 +1,7 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.GoggleHelper;
+import net.succ.solar_punk.util.PonderHelper;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.ChatFormatting;
@@ -26,6 +28,8 @@ import net.succ.solar_punk.sound.ModSounds;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import net.succ.solar_punk.util.FluidTankNBTHelper;
 
 /**
  * Generic two-fluids-in, item-plus-optional-fluid-out machine. Everything about what it
@@ -102,9 +106,8 @@ public class CrystallizerBlockEntity extends BlockEntity implements IHaveGoggleI
             };
         }
 
-        // A fluid that's input A for one recipe and input B for another is inherently
-        // ambiguous - it's routed to tank A first. Fine for a first pass; pack authors
-        // sharing a fluid across both roles should expect that.
+        // A fluid that's input A for one recipe and input B for another is ambiguous, so
+        // it goes to tank A.
         @Override public int fill(FluidStack resource, FluidAction action) {
             if (matchesKnownInputA(resource)) return inputTankA.fill(resource, action);
             if (matchesKnownInputB(resource)) return inputTankB.fill(resource, action);
@@ -131,21 +134,24 @@ public class CrystallizerBlockEntity extends BlockEntity implements IHaveGoggleI
     // -------------------------------------------------------------------------
 
     private boolean matchesKnownInputA(FluidStack stack) {
-        if (level == null) return true; // permissive before the world is known, same as SolarHeaterBlockEntity
-        return level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.CRYSTALLIZING.get()).stream()
-                .anyMatch(r -> !r.value().inputA().isEmpty() && r.value().inputA().getFluid().isSame(stack.getFluid()));
+        return matchesAnyRecipe(stack, CrystallizerRecipe::inputA);
     }
 
     private boolean matchesKnownInputB(FluidStack stack) {
-        if (level == null) return true;
-        return level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.CRYSTALLIZING.get()).stream()
-                .anyMatch(r -> !r.value().inputB().isEmpty() && r.value().inputB().getFluid().isSame(stack.getFluid()));
+        return matchesAnyRecipe(stack, CrystallizerRecipe::inputB);
     }
 
     private boolean matchesKnownByproduct(FluidStack stack) {
+        return matchesAnyRecipe(stack, CrystallizerRecipe::byproduct);
+    }
+
+    // Whether any recipe uses this fluid in the given role. Permissive before the level is
+    // known (e.g. while loading), so saved contents aren't rejected.
+    private boolean matchesAnyRecipe(FluidStack stack, Function<CrystallizerRecipe, FluidStack> role) {
         if (level == null) return true;
         return level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.CRYSTALLIZING.get()).stream()
-                .anyMatch(r -> !r.value().byproduct().isEmpty() && r.value().byproduct().getFluid().isSame(stack.getFluid()));
+                .map(r -> role.apply(r.value()))
+                .anyMatch(fluid -> !fluid.isEmpty() && fluid.getFluid().isSame(stack.getFluid()));
     }
 
     private Optional<CrystallizerRecipe> findRecipe() {
@@ -170,12 +176,18 @@ public class CrystallizerBlockEntity extends BlockEntity implements IHaveGoggleI
                         && current.getCount() + recipe.result().getCount() <= current.getMaxStackSize());
     }
 
+    // Room for all of it, and the same fluid as what's already in the tank, or the
+    // byproduct would be lost
     private boolean byproductHasRoom(CrystallizerRecipe recipe) {
-        return outputFluidTank.getFluidAmount() + recipe.byproduct().getAmount() <= outputFluidTank.getCapacity();
+        return outputFluidTank.fill(recipe.byproduct(), IFluidHandler.FluidAction.SIMULATE) == recipe.byproduct().getAmount();
     }
 
     public void tick() {
         if (level == null || level.isClientSide) return;
+
+        // Goggles read the client's copy, so keep it fresh even while idle
+        if (level.getGameTime() % 20 == 0)
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
 
         Optional<CrystallizerRecipe> recipeOpt = findRecipe();
         if (recipeOpt.isEmpty()) {
@@ -210,21 +222,12 @@ public class CrystallizerBlockEntity extends BlockEntity implements IHaveGoggleI
             outputResult(recipe);
             setChanged();
 
-            // One-shot quench hiss right as a cycle actually completes, not a looped
-            // ambient hum - the Crystallizer is a repeated dunk-and-quench cycle, not a
-            // continuously running machine, so the sound should punctuate each cycle the
-            // same way geyser_puff punctuates each geyser burst rather than droning
-            // throughout the whole processingTime(). Server-side playSound(null, ...)
-            // broadcasts to every nearby client, not just a local-only sound.
-            // steam_hiss.ogg is mastered ~8.8 dB hotter than electric_motor_buzz.ogg
-            // (mean -25.4 dB vs -34.2 dB, ffmpeg volumedetect) - a loudness match
-            // against BrassPanelSoundInstance's 0.75f lands around 0.27f.
-            level.playSound(null, worldPosition, ModSounds.STEAM_HISS.get(), SoundSource.BLOCKS,
-                    0.27f, 0.9f + level.getRandom().nextFloat() * 0.2f);
+            // One quench hiss per finished cycle rather than a looping hum. Volume is
+            // matched to the other machine sounds (see MachineSoundInstance).
+            if (!PonderHelper.isPonder(level))
+                level.playSound(null, worldPosition, ModSounds.STEAM_HISS.get(), SoundSource.BLOCKS,
+                        0.27f, 0.9f + level.getRandom().nextFloat() * 0.2f);
         }
-
-        if (level.getGameTime() % 20 == 0)
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
     }
 
     private void outputResult(CrystallizerRecipe recipe) {
@@ -257,38 +260,9 @@ public class CrystallizerBlockEntity extends BlockEntity implements IHaveGoggleI
                 .add(CreateLang.number(progress).style(ChatFormatting.YELLOW).component())
                 .forGoggles(tooltip, 1);
 
-        if (!inputTankA.isEmpty()) {
-            CreateLang.translate("solar_punk.tooltip.crystallizer_input_a")
-                    .style(ChatFormatting.GRAY)
-                    .add(inputTankA.getFluid().getHoverName().copy().withStyle(ChatFormatting.GOLD))
-                    .forGoggles(tooltip, 1);
-            CreateLang.number(inputTankA.getFluidAmount())
-                    .text(" / " + inputTankA.getCapacity() + " mB")
-                    .style(ChatFormatting.AQUA)
-                    .forGoggles(tooltip, 2);
-        }
-
-        if (!inputTankB.isEmpty()) {
-            CreateLang.translate("solar_punk.tooltip.crystallizer_input_b")
-                    .style(ChatFormatting.GRAY)
-                    .add(inputTankB.getFluid().getHoverName().copy().withStyle(ChatFormatting.GOLD))
-                    .forGoggles(tooltip, 1);
-            CreateLang.number(inputTankB.getFluidAmount())
-                    .text(" / " + inputTankB.getCapacity() + " mB")
-                    .style(ChatFormatting.AQUA)
-                    .forGoggles(tooltip, 2);
-        }
-
-        if (!outputFluidTank.isEmpty()) {
-            CreateLang.translate("solar_punk.tooltip.crystallizer_byproduct")
-                    .style(ChatFormatting.GRAY)
-                    .add(outputFluidTank.getFluid().getHoverName().copy().withStyle(ChatFormatting.YELLOW))
-                    .forGoggles(tooltip, 1);
-            CreateLang.number(outputFluidTank.getFluidAmount())
-                    .text(" / " + outputFluidTank.getCapacity() + " mB")
-                    .style(ChatFormatting.AQUA)
-                    .forGoggles(tooltip, 2);
-        }
+        GoggleHelper.namedTank(tooltip, "crystallizer_input_a", inputTankA, ChatFormatting.GOLD);
+        GoggleHelper.namedTank(tooltip, "crystallizer_input_b", inputTankB, ChatFormatting.GOLD);
+        GoggleHelper.namedTank(tooltip, "crystallizer_byproduct", outputFluidTank, ChatFormatting.YELLOW);
 
         ItemStack output = itemHandler.getStackInSlot(0);
         if (!output.isEmpty()) {

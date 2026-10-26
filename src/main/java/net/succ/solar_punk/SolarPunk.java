@@ -1,5 +1,6 @@
 package net.succ.solar_punk;
 
+import net.succ.solar_punk.block.custom.AcceleratorRing;
 import com.simibubi.create.api.behaviour.display.DisplaySource;
 import com.simibubi.create.api.boiler.BoilerHeater;
 import com.simibubi.create.api.stress.BlockStressValues;
@@ -13,7 +14,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.succ.solar_punk.pollution.GlobalWarmingHandler;
+import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.FermentationVatBlockEntity;
@@ -21,25 +22,27 @@ import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineRotorBlockEntity;
 import net.succ.solar_punk.datagen.DataGenerators;
 import net.succ.solar_punk.display.ModDisplaySources;
-import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.fluid.ModFluidTypes;
+import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.item.ModCreativeModeTabs;
+import net.succ.solar_punk.item.ModDataComponents;
 import net.succ.solar_punk.item.ModItems;
+import net.succ.solar_punk.network.SelectPipeShapePayload;
+import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
 import net.succ.solar_punk.sound.ModSounds;
-import net.succ.solar_punk.advancement.ModTriggers;
-import net.succ.solar_punk.worldgen.ModFeatures;
 import net.succ.solar_punk.worldgen.ModBiomeModifierTypes;
+import net.succ.solar_punk.worldgen.ModFeatures;
 
 @Mod(SolarPunk.MODID)
 public class SolarPunk {
     public static final String MODID = "solarpunk";
 
     public SolarPunk(IEventBus modEventBus, ModContainer modContainer) {
-
         ModFluidTypes.register(modEventBus);
         ModFluids.register(modEventBus);
         ModItems.register(modEventBus);
+        ModDataComponents.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
@@ -54,6 +57,7 @@ public class SolarPunk {
         modEventBus.addListener(Config::onLoad);
         modEventBus.addListener(SolarPunk::registerCapabilities);
         modEventBus.addListener(SolarPunk::commonSetup);
+        modEventBus.addListener(SelectPipeShapePayload::register);
 
         NeoForge.EVENT_BUS.addListener(GlobalWarmingHandler::onLevelTick);
 
@@ -64,9 +68,21 @@ public class SolarPunk {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 ModBlockEntities.SOLAR_HEATER.get(),
-                (be, side) -> be.itemHandler
+                (be, side) -> be.automationHandler
         );
-        // Top face intentionally blocked — a pipe there would occlude the sky check.
+        // Particle Accelerator Input: items through the cap, the opposite side and the top, so
+        // one face can feed it while another pulls results out. Not through the pipe ends or
+        // the shaft underneath (null side = internal access).
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(),
+                (be, side) -> {
+                    if (side == null || side == Direction.UP) return be.capHandler;
+                    Direction cap = AcceleratorRing.capSide(be.getBlockState());
+                    return side == cap || side == cap.getOpposite() ? be.capHandler : null;
+                }
+        );
+        // Top face intentionally blocked: a pipe there would block the sky check.
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 ModBlockEntities.SOLAR_HEATER.get(),
@@ -77,7 +93,7 @@ public class SolarPunk {
                 ModBlockEntities.BRASS_SOLAR_PANEL.get(),
                 (be, side) -> be.energyStorage
         );
-        // No sun-visibility requirement here (unlike the Solar Heater) — every face is safe.
+        // No sky check here (unlike the Solar Heater), so every face is open.
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 ModBlockEntities.CRYSTALLIZER.get(),
@@ -91,7 +107,7 @@ public class SolarPunk {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 ModBlockEntities.FIREBOX_BOILER.get(),
-                (be, side) -> be.itemHandler
+                (be, side) -> be.automationHandler
         );
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
@@ -119,7 +135,7 @@ public class SolarPunk {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 ModBlockEntities.BIOMASS_GASIFIER.get(),
-                (be, side) -> be.itemHandler
+                (be, side) -> be.automationHandler
         );
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
@@ -163,7 +179,7 @@ public class SolarPunk {
         // The Core itself is buried at dead center of the sealed Casing sphere and
         // unreachable by any pipe/hopper once the reactor is built - the direct Core
         // registrations above only ever matter mid-construction, before the shell
-        // closes. Every exterior Casing block proxies through to the same tanks/slot.
+        // closes. Every exterior Casing block proxies through to the same tanks and slots.
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 ModBlockEntities.FUSION_REACTOR_CASING.get(),
@@ -195,6 +211,8 @@ public class SolarPunk {
             // so the Casing registration is what actually matters post-construction.
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CORE.get(), ModDisplaySources.FUSION_REACTOR_LITHIUM_BUFFER.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_LITHIUM_BUFFER.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CORE.get(), ModDisplaySources.FUSION_REACTOR_TRITIUM_SUPPLY.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_TRITIUM_SUPPLY.get());
             // The rest are Casing-only (Casing and Casing Glass share this BE type) - read
             // from the outside of the shell, never the buried Core.
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_STATUS.get());
@@ -203,7 +221,11 @@ public class SolarPunk {
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_DEUTERIUM.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_STEAM_TANK.get());
 
-            // Generators — capacity (per RPM) and generated RPM for stress tooltips
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), ModDisplaySources.PARTICLE_ACCELERATOR_STATUS.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), ModDisplaySources.PARTICLE_ACCELERATOR_RECIPE.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), ModDisplaySources.PARTICLE_ACCELERATOR_PROGRESS.get());
+
+            // Generators: capacity and generated RPM for stress tooltips
             BlockStressValues.CAPACITIES.register(ModBlocks.ANDESITE_SOLAR_PANEL.get(),
                 () -> (double) Config.andesiteNoonSu);
             BlockStressValues.RPM.register(ModBlocks.ANDESITE_SOLAR_PANEL.get(),
@@ -230,11 +252,11 @@ public class SolarPunk {
                 new GeneratedRpm(Config.kineticBatteryRpm, false));
 
             BlockStressValues.CAPACITIES.register(ModBlocks.TURBINE_ROTOR.get(),
-                () -> (double) Config.turbineSuPerLayer * 21);
+                () -> (double) Config.turbineSuPerLayer * TurbineRotorBlockEntity.MAX_LAYERS);
             BlockStressValues.RPM.register(ModBlocks.TURBINE_ROTOR.get(),
                 new GeneratedRpm(Config.turbineMaxRpm, false));
 
-            // Consumer — stress impact for tooltip
+            // Consumer: stress impact for tooltip
             BlockStressValues.IMPACTS.register(ModBlocks.BIOFILTER.get(),
                 () -> (double) Config.biofilterSu);
         });

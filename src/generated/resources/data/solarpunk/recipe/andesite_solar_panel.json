@@ -6,7 +6,10 @@
       "item": "create:andesite_alloy"
     },
     "G": {
-      "item": "minecraft:glass_pane"
+      "tag": "c:glass_panes/colorless"
+    },
+    "I": {
+      "tag": "c:plates/iron"
     },
     "S": {
       "item": "create:shaft"
@@ -14,7 +17,7 @@
   },
   "pattern": [
     "GGG",
-    "AAA",
+    "IAI",
     "ASA"
   ],
   "result": {

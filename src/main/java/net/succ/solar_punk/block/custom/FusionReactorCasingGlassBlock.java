@@ -12,10 +12,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCasingBlockEntity;
 
-// See-through variant of FusionReactorCasingBlock - swap in for observation windows on
-// the containment shell, same as TurbineCasingGlassBlock is to TurbineCasingBlock.
-// Shares FusionReactorCasingBlockEntity with the opaque variant (same goggle-tooltip
-// proxy, same shared registration TurbineCasingGlassBlock uses for TURBINE_CASING).
+// See-through variant of FusionReactorCasingBlock for observation windows. Shares
+// FusionReactorCasingBlockEntity with the solid casing.
 public class FusionReactorCasingGlassBlock extends TransparentBlock implements IWrenchable, EntityBlock {
     public FusionReactorCasingGlassBlock(Properties properties) {
         super(properties);

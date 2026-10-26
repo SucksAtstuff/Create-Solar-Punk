@@ -1,18 +1,19 @@
 package net.succ.solar_punk.block.custom;
 
+import com.simibubi.create.foundation.item.ItemHelper;
+import net.succ.solar_punk.util.MachineInteractions;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.Containers;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -26,7 +27,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.SolarHeaterBlockEntity;
 
@@ -70,45 +70,23 @@ public class SolarHeaterBlock extends Block implements IBE<SolarHeaterBlockEntit
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
                                               Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.isClientSide) return ItemInteractionResult.SUCCESS;
         if (!(level.getBlockEntity(pos) instanceof SolarHeaterBlockEntity be))
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-
-        // Bucket fill/empty
-        if (FluidUtil.interactWithFluidHandler(player, hand, be.combinedFluidHandler)) {
-            return ItemInteractionResult.SUCCESS;
-        }
-
-        ItemStack simResult = be.itemHandler.insertItem(0, stack, true);
-        if (simResult.getCount() < stack.getCount()) {
-            ItemStack remaining = be.itemHandler.insertItem(0, stack, false);
-            if (!player.isCreative()) player.setItemInHand(hand, remaining);
-            be.setChanged();
-            return ItemInteractionResult.SUCCESS;
-        }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return MachineInteractions.useItem(level, player, hand, stack, be, be.combinedFluidHandler, be.itemHandler, 0);
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                                                Player player, BlockHitResult hit) {
-        if (level.isClientSide) return InteractionResult.SUCCESS;
         if (!(level.getBlockEntity(pos) instanceof SolarHeaterBlockEntity be)) return InteractionResult.PASS;
-        ItemStack extracted = be.itemHandler.extractItem(0, 64, false);
-        if (!extracted.isEmpty()) {
-            player.getInventory().add(extracted);
-            be.setChanged();
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.PASS;
+        // Evaporated Salt first, then the item being melted
+        return MachineInteractions.takeOut(level, player, be, be.itemHandler, 1, 0);
     }
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof SolarHeaterBlockEntity be) {
-            for (int i = 0; i < be.itemHandler.getSlots(); i++)
-                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), be.itemHandler.getStackInSlot(i));
-        }
+        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof SolarHeaterBlockEntity be)
+            ItemHelper.dropContents(level, pos, be.itemHandler);
         super.onRemove(state, level, pos, newState, movedByPiston);
     }
 
@@ -131,10 +109,7 @@ public class SolarHeaterBlock extends Block implements IBE<SolarHeaterBlockEntit
     @Override
     @SuppressWarnings("unchecked")
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        // Used to be server-only (level.isClientSide -> null) - SolarHeaterBlockEntity#tick()
-        // now needs to run client-side too for tickAudio() (the shimmer ambience sound),
-        // matching BiofuelEngineBlock/BiomassGasifierBlock/BiofilterBlock. tick() itself
-        // still branches level.isClientSide right at the top before touching server state.
+        // Ticks on both sides: the client side drives the shimmer sound.
         if (type != ModBlockEntities.SOLAR_HEATER.get()) return null;
         return (BlockEntityTicker<T>) (BlockEntityTicker<SolarHeaterBlockEntity>) (l, p, s, be) -> be.tick();
     }

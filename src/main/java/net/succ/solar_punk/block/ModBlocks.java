@@ -12,37 +12,38 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
+import net.succ.solar_punk.block.custom.BiofilterBlock;
 import net.succ.solar_punk.block.custom.BiofuelEngineBlock;
 import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
+import net.succ.solar_punk.block.custom.CrystallizerBlock;
+import net.succ.solar_punk.block.custom.DeadGrassBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.FermentationVatItem;
 import net.succ.solar_punk.block.custom.FireboxBoilerBlock;
+import net.succ.solar_punk.block.custom.FusionReactorCasingBlock;
+import net.succ.solar_punk.block.custom.FusionReactorCasingGlassBlock;
+import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
 import net.succ.solar_punk.block.custom.GeyserCapBlock;
 import net.succ.solar_punk.block.custom.GeyserVentBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
-import net.succ.solar_punk.block.custom.CrystallizerBlock;
 import net.succ.solar_punk.block.custom.KineticBatteryBlock;
+import net.succ.solar_punk.block.custom.ParticleAcceleratorInputBlock;
+import net.succ.solar_punk.block.custom.ParticleAcceleratorPipeBlock;
+import net.succ.solar_punk.item.ParticleAcceleratorPipeItem;
+import net.succ.solar_punk.block.custom.KineticSprinklerBlock;
+import net.succ.solar_punk.block.custom.KineticSprinklerItem;
 import net.succ.solar_punk.block.custom.SolarHeaterBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerItem;
-import net.succ.solar_punk.block.custom.BiofilterBlock;
-import net.succ.solar_punk.block.custom.DeadGrassBlock;
-import net.succ.solar_punk.block.custom.KineticSprinklerBlock;
-import net.succ.solar_punk.block.custom.KineticSprinklerItem;
+import net.succ.solar_punk.block.custom.TurbineBladeBlock;
 import net.succ.solar_punk.block.custom.TurbineCasingBlock;
 import net.succ.solar_punk.block.custom.TurbineCasingGlassBlock;
 import net.succ.solar_punk.block.custom.TurbineRotorBlock;
-import net.succ.solar_punk.block.custom.AndesiteTurbineBladeBlock;
-import net.succ.solar_punk.block.custom.BrassTurbineBladeBlock;
-import net.succ.solar_punk.block.custom.FusionReactorCasingBlock;
-import net.succ.solar_punk.block.custom.FusionReactorCasingGlassBlock;
-import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
-import net.succ.solar_punk.block.custom.LithiumBreederModuleBlock;
-import net.succ.solar_punk.block.custom.BerylliumReflectorModuleBlock;
 import net.succ.solar_punk.item.ModItems;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ModBlocks {
@@ -70,39 +71,35 @@ public class ModBlocks {
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
 
-public static final DeferredBlock<GeyserCapBlock> GEYSER_CAP = registerBlock("geyser_cap",
+    public static final DeferredBlock<GeyserCapBlock> GEYSER_CAP = registerBlock("geyser_cap",
             () -> new GeyserCapBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
 
-public static final DeferredBlock<GeyserVentBlock> GEYSER_VENT = registerBlock("geyser_vent",
+    public static final DeferredBlock<GeyserVentBlock> GEYSER_VENT = registerBlock("geyser_vent",
             () -> new GeyserVentBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .strength(-1, 3600000f)
                     .requiresCorrectToolForDrops()
                     .pushReaction(PushReaction.BLOCK)));
 
-public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block",
+    public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.SNOW)
                     .requiresCorrectToolForDrops()
                     .strength(1.5f, 3.0f)));
 
-    // Hard-rock pegmatite ore (unlike Salt's surface evaporite) - generates underground
-    // everywhere, no biome gate. Drops Raw Lithium; see ModBlockLootTablesProvider.
+    // Generates underground everywhere, with no biome gate. Drops Raw Lithium.
     public static final DeferredBlock<Block> LITHIUM_ORE = registerBlock("lithium_ore",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .requiresCorrectToolForDrops()
                     .strength(3.0f, 3.0f)));
 
-    // Deepslate variant for the portion of the ore's Y range below the stone/deepslate
-    // transition - same +1.5 hardness / DEEPSLATE sound bump vanilla applies to its own
-    // ore pairs (iron_ore -> deepslate_iron_ore etc). Not yet wired into the ore feature
-    // (which currently targets LITHIUM_ORE for both mediums) - registered ready for when
-    // the worldgen split is turned on.
+    // Same hardness and sound bump vanilla gives its deepslate ores. Not generated yet:
+    // the ore feature still places LITHIUM_ORE in deepslate too.
     public static final DeferredBlock<Block> DEEPSLATE_LITHIUM_ORE = registerBlock("deepslate_lithium_ore",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.DEEPSLATE)
@@ -110,10 +107,7 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .strength(4.5f, 3.0f)
                     .sound(SoundType.DEEPSLATE)));
 
-    // Storage blocks - id/naming matches vanilla's own block-of-metal convention
-    // (registry name "lithium_block"/"beryllium_block", display name "Block of ___",
-    // same as minecraft:iron_block -> "Block of Iron"). Same hardness/resistance/sound
-    // as vanilla's own metal storage blocks (iron_block etc). No textures yet.
+    // Storage blocks, named and tuned like vanilla's metal blocks (iron_block -> "Block of Iron").
     public static final DeferredBlock<Block> LITHIUM_BLOCK = registerBlock("lithium_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
@@ -128,23 +122,20 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .strength(5.0f, 6.0f)
                     .sound(SoundType.METAL)));
 
-    // Fuel chain supply side (see plan_for_fusion.md) - both extractor blocks that used
-    // to live here (DeuteriumExtractorBlock, LithiumBrineExtractorBlock) have been
-    // replaced by Create Mixing recipes instead of bespoke single-purpose blocks - see
-    // ModMixingRecipeGen.WATER_TO_DEUTERIUM and .SALT_BRINE_TO_LITHIUM.
+    // Global warming wasteland blocks
 
     public static final DeferredBlock<Block> DEAD_GRASS_BLOCK = registerBlock("dead_grass_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_BROWN)
                     .strength(0.5f)
-                    .sound(net.minecraft.world.level.block.SoundType.GRASS)));
+                    .sound(SoundType.GRASS)));
 
     public static final DeferredBlock<DeadGrassBlock> DEAD_GRASS = registerBlock("dead_grass",
             () -> new DeadGrassBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_BROWN)
                     .noCollission()
                     .instabreak()
-                    .sound(net.minecraft.world.level.block.SoundType.GRASS)
+                    .sound(SoundType.GRASS)
                     .offsetType(BlockBehaviour.OffsetType.XZ)
                     .replaceable()));
 
@@ -152,13 +143,13 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.DIRT)
                     .strength(0.5f)
-                    .sound(net.minecraft.world.level.block.SoundType.GRAVEL)));
+                    .sound(SoundType.GRAVEL)));
 
     public static final DeferredBlock<Block> ASH_BLOCK = registerBlock("ash_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_LIGHT_GRAY)
                     .strength(0.3f)
-                    .sound(net.minecraft.world.level.block.SoundType.SAND)));
+                    .sound(SoundType.SAND)));
 
     public static final DeferredBlock<SolarHeaterBlock> SOLAR_HEATER = registerBlock("solar_heater",
             () -> new SolarHeaterBlock(BlockBehaviour.Properties.of()
@@ -259,22 +250,21 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
 
-    public static final DeferredBlock<AndesiteTurbineBladeBlock> ANDESITE_TURBINE_BLADE = registerBlock("andesite_turbine_blade",
-            () -> new AndesiteTurbineBladeBlock(BlockBehaviour.Properties.of()
+    public static final DeferredBlock<TurbineBladeBlock> ANDESITE_TURBINE_BLADE = registerBlock("andesite_turbine_blade",
+            () -> new TurbineBladeBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .requiresCorrectToolForDrops()
                     .strength(3.0f, 6.0f)
                     .noOcclusion()));
 
-    public static final DeferredBlock<BrassTurbineBladeBlock> BRASS_TURBINE_BLADE = registerBlock("brass_turbine_blade",
-            () -> new BrassTurbineBladeBlock(BlockBehaviour.Properties.of()
+    public static final DeferredBlock<TurbineBladeBlock> BRASS_TURBINE_BLADE = registerBlock("brass_turbine_blade",
+            () -> new TurbineBladeBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_YELLOW)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
 
-    // Fusion Reactor - Netherite-reinforced Copper containment shell, one tier past the
-    // Turbine's industrial iron casing to match the reactor's capstone status.
+    // Fusion Reactor containment shell, one tier above the Turbine's industrial iron casing.
     public static final DeferredBlock<FusionReactorCasingBlock> FUSION_REACTOR_CASING = registerBlock("fusion_reactor_casing",
             () -> new FusionReactorCasingBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
@@ -290,23 +280,21 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .noOcclusion()
                     .sound(SoundType.NETHERITE_BLOCK)));
 
-    // Blanket modules - fill the band between the Core and the Casing shell (see
-    // plan_for_fusion.md's Tunable knob section). Plain non-BE blocks; the ratio math
-    // lives entirely in FusionReactorCoreBlockEntity's scan.
-    public static final DeferredBlock<LithiumBreederModuleBlock> LITHIUM_BREEDER_MODULE = registerBlock("lithium_breeder_module",
-            () -> new LithiumBreederModuleBlock(BlockBehaviour.Properties.of()
+    // Blanket modules fill the band between the Core and the Casing shell. Plain blocks:
+    // FusionReactorCoreBlockEntity's scan counts them and does all the ratio math.
+    // Lithium is the fuel-efficient build, Beryllium burns more fuel for more steam.
+    public static final DeferredBlock<Block> LITHIUM_BREEDER_MODULE = registerBlock("lithium_breeder_module",
+            () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_LIGHT_BLUE)
                     .requiresCorrectToolForDrops()
                     .strength(4.0f, 8.0f)));
 
-    public static final DeferredBlock<BerylliumReflectorModuleBlock> BERYLLIUM_REFLECTOR_MODULE = registerBlock("beryllium_reflector_module",
-            () -> new BerylliumReflectorModuleBlock(BlockBehaviour.Properties.of()
+    public static final DeferredBlock<Block> BERYLLIUM_REFLECTOR_MODULE = registerBlock("beryllium_reflector_module",
+            () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_GREEN)
                     .requiresCorrectToolForDrops()
                     .strength(4.0f, 8.0f)));
 
-    // Reactor centerpiece - minimal placeholder, see FusionReactorCoreBlock. Plain
-    // auto-registered BlockItem, no custom placer logic.
     public static final DeferredBlock<FusionReactorCoreBlock> FUSION_REACTOR_CORE = registerBlock("fusion_reactor_core",
             () -> new FusionReactorCoreBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_BLACK)
@@ -315,6 +303,36 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
                     .noOcclusion()
                     .pushReaction(PushReaction.BLOCK)));
 
+    // Particle Accelerator ring pieces. Models only for now, no ring logic yet.
+    // One item places every pipe shape (picked from a radial menu, see PipeShape), so the
+    // bends and diagonal are registered without items of their own.
+    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE = registerBlockCustomItem("particle_accelerator_pipe",
+            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), ParticleAcceleratorPipeBlock.Kind.STRAIGHT),
+            block -> new ParticleAcceleratorPipeItem(block, new Item.Properties()));
+
+    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE_BEND = BLOCKS.register("particle_accelerator_pipe_bend",
+            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), ParticleAcceleratorPipeBlock.Kind.ANGLED));
+
+    // The same bend curving the other way (block models can rotate but not mirror).
+    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE_BEND_MIRRORED = BLOCKS.register("particle_accelerator_pipe_bend_mirrored",
+            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), ParticleAcceleratorPipeBlock.Kind.ANGLED));
+
+    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE_DIAGONAL = BLOCKS.register("particle_accelerator_pipe_diagonal",
+            () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), ParticleAcceleratorPipeBlock.Kind.ANGLED));
+
+    // Where shaft power enters the ring (the shaft hookup comes with the ring logic).
+    public static final DeferredBlock<ParticleAcceleratorInputBlock> PARTICLE_ACCELERATOR_INPUT = registerBlock("particle_accelerator_input",
+            () -> new ParticleAcceleratorInputBlock(acceleratorPipeProperties()));
+
+    private static BlockBehaviour.Properties acceleratorPipeProperties() {
+        return BlockBehaviour.Properties.of()
+                .mapColor(MapColor.METAL)
+                .requiresCorrectToolForDrops()
+                .strength(4.0f, 8.0f)
+                .sound(SoundType.METAL)
+                .noOcclusion();
+    }
+
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);
         ModItems.ITEMS.register(name, () -> new BlockItem(toReturn.get(), new Item.Properties()));
@@ -322,14 +340,10 @@ public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block"
     }
 
     private static <T extends Block> DeferredBlock<T> registerBlockCustomItem(String name, Supplier<T> block,
-            java.util.function.Function<T, ? extends BlockItem> itemFactory) {
+            Function<T, ? extends BlockItem> itemFactory) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);
         ModItems.ITEMS.register(name, () -> itemFactory.apply(toReturn.get()));
         return toReturn;
-    }
-
-    private static <T extends Block> DeferredBlock<T> registerBlockNoItem(String name, Supplier<T> block) {
-        return BLOCKS.register(name, block);
     }
 
     public static void register(IEventBus eventBus) {

@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.custom;
 
+import net.succ.solar_punk.util.MachineInteractions;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
@@ -16,9 +17,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.Config;
+import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 
 public class HeatBatteryBlock extends Block implements IBE<HeatBatteryBlockEntity>, IWrenchable {
@@ -40,12 +40,9 @@ public class HeatBatteryBlock extends Block implements IBE<HeatBatteryBlockEntit
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
                                               Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.isClientSide) return ItemInteractionResult.SUCCESS;
         if (!(level.getBlockEntity(pos) instanceof HeatBatteryBlockEntity be))
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        if (FluidUtil.interactWithFluidHandler(player, hand, be.fluidTank))
-            return ItemInteractionResult.SUCCESS;
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return MachineInteractions.useItem(level, player, hand, stack, be, be.fluidTank, null, 0);
     }
 
     @Override

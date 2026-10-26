@@ -22,6 +22,9 @@ public class SolarPunkPonderTags {
     public static final ResourceLocation FUSION_REACTOR =
             ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "fusion_reactor");
 
+    public static final ResourceLocation PARTICLE_ACCELERATOR =
+            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "particle_accelerator");
+
     public static void register(PonderTagRegistrationHelper<ResourceLocation> helper) {
         helper.registerTag(SOLAR_MACHINES)
                 .addToIndex()
@@ -89,5 +92,16 @@ public class SolarPunkPonderTags {
                 .add(ModBlocks.FUSION_REACTOR_CASING_GLASS.getId())
                 .add(ModBlocks.LITHIUM_BREEDER_MODULE.getId())
                 .add(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.getId());
+
+        helper.registerTag(PARTICLE_ACCELERATOR)
+                .addToIndex()
+                .item(ModBlocks.PARTICLE_ACCELERATOR_INPUT.get(), true, false)
+                .title("Particle Accelerator")
+                .description("A ring of pipes that smashes items together into new materials")
+                .register();
+
+        helper.addToTag(PARTICLE_ACCELERATOR)
+                .add(ModBlocks.PARTICLE_ACCELERATOR_INPUT.getId())
+                .add(ModBlocks.PARTICLE_ACCELERATOR_PIPE.getId());
     }
 }

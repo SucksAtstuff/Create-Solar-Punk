@@ -63,6 +63,10 @@ public class SolarPunkPonderPlugin implements PonderPlugin {
                         ModBlocks.FUSION_REACTOR_CASING_GLASS.getId(), ModBlocks.LITHIUM_BREEDER_MODULE.getId(),
                         ModBlocks.BERYLLIUM_REFLECTOR_MODULE.getId())
                 .addStoryBoard("fusion_reactor/structure", FusionReactorScenes::structure, SolarPunkPonderTags.FUSION_REACTOR);
+
+        helper.forComponents(ModBlocks.PARTICLE_ACCELERATOR_INPUT.getId(), ModBlocks.PARTICLE_ACCELERATOR_PIPE.getId())
+                .addStoryBoard("particle_accelerator/ring", ParticleAcceleratorScenes::ring, SolarPunkPonderTags.PARTICLE_ACCELERATOR)
+                .addStoryBoard("particle_accelerator/crafting", ParticleAcceleratorScenes::crafting, SolarPunkPonderTags.PARTICLE_ACCELERATOR);
     }
 
     @Override

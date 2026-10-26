@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "solarpunk:lithium_block"
+      "tag": "c:storage_blocks/lithium"
     }
   ],
   "result": {

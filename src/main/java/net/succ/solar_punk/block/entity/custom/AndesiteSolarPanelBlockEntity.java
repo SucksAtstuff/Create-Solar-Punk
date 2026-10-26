@@ -1,14 +1,10 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.util.GeneratorHelper;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity.RotationDirection;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
-import net.createmod.catnip.math.VecHelper;
-import net.minecraft.core.Direction;
-import net.minecraft.world.phys.Vec3;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
-import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +14,7 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
 
 import java.util.List;
+import net.succ.solar_punk.util.SolarHelper;
 
 public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity {
 
@@ -30,37 +27,17 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
-        rotationDirection = new ScrollOptionBehaviour<>(RotationDirection.class,
-                CreateLang.translateDirect("contraptions.windmill.rotation_direction"),
-                this,
-                new ValueBoxTransform.Sided() {
-                    @Override
-                    protected Vec3 getSouthLocation() {
-                        return VecHelper.voxelSpace(8, 5, 15.5);
-                    }
-                    @Override
-                    protected boolean isSideActive(BlockState state, Direction direction) {
-                        return direction.getAxis().isHorizontal();
-                    }
-                }
-        );
-        rotationDirection.withCallback($ -> this.updateGeneratedRotation());
+        rotationDirection = GeneratorHelper.rotationDirection(this, 5, (state, direction) -> direction.getAxis().isHorizontal());
         behaviours.add(rotationDirection);
     }
 
     @Override
     public float getGeneratedSpeed() {
-        if (!SolarHelper.hasSkyAccess(level, worldPosition)) return 0;
-        float speed = switch (SolarHelper.getPhase(level, worldPosition)) {
-            case MORNING, EVENING -> Config.andesiteMorningRpm;
-            case NOON -> SolarHelper.isRaining(level) ? Config.andesiteMorningRpm : Config.andesiteNoonRpm;
-            case NIGHT -> 0;
-        };
+        float speed = SolarHelper.byPhase(level, worldPosition, Config.andesiteMorningRpm, Config.andesiteNoonRpm);
         // Round so the network keeps clean integer RPM; the season only shifts every few
         // in-game days, so this doesn't churn the kinetic network.
         if (speed != 0) speed = Math.round(speed * SolarHelper.outputMultiplier(level, worldPosition));
-        if (rotationDirection.get() == RotationDirection.COUNTER_CLOCKWISE) speed = -speed;
-        return speed;
+        return GeneratorHelper.directed(speed, rotationDirection);
     }
 
     // Server-computed capacity, synced for the goggle tooltip. The client can't always work
@@ -76,16 +53,8 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
     }
 
     private float computeCapacity() {
-        float capacity = 0;
-        if (SolarHelper.hasSkyAccess(level, worldPosition)) {
-            capacity = switch (SolarHelper.getPhase(level, worldPosition)) {
-                case MORNING, EVENING -> Config.andesiteMorningSu;
-                case NOON -> SolarHelper.isRaining(level) ? Config.andesiteMorningSu : Config.andesiteNoonSu;
-                case NIGHT -> 0;
-            };
-            if (capacity != 0) capacity *= SolarHelper.outputMultiplier(level, worldPosition);
-        }
-        return capacity;
+        float capacity = SolarHelper.byPhase(level, worldPosition, Config.andesiteMorningSu, Config.andesiteNoonSu);
+        return capacity == 0 ? 0 : capacity * SolarHelper.outputMultiplier(level, worldPosition);
     }
 
     @Override

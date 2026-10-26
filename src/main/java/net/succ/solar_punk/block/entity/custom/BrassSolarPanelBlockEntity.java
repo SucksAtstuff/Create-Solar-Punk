@@ -1,10 +1,10 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.client.sound.MachineSoundInstance;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -23,6 +23,7 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
 import net.succ.solar_punk.client.sound.BrassPanelSoundInstance;
 import net.succ.solar_punk.util.EnergyFormat;
+import net.succ.solar_punk.util.SolarHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -56,12 +57,7 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
     }
 
     private int getGeneratedFE() {
-        if (!SolarHelper.hasSkyAccess(level, worldPosition)) return 0;
-        int base = switch (SolarHelper.getPhase(level, worldPosition)) {
-            case MORNING, EVENING -> Config.brassMorningFe;
-            case NOON -> SolarHelper.isRaining(level) ? Config.brassMorningFe : Config.brassNoonFe;
-            case NIGHT -> 0;
-        };
+        float base = SolarHelper.byPhase(level, worldPosition, Config.brassMorningFe, Config.brassNoonFe);
         if (base == 0) return 0;
         return Math.round(base * SolarHelper.outputMultiplier(level, worldPosition));
     }
@@ -81,12 +77,8 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
         }
 
         if (energyStorage.getEnergyStored() > 0) {
-            // Config.brassMaxExtract is a total-per-tick cap, not a per-face one - track
-            // the remaining budget across the whole loop so a panel touching several FE
-            // receivers at once can't multiply its output by however many faces are
-            // connected. Without this, each face got its own full extractEnergy() budget
-            // and the panel would happily drain its 100 000 FE buffer several times over
-            // the tooltip's stated rate for as long as that buffer lasted.
+            // Config.brassMaxExtract is a total per-tick cap shared across all faces, so a
+            // panel touching several receivers can't multiply its output.
             int remainingBudget = Config.brassMaxExtract;
             for (Direction dir : Direction.values()) {
                 if (remainingBudget <= 0) break;
@@ -119,11 +111,8 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
 
     @OnlyIn(Dist.CLIENT)
     public void tickAudio() {
-        if (getBlockState().getValue(BrassSolarPanelBlock.LIT)
-                && (soundInstance == null || soundInstance.isStopped())) {
-            soundInstance = new BrassPanelSoundInstance(this);
-            Minecraft.getInstance().getSoundManager().play(soundInstance);
-        }
+        soundInstance = MachineSoundInstance.keepPlaying(level, soundInstance,
+                getBlockState().getValue(BrassSolarPanelBlock.LIT), () -> new BrassPanelSoundInstance(this));
     }
 
     @Override

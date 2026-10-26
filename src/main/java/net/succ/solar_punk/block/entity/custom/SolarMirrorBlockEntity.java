@@ -9,6 +9,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 /**
  * A heliostat mirror. Holds no logic of its own beyond remembering which Solar Power
  * Tower controller it is currently reporting to - the tower drives discovery, occlusion
@@ -31,7 +33,7 @@ public class SolarMirrorBlockEntity extends BlockEntity {
 
     /** Called by the owning tower controller when this mirror is accepted into / dropped from its field. */
     public void setLinkedTower(@Nullable BlockPos tower) {
-        if (java.util.Objects.equals(linkedTower, tower)) return;
+        if (Objects.equals(linkedTower, tower)) return;
         linkedTower = tower;
         setChanged();
         if (level != null && !level.isClientSide)

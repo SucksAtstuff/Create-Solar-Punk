@@ -4,12 +4,16 @@
   "category": "misc",
   "key": {
     "B": {
-      "item": "solarpunk:beryllium_ingot"
+      "tag": "c:ingots/beryllium"
+    },
+    "S": {
+      "tag": "c:plates/copper"
     }
   },
   "pattern": [
-    "BBBB",
-    "BB  "
+    "BBB",
+    "BSB",
+    "BBB"
   ],
   "result": {
     "count": 2,

@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "solarpunk:salt_block"
+            "items": "#c:storage_blocks/salt"
           }
         ]
       },

@@ -32,7 +32,8 @@ public class SolarPunkJeiPlugin implements IModPlugin {
                 new SolarHeaterCategory(guiHelper),
                 new SolarPowerTowerCategory(guiHelper),
                 new FermentationVatCategory(guiHelper),
-                new CrystallizerCategory(guiHelper)
+                new CrystallizerCategory(guiHelper),
+                new ParticleAcceleratorCategory(guiHelper)
         );
     }
 
@@ -60,25 +61,20 @@ public class SolarPunkJeiPlugin implements IModPlugin {
                 .map(RecipeHolder::value)
                 .toList();
         registration.addRecipes(CrystallizerCategory.RECIPE_TYPE, crystallizerRecipes);
+
+        registration.addRecipes(ParticleAcceleratorCategory.RECIPE_TYPE, level.getRecipeManager()
+                .getAllRecipesFor(ModRecipeTypes.PARTICLE_ACCELERATOR.get())
+                .stream()
+                .map(RecipeHolder::value)
+                .toList());
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(
-                new ItemStack(ModBlocks.SOLAR_HEATER.get()),
-                SolarHeaterCategory.RECIPE_TYPE
-        );
-        registration.addRecipeCatalyst(
-                new ItemStack(ModBlocks.SOLAR_POWER_TOWER.get()),
-                SolarPowerTowerCategory.RECIPE_TYPE
-        );
-        registration.addRecipeCatalyst(
-                new ItemStack(ModBlocks.FERMENTATION_VAT.get()),
-                FermentationVatCategory.RECIPE_TYPE
-        );
-        registration.addRecipeCatalyst(
-                new ItemStack(ModBlocks.CRYSTALLIZER.get()),
-                CrystallizerCategory.RECIPE_TYPE
-        );
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.SOLAR_HEATER.get()), SolarHeaterCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.SOLAR_POWER_TOWER.get()), SolarPowerTowerCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.FERMENTATION_VAT.get()), FermentationVatCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.CRYSTALLIZER.get()), CrystallizerCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.PARTICLE_ACCELERATOR_INPUT.get()), ParticleAcceleratorCategory.RECIPE_TYPE);
     }
 }

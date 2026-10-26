@@ -1,0 +1,78 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "item": "minecraft:lightning_rod"
+  },
+  "loops": 3,
+  "results": [
+    {
+      "id": "solarpunk:electromagnet_coil"
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_electromagnet_coil"
+        },
+        {
+          "tag": "c:plates/copper"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_electromagnet_coil"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_electromagnet_coil"
+        },
+        {
+          "tag": "c:plates/copper"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_electromagnet_coil"
+        }
+      ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_electromagnet_coil"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_electromagnet_coil"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_electromagnet_coil"
+        },
+        {
+          "item": "create:electron_tube"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_electromagnet_coil"
+        }
+      ]
+    }
+  ],
+  "transitional_item": {
+    "id": "solarpunk:incomplete_electromagnet_coil"
+  }
+}

@@ -1,5 +1,8 @@
 package net.succ.solar_punk.datagen;
 
+import net.succ.solar_punk.compat.ponder.FermentationVatScenes;
+import net.succ.solar_punk.compat.ponder.ParticleAcceleratorScenes;
+import net.minecraft.core.BlockPos;
 import com.google.common.hash.Hashing;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -81,15 +84,15 @@ public class ModPonderProvider implements DataProvider {
                 // battery on the Z axis so shaft connections are north/south
                 .addBlock(2, 1, 2, "solarpunk:kinetic_battery", "axis", "z", "lit", "false")
                 // charging side (south, z+): shaft then hand-crank facing south
-                // facing=south → crank handle points away, shaft connects toward battery
+                // facing=south -> crank handle points away, shaft connects toward battery
                 .addBlock(2, 1, 3, "create:shaft", "axis", "z")
                 .addBlock(2, 1, 4, "create:hand_crank", "facing", "south")
                 // discharge side (north, z-): shaft then mechanical press facing=north
-                // facing=north → press shaft connects on south face toward battery
+                // facing=north -> press shaft connects on south face toward battery
                 .addBlock(2, 1, 1, "create:shaft", "axis", "z")
                 .addBlock(2, 1, 0, "create:mechanical_press", "facing", "north"));
 
-        // cap facing=north → rotation axis=X → shafts connect on east/west (x axis)
+        // cap facing=north -> rotation axis=X -> shafts connect on east/west (x axis)
         SCHEMATICS.put("geyser_cap/usage", new SceneStructure()
                 .withBasePlate()
                 .addBlock(2, 1, 2, "solarpunk:geyser_vent")
@@ -97,10 +100,16 @@ public class ModPonderProvider implements DataProvider {
                 .addBlock(1, 2, 2, "create:shaft", "axis", "x")
                 .addBlock(3, 2, 2, "create:shaft", "axis", "x"));
 
-        // 2×2×3 minimum working vat: x=1-2, z=1-2, y=1-3
-        SCHEMATICS.put("fermentation_vat/usage",   addVatLayers(new SceneStructure().withBasePlate(), 2, 3));
-        // 3×3×3 larger vat to show scaling
-        SCHEMATICS.put("fermentation_vat/scaling", addVatLayers(new SceneStructure().withBasePlate(), 3, 3));
+        // 2x2x4, the smallest vat that ferments, and a 3x3x6 one to show scaling.
+        // Sizes live in FermentationVatScenes so the scene and schematic can't drift apart.
+        SCHEMATICS.put("fermentation_vat/usage", addVatLayers(new SceneStructure().withBasePlate(),
+                FermentationVatScenes.USAGE_WIDTH, FermentationVatScenes.USAGE_HEIGHT));
+        SCHEMATICS.put("fermentation_vat/scaling", addVatLayers(new SceneStructure().withBasePlate(),
+                FermentationVatScenes.SCALING_WIDTH, FermentationVatScenes.SCALING_HEIGHT));
+
+        // 20-block octagon ring around a 10x10 plate, laid out in ParticleAcceleratorScenes.RING
+        SCHEMATICS.put("particle_accelerator/ring", addAcceleratorRing(new SceneStructure(10, 3, 10)));
+        SCHEMATICS.put("particle_accelerator/crafting", addAcceleratorRing(new SceneStructure(10, 3, 10)));
 
         // floor + 3 blade layers + cap = 5 total layers; 7x7x7 schematic
         SCHEMATICS.put("turbine_rotor/structure",
@@ -117,11 +126,8 @@ public class ModPonderProvider implements DataProvider {
         SCHEMATICS.put("turbine_rotor/horizontal",
                 addHorizontalTurbineLayers(new SceneStructure(7, 7, 7).withBasePlate(), 3, false));
 
-        // Tower pushed to the back corner (x=5-7/z=5-7/y=1-3) with a heliostat field
-        // spread out on the ground toward the camera, to its west and north - mirrors
-        // sit in front of the tower instead of behind it so the tower doesn't block
-        // them from view. Mirrors are freestanding two-cell blocks (lower/upper), not
-        // attached to the tower's faces.
+        // Tower in the back corner with the mirror field spread out on the ground to its
+        // west and north, in front of the tower so it doesn't block them from view.
         SceneStructure towerWithMirrors = addTowerLayers(new SceneStructure(9, 8, 9).withBasePlate());
         addGroundMirror(towerWithMirrors, 3, 5); // west side, near
         addGroundMirror(towerWithMirrors, 3, 7);
@@ -134,10 +140,8 @@ public class ModPonderProvider implements DataProvider {
         SCHEMATICS.put("solar_power_tower/usage",   towerWithMirrors);
         SCHEMATICS.put("solar_power_tower/mirrors", towerWithMirrors);
 
-        // Fixed voxel-sphere shell centered at (4,5,4) - 9x9x9 bounding box (0-8 on each
-        // axis, y=0 reserved for the ground row). Casing shell at rounded distance 4,
-        // Blanket band at rounded distance 3, Core at dead center - mirrors
-        // FusionReactorCoreBlockEntity.scanStructure()'s exact rounding rule.
+        // Reactor centered at (4,5,4) in a 9x10x9 box (y=0 is the ground row), built with
+        // the same shape rules as FusionReactorCoreBlockEntity's structure scan.
         SCHEMATICS.put("fusion_reactor/structure",
                 addReactorShell(new SceneStructure(9, 10, 9).withBasePlate()));
     }
@@ -265,9 +269,8 @@ public class ModPonderProvider implements DataProvider {
         return s;
     }
 
-    // Adds a 3×3×3 tower footprint (x=1-3, z=1-3, y=1-3) with correct position states.
-    // Footprint x=5-7/z=5-7/y=1-3 - pushed to the back corner of the plate so the
-    // mirror field (in front, toward lower x/z) isn't hidden behind it.
+    // Adds a 3x3x3 tower at x=5-7, z=5-7, y=1-3 with correct position states. It sits in
+    // the back corner of the plate so the mirror field in front of it isn't hidden.
     private static SceneStructure addTowerLayers(SceneStructure s) {
         for (int x = 5; x <= 7; x++)
             for (int z = 5; z <= 7; z++) {
@@ -287,26 +290,31 @@ public class ModPonderProvider implements DataProvider {
         return s;
     }
 
-    // Builds the reactor's fixed voxel-sphere shell centered at local (4,5,4) - see
-    // FusionReactorCoreBlockEntity's SCAN_RADIUS/CASING_SHELL_DIST/BLANKET_BAND_DIST/
-    // isRingPosition(). Shell (rounded distance 4, full sphere) alternates solid
-    // Casing with Casing Glass windows in one corner cluster (dx+dz <= -5, i.e. facing
-    // the default ponder camera angle - rotating an object 180 degrees around Y looks
-    // identical to rotating the camera 180 degrees around it, so this is the direct fix
-    // rather than panning the camera); Blanket band (rounded distance 3, ring positions
-    // only) splits by hemisphere, Beryllium Reflector on +X, Lithium Breeder on -X,
-    // just to give the scene a visibly mixed ratio rather than a uniform one.
+    // The scenes' octagon ring on a plate, with a shaft in the floor under the Input.
+    private static SceneStructure addAcceleratorRing(SceneStructure s) {
+        BlockPos shaft = ParticleAcceleratorScenes.SHAFT;
+        s.withBasePlateExcept(shaft.getX(), shaft.getZ());
+        s.addBlock(shaft.getX(), shaft.getY(), shaft.getZ(), "create:shaft", "axis", "y");
+        for (ParticleAcceleratorScenes.Piece piece : ParticleAcceleratorScenes.RING)
+            s.addBlock(piece.x(), 1, piece.z(), "solarpunk:" + piece.block(), "facing", piece.facing());
+        return s;
+    }
+
+    // Builds the reactor centered at local (4,5,4), using FusionReactorCoreBlockEntity's
+    // isCasingPosition()/isBlanketPosition(). The shell is solid Casing with a Casing
+    // Glass window in the corner facing the default Ponder camera (dx+dz <= -5). The
+    // Blanket is split by hemisphere (Beryllium on +X, Lithium on -X) so the scene shows
+    // a mixed ratio.
     private static SceneStructure addReactorShell(SceneStructure s) {
         int r = 4;
         for (int dx = -r; dx <= r; dx++)
             for (int dy = -r; dy <= r; dy++)
                 for (int dz = -r; dz <= r; dz++) {
-                    int dist = Math.round((float) Math.sqrt(dx * dx + dy * dy + dz * dz));
                     int x = dx + 4, y = dy + 5, z = dz + 4;
-                    if (dist == 4) {
+                    if (FusionReactorCoreBlockEntity.isCasingPosition(dx, dy, dz)) {
                         String block = (dx + dz <= -5) ? "solarpunk:fusion_reactor_casing_glass" : "solarpunk:fusion_reactor_casing";
                         s.addBlock(x, y, z, block);
-                    } else if (dist == 3 && FusionReactorCoreBlockEntity.isRingPosition(dx, dy, dz)) {
+                    } else if (FusionReactorCoreBlockEntity.isBlanketPosition(dx, dy, dz)) {
                         String module = dx >= 0 ? "solarpunk:beryllium_reflector_module" : "solarpunk:lithium_breeder_module";
                         s.addBlock(x, y, z, module);
                     }
@@ -334,10 +342,15 @@ public class ModPonderProvider implements DataProvider {
         }
 
         SceneStructure withBasePlate() {
+            return withBasePlateExcept(-1, -1);
+        }
+
+        // A plate with one hole, for something set into the floor (e.g. a shaft)
+        SceneStructure withBasePlateExcept(int holeX, int holeZ) {
             int idx = getOrAddPalette("minecraft:smooth_stone", Map.of());
             for (int x = 0; x < sizeX; x++)
                 for (int z = 0; z < sizeZ; z++)
-                    placeBlock(idx, x, 0, z);
+                    if (x != holeX || z != holeZ) placeBlock(idx, x, 0, z);
             return this;
         }
 

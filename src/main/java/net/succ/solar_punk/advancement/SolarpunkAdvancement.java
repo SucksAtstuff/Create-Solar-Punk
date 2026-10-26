@@ -5,7 +5,6 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -77,10 +76,8 @@ public class SolarpunkAdvancement {
         NOISY( AdvancementType.TASK,  true,  true,  false),
         EXPERT(AdvancementType.GOAL,  true,  true,  false),
         SECRET(AdvancementType.GOAL,  true,  true,  true),
-        // Purple "challenge" frame + fireworks, reserved exclusively for the Fusion
-        // Reactor - see plan_for_fusion.md's Advancement section. Every other capstone
-        // multiblock (Tower, Turbine, Fermentation Vat) uses EXPERT/GOAL; this is the
-        // one free "this is bigger than those" signal.
+        // Purple challenge frame, reserved for the Fusion Reactor. The other big
+        // multiblocks use EXPERT so the reactor stands out.
         CHALLENGE(AdvancementType.CHALLENGE, true, true, false);
 
         final AdvancementType advancementType;
@@ -123,12 +120,6 @@ public class SolarpunkAdvancement {
 
         public Builder description(String desc) {
             SolarpunkAdvancement.this.description = desc;
-            return this;
-        }
-
-        public Builder awardedForFree() {
-            mcBuilder.addCriterion(String.valueOf(keyIndex++),
-                    InventoryChangeTrigger.TriggerInstance.hasItems(new ItemPredicate[]{}));
             return this;
         }
 

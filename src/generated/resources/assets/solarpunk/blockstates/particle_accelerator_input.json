@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "solarpunk:block/particle_accelerator_input",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "solarpunk:block/particle_accelerator_input"
+    },
+    "facing=south": {
+      "model": "solarpunk:block/particle_accelerator_input",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "solarpunk:block/particle_accelerator_input",
+      "y": 270
+    }
+  }
+}

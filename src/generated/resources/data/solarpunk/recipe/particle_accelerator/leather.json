@@ -1,0 +1,17 @@
+{
+  "type": "solarpunk:particle_accelerator",
+  "ingredients": [
+    {
+      "count": 16,
+      "item": "minecraft:rotten_flesh"
+    }
+  ],
+  "min_diameter": 5,
+  "min_speed": 64,
+  "processing_time": 200,
+  "result": {
+    "count": 1,
+    "id": "minecraft:leather"
+  },
+  "stress": 4096.0
+}

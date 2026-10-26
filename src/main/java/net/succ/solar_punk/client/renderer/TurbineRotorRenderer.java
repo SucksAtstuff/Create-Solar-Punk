@@ -22,20 +22,12 @@ public class TurbineRotorRenderer extends KineticBlockEntityRenderer<TurbineRoto
     protected void renderSafe(TurbineRotorBlockEntity be, float partialTicks, PoseStack ms,
                                MultiBufferSource buffer, int light, int overlay) {
         BlockState state = be.getBlockState();
-        var vb = buffer.getBuffer(RenderType.cutoutMipped());
-
         if (!be.isMaster || !be.structureValid || be.turbineHeight < 2) return;
         if (!state.getValue(TurbineRotorBlock.ACTIVE)) return;
 
+        var vb = buffer.getBuffer(RenderType.cutoutMipped());
         Direction.Axis axis = state.getValue(TurbineRotorBlock.AXIS);
-        // "Positive" direction of the growth axis - matches TurbineRotorBlockEntity's
-        // own growthPositive(), i.e. which way layer index (dy) increases in the real
-        // structure.
-        Direction growthPositive = switch (axis) {
-            case X -> Direction.EAST;
-            case Y -> Direction.UP;
-            case Z -> Direction.SOUTH;
-        };
+        Direction growthPositive = TurbineRotorBlockEntity.growthPositive(axis);
         float angle = getAngleForBe(be, be.getBlockPos(), axis);
         float angleDeg = (float) Math.toDegrees(angle);
         int bladeLayers = be.turbineHeight - 1;
@@ -51,21 +43,11 @@ public class TurbineRotorRenderer extends KineticBlockEntityRenderer<TurbineRoto
                 float totalAngleDeg = angleDeg + arm * 90f;
                 BlockState bladeState = (typeMask & (1 << arm)) != 0 ? brassState : andesiteState;
 
-                // The blade model is authored thin along (local) Y, extending along
-                // (local) X, and everything below is built and proven around that
-                // (spin around Y, layers stack along Y). Rather than hand-composing
-                // separate X/Y rotations to reorient it for other growth axes (fragile -
-                // a fluent PoseStack-style chain applies rotations in the reverse of
-                // their call order, which is easy to get backwards), wrap the whole
-                // thing in a single rotateTo mapping native "up" onto the real growth
-                // axis. rotateTo pivots on the CURRENT origin, which at this point in
-                // the chain is still the block's corner, not its center - rotating the
-                // already-offset blade position around the wrong pivot is what swung it
-                // a whole block off, so the reorientation is sandwiched between a
-                // translate to the block center and back. That's an identity for
-                // axis=Y (unchanged behaviour) and, for other axes, guarantees the
-                // per-layer spacing lands exactly on the growth axis with no leftover
-                // offset.
+                // The blade model is thin along Y and extends along X, and the spin and
+                // layer stacking below are built for a vertical turbine. For other axes
+                // the whole thing is wrapped in one rotateTo mapping UP onto the growth
+                // axis, pivoted on the block center (rotateTo pivots on the current
+                // origin, which is still the block corner at that point in the chain).
                 CachedBuffers.block(KINETIC_BLOCK, bladeState)
                         .translate(0.5f, 0.5f, 0.5f)
                         .rotateTo(Direction.UP, growthPositive)

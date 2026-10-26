@@ -2,10 +2,10 @@
   "type": "create:item_application",
   "ingredients": [
     {
-      "item": "minecraft:copper_block"
+      "tag": "c:storage_blocks/copper"
     },
     {
-      "item": "minecraft:netherite_ingot"
+      "tag": "c:ingots/netherite"
     }
   ],
   "results": [

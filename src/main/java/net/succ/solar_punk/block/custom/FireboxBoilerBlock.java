@@ -1,5 +1,8 @@
 package net.succ.solar_punk.block.custom;
 
+import com.simibubi.create.foundation.item.ItemHelper;
+import net.succ.solar_punk.util.MachineInteractions;
+import net.succ.solar_punk.util.PonderHelper;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
@@ -7,7 +10,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -25,14 +27,12 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.FireboxBoilerBlockEntity;
 
-// Early-game, non-multiblock Steam source: burns any vanilla furnace fuel to boil
-// water into the mod's Steam fluid. Deliberately weak per-block (see
-// Config.fireboxBoilerSteamPerTick) so it bootstraps a Steam Turbine before a Solar
-// Power Tower is built, without ever being the block-efficient endgame choice.
+// Early-game Steam source: burns any furnace fuel to boil water into Steam. Weak on
+// purpose (see Config.fireboxBoilerSteamPerTick) so it bootstraps a Steam Turbine
+// before a Solar Power Tower, without replacing the tower.
 public class FireboxBoilerBlock extends Block implements IBE<FireboxBoilerBlockEntity>, IWrenchable {
 
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
@@ -56,16 +56,11 @@ public class FireboxBoilerBlock extends Block implements IBE<FireboxBoilerBlockE
                 .setValue(LIT, false);
     }
 
-    // Reuses vanilla's own furnace crackle (block.furnace.fire_crackle) rather than a
-    // bespoke sound - a Firebox Boiler genuinely is a furnace with extra plumbing, and
-    // Create's own Blaze Burner/boiler already lean on this same family of sound, so
-    // there's no case for spending an original clip on something that already has a
-    // perfect vanilla analog. Same 10%-per-animateTick-call chance and LIT gate vanilla's
-    // own FurnaceBlock#animateTick uses; only the pitch is lightly randomized (vanilla
-    // plays it dead flat at 1.0) so it doesn't read as a literal, unvaried copy-paste.
+    // Vanilla's furnace crackle, with the same 10% chance FurnaceBlock#animateTick uses.
+    // The pitch is lightly randomized so it doesn't sound like an exact copy.
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (state.getValue(LIT) && random.nextDouble() < 0.1) {
+        if (state.getValue(LIT) && random.nextDouble() < 0.1 && !PonderHelper.isPonder(level)) {
             level.playLocalSound(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5,
                     SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS,
                     1.0f, 0.9f + random.nextFloat() * 0.2f, false);
@@ -75,45 +70,22 @@ public class FireboxBoilerBlock extends Block implements IBE<FireboxBoilerBlockE
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
                                               Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.isClientSide) return ItemInteractionResult.SUCCESS;
         if (!(level.getBlockEntity(pos) instanceof FireboxBoilerBlockEntity be))
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-
-        // Bucket fill/empty - water in, steam out
-        if (FluidUtil.interactWithFluidHandler(player, hand, be.combinedFluidHandler)) {
-            return ItemInteractionResult.SUCCESS;
-        }
-
-        ItemStack simResult = be.itemHandler.insertItem(0, stack, true);
-        if (simResult.getCount() < stack.getCount()) {
-            ItemStack remaining = be.itemHandler.insertItem(0, stack, false);
-            if (!player.isCreative()) player.setItemInHand(hand, remaining);
-            be.setChanged();
-            return ItemInteractionResult.SUCCESS;
-        }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return MachineInteractions.useItem(level, player, hand, stack, be, be.combinedFluidHandler, be.itemHandler, 0);
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                                                Player player, BlockHitResult hit) {
-        if (level.isClientSide) return InteractionResult.SUCCESS;
         if (!(level.getBlockEntity(pos) instanceof FireboxBoilerBlockEntity be)) return InteractionResult.PASS;
-        ItemStack extracted = be.itemHandler.extractItem(0, 64, false);
-        if (!extracted.isEmpty()) {
-            player.getInventory().add(extracted);
-            be.setChanged();
-            return InteractionResult.SUCCESS;
-        }
-        return InteractionResult.PASS;
+        return MachineInteractions.takeOut(level, player, be, be.itemHandler, 0);
     }
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof FireboxBoilerBlockEntity be) {
-            for (int i = 0; i < be.itemHandler.getSlots(); i++)
-                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), be.itemHandler.getStackInSlot(i));
-        }
+        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof FireboxBoilerBlockEntity be)
+            ItemHelper.dropContents(level, pos, be.itemHandler);
         super.onRemove(state, level, pos, newState, movedByPiston);
     }
 

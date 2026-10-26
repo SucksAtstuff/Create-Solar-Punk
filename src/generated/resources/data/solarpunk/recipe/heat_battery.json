@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "B": {
-      "item": "create:brass_ingot"
+      "tag": "c:plates/brass"
     },
     "D": {
       "item": "minecraft:deepslate_bricks"
     },
     "S": {
-      "item": "solarpunk:salt_block"
+      "tag": "c:storage_blocks/salt"
     }
   },
   "pattern": [

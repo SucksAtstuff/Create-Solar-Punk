@@ -1,5 +1,6 @@
 package net.succ.solar_punk.recipe;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
@@ -15,11 +16,8 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 /**
- * Generic "cool/quench two fluids into an item, plus an optional fluid byproduct" recipe,
- * used by the Crystallizer block. Not tied to Molten Salt at all - inputB and byproduct
- * are both optional (pass FluidStack.EMPTY to omit them), so this same recipe type covers
- * anything shaped like "Fluid A (+ optional Fluid B) -> Item (+ optional Fluid C)".
- * Datapacks can add more recipes of this type without any code changes.
+ * Crystallizer recipe: Fluid A (+ optional Fluid B) -> Item (+ optional fluid byproduct).
+ * inputB and byproduct are FluidStack.EMPTY when omitted. Datapacks can add more.
  */
 public record CrystallizerRecipe(
         FluidStack inputA,
@@ -34,7 +32,7 @@ public record CrystallizerRecipe(
             FluidStack.CODEC.optionalFieldOf("input_b", FluidStack.EMPTY).forGetter(CrystallizerRecipe::inputB),
             ItemStack.CODEC.fieldOf("result").forGetter(CrystallizerRecipe::result),
             FluidStack.CODEC.optionalFieldOf("byproduct", FluidStack.EMPTY).forGetter(CrystallizerRecipe::byproduct),
-            com.mojang.serialization.Codec.INT.fieldOf("processing_time").forGetter(CrystallizerRecipe::processingTime)
+            Codec.INT.fieldOf("processing_time").forGetter(CrystallizerRecipe::processingTime)
     ).apply(instance, CrystallizerRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CrystallizerRecipe> STREAM_CODEC =
@@ -47,7 +45,7 @@ public record CrystallizerRecipe(
                     CrystallizerRecipe::new
             );
 
-    /** Not slot-based like a crafting grid - just the two fluids currently sitting in the block's tanks. */
+    /** The two fluids currently in the Crystallizer's input tanks. */
     public record Input(FluidStack fluidA, FluidStack fluidB) implements RecipeInput {
         @Override public ItemStack getItem(int index) { return ItemStack.EMPTY; }
         @Override public int size() { return 0; }

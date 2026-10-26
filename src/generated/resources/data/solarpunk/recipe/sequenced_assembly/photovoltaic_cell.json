@@ -1,0 +1,61 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "tag": "c:glass_panes/colorless"
+  },
+  "results": [
+    {
+      "id": "solarpunk:photovoltaic_cell"
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_photovoltaic_cell"
+        },
+        {
+          "item": "create:polished_rose_quartz"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_photovoltaic_cell"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_photovoltaic_cell"
+        },
+        {
+          "tag": "c:plates/copper"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_photovoltaic_cell"
+        }
+      ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_photovoltaic_cell"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_photovoltaic_cell"
+        }
+      ]
+    }
+  ],
+  "transitional_item": {
+    "id": "solarpunk:incomplete_photovoltaic_cell"
+  }
+}

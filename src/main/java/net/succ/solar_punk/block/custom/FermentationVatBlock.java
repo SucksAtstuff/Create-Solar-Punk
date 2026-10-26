@@ -1,11 +1,11 @@
 package net.succ.solar_punk.block.custom;
 
+import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.fluids.tank.FluidTankBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.Containers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -67,11 +67,8 @@ public class FermentationVatBlock extends Block implements EntityBlock, IWrencha
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock())) {
             if (level.getBlockEntity(pos) instanceof FermentationVatBlockEntity be) {
-                if (be.isController()) {
-                    for (int i = 0; i < be.itemHandler.getSlots(); i++)
-                        Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(),
-                                be.itemHandler.getStackInSlot(i));
-                }
+                if (be.isController())
+                    ItemHelper.dropContents(level, pos, be.itemHandler);
                 ConnectivityHandler.splitMulti(be);
             }
         }
@@ -87,11 +84,7 @@ public class FermentationVatBlock extends Block implements EntityBlock, IWrencha
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        // Used to be server-only (!level.isClientSide) - FermentationVatBlockEntity#tick()
-        // now needs to run client-side too for tickAudio() (the bubbling ambience sound),
-        // matching how BiofuelEngineBlock/BiomassGasifierBlock/BiofilterBlock already
-        // register their own tickers unconditionally. tick() itself still branches
-        // level.isClientSide right at the top before touching any server-only state.
+        // Ticks on both sides: the client side drives the bubbling sound.
         if (type == ModBlockEntities.FERMENTATION_VAT.get())
             return (l, p, s, be) -> ((FermentationVatBlockEntity) be).tick();
         return null;

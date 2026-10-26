@@ -1,5 +1,6 @@
 package net.succ.solar_punk;
 
+import net.minecraft.world.item.DyeColor;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.succ.solar_punk.pollution.GlobalWarmingHandler;
@@ -7,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -110,7 +113,7 @@ public class Config {
     private static final ModConfigSpec.BooleanValue CFG_SPACE_REAL_SUN;
 
     // -------------------------------------------------------------------------
-    // Machines — speed and output amounts
+    // Machines: speed and output amounts
     // -------------------------------------------------------------------------
 
     private static final ModConfigSpec.IntValue CFG_SOLAR_HEATER_MELT_TICKS;
@@ -133,6 +136,8 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_HEAT_BATTERY_MAX_HEAT;
     private static final ModConfigSpec.IntValue CFG_HEAT_BATTERY_HEAT_PER_MB;
     private static final ModConfigSpec.IntValue CFG_HEAT_BATTERY_HEAT_DECAY;
+    private static final ModConfigSpec.IntValue CFG_HEAT_BATTERY_NEW_AGE_MAX_TEMPERATURE;
+    private static final ModConfigSpec.DoubleValue CFG_HEAT_BATTERY_NEW_AGE_HEAT_RATE;
 
     private static final ModConfigSpec.IntValue CFG_SPRINKLER_FLUID_PER_CYCLE;
     private static final ModConfigSpec.IntValue CFG_SPRINKLER_RANGE;
@@ -142,6 +147,8 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_REACTOR_FUEL_PER_STEAM_MB;
     private static final ModConfigSpec.DoubleValue CFG_REACTOR_BERYLLIUM_FUEL_WASTE_MULTIPLIER;
     private static final ModConfigSpec.DoubleValue CFG_REACTOR_BREEDER_FLOOR_RATIO;
+    private static final ModConfigSpec.IntValue CFG_REACTOR_TRITIUM_CAPSULE_MB;
+    private static final ModConfigSpec.DoubleValue CFG_REACTOR_BREEDER_CAPTURE_RATIO;
 
     // -------------------------------------------------------------------------
     // Tanks
@@ -170,7 +177,7 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_SOLAR_POWER_TOWER_MIN_HEIGHT;
 
     // -------------------------------------------------------------------------
-    // Solar Power Tower — mirror array
+    // Solar Power Tower: mirror array
     // -------------------------------------------------------------------------
 
     private static final ModConfigSpec.IntValue CFG_SOLAR_POWER_TOWER_MIRROR_BASE_RADIUS;
@@ -179,7 +186,7 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_SOLAR_POWER_TOWER_MAX_TRACKED_MIRRORS;
 
     // -------------------------------------------------------------------------
-    // World gen — geysers
+    // World gen: geysers
     // -------------------------------------------------------------------------
 
     private static final ModConfigSpec.IntValue CFG_GEYSER_SPAWN_CHANCE;
@@ -342,6 +349,17 @@ public class Config {
         CFG_HEAT_BATTERY_MAX_HEAT   = BUILDER.comment("Maximum heat the battery can store").defineInRange("max_heat", 80_000, 1000, 10_000_000);
         CFG_HEAT_BATTERY_HEAT_PER_MB = BUILDER.comment("Heat units gained per mB of molten salt consumed").defineInRange("heat_per_mb", 10, 1, 10_000);
         CFG_HEAT_BATTERY_HEAT_DECAY  = BUILDER.comment("Heat units lost per tick (passive dissipation)").defineInRange("heat_decay_per_tick", 2, 0, 10_000);
+        CFG_HEAT_BATTERY_NEW_AGE_MAX_TEMPERATURE = BUILDER.comment(
+                "Create: New Age compat. A Heat Battery acts as a New Age heat block whose temperature",
+                "rises with its charge, up to this at full. It trades heat with touching New Age heat",
+                "blocks towards that temperature: a full one heats their pipes, an empty one soaks heat",
+                "up. Default 1000 is enough for a Superheated New Age Heater and far below the 10000",
+                "where their parts overheat.")
+                .defineInRange("new_age_max_temperature", 1000, 1, 1_000_000);
+        CFG_HEAT_BATTERY_NEW_AGE_HEAT_RATE = BUILDER.comment(
+                "Heat Battery heat per unit of New Age heat, in both directions. Default 1.0 means a full",
+                "battery runs a Superheated New Age Heater (500 heat/s) for a few minutes.")
+                .defineInRange("new_age_heat_rate", 1.0, 0.001, 1000.0);
         BUILDER.pop();
 
         BUILDER.push("kinetic_sprinkler");
@@ -353,10 +371,8 @@ public class Config {
         CFG_BIOFILTER_SU = BUILDER.comment("Stress units consumed while the Biofilter is running").defineInRange("su", 256, 1, 1_000_000);
         BUILDER.pop();
 
-        // Five knobs mirroring the Steam Turbine's own economy, interpolated by blanket
-        // ratio (blanketEfficiency: 0 = pure Lithium, 1 = pure Beryllium) the same way
-        // bladeEfficiency scales the turbine. See plan_for_fusion.md's Config knobs
-        // section for the worked-example math this is based on.
+        // Each knob is interpolated by blanket composition (blanketEfficiency: 0 = pure
+        // Lithium, 1 = pure Beryllium), the same way blade efficiency scales the turbine.
         BUILDER.push("fusion_reactor");
         CFG_REACTOR_STEAM_PER_LAYER_PER_TICK = BUILDER.comment(
                 "mB of steam produced per Blanket module per tick at pure-Beryllium (max output) composition.",
@@ -379,6 +395,16 @@ public class Config {
                 "composition (1.0 = no waste at pure-Lithium). Default 0.5 widens the Deuterium:Lithium",
                 "draw ratio from 1:1 at pure-Lithium to 1:2 at pure-Beryllium.")
                 .defineInRange("reactor_breeder_floor_ratio", 0.5, 0.01, 1.0);
+        CFG_REACTOR_TRITIUM_CAPSULE_MB = BUILDER.comment(
+                "mB of fuel one Tritium Capsule counts as (one Lithium Dust is 250 mB). Tritium burns 1:1",
+                "with Deuterium with none of Lithium's breeding waste. Default 32000 is four times the 32",
+                "Lithium Dust the Particle Accelerator's Tritium recipe uses.")
+                .defineInRange("reactor_tritium_capsule_mb", 32000, 1, 1_000_000);
+        CFG_REACTOR_BREEDER_CAPTURE_RATIO = BUILDER.comment(
+                "Share of the Tritium the blanket breeds while burning Lithium that's captured into Empty",
+                "Fuel Capsules in the reactor, scaled by the share of Lithium Breeder Modules. Default 0.02",
+                "is a slow trickle, so the Particle Accelerator stays the main source of Tritium.")
+                .defineInRange("reactor_breeder_capture_ratio", 0.02, 0.0, 1.0);
         BUILDER.pop();
 
         BUILDER.pop(); // machines
@@ -524,10 +550,14 @@ public class Config {
     public static int gasifierBurnTicks, pelletBurnTicks, pelletBiocharAmount;
     public static int biofuelConsumeMb, biofuelConsumePeriod;
     public static int heatBatteryMaxHeat, heatBatteryHeatPerMb, heatBatteryHeatDecay;
+    public static int heatBatteryNewAgeMaxTemperature;
+    public static double heatBatteryNewAgeHeatRate;
     public static int sprinklerFluidPerCycle, sprinklerRange;
 
     public static int reactorSteamPerLayerPerTick, reactorFuelPerSteamMb;
     public static double reactorLithiumOutputRatio, reactorBerylliumFuelWasteMultiplier, reactorBreederFloorRatio;
+    public static int reactorTritiumCapsuleMb;
+    public static double reactorBreederCaptureRatio;
 
     public static int heatBatteryTank, biofuelEngineTank;
     public static int fermentationVatTankPerBlock, solarPowerTowerTankPerBlock;
@@ -549,11 +579,11 @@ public class Config {
     public static double biofilterAbsorptionPerRpm;
     public static int biomeDecayThreshold, biomeDecayInterval, blocksDecayedPerInterval;
     public static String deadBiome;
-    public static Map<String, Integer> perBlockPollution = new java.util.HashMap<>();
+    public static Map<String, Integer> perBlockPollution = new HashMap<>();
     public static List<? extends String> autoDetectKeywords = new ArrayList<>();
     public static int autoDetectPollution;
     public static int aeronauticsEnginePollution;
-    public static Set<String> pollutionBlacklist = new java.util.HashSet<>();
+    public static Set<String> pollutionBlacklist = new HashSet<>();
 
     static void onLoad(final ModConfigEvent event) {
         andesiteMorningRpm   = CFG_ANDESITE_MORNING_RPM.get();
@@ -617,6 +647,8 @@ public class Config {
         heatBatteryMaxHeat   = CFG_HEAT_BATTERY_MAX_HEAT.get();
         heatBatteryHeatPerMb = CFG_HEAT_BATTERY_HEAT_PER_MB.get();
         heatBatteryHeatDecay = CFG_HEAT_BATTERY_HEAT_DECAY.get();
+        heatBatteryNewAgeMaxTemperature = CFG_HEAT_BATTERY_NEW_AGE_MAX_TEMPERATURE.get();
+        heatBatteryNewAgeHeatRate = CFG_HEAT_BATTERY_NEW_AGE_HEAT_RATE.get();
 
         sprinklerFluidPerCycle = CFG_SPRINKLER_FLUID_PER_CYCLE.get();
         sprinklerRange         = CFG_SPRINKLER_RANGE.get();
@@ -626,6 +658,8 @@ public class Config {
         reactorFuelPerSteamMb                = CFG_REACTOR_FUEL_PER_STEAM_MB.get();
         reactorBerylliumFuelWasteMultiplier  = CFG_REACTOR_BERYLLIUM_FUEL_WASTE_MULTIPLIER.get();
         reactorBreederFloorRatio             = CFG_REACTOR_BREEDER_FLOOR_RATIO.get();
+        reactorTritiumCapsuleMb              = CFG_REACTOR_TRITIUM_CAPSULE_MB.get();
+        reactorBreederCaptureRatio           = CFG_REACTOR_BREEDER_CAPTURE_RATIO.get();
 
         turbineSteamTank        = CFG_TURBINE_STEAM_TANK.get();
         turbineCondensateTank   = CFG_TURBINE_CONDENSATE_TANK.get();
@@ -666,7 +700,7 @@ public class Config {
         blocksDecayedPerInterval  = CFG_BLOCKS_DECAYED_PER_INTERVAL.get();
         deadBiome                 = CFG_DEAD_BIOME.get();
 
-        perBlockPollution = new java.util.HashMap<>();
+        perBlockPollution = new HashMap<>();
         for (String entry : CFG_PER_BLOCK_POLLUTION.get()) {
             int sep = entry.lastIndexOf('=');
             if (sep < 0) continue;
@@ -677,13 +711,11 @@ public class Config {
 
         autoDetectKeywords = CFG_AUTO_DETECT_KEYWORDS.get();
         autoDetectPollution = CFG_AUTO_DETECT_POLLUTION.get();
-        pollutionBlacklist = new java.util.HashSet<>(CFG_POLLUTION_BLACKLIST.get());
+        pollutionBlacklist = new HashSet<>(CFG_POLLUTION_BLACKLIST.get());
         GlobalWarmingHandler.invalidateAutoDetectedCache();
 
         aeronauticsEnginePollution = CFG_AERONAUTICS_ENGINE_POLLUTION.get();
-        for (String colour : List.of("white", "orange", "magenta", "light_blue", "yellow", "lime",
-                "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black")) {
-            perBlockPollution.put("simulated:" + colour + "_portable_engine", aeronauticsEnginePollution);
-        }
+        for (DyeColor colour : DyeColor.values())
+            perBlockPollution.put("simulated:" + colour.getName() + "_portable_engine", aeronauticsEnginePollution);
     }
 }

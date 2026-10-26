@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity;
 
+import net.succ.solar_punk.compat.newage.NewAgeHeat;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
@@ -23,6 +24,7 @@ import net.succ.solar_punk.block.entity.custom.SolarMirrorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarPowerTowerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BiofilterBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticSprinklerBlockEntity;
+import net.succ.solar_punk.block.entity.custom.ParticleAcceleratorInputBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineCasingBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineRotorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
@@ -89,7 +91,7 @@ public class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HeatBatteryBlockEntity>> HEAT_BATTERY =
             BLOCK_ENTITIES.register("heat_battery", () -> BlockEntityType.Builder
-                    .of((pos, state) -> new HeatBatteryBlockEntity(ModBlockEntities.HEAT_BATTERY.get(), pos, state), ModBlocks.HEAT_BATTERY.get())
+                    .of(NewAgeHeat::createBattery, ModBlocks.HEAT_BATTERY.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SolarPowerTowerBlockEntity>> SOLAR_POWER_TOWER =
@@ -105,6 +107,12 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BiofilterBlockEntity>> BIOFILTER =
             BLOCK_ENTITIES.register("biofilter", () -> BlockEntityType.Builder
                     .of((pos, state) -> new BiofilterBlockEntity(ModBlockEntities.BIOFILTER.get(), pos, state), ModBlocks.BIOFILTER.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ParticleAcceleratorInputBlockEntity>> PARTICLE_ACCELERATOR_INPUT =
+            BLOCK_ENTITIES.register("particle_accelerator_input", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new ParticleAcceleratorInputBlockEntity(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), pos, state),
+                            ModBlocks.PARTICLE_ACCELERATOR_INPUT.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<KineticSprinklerBlockEntity>> KINETIC_SPRINKLER =

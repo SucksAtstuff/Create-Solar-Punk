@@ -1,7 +1,7 @@
 package net.succ.solar_punk.block.custom;
 
-import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,9 +24,8 @@ import org.jetbrains.annotations.Nullable;
 public class TurbineRotorBlock extends KineticBlock implements IBE<TurbineRotorBlockEntity>, IWrenchable {
 
     public static final BooleanProperty ACTIVE = BlockStateProperties.LIT;
-    // Which axis the turbine spins on - set once at placement from the clicked face,
-    // same convention as KineticBatteryBlock. No wrench-cycling: rewrenching a fully
-    // built multiblock's axis would silently invalidate the whole structure.
+    // Which axis the turbine spins on, set at placement from the clicked face. There's
+    // no wrench-cycling, since that would silently break a built turbine.
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
 
     public TurbineRotorBlock(Properties properties) {
@@ -78,11 +77,7 @@ public class TurbineRotorBlock extends KineticBlock implements IBE<TurbineRotorB
     @Nullable
     @SuppressWarnings("unchecked")
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        // Used to be server-only (!level.isClientSide) - TurbineRotorBlockEntity#tick()
-        // now needs to run client-side too for tickAudio() (the turbine loop), matching
-        // BiofuelEngineBlock/BiomassGasifierBlock/BiofilterBlock/FermentationVatBlock.
-        // tick() itself still branches level.isClientSide right after super.tick(),
-        // before touching any server-only structure/fuel state.
+        // Ticks on both sides: the client side drives the turbine sound.
         if (type == ModBlockEntities.TURBINE_ROTOR.get())
             return (BlockEntityTicker<T>) (BlockEntityTicker<TurbineRotorBlockEntity>) (l, p, s, be) -> be.tick();
         return null;

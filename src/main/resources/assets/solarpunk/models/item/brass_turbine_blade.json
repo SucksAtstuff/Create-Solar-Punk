@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "solarpunk:item/brass_turbine"
-  }
+  "parent": "solarpunk:block/brass_turbine_blade"
 }

@@ -46,7 +46,7 @@ public class GeyserFeature extends Feature<NoneFeatureConfiguration> {
         for (int x = -r; x <= r; x++) {
             for (int y = -1; y <= r; y++) {
                 for (int z = -r; z <= r; z++) {
-                    // Hollow chimney in center — but leave the top block (y==r) solid so the vent has a seat
+                    // Hollow chimney in the center, but leave the top block (y==r) solid so the vent has a seat
                     if (x == 0 && z == 0 && y >= 1 && y < r) continue;
 
                     float noise = random.nextFloat() * 0.6f;

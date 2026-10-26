@@ -1,0 +1,28 @@
+{
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": true,
+  "category": "misc",
+  "key": {
+    "B": {
+      "tag": "c:plates/brass"
+    },
+    "C": {
+      "item": "create:brass_casing"
+    },
+    "F": {
+      "item": "create:flywheel"
+    },
+    "S": {
+      "item": "create:shaft"
+    }
+  },
+  "pattern": [
+    "BCB",
+    "SFS",
+    "BCB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "solarpunk:biofuel_engine"
+  }
+}

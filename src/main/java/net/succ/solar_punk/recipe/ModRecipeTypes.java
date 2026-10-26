@@ -5,6 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.IEventBus;
@@ -19,38 +20,38 @@ public class ModRecipeTypes {
             DeferredRegister.create(Registries.RECIPE_SERIALIZER, SolarPunk.MODID);
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<SolarHeaterRecipe>> SOLAR_HEATING =
-            RECIPE_TYPES.register("solar_heating", () ->
-                    RecipeType.simple(ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "solar_heating")));
-
+            type("solar_heating");
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<SolarHeaterRecipe>> SOLAR_HEATING_SERIALIZER =
-            RECIPE_SERIALIZERS.register("solar_heating", () -> new RecipeSerializer<>() {
-                @Override
-                public MapCodec<SolarHeaterRecipe> codec() {
-                    return SolarHeaterRecipe.CODEC;
-                }
-
-                @Override
-                public StreamCodec<RegistryFriendlyByteBuf, SolarHeaterRecipe> streamCodec() {
-                    return SolarHeaterRecipe.STREAM_CODEC;
-                }
-            });
+            serializer("solar_heating", SolarHeaterRecipe.CODEC, SolarHeaterRecipe.STREAM_CODEC);
 
     public static final DeferredHolder<RecipeType<?>, RecipeType<CrystallizerRecipe>> CRYSTALLIZING =
-            RECIPE_TYPES.register("crystallizing", () ->
-                    RecipeType.simple(ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "crystallizing")));
-
+            type("crystallizing");
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CrystallizerRecipe>> CRYSTALLIZING_SERIALIZER =
-            RECIPE_SERIALIZERS.register("crystallizing", () -> new RecipeSerializer<>() {
-                @Override
-                public MapCodec<CrystallizerRecipe> codec() {
-                    return CrystallizerRecipe.CODEC;
-                }
+            serializer("crystallizing", CrystallizerRecipe.CODEC, CrystallizerRecipe.STREAM_CODEC);
 
-                @Override
-                public StreamCodec<RegistryFriendlyByteBuf, CrystallizerRecipe> streamCodec() {
-                    return CrystallizerRecipe.STREAM_CODEC;
-                }
-            });
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ParticleAcceleratorRecipe>> PARTICLE_ACCELERATOR =
+            type("particle_accelerator");
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ParticleAcceleratorRecipe>> PARTICLE_ACCELERATOR_SERIALIZER =
+            serializer("particle_accelerator", ParticleAcceleratorRecipe.CODEC, ParticleAcceleratorRecipe.STREAM_CODEC);
+
+    private static <T extends Recipe<?>> DeferredHolder<RecipeType<?>, RecipeType<T>> type(String name) {
+        return RECIPE_TYPES.register(name, () -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, name)));
+    }
+
+    private static <T extends Recipe<?>> DeferredHolder<RecipeSerializer<?>, RecipeSerializer<T>> serializer(
+            String name, MapCodec<T> codec, StreamCodec<RegistryFriendlyByteBuf, T> streamCodec) {
+        return RECIPE_SERIALIZERS.register(name, () -> new RecipeSerializer<>() {
+            @Override
+            public MapCodec<T> codec() {
+                return codec;
+            }
+
+            @Override
+            public StreamCodec<RegistryFriendlyByteBuf, T> streamCodec() {
+                return streamCodec;
+            }
+        });
+    }
 
     public static void register(IEventBus eventBus) {
         RECIPE_TYPES.register(eventBus);

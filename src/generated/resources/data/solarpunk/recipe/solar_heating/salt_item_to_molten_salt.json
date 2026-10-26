@@ -1,8 +1,16 @@
 {
   "type": "solarpunk:solar_heating",
-  "ingredient": {
-    "item": "solarpunk:salt"
-  },
+  "ingredient": [
+    {
+      "tag": "c:dusts/salt"
+    },
+    {
+      "tag": "c:gems/salt"
+    },
+    {
+      "tag": "c:salt"
+    }
+  ],
   "result": {
     "amount": 100,
     "id": "solarpunk:molten_salt"
