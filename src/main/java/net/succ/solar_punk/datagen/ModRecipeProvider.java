@@ -48,9 +48,13 @@ public class ModRecipeProvider extends RecipeProvider {
         solarHeating(output, "salt_item_to_molten_salt", anySalt(), new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 100));
         solarHeating(output, "salt_to_molten_salt", Ingredient.of(ModTags.Items.STORAGE_BLOCKS_SALT), new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 1000));
 
-        // Particle Accelerator. The smallest closed ring is 5 wide; nothing is made there, so
-        // recipes step up 9 -> 15 -> 21 with how rare the result is. Times are at minimum
-        // speed and halve at double it.
+        // Particle Accelerator. Recipes step up 5 -> 9 -> 15 -> 21 wide with how rare the
+        // result is (5 is the smallest closed ring). Times are at minimum speed and halve at
+        // double it.
+        // The starter recipe for the smallest ring: mob farm waste into something useful
+        particleAccelerator(output, "leather",
+                List.of(new SizedIngredient(Ingredient.of(Items.ROTTEN_FLESH), 16)),
+                new ItemStack(Items.LEATHER), 5, 4096, 64, 200);
         // Tritium bred from Lithium, with Beryllium as the neutron source, caught in an Empty
         // Fuel Capsule. The capsule is worth 4x the Lithium that goes in (reactor_tritium_capsule_mb),
         // so one ring at 256 RPM keeps a pure-Lithium-blanket reactor running.
