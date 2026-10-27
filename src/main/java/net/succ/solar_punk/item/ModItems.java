@@ -24,6 +24,11 @@ public class ModItems {
     public static final DeferredItem<BoneMealItem> BIOCHAR = ITEMS.register("biochar",
             () -> new BoneMealItem(new Item.Properties()));
 
+    // Collected by the Biofilter as it cleans pollution (global warming only), and
+    // compacted into Biochar (ModCompactingRecipeGen).
+    public static final DeferredItem<Item> CARBON_DUST = ITEMS.register("carbon_dust",
+            () -> new Item(new Item.Properties()));
+
     // Lithium ore chain: mined from Lithium Ore (drops Raw Lithium) or produced
     // directly as Lithium Dust via ModMixingRecipeGen.SALT_BRINE_TO_LITHIUM (Water +
     // Salt, Superheated Basin). Raw Lithium and Lithium Dust both smelt to Lithium

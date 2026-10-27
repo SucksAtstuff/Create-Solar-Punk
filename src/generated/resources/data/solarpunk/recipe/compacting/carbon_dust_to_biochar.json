@@ -1,0 +1,22 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "item": "solarpunk:carbon_dust"
+    },
+    {
+      "item": "solarpunk:carbon_dust"
+    },
+    {
+      "item": "solarpunk:carbon_dust"
+    },
+    {
+      "item": "solarpunk:carbon_dust"
+    }
+  ],
+  "results": [
+    {
+      "id": "solarpunk:biochar"
+    }
+  ]
+}

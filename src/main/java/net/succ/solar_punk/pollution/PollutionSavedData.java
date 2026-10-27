@@ -39,9 +39,10 @@ public class PollutionSavedData extends SavedData {
         return chunkPollution.getOrDefault(chunk, 0L);
     }
 
-    public void reducePollution(ChunkPos chunk, long amount) {
+    /** Removes up to {@code amount} from the chunk and returns how much was actually removed. */
+    public long reducePollution(ChunkPos chunk, long amount) {
         long current = chunkPollution.getOrDefault(chunk, 0L);
-        if (current <= 0) return;
+        if (current <= 0 || amount <= 0) return 0;
         long next = current - amount;
         if (next <= 0) {
             chunkPollution.remove(chunk);
@@ -49,6 +50,7 @@ public class PollutionSavedData extends SavedData {
             chunkPollution.put(chunk, next);
         }
         setDirty();
+        return Math.min(current, amount);
     }
 
     public void decayAll(long amount) {

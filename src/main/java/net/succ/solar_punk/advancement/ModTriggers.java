@@ -20,6 +20,8 @@ public class ModTriggers {
             TRIGGERS.register("heat_stored", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> GEYSER_ACTIVE =
             TRIGGERS.register("geyser_active", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> GEYSER_SCALDED =
+            TRIGGERS.register("geyser_scalded", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> GASIFIER_RUNNING =
             TRIGGERS.register("gasifier_running", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> BIOFUEL_ENGINE_ON =

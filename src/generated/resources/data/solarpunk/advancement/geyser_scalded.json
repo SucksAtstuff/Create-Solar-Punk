@@ -1,0 +1,28 @@
+{
+  "parent": "solarpunk:root",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:geyser_scalded"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.solarpunk.geyser_scalded.desc"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:geyser_vent"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.geyser_scalded"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

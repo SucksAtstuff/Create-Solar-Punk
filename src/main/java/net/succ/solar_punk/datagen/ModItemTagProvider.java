@@ -55,7 +55,7 @@ public class ModItemTagProvider extends ItemTagsProvider {
         tag(ModTags.Items.INGOTS_LITHIUM).add(ModItems.LITHIUM_INGOT.get());
         tag(Tags.Items.NUGGETS).add(ModItems.LITHIUM_NUGGET.get());
         tag(ModTags.Items.NUGGETS_LITHIUM).add(ModItems.LITHIUM_NUGGET.get());
-        tag(Tags.Items.DUSTS).add(ModItems.LITHIUM_DUST.get());
+        tag(Tags.Items.DUSTS).add(ModItems.LITHIUM_DUST.get(), ModItems.CARBON_DUST.get());
         tag(ModTags.Items.DUSTS_LITHIUM).add(ModItems.LITHIUM_DUST.get());
 
         // Beryllium: no ore of its own (see ModItems), just the dust byproduct

@@ -56,6 +56,16 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.biofilter_status", "Status: ");
         add("create.solar_punk.tooltip.biofilter_pollution", "Chunk Pollution: ");
         add("create.solar_punk.tooltip.biofilter_removing", "Removing: ");
+        add("create.solar_punk.tooltip.biofilter_carbon", "Carbon Dust: ");
+
+        add("create.solar_punk.tooltip.geyser_vent_header", "Geyser Vent");
+        add("create.solar_punk.tooltip.geyser_vent_next", "Next eruption: ");
+        add("create.solar_punk.tooltip.geyser_vent_warning", "Any second now!");
+        add("create.solar_punk.tooltip.geyser_vent_erupting", "Erupting!");
+        add("create.solar_punk.tooltip.geyser_vent_quiet", "None");
+
+        add("death.attack.solarpunk.scalding", "%1$s was scalded by a geyser");
+        add("death.attack.solarpunk.scalding.player", "%1$s was scalded by a geyser while fighting %2$s");
 
         add("create.solar_punk.tooltip.accelerator_header", "Particle Accelerator");
         add("create.solar_punk.tooltip.accelerator_ring", "Ring: ");
@@ -207,6 +217,12 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.geyser_cap.tooltip.condition1", "When placed on a Geyser Vent");
         add("block.solarpunk.geyser_cap.tooltip.behaviour1", "Generates 32 RPM with 16384 SU of stress capacity. Works day and night in all weather.");
 
+        add("block.solarpunk.geyser_vent.tooltip.summary", "A rare natural vent. Left uncapped, it _erupts_ every few minutes, scalding and launching anything standing over it.");
+        add("block.solarpunk.geyser_vent.tooltip.condition1", "Before an eruption");
+        add("block.solarpunk.geyser_vent.tooltip.behaviour1", "Rumbles for a few seconds first. _Goggles_ show the countdown, and a _Comparator_ signal rises as it gets close.");
+        add("block.solarpunk.geyser_vent.tooltip.condition2", "When capped");
+        add("block.solarpunk.geyser_vent.tooltip.behaviour2", "A _Geyser Cap_ stops the eruptions and turns the vent into steady _Rotational Force_.");
+
         add("block.solarpunk.solar_power_tower.tooltip.summary", "Multiblock tower that concentrates reflected sunlight to produce _Molten Salt_ or _Steam_ from water. Right-click with a Wrench to switch modes.");
         add("block.solarpunk.solar_power_tower.tooltip.condition1", "At least 3x3 and 3 tall, in clear daylight");
         add("block.solarpunk.solar_power_tower.tooltip.behaviour1", "Output grows with tower height and its _Solar Mirror_ field. Efficiency peaks at an optimal mirror count that grows with height, and falls off past it.");
@@ -214,6 +230,8 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.solar_mirror.tooltip.summary", "Place on the ground near a _Solar Power Tower_. Links automatically when it has open sky and a clear line of sight to the tower, then tracks the sun. Too many mirrors lowers the tower's efficiency, down to zero at twice the optimal count.");
 
         add("block.solarpunk.biofilter.tooltip.summary", "Draws _Rotational Force_ to absorb _pollution_ from nearby chunks, gradually healing blocks and restoring biomes. Cleans faster at higher speed.");
+        add("block.solarpunk.biofilter.tooltip.condition1", "While cleaning pollution");
+        add("block.solarpunk.biofilter.tooltip.behaviour1", "Collects _Carbon Dust_ from what it removes. Take it out by hand or with a funnel, and _compact_ it into _Biochar_.");
 
         add("block.solarpunk.kinetic_sprinkler.tooltip.summary", "Pipe in _water_ to hydrate _farmland_ and speed up _crop growth_ in a 5x5 area below it.");
         add("block.solarpunk.kinetic_sprinkler.tooltip.condition1", "When supplied with Fertilizer instead of water");

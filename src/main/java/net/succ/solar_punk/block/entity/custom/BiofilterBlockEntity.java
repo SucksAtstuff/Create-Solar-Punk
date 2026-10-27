@@ -5,6 +5,7 @@ import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.CreateLang;
+import com.simibubi.create.foundation.item.ItemHelper;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -12,15 +13,20 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.client.sound.BiofilterSoundInstance;
+import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import net.succ.solar_punk.pollution.PollutionSavedData;
+import net.succ.solar_punk.util.AutomationItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -28,6 +34,18 @@ import java.util.List;
 public class BiofilterBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation {
 
     private long chunkPollution = 0;
+    // Pollution removed towards the next Carbon Dust
+    private long capturedPollution = 0;
+
+    // The Carbon Dust it collects. Hoppers and funnels can only take it out.
+    public final ItemStackHandler inventory = new ItemStackHandler(1) {
+        @Override
+        protected void onContentsChanged(int slot) {
+            setChanged();
+        }
+    };
+    public final IItemHandler automationHandler = new AutomationItemHandler(inventory,
+            slot -> false, (slot, stack) -> true);
 
     @OnlyIn(Dist.CLIENT)
     @Nullable
@@ -82,8 +100,36 @@ public class BiofilterBlockEntity extends KineticBlockEntity implements IHaveGog
         if (!Config.globalWarmingEnabled || !isPowered()) return;
 
         long absorb = getAbsorptionPerSecond();
+        long[] removed = {0};
         GlobalWarmingHandler.forEachChunkInRadius(worldPosition, Config.biofilterRadiusBlocks,
-                chunk -> data.reducePollution(chunk, absorb));
+                chunk -> removed[0] += data.reducePollution(chunk, absorb));
+        captureCarbon(removed[0]);
+    }
+
+    // Only pollution it actually removed counts, so a Biofilter in clean air collects nothing
+    private void captureCarbon(long removed) {
+        int perDust = Config.biofilterPollutionPerCarbon;
+        if (perDust <= 0 || removed <= 0) return;
+        capturedPollution += removed;
+        boolean added = false;
+        while (capturedPollution >= perDust) {
+            ItemStack dust = new ItemStack(ModItems.CARBON_DUST.get());
+            if (!inventory.insertItem(0, dust, true).isEmpty()) {
+                capturedPollution = perDust;  // full: hold one dust's worth until there's room
+                break;
+            }
+            inventory.insertItem(0, dust, false);
+            capturedPollution -= perDust;
+            added = true;
+        }
+        setChanged();
+        if (added) sendData();
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        ItemHelper.dropContents(level, worldPosition, inventory);
     }
 
     @Override
@@ -114,18 +160,30 @@ public class BiofilterBlockEntity extends KineticBlockEntity implements IHaveGog
                     .forGoggles(tooltip, 1);
         }
 
+        ItemStack dust = inventory.getStackInSlot(0);
+        if (Config.globalWarmingEnabled || !dust.isEmpty()) {
+            CreateLang.translate("solar_punk.tooltip.biofilter_carbon")
+                    .style(ChatFormatting.GRAY)
+                    .add(CreateLang.number(dust.getCount()).style(ChatFormatting.DARK_GRAY).component())
+                    .forGoggles(tooltip, 1);
+        }
+
         return true;
     }
 
     @Override
     protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.write(tag, registries, clientPacket);
+        tag.put("Inventory", inventory.serializeNBT(registries));
+        tag.putLong("CapturedPollution", capturedPollution);
         if (clientPacket) tag.putLong("ChunkPollution", chunkPollution);
     }
 
     @Override
     protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.read(tag, registries, clientPacket);
+        inventory.deserializeNBT(registries, tag.getCompound("Inventory"));
+        capturedPollution = tag.getLong("CapturedPollution");
         if (clientPacket) chunkPollution = tag.getLong("ChunkPollution");
     }
 

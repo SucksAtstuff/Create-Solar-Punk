@@ -28,6 +28,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.damage.ModDamageTypes;
 import net.succ.solar_punk.worldgen.ConfigurableGeyserBiomeModifier;
 import net.succ.solar_punk.worldgen.ModFeatures;
 
@@ -85,7 +86,8 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
     public static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
             .add(Registries.CONFIGURED_FEATURE, ModWorldGenProvider::bootstrapConfiguredFeatures)
             .add(Registries.PLACED_FEATURE, ModWorldGenProvider::bootstrapPlacedFeatures)
-            .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ModWorldGenProvider::bootstrapBiomeModifiers);
+            .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ModWorldGenProvider::bootstrapBiomeModifiers)
+            .add(Registries.DAMAGE_TYPE, ModDamageTypes::bootstrap);
 
     public ModWorldGenProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, BUILDER, Set.of(SolarPunk.MODID));

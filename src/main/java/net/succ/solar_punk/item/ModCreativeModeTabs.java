@@ -57,6 +57,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.BIOMASS.get());
                         output.accept(ModItems.BIOMASS_PELLET.get());
                         output.accept(ModItems.BIOCHAR.get());
+                        output.accept(ModItems.CARBON_DUST.get());
                         output.accept(ModItems.PHOTOVOLTAIC_CELL.get());
                         output.accept(ModItems.ELECTROMAGNET_COIL.get());
                         output.accept(ModItems.SUPERCONDUCTING_COIL.get());

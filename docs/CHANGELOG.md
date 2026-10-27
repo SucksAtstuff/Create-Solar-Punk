@@ -2,6 +2,19 @@
 
 ## New
 
+### Erupting Geysers
+
+- Uncapped Geyser Vents now erupt every few minutes. They rumble for a few seconds first, then blast a column of steam that scalds and launches anything standing over them.
+- Goggles on a vent show a countdown to the next eruption, and a Comparator signal rises as it gets close.
+- A Geyser Cap stops the eruptions. Everything is configurable under `[geyser_vent]`, and eruptions can be turned off.
+
+### Carbon Capture
+
+- With global warming on, the Biofilter now collects **Carbon Dust** from the pollution it cleans up. Take it out by hand or with a funnel.
+- Compact 4 Carbon Dust into Biochar with a Mechanical Press and Basin, for Fertilizer or the Particle Accelerator.
+
+### Advancements
+
 - New advancements for the Particle Accelerator: crafting the coils, closing your first ring, your first collision, getting a Tritium Capsule and running a huge ring.
 - New Fusion Reactor advancement for breeding your own Tritium.
 

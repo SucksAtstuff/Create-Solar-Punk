@@ -84,6 +84,14 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_GEYSER_RPM;
     private static final ModConfigSpec.IntValue CFG_GEYSER_SU;
 
+    private static final ModConfigSpec.BooleanValue CFG_GEYSER_ERUPTIONS;
+    private static final ModConfigSpec.IntValue CFG_GEYSER_MIN_INTERVAL;
+    private static final ModConfigSpec.IntValue CFG_GEYSER_MAX_INTERVAL;
+    private static final ModConfigSpec.IntValue CFG_GEYSER_WARNING;
+    private static final ModConfigSpec.IntValue CFG_GEYSER_ERUPTION;
+    private static final ModConfigSpec.DoubleValue CFG_GEYSER_DAMAGE;
+    private static final ModConfigSpec.IntValue CFG_GEYSER_HEIGHT;
+
     private static final ModConfigSpec.IntValue CFG_KINETIC_BATTERY_RPM;
     private static final ModConfigSpec.IntValue CFG_KINETIC_BATTERY_SU;
     private static final ModConfigSpec.IntValue CFG_KINETIC_BATTERY_MAX_CHARGE;
@@ -209,6 +217,7 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_BIOFILTER_SU;
     private static final ModConfigSpec.DoubleValue CFG_BIOFILTER_ABSORPTION_PER_RPM;
     private static final ModConfigSpec.IntValue CFG_BIOFILTER_RADIUS_BLOCKS;
+    private static final ModConfigSpec.IntValue CFG_BIOFILTER_POLLUTION_PER_CARBON;
     private static final ModConfigSpec.IntValue CFG_BIOME_DECAY_THRESHOLD;
     private static final ModConfigSpec.IntValue CFG_BIOME_DECAY_INTERVAL;
     private static final ModConfigSpec.IntValue CFG_BLOCKS_DECAYED_PER_INTERVAL;
@@ -234,6 +243,16 @@ public class Config {
         BUILDER.push("geyser_cap");
         CFG_GEYSER_RPM = BUILDER.comment("RPM output").defineInRange("rpm", 32, 1, 256);
         CFG_GEYSER_SU  = BUILDER.comment("Stress capacity").defineInRange("su", 512, 1, 1_000_000);
+        BUILDER.pop();
+
+        BUILDER.push("geyser_vent");
+        CFG_GEYSER_ERUPTIONS    = BUILDER.comment("Uncapped Geyser Vents erupt now and then, scalding and launching anything standing over them").define("eruptions", true);
+        CFG_GEYSER_MIN_INTERVAL = BUILDER.comment("Shortest time between eruptions, in seconds").defineInRange("min_interval_seconds", 120, 10, 86_400);
+        CFG_GEYSER_MAX_INTERVAL = BUILDER.comment("Longest time between eruptions, in seconds (raised to the minimum if lower)").defineInRange("max_interval_seconds", 300, 10, 86_400);
+        CFG_GEYSER_WARNING      = BUILDER.comment("How long the vent rumbles before it erupts, in seconds").defineInRange("warning_seconds", 5, 0, 60);
+        CFG_GEYSER_ERUPTION     = BUILDER.comment("How long an eruption lasts, in seconds").defineInRange("eruption_seconds", 6, 1, 60);
+        CFG_GEYSER_DAMAGE       = BUILDER.comment("Damage dealt every half second to anything in the eruption").defineInRange("damage", 3.0, 0.0, 1000.0);
+        CFG_GEYSER_HEIGHT       = BUILDER.comment("How many blocks high the eruption reaches (blocks in the way cut it short)").defineInRange("height", 8, 1, 32);
         BUILDER.pop();
 
         BUILDER.push("kinetic_battery");
@@ -514,6 +533,10 @@ public class Config {
                 "16 RPM Biofilter at the old flat-rate baseline (10/s) while a 256 RPM one reaches 160/s.")
                 .defineInRange("biofilter_absorption_per_rpm", 0.625, 0.0, 1_000_000.0);
         CFG_BIOFILTER_RADIUS_BLOCKS = BUILDER.comment("Block radius around a Biofilter in which it reduces pollution (0 = own chunk only).").defineInRange("biofilter_radius_blocks", 32, 0, 512);
+        CFG_BIOFILTER_POLLUTION_PER_CARBON = BUILDER.comment(
+                "Pollution a Biofilter has to remove to collect one Carbon Dust (0 = no Carbon Dust).",
+                "Four Carbon Dust compact into one Biochar. Kept high so polluting on purpose to farm it never pays off.")
+                .defineInRange("biofilter_pollution_per_carbon_dust", 1000, 0, Integer.MAX_VALUE);
         CFG_BIOME_DECAY_THRESHOLD       = BUILDER.comment("Pollution level a chunk must reach before its biome converts.").defineInRange("biome_decay_threshold", 10000, 1, Integer.MAX_VALUE);
         CFG_BIOME_DECAY_INTERVAL        = BUILDER.comment("Ticks between each decay and biome-conversion check (1200 = once per minute).").defineInRange("biome_decay_interval_ticks", 1200, 20, 72000);
         CFG_BLOCKS_DECAYED_PER_INTERVAL = BUILDER.comment("Random surface blocks replaced per polluted chunk each decay interval (grass dies, leaves fall, flowers wither). 0 to disable.").defineInRange("blocks_decayed_per_interval", 8, 0, 256);
@@ -530,6 +553,9 @@ public class Config {
     public static int andesiteMorningRpm, andesiteNoonRpm, andesiteMorningSu, andesiteNoonSu;
     public static int brassMorningFe, brassNoonFe, brassBuffer, brassMaxExtract;
     public static int geyserCapRpm, geyserCapSu;
+    public static boolean geyserEruptions;
+    public static int geyserMinIntervalTicks, geyserMaxIntervalTicks, geyserWarningTicks, geyserEruptionTicks, geyserHeight;
+    public static float geyserDamage;
     public static int kineticBatteryRpm, kineticBatterySu, kineticBatteryMaxCharge;
     public static double kineticBatteryChargeRate, kineticBatteryDischargeRate;
     public static int gasifierRpm, gasifierSu;
@@ -575,7 +601,7 @@ public class Config {
 
     public static boolean globalWarmingEnabled;
     public static int pollutionPerSource, pollutionRadiusBlocks, pollutionDecayRate;
-    public static int leafAbsorptionPerInterval, biofilterSu, biofilterRadiusBlocks;
+    public static int leafAbsorptionPerInterval, biofilterSu, biofilterRadiusBlocks, biofilterPollutionPerCarbon;
     public static double biofilterAbsorptionPerRpm;
     public static int biomeDecayThreshold, biomeDecayInterval, blocksDecayedPerInterval;
     public static String deadBiome;
@@ -598,6 +624,14 @@ public class Config {
 
         geyserCapRpm         = CFG_GEYSER_RPM.get();
         geyserCapSu          = CFG_GEYSER_SU.get();
+
+        geyserEruptions        = CFG_GEYSER_ERUPTIONS.get();
+        geyserMinIntervalTicks = CFG_GEYSER_MIN_INTERVAL.get() * 20;
+        geyserMaxIntervalTicks = Math.max(geyserMinIntervalTicks, CFG_GEYSER_MAX_INTERVAL.get() * 20);
+        geyserWarningTicks     = CFG_GEYSER_WARNING.get() * 20;
+        geyserEruptionTicks    = CFG_GEYSER_ERUPTION.get() * 20;
+        geyserDamage           = CFG_GEYSER_DAMAGE.get().floatValue();
+        geyserHeight           = CFG_GEYSER_HEIGHT.get();
 
         kineticBatteryRpm          = CFG_KINETIC_BATTERY_RPM.get();
         kineticBatterySu           = CFG_KINETIC_BATTERY_SU.get();
@@ -695,6 +729,7 @@ public class Config {
         biofilterSu                     = CFG_BIOFILTER_SU.get();
         biofilterAbsorptionPerRpm       = CFG_BIOFILTER_ABSORPTION_PER_RPM.get();
         biofilterRadiusBlocks           = CFG_BIOFILTER_RADIUS_BLOCKS.get();
+        biofilterPollutionPerCarbon     = CFG_BIOFILTER_POLLUTION_PER_CARBON.get();
         biomeDecayThreshold       = CFG_BIOME_DECAY_THRESHOLD.get();
         biomeDecayInterval        = CFG_BIOME_DECAY_INTERVAL.get();
         blocksDecayedPerInterval  = CFG_BLOCKS_DECAYED_PER_INTERVAL.get();

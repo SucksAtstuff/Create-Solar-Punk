@@ -153,6 +153,7 @@ public class ModClientEvents {
         tip(ModBlocks.BIOMASS_GASIFIER::get);
         tip(ModBlocks.BIOFUEL_ENGINE::get);
         tip(ModBlocks.GEYSER_CAP::get);
+        tip(ModBlocks.GEYSER_VENT::get);
         tip(ModBlocks.SOLAR_POWER_TOWER::get);
         tip(ModBlocks.SOLAR_MIRROR::get);
         tip(ModBlocks.BIOFILTER::get);

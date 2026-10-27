@@ -138,6 +138,11 @@ public class SolarPunk {
                 (be, side) -> be.automationHandler
         );
         event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.BIOFILTER.get(),
+                (be, side) -> be.automationHandler
+        );
+        event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 ModBlockEntities.BIOFUEL_ENGINE.get(),
                 (be, side) -> be.biofuelTank

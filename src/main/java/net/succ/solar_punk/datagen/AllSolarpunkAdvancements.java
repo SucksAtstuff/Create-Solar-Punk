@@ -180,6 +180,15 @@ public class AllSolarpunkAdvancements implements DataProvider {
             .after(ROOT)
     );
 
+    public static final SolarpunkAdvancement GEYSER_SCALDED = SolarpunkAdvancement.create("geyser_scalded", b -> b
+            .icon(ModBlocks.GEYSER_VENT.get())
+            .title("Blowing Off Steam")
+            .description("Get launched by an erupting Geyser Vent. Maybe cap it next time.")
+            .withCustomTrigger(ModTriggers.GEYSER_SCALDED)
+            .after(ROOT)
+            .special(TaskType.SECRET)
+    );
+
     // -------------------------------------------------------------------------
     // Biofuel chain
     // -------------------------------------------------------------------------
