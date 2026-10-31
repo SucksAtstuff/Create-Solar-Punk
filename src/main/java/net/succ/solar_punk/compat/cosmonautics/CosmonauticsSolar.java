@@ -7,10 +7,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.ModList;
 import net.succ.solar_punk.Config;
+import net.succ.solar_punk.compat.sable.SableCompat;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Quaterniondc;
-import org.joml.Vector3d;
-import org.joml.Vector3dc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +40,6 @@ public final class CosmonauticsSolar {
     private static final Logger LOGGER = LoggerFactory.getLogger("solarpunk/cosmonautics");
 
     private static final boolean LOADED = ModList.get().isLoaded("rocketnautics");
-    private static final boolean SABLE_LOADED = ModList.get().isLoaded("sable");
 
     private static final ResourceLocation DEEP_SPACE = ResourceLocation.fromNamespaceAndPath("rocketnautics", "deep_space");
 
@@ -76,9 +73,6 @@ public final class CosmonauticsSolar {
     private static Method mGetPlanets, mRadius, mExtras, mStar, mPosInMyFrame;
     // org.hipparchus Vector3D
     private static Method mVecX, mVecY, mVecZ;
-    // Sable: Sable.HELPER.getContaining(Level, BlockPos) -> SubLevel, then its logical pose
-    private static Object sableHelper;
-    private static Method mGetContaining, mLogicalPose, mPosePosition, mPoseOrientation;
 
     /** True if this is Cosmonautics' deep space, regardless of side. */
     public static boolean isDeepSpace(Level level) {
@@ -101,31 +95,20 @@ public final class CosmonauticsSolar {
             if ((boolean) mTooSoon.invoke(null, server)) return null;
 
             // Blocks on a Sable station sit at plot coordinates, nowhere near where the
-            // station actually is - use its logical pose for the region lookup and rotation.
-            Object pose = subLevelPose(level, pos);
-            double x = pos.getX(), z = pos.getZ();
-            Quaterniondc orientation = null;
-            if (pose != null) {
-                Vector3dc position = (Vector3dc) mPosePosition.invoke(pose);
-                x = position.x();
-                z = position.z();
-                orientation = (Quaterniondc) mPoseOrientation.invoke(pose);
-            }
+            // station actually is - use its real position for the region lookup and rotation.
+            SableCompat.Placement placement = SableCompat.placement(level, pos);
+            BlockPos regionPos = placement != null ? placement.worldPos() : pos;
 
             Object data = mGetData.invoke(null, server);
-            Object instance = mGetInstanceForPos.invoke(data, (int) x, (int) z);
+            Object instance = mGetInstanceForPos.invoke(data, regionPos.getX(), regionPos.getZ());
             if (instance == null || (boolean) mInstanceCorrupted.invoke(instance)) return null;
 
             WorldSun worldSun = worldSun(level, data, instance);
             if (worldSun == null) return null;
 
             Vec3 dir = worldSun.direction();
-            if (orientation != null) {
-                // The pose rotates station-local into world space; undo it to get the
-                // sun relative to the station's own blocks.
-                Vector3d local = orientation.transformInverse(new Vector3d(dir.x, dir.y, dir.z));
-                dir = new Vec3(local.x, local.y, local.z).normalize();
-            }
+            // The sun relative to the station's own blocks.
+            if (placement != null) dir = placement.toLocal(dir).normalize();
             return new Sun(dir, worldSun.visible());
         } catch (Throwable t) {
             disable("sun lookup failed", t);
@@ -184,13 +167,6 @@ public final class CosmonauticsSolar {
         return result;
     }
 
-    @Nullable
-    private static Object subLevelPose(Level level, BlockPos pos) throws Exception {
-        if (sableHelper == null || mGetContaining == null) return null;
-        Object subLevel = mGetContaining.invoke(sableHelper, level, pos);
-        return subLevel == null ? null : mLogicalPose.invoke(subLevel);
-    }
-
     private static Vec3 vec(Object vector3D) throws Exception {
         return new Vec3((double) mVecX.invoke(vector3D), (double) mVecY.invoke(vector3D), (double) mVecZ.invoke(vector3D));
     }
@@ -231,32 +207,6 @@ public final class CosmonauticsSolar {
             mStar = Class.forName(orbit + "universe.PlanetExtras").getMethod("star");
         } catch (Throwable t) {
             disable("couldn't find its orbit classes", t);
-            return;
-        }
-
-        if (!SABLE_LOADED) return;
-        try {
-            Class<?> sableClass = Class.forName("dev.ryanhcode.sable.Sable");
-            sableHelper = sableClass.getField("HELPER").get(null);
-            for (Method m : sableHelper.getClass().getMethods()) {
-                Class<?>[] params = m.getParameterTypes();
-                if (m.getName().equals("getContaining") && params.length == 2
-                        && params[0].isAssignableFrom(Level.class) && params[1] == BlockPos.class) {
-                    mGetContaining = m;
-                    break;
-                }
-            }
-            if (mGetContaining == null) throw new NoSuchMethodException("getContaining(Level, BlockPos)");
-            mLogicalPose = Class.forName("dev.ryanhcode.sable.sublevel.SubLevel").getMethod("logicalPose");
-            Class<?> poseClass = Class.forName("dev.ryanhcode.sable.companion.math.Pose3dc");
-            mPosePosition    = poseClass.getMethod("position");
-            mPoseOrientation = poseClass.getMethod("orientation");
-        } catch (Throwable t) {
-            // Still usable for blocks placed directly in deep space, just not on stations.
-            LOGGER.warn("[SolarPunk] Couldn't hook Sable for station rotation ({}); solar blocks on "
-                    + "Cosmonautics stations will ignore which way the station is facing.", t.toString());
-            sableHelper = null;
-            mGetContaining = null;
         }
     }
 

@@ -18,6 +18,13 @@
 - New advancements for the Particle Accelerator: crafting the coils, closing your first ring, your first collision, getting a Tritium Capsule and running a huge ring.
 - New Fusion Reactor advancement for breeding your own Tritium.
 
+## Fixes
+
+- Solar blocks on Create: Aeronautics contraptions now get shaded by the world around them, so flying one indoors or underground stops it working. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/52
+- Solar blocks on contraptions now follow the real sun angle: tilt the contraption toward the sun for full output, or away from it for less. Sun-tracking solar arrays are now possible. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/52
+- Contraptions now cast shade: parking one over solar blocks, on the ground or on another contraption, blocks their sunlight.
+- Solar blocks on Create: Cosmonautics stations now properly react to which way the station is facing.
+
 # 2.0.0-1.21.1
 
 > **Back up your world before updating.** This is a big update, so make a copy of your world (and your server's config folder) first, just in case.
