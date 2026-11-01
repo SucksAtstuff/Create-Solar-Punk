@@ -11,11 +11,15 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.SolarPunk;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.succ.solar_punk.block.entity.custom.AndesiteSolarPanelBlockEntity;
+import net.succ.solar_punk.block.entity.custom.BrassSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCasingBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarPowerTowerBlockEntity;
+import net.succ.solar_punk.util.SolarHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -106,6 +110,25 @@ public class ModDisplaySources {
             () -> new PercentDisplaySource<>(ModDisplaySources::acceleratorInput,
                     ParticleAcceleratorInputBlockEntity::getProgressFraction));
 
+    // --- Solar Panels ---
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> SOLAR_PANEL_SUN_ANGLE = register("solar_panel_sun_angle",
+            () -> new NumericLineDisplaySource<>(ModDisplaySources::solarPanel, panel -> {
+                Double angle = SolarHelper.sunAngle(panel.getLevel());
+                if (angle == null) return Component.literal("No day cycle").withStyle(ChatFormatting.GRAY);
+                long degrees = Math.round(angle);
+                String side = degrees < 0 ? " East" : degrees > 0 ? " West" : "";
+                return Component.literal(Math.abs(degrees) + "°" + side)
+                        .withStyle(Math.abs(degrees) > 90 ? ChatFormatting.GRAY : ChatFormatting.YELLOW);
+            }));
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> SOLAR_PANEL_SUN_OFFSET = register("solar_panel_sun_offset",
+            () -> new NumericLineDisplaySource<>(ModDisplaySources::solarPanel, panel -> {
+                Double offset = SolarHelper.sunOffset(panel.getLevel(), panel.getBlockPos());
+                if (offset == null) return Component.literal("Sun down").withStyle(ChatFormatting.GRAY);
+                return Component.literal(Math.round(offset) + "°").withStyle(ChatFormatting.YELLOW);
+            }));
+
     private static DeferredHolder<DisplaySource, DisplaySource> register(String name, Supplier<DisplaySource> source) {
         return DISPLAY_SOURCES.register(name, source);
     }
@@ -125,6 +148,12 @@ public class ModDisplaySources {
     @Nullable
     private static SolarPowerTowerBlockEntity towerController(DisplayLinkContext context) {
         return context.getSourceBlockEntity() instanceof SolarPowerTowerBlockEntity tower ? tower.getControllerBE() : null;
+    }
+
+    @Nullable
+    private static BlockEntity solarPanel(DisplayLinkContext context) {
+        BlockEntity be = context.getSourceBlockEntity();
+        return be instanceof AndesiteSolarPanelBlockEntity || be instanceof BrassSolarPanelBlockEntity ? be : null;
     }
 
     @Nullable

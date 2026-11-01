@@ -110,6 +110,8 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.display_source.fusion_reactor_deuterium", "Fusion Reactor Deuterium");
         add("solarpunk.display_source.fusion_reactor_steam_tank", "Fusion Reactor Steam Tank");
         add("solarpunk.display_source.fusion_reactor_tritium_supply", "Fusion Reactor Tritium Supply");
+        add("solarpunk.display_source.solar_panel_sun_angle", "Sun Angle");
+        add("solarpunk.display_source.solar_panel_sun_offset", "Sun Offset");
         add("solarpunk.display_source.particle_accelerator_status", "Particle Accelerator Status");
         add("solarpunk.display_source.particle_accelerator_recipe", "Particle Accelerator Recipe");
         add("solarpunk.display_source.particle_accelerator_progress", "Particle Accelerator Progress");

@@ -10,6 +10,7 @@ import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.compat.cosmonautics.CosmonauticsSolar;
 import net.succ.solar_punk.compat.sable.SableCompat;
 import net.succ.solar_punk.compat.sereneseasons.SeasonalSolar;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -173,6 +174,43 @@ public final class SolarHelper {
             if (!rayClear(level, ray.start(), along.normalize(), along.length())) return true;
         }
         return false;
+    }
+
+    /**
+     * Where the sun is in the world's sky, in degrees from straight up: negative toward the
+     * east (morning), positive toward the west (evening), past 90 either way once it's below
+     * the horizon. The sun only moves east to west, so this is the angle to turn a bearing on
+     * the north-south axis by to face it. {@code null} where there's no day cycle to read.
+     */
+    @Nullable
+    public static Double sunAngle(Level level) {
+        if (level == null || isAlwaysSunny(level)) return null;
+        Vec3 sun = vanillaSunDirection(level);
+        return Math.toDegrees(Math.atan2(-sun.x, sun.y));
+    }
+
+    /**
+     * Degrees between the "up" of the block at {@code pos} and the sun: 0 when it faces the
+     * sun head on, 90 when the sun is edge-on. Follows the block's contraption or station
+     * as it turns. {@code null} while the sun is down (or eclipsed) or unknown.
+     */
+    @Nullable
+    public static Double sunOffset(Level level, BlockPos pos) {
+        if (level == null) return null;
+
+        Vec3 local;
+        CosmonauticsSolar.Sun sun = CosmonauticsSolar.sunAt(level, pos);
+        if (sun != null) {
+            if (!sun.visible()) return null;
+            local = sun.direction();
+        } else {
+            if (isAlwaysSunny(level)) return null;
+            Vec3 world = vanillaSunDirection(level);
+            if (world.y <= 0) return null;
+            SableCompat.Placement placement = SableCompat.placement(level, pos);
+            local = placement != null ? placement.toLocal(world) : world;
+        }
+        return Math.toDegrees(Math.acos(Mth.clamp(local.normalize().y, -1, 1)));
     }
 
     public static boolean isRaining(Level level) {

@@ -226,6 +226,11 @@ public class SolarPunk {
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_DEUTERIUM.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_STEAM_TANK.get());
 
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.ANDESITE_SOLAR_PANEL.get(), ModDisplaySources.SOLAR_PANEL_SUN_ANGLE.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.ANDESITE_SOLAR_PANEL.get(), ModDisplaySources.SOLAR_PANEL_SUN_OFFSET.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.BRASS_SOLAR_PANEL.get(), ModDisplaySources.SOLAR_PANEL_SUN_ANGLE.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.BRASS_SOLAR_PANEL.get(), ModDisplaySources.SOLAR_PANEL_SUN_OFFSET.get());
+
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), ModDisplaySources.PARTICLE_ACCELERATOR_STATUS.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), ModDisplaySources.PARTICLE_ACCELERATOR_RECIPE.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), ModDisplaySources.PARTICLE_ACCELERATOR_PROGRESS.get());

@@ -18,6 +18,11 @@
 - New advancements for the Particle Accelerator: crafting the coils, closing your first ring, your first collision, getting a Tritium Capsule and running a huge ring.
 - New Fusion Reactor advancement for breeding your own Tritium.
 
+### Sun Readouts
+
+- New **Sun Angle** Display Link readout on Solar Panels: shows where the sun is in the sky, in degrees from straight up toward the East or West. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/53
+- New **Sun Offset** Display Link readout on Solar Panels: shows how far the panel is turned away from the sun, so 0° means it's facing the sun head on. Handy for lining up sun-tracking arrays. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/53
+
 ## Fixes
 
 - Solar blocks on Create: Aeronautics contraptions now get shaded by the world around them, so flying one indoors or underground stops it working. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/52
