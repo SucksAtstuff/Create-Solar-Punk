@@ -353,8 +353,12 @@ public class ModBlocks {
 
     public static final DeferredBlock<StairBlock> SALT_STAIRS = registerStairs("salt_stairs", SALT_BLOCK);
     public static final DeferredBlock<SlabBlock> SALT_SLAB = registerSlab("salt_slab", SALT_BLOCK);
+
     public static final DeferredBlock<Block> POLISHED_SALT = registerDecorative("polished_salt",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(SALT_BLOCK.get())));
+    public static final DeferredBlock<StairBlock> POLISHED_SALT_STAIRS = registerStairs("polished_salt_stairs", POLISHED_SALT);
+    public static final DeferredBlock<SlabBlock> POLISHED_SALT_SLAB = registerSlab("polished_salt_slab", POLISHED_SALT);
+    public static final DeferredBlock<WallBlock> POLISHED_SALT_WALL = registerWall("polished_salt_wall", POLISHED_SALT);
 
     public static final DeferredBlock<Block> SALT_BRICKS = registerDecorative("salt_bricks",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(SALT_BLOCK.get())));

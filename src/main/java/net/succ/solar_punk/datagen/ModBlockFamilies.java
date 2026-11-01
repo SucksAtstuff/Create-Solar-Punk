@@ -29,6 +29,14 @@ public final class ModBlockFamilies {
             .polished(ModBlocks.POLISHED_SALT.get())
             .getFamily();
 
+    // Polished Salt is both a variant of SALT and the base of its own set, like vanilla's
+    // Polished Deepslate.
+    public static final BlockFamily POLISHED_SALT = new BlockFamily.Builder(ModBlocks.POLISHED_SALT.get())
+            .stairs(ModBlocks.POLISHED_SALT_STAIRS.get())
+            .slab(ModBlocks.POLISHED_SALT_SLAB.get())
+            .wall(ModBlocks.POLISHED_SALT_WALL.get())
+            .getFamily();
+
     public static final BlockFamily SALT_BRICKS = new BlockFamily.Builder(ModBlocks.SALT_BRICKS.get())
             .stairs(ModBlocks.SALT_BRICK_STAIRS.get())
             .slab(ModBlocks.SALT_BRICK_SLAB.get())
@@ -49,7 +57,7 @@ public final class ModBlockFamilies {
             .wall(ModBlocks.FUSION_REACTOR_CASING_WALL.get())
             .getFamily();
 
-    public static final List<BlockFamily> ALL = List.of(SALT, SALT_BRICKS, TURBINE_CASING, FUSION_REACTOR_CASING);
+    public static final List<BlockFamily> ALL = List.of(SALT, POLISHED_SALT, SALT_BRICKS, TURBINE_CASING, FUSION_REACTOR_CASING);
 
     // Base blocks whose texture isn't at textures/block/<id>.png.
     private static final Map<Block, ResourceLocation> BASE_TEXTURES = Map.of(

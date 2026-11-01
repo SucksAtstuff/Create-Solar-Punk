@@ -21,7 +21,8 @@
 ### Building Blocks
 
 - New **Salt Lamp**: a warm glowing chunk of salt. Right-click to switch it on or off.
-- New **Salt Stairs**, **Salt Slab** and **Polished Salt**.
+- New **Salt Stairs** and **Salt Slab**.
+- New **Polished Salt** with stairs, slab and wall.
 - New **Salt Bricks** with stairs, slab and wall, plus **Chiseled Salt Bricks**.
 - New stairs, slabs and walls for the Turbine Casing and Fusion Reactor Casing, so engine rooms can match.
 - Decorative blocks now have their own **Create: Solarpunk Building Blocks** creative tab.
