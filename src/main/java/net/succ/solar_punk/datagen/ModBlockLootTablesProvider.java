@@ -2,6 +2,7 @@ package net.succ.solar_punk.datagen;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.data.BlockFamily;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
@@ -21,6 +22,12 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
     @Override
     protected void generate() {
         dropSelf(ModBlocks.FERMENTATION_VAT.get());
+        dropSelf(ModBlocks.SALT_LAMP.get());
+        // Building block families: a double slab drops two slabs, everything else drops itself.
+        ModBlockFamilies.ALL.forEach(family -> family.getVariants().forEach((variant, block) -> {
+            if (variant == BlockFamily.Variant.SLAB) add(block, this::createSlabItemTable);
+            else dropSelf(block);
+        }));
         dropSelf(ModBlocks.BIOMASS_GASIFIER.get());
         dropSelf(ModBlocks.BIOFUEL_ENGINE.get());
         dropSelf(ModBlocks.GEYSER_CAP.get());
@@ -31,6 +38,7 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.CRYSTALLIZER.get());
         dropSelf(ModBlocks.FIREBOX_BOILER.get());
         dropSelf(ModBlocks.SALT_BLOCK.get());
+        dropSelf(ModBlocks.SALT_BRICKS.get());
         add(ModBlocks.LITHIUM_ORE.get(), block -> createOreDrop(block, ModItems.RAW_LITHIUM.get()));
         add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get(), block -> createOreDrop(block, ModItems.RAW_LITHIUM.get()));
         dropSelf(ModBlocks.LITHIUM_BLOCK.get());

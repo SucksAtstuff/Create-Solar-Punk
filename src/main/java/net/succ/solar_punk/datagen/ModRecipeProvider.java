@@ -4,13 +4,18 @@ import java.util.List;
 import net.succ.solar_punk.recipe.ParticleAcceleratorRecipe;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -94,6 +99,29 @@ public class ModRecipeProvider extends RecipeProvider {
                 .pattern("SSS")
                 .define('S', anySalt())
                 .unlockedBy("has_salt", has(ModTags.Items.DUSTS_SALT))
+                .save(output);
+
+        // Salt Bricks: 2x2 Polished Salt (itself 2x2 Salt Blocks), like Deepslate's
+        // polished -> bricks chain, or straight from a Salt Block in a stonecutter.
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.SALT_BRICKS.get(), 4)
+                .pattern("SS")
+                .pattern("SS")
+                .define('S', ModBlocks.POLISHED_SALT.get())
+                .unlockedBy("has_polished_salt", has(ModBlocks.POLISHED_SALT.get()))
+                .save(output);
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(ModBlocks.POLISHED_SALT.get()), RecipeCategory.BUILDING_BLOCKS, ModBlocks.SALT_BRICKS.get())
+                .unlockedBy("has_polished_salt", has(ModBlocks.POLISHED_SALT.get()))
+                .save(output, id("salt_bricks_from_polished_salt_stonecutting"));
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(ModBlocks.SALT_BLOCK.get()), RecipeCategory.BUILDING_BLOCKS, ModBlocks.SALT_BRICKS.get())
+                .unlockedBy("has_salt_block", has(ModBlocks.SALT_BLOCK.get()))
+                .save(output, id("salt_bricks_from_salt_block_stonecutting"));
+
+        ModBlockFamilies.ALL.forEach(family -> blockFamilyRecipes(output, family));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, ModBlocks.SALT_LAMP.get())
+                .requires(ModTags.Items.STORAGE_BLOCKS_SALT)
+                .requires(Items.TORCH)
+                .unlockedBy("has_salt_block", has(ModTags.Items.STORAGE_BLOCKS_SALT))
                 .save(output);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SALT.get(), 9)
@@ -304,6 +332,24 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(blockTag)
                 .unlockedBy("has_" + metal + "_block", has(blockTag))
                 .save(output, id(metal + "_ingot_from_block"));
+    }
+
+    // Vanilla's crafting recipes for every variant (stairs, slab, wall, polished, chiseled...),
+    // plus stonecutting each one straight from the base block. Vanilla's own stonecutter helper
+    // would save under the minecraft namespace, so these are built by hand.
+    private void blockFamilyRecipes(RecipeOutput output, BlockFamily family) {
+        generateRecipes(output, family, FeatureFlags.DEFAULT_FLAGS);
+
+        Block base = family.getBaseBlock();
+        String baseName = BuiltInRegistries.BLOCK.getKey(base).getPath();
+        family.getVariants().forEach((variant, block) -> {
+            if (variant == BlockFamily.Variant.CRACKED) return; // smelted, not cut
+            int count = variant == BlockFamily.Variant.SLAB ? 2 : 1;
+            String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
+            SingleItemRecipeBuilder.stonecutting(Ingredient.of(base), RecipeCategory.BUILDING_BLOCKS, block, count)
+                    .unlockedBy(getHasName(base), has(base))
+                    .save(output, id(name + "_from_" + baseName + "_stonecutting"));
+        });
     }
 
     private static ResourceLocation id(String path) {

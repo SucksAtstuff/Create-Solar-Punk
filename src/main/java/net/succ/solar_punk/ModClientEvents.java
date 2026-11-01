@@ -45,8 +45,10 @@ import net.succ.solar_punk.client.renderer.SolarPowerTowerRenderer;
 import net.succ.solar_punk.client.renderer.TurbineRotorRenderer;
 import net.succ.solar_punk.compat.ponder.SolarPunkPonderPlugin;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -59,8 +61,8 @@ public class ModClientEvents {
         KineticSprinklerItem item = (KineticSprinklerItem) ModBlocks.KINETIC_SPRINKLER.get().asItem();
         event.registerItem(new IClientItemExtensions() {
             @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return GeoRenderProvider.of(item).getGeoItemRenderer();
+            public @NotNull BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return Objects.requireNonNull(GeoRenderProvider.of(item).getGeoItemRenderer());
             }
         }, item);
     }
@@ -143,28 +145,29 @@ public class ModClientEvents {
     }
 
     private static void registerTooltips() {
-        tip(ModBlocks.SOLAR_HEATER::get);
-        tip(ModBlocks.FIREBOX_BOILER::get);
-        tip(ModBlocks.ANDESITE_SOLAR_PANEL::get);
-        tip(ModBlocks.BRASS_SOLAR_PANEL::get);
-        tip(ModBlocks.HEAT_BATTERY::get);
-        tip(ModBlocks.KINETIC_BATTERY::get);
-        tip(ModBlocks.FERMENTATION_VAT::get);
-        tip(ModBlocks.BIOMASS_GASIFIER::get);
-        tip(ModBlocks.BIOFUEL_ENGINE::get);
-        tip(ModBlocks.GEYSER_CAP::get);
-        tip(ModBlocks.GEYSER_VENT::get);
-        tip(ModBlocks.SOLAR_POWER_TOWER::get);
-        tip(ModBlocks.SOLAR_MIRROR::get);
-        tip(ModBlocks.BIOFILTER::get);
-        tip(ModBlocks.KINETIC_SPRINKLER::get);
-        tip(ModBlocks.TURBINE_ROTOR::get);
-        tip(ModBlocks.CRYSTALLIZER::get);
-        tip(ModBlocks.FUSION_REACTOR_CORE::get);
-        tip(ModBlocks.LITHIUM_BREEDER_MODULE::get);
-        tip(ModBlocks.BERYLLIUM_REFLECTOR_MODULE::get);
-        tip(ModBlocks.PARTICLE_ACCELERATOR_PIPE::get);
-        tip(ModBlocks.PARTICLE_ACCELERATOR_INPUT::get);
+        tip(ModBlocks.SOLAR_HEATER);
+        tip(ModBlocks.FIREBOX_BOILER);
+        tip(ModBlocks.ANDESITE_SOLAR_PANEL);
+        tip(ModBlocks.BRASS_SOLAR_PANEL);
+        tip(ModBlocks.HEAT_BATTERY);
+        tip(ModBlocks.KINETIC_BATTERY);
+        tip(ModBlocks.FERMENTATION_VAT);
+        tip(ModBlocks.BIOMASS_GASIFIER);
+        tip(ModBlocks.BIOFUEL_ENGINE);
+        tip(ModBlocks.GEYSER_CAP);
+        tip(ModBlocks.GEYSER_VENT);
+        tip(ModBlocks.SOLAR_POWER_TOWER);
+        tip(ModBlocks.SOLAR_MIRROR);
+        tip(ModBlocks.BIOFILTER);
+        tip(ModBlocks.KINETIC_SPRINKLER);
+        tip(ModBlocks.TURBINE_ROTOR);
+        tip(ModBlocks.CRYSTALLIZER);
+        tip(ModBlocks.FUSION_REACTOR_CORE);
+        tip(ModBlocks.LITHIUM_BREEDER_MODULE);
+        tip(ModBlocks.BERYLLIUM_REFLECTOR_MODULE);
+        tip(ModBlocks.PARTICLE_ACCELERATOR_PIPE);
+        tip(ModBlocks.PARTICLE_ACCELERATOR_INPUT);
+        tip(ModBlocks.SALT_LAMP);
     }
 
     private static void tip(Supplier<? extends Block> block) {

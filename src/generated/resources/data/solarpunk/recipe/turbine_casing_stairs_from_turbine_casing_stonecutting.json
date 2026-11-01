@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "solarpunk:turbine_casing"
+  },
+  "result": {
+    "count": 1,
+    "id": "solarpunk:turbine_casing_stairs"
+  }
+}

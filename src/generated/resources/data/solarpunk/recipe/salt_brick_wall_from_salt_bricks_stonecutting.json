@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "solarpunk:salt_bricks"
+  },
+  "result": {
+    "count": 1,
+    "id": "solarpunk:salt_brick_wall"
+  }
+}

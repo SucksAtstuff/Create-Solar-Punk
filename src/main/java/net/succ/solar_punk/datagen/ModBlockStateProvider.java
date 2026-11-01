@@ -1,6 +1,10 @@
 package net.succ.solar_punk.datagen;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.BlockFamily;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WallBlock;
 import net.succ.solar_punk.block.custom.PipeShape;
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.minecraft.core.Direction;
@@ -15,6 +19,7 @@ import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.ModelFile.UncheckedModelFile;
+import net.neoforged.neoforge.client.model.generators.ModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.succ.solar_punk.SolarPunk;
@@ -56,6 +61,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
         litFacingCustomModelBlock(ModBlocks.BIOFUEL_ENGINE, true);
         fermentationVatBlock();
         blockWithItem(ModBlocks.SALT_BLOCK);
+        blockWithItem(ModBlocks.SALT_BRICKS);
+        ModBlockFamilies.ALL.forEach(this::blockFamily);
+        // Placed switched on, so the item shows the glowing model.
+        litFacingCustomModelBlock(ModBlocks.SALT_LAMP, false);
+        simpleBlockItem(ModBlocks.SALT_LAMP.get(), new UncheckedModelFile(modLoc("block/salt_lamp_lit")));
         blockWithItem(ModBlocks.LITHIUM_ORE);
         blockWithItem(ModBlocks.DEEPSLATE_LITHIUM_ORE);
         blockWithItem(ModBlocks.LITHIUM_BLOCK);
@@ -118,6 +128,43 @@ public class ModBlockStateProvider extends BlockStateProvider {
                         .modelFile(state.getValue(FusionReactorCoreBlock.FORMED) ? fusionReactorCoreFormed : fusionReactorCoreCube)
                         .build());
         itemModels().withExistingParent("fusion_reactor_core", modLoc("block/fusion_reactor_core"));
+    }
+
+    // Every variant of a ModBlockFamilies family. Stairs, slabs and walls use the base
+    // block's texture; full-block variants (polished, chiseled...) use their own.
+    private void blockFamily(BlockFamily family) {
+        ResourceLocation baseModel = blockTexture(family.getBaseBlock()); // block/<base id>
+        ResourceLocation baseTex = ModBlockFamilies.baseTexture(family);
+        if (baseTex == null) baseTex = baseModel;
+        ResourceLocation tex = baseTex;
+        family.getVariants().forEach((variant, block) -> {
+            String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
+            switch (variant) {
+                case STAIRS -> {
+                    stairsBlock((StairBlock) block, tex);
+                    simpleBlockItem(block, new UncheckedModelFile(modLoc("block/" + path)));
+                }
+                case SLAB -> {
+                    // The double slab reuses the base block's model. Passed unchecked, since
+                    // the base model may only be generated later in this run.
+                    slabBlock((SlabBlock) block, models().slab(path, tex, tex, tex),
+                            models().slabTop(path + "_top", tex, tex, tex), new UncheckedModelFile(baseModel));
+                    simpleBlockItem(block, new UncheckedModelFile(modLoc("block/" + path)));
+                }
+                case WALL -> {
+                    wallBlock((WallBlock) block, tex);
+                    itemModels().wallInventory(path, tex);
+                }
+                default -> {
+                    // A <id>_top texture, if one exists, goes on the top and bottom.
+                    ResourceLocation side = blockTexture(block);
+                    ResourceLocation top = side.withSuffix("_top");
+                    simpleBlockWithItem(block, models().existingFileHelper.exists(top, ModelProvider.TEXTURE)
+                            ? models().cubeColumn(path, side, top)
+                            : cubeAll(block));
+                }
+            }
+        });
     }
 
     // For blocks whose models are hand-crafted (Blockbench), with a "_lit" variant.

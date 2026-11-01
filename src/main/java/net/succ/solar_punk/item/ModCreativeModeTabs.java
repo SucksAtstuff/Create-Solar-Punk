@@ -1,15 +1,25 @@
 package net.succ.solar_punk.item;
 
+import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
-import net.succ.solar_punk.fluid.ModFluids;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ModCreativeModeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
@@ -21,66 +31,35 @@ public class ModCreativeModeTabs {
                     .withTabsBefore(CreativeModeTabs.COMBAT)
                     .icon(() -> ModBlocks.ANDESITE_SOLAR_PANEL.get().asItem().getDefaultInstance())
                     .displayItems((parameters, output) -> {
-                        output.accept(ModBlocks.ANDESITE_SOLAR_PANEL.get());
-                        output.accept(ModBlocks.BRASS_SOLAR_PANEL.get());
-                        output.accept(ModBlocks.SOLAR_HEATER.get());
-                        output.accept(ModBlocks.CRYSTALLIZER.get());
-                        output.accept(ModBlocks.FIREBOX_BOILER.get());
-                        output.accept(ModBlocks.KINETIC_BATTERY.get());
-                        output.accept(ModBlocks.HEAT_BATTERY.get());
-                        output.accept(ModBlocks.FERMENTATION_VAT.get());
-                        output.accept(ModBlocks.BIOMASS_GASIFIER.get());
-                        output.accept(ModBlocks.BIOFUEL_ENGINE.get());
-                        output.accept(ModBlocks.SALT_BLOCK.get());
-                        output.accept(ModBlocks.LITHIUM_ORE.get());
-                        output.accept(ModBlocks.DEEPSLATE_LITHIUM_ORE.get());
-                        output.accept(ModBlocks.LITHIUM_BLOCK.get());
-                        output.accept(ModBlocks.BERYLLIUM_BLOCK.get());
-                        output.accept(ModItems.RAW_LITHIUM.get());
-                        output.accept(ModItems.LITHIUM_INGOT.get());
-                        output.accept(ModItems.LITHIUM_NUGGET.get());
-                        output.accept(ModItems.LITHIUM_DUST.get());
-                        output.accept(ModItems.BERYLLIUM_DUST.get());
-                        output.accept(ModItems.BERYLLIUM_INGOT.get());
-                        output.accept(ModItems.BERYLLIUM_NUGGET.get());
-                        output.accept(ModBlocks.DEAD_GRASS_BLOCK.get());
-                        output.accept(ModBlocks.DEAD_GRASS.get());
-                        output.accept(ModBlocks.RUINED_DIRT.get());
-                        output.accept(ModBlocks.ASH_BLOCK.get());
-                        output.accept(ModBlocks.GEYSER_CAP.get());
-                        output.accept(ModBlocks.GEYSER_VENT.get());
-                        output.accept(ModBlocks.SOLAR_POWER_TOWER.get());
-                        output.accept(ModBlocks.SOLAR_MIRROR.get());
-                        output.accept(ModBlocks.BIOFILTER.get());
-                        output.accept(ModBlocks.KINETIC_SPRINKLER.get());
-                        output.accept(ModItems.SALT.get());
-                        output.accept(ModItems.BIOMASS.get());
-                        output.accept(ModItems.BIOMASS_PELLET.get());
-                        output.accept(ModItems.BIOCHAR.get());
-                        output.accept(ModItems.CARBON_DUST.get());
-                        output.accept(ModItems.PHOTOVOLTAIC_CELL.get());
-                        output.accept(ModItems.ELECTROMAGNET_COIL.get());
-                        output.accept(ModItems.SUPERCONDUCTING_COIL.get());
-                        output.accept(ModItems.EMPTY_FUEL_CAPSULE.get());
-                        output.accept(ModItems.TRITIUM_CAPSULE.get());
-                        output.accept(ModBlocks.TURBINE_CASING.get());
-                        output.accept(ModBlocks.TURBINE_CASING_GLASS.get());
-                        output.accept(ModBlocks.TURBINE_ROTOR.get());
-                        output.accept(ModBlocks.ANDESITE_TURBINE_BLADE.get());
-                        output.accept(ModBlocks.BRASS_TURBINE_BLADE.get());
-                        output.accept(ModBlocks.FUSION_REACTOR_CASING.get());
-                        output.accept(ModBlocks.FUSION_REACTOR_CASING_GLASS.get());
-                        output.accept(ModBlocks.LITHIUM_BREEDER_MODULE.get());
-                        output.accept(ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get());
-                        output.accept(ModBlocks.FUSION_REACTOR_CORE.get());
-                        output.accept(ModBlocks.PARTICLE_ACCELERATOR_PIPE.get());
-                        output.accept(ModBlocks.PARTICLE_ACCELERATOR_INPUT.get());
-                        output.accept(ModFluids.MOLTEN_SALT_BUCKET.get());
-                        output.accept(ModFluids.BIOFUEL_BUCKET.get());
-                        output.accept(ModFluids.FERTILIZER_BUCKET.get());
-                        output.accept(ModFluids.STEAM_BUCKET.get());
-                        output.accept(ModFluids.DEUTERIUM_BUCKET.get());
+                        // Everything the mod registers except the building blocks, so new blocks
+                        // and items show up on their own: blocks in ModBlocks order, then items
+                        // in ModItems order, then fluid buckets. Blocks without an item (fluids,
+                        // the extra pipe shapes) are skipped, and so are sequenced assembly's
+                        // in-between items.
+                        Set<Block> decorative = ModBlocks.decorativeBlocks().stream()
+                                .map(DeferredBlock::get).collect(Collectors.toSet());
+                        for (DeferredHolder<Block, ? extends Block> block : ModBlocks.BLOCKS.getEntries()) {
+                            Item item = block.get().asItem();
+                            if (item != Items.AIR && !decorative.contains(block.get())) output.accept(item);
+                        }
+                        List<Item> items = ModItems.ITEMS.getEntries().stream()
+                                .<Item>map(DeferredHolder::get)
+                                .filter(item -> !(item instanceof BlockItem) && !(item instanceof SequencedAssemblyItem))
+                                .toList();
+                        items.stream().filter(item -> !(item instanceof BucketItem)).forEach(output::accept);
+                        items.stream().filter(item -> item instanceof BucketItem).forEach(output::accept);
                     })
+                    .build());
+
+    // Stairs, slabs, walls and other decorative blocks (ModBlocks.registerDecorative), in
+    // ModBlocks order.
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BUILDING_BLOCKS_TAB =
+            CREATIVE_MODE_TABS.register("building_blocks_tab", () -> CreativeModeTab.builder()
+                    .title(Component.translatable("itemGroup.solar_punk.building_blocks"))
+                    .withTabsBefore(SOLAR_PUNK_TAB.getKey())
+                    .icon(() -> ModBlocks.CHISELED_SALT_BRICKS.get().asItem().getDefaultInstance())
+                    .displayItems((parameters, output) ->
+                            ModBlocks.decorativeBlocks().forEach(block -> output.accept(block.get())))
                     .build());
 
     public static void register(IEventBus eventBus) {

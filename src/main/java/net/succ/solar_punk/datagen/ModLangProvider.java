@@ -20,6 +20,7 @@ public class ModLangProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         add("itemGroup.solar_punk", "Create: Solarpunk");
+        add("itemGroup.solar_punk.building_blocks", "Create: Solarpunk Building Blocks");
         add("jei.solarpunk.category.solar_heating", "Solar Heating");
         add("jei.solarpunk.category.solar_power_tower", "Solar Power Tower");
         add("jei.solarpunk.category.fermentation_vat", "Fermentation Vat");
@@ -234,6 +235,8 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.biofilter.tooltip.summary", "Draws _Rotational Force_ to absorb _pollution_ from nearby chunks, gradually healing blocks and restoring biomes. Cleans faster at higher speed.");
         add("block.solarpunk.biofilter.tooltip.condition1", "While cleaning pollution");
         add("block.solarpunk.biofilter.tooltip.behaviour1", "Collects _Carbon Dust_ from what it removes. Take it out by hand or with a funnel, and _compact_ it into _Biochar_.");
+
+        add("block.solarpunk.salt_lamp.tooltip.summary", "A warm, glowing chunk of _Salt_. Right-click to switch it _on_ or _off_.");
 
         add("block.solarpunk.kinetic_sprinkler.tooltip.summary", "Pipe in _water_ to hydrate _farmland_ and speed up _crop growth_ in a 5x5 area below it.");
         add("block.solarpunk.kinetic_sprinkler.tooltip.condition1", "When supplied with Fertilizer instead of water");

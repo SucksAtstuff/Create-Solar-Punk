@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "solarpunk:block/industrial_iron_casing/industrial_iron_casing",
+    "side": "solarpunk:block/industrial_iron_casing/industrial_iron_casing",
+    "top": "solarpunk:block/industrial_iron_casing/industrial_iron_casing"
+  }
+}

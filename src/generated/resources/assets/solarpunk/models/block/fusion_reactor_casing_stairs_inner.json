@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "solarpunk:block/fusion_reactor_casing/fusion_reactor_casing",
+    "side": "solarpunk:block/fusion_reactor_casing/fusion_reactor_casing",
+    "top": "solarpunk:block/fusion_reactor_casing/fusion_reactor_casing"
+  }
+}

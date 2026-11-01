@@ -1,6 +1,7 @@
 package net.succ.solar_punk.datagen;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -16,6 +17,7 @@ import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static net.succ.solar_punk.datagen.DatagenUtil.blockTag;
@@ -34,6 +36,21 @@ public class ModBlockTagProvider extends BlockTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
+        // Casing stairs, slabs and walls come off with a Wrench, like the casings themselves.
+        for (BlockFamily family : List.of(ModBlockFamilies.TURBINE_CASING, ModBlockFamilies.FUSION_REACTOR_CASING))
+            family.getVariants().values().forEach(block -> tag(blockTag("create", "wrench_pickup")).add(block));
+
+        // Building block families: shape tags, and every variant is pickaxe-mineable.
+        ModBlockFamilies.ALL.forEach(family -> family.getVariants().forEach((variant, block) -> {
+            switch (variant) {
+                case STAIRS -> tag(BlockTags.STAIRS).add(block);
+                case SLAB -> tag(BlockTags.SLABS).add(block);
+                case WALL -> tag(BlockTags.WALLS).add(block);
+                default -> {}
+            }
+            tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
+        }));
+
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(ModBlocks.ANDESITE_SOLAR_PANEL.get())
                 .add(ModBlocks.BRASS_SOLAR_PANEL.get())
@@ -41,6 +58,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.CRYSTALLIZER.get())
                 .add(ModBlocks.FIREBOX_BOILER.get())
                 .add(ModBlocks.SALT_BLOCK.get())
+                .add(ModBlocks.SALT_BRICKS.get())
+                .add(ModBlocks.SALT_LAMP.get())
                 .add(ModBlocks.LITHIUM_ORE.get())
                 .add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get())
                 .add(ModBlocks.LITHIUM_BLOCK.get())

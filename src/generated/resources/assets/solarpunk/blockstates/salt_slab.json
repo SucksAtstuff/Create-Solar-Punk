@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "solarpunk:block/salt_slab"
+    },
+    "type=double": {
+      "model": "solarpunk:block/salt_block"
+    },
+    "type=top": {
+      "model": "solarpunk:block/salt_slab_top"
+    }
+  }
+}

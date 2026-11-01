@@ -18,6 +18,14 @@
 - New advancements for the Particle Accelerator: crafting the coils, closing your first ring, your first collision, getting a Tritium Capsule and running a huge ring.
 - New Fusion Reactor advancement for breeding your own Tritium.
 
+### Building Blocks
+
+- New **Salt Lamp**: a warm glowing chunk of salt. Right-click to switch it on or off.
+- New **Salt Stairs**, **Salt Slab** and **Polished Salt**.
+- New **Salt Bricks** with stairs, slab and wall, plus **Chiseled Salt Bricks**.
+- New stairs, slabs and walls for the Turbine Casing and Fusion Reactor Casing, so engine rooms can match.
+- Decorative blocks now have their own **Create: Solarpunk Building Blocks** creative tab.
+
 ### Sun Readouts
 
 - New **Sun Angle** Display Link readout on Solar Panels: shows where the sun is in the sky, in degrees from straight up toward the East or West. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/53
