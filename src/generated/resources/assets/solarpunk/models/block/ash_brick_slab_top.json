@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "solarpunk:block/ash_bricks",
+    "side": "solarpunk:block/ash_bricks",
+    "top": "solarpunk:block/ash_bricks"
+  }
+}

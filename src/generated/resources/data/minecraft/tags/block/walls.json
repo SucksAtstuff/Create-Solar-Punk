@@ -2,6 +2,8 @@
   "values": [
     "solarpunk:polished_salt_wall",
     "solarpunk:salt_brick_wall",
+    "solarpunk:polished_ash_wall",
+    "solarpunk:ash_brick_wall",
     "solarpunk:turbine_casing_wall",
     "solarpunk:fusion_reactor_casing_wall"
   ]

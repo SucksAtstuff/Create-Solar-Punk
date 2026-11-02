@@ -20,6 +20,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.BIOMASS_PELLET.get());
         basicItem(ModItems.BIOCHAR.get());
         basicItem(ModItems.CARBON_DUST.get());
+        basicItem(ModItems.ASH.get());
         basicItem(ModItems.RAW_LITHIUM.get());
         basicItem(ModItems.LITHIUM_INGOT.get());
         basicItem(ModItems.LITHIUM_NUGGET.get());

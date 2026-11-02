@@ -29,6 +29,11 @@ public class ModItems {
     public static final DeferredItem<Item> CARBON_DUST = ITEMS.register("carbon_dust",
             () -> new Item(new Item.Properties()));
 
+    // Blasted from Biomass (Blast Furnace or Bulk Blasting), so Ash Blocks can be made
+    // without global warming turning land into wasteland.
+    public static final DeferredItem<Item> ASH = ITEMS.register("ash",
+            () -> new Item(new Item.Properties()));
+
     // Lithium ore chain: mined from Lithium Ore (drops Raw Lithium) or produced
     // directly as Lithium Dust via ModMixingRecipeGen.SALT_BRINE_TO_LITHIUM (Water +
     // Salt, Superheated Basin). Raw Lithium and Lithium Dust both smelt to Lithium

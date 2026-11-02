@@ -3,6 +3,9 @@ package net.succ.solar_punk.block;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.IronBarsBlock;
+import net.minecraft.world.level.block.TransparentBlock;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.StairBlock;
@@ -305,6 +308,7 @@ public class ModBlocks {
     public static final DeferredBlock<Block> ASH_BLOCK = registerBlock("ash_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                    .requiresCorrectToolForDrops()
                     .strength(0.3f)
                     .sound(SoundType.SAND)));
 
@@ -323,8 +327,8 @@ public class ModBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(3.0f, 3.0f)));
 
-    // Same hardness and sound bump vanilla gives its deepslate ores. Not generated yet:
-    // the ore feature still places LITHIUM_ORE in deepslate too.
+    // Same hardness and sound bump vanilla gives its deepslate ores. Generated wherever
+    // the Lithium Ore feature hits deepslate.
     public static final DeferredBlock<Block> DEEPSLATE_LITHIUM_ORE = registerBlock("deepslate_lithium_ore",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.DEEPSLATE)
@@ -368,6 +372,32 @@ public class ModBlocks {
 
     public static final DeferredBlock<Block> CHISELED_SALT_BRICKS = registerDecorative("chiseled_salt_bricks",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(SALT_BRICKS.get())));
+
+    // Pressed from soft Ash Blocks into stone-like blocks: pickaxe, not shovel.
+    public static final DeferredBlock<Block> POLISHED_ASH = registerDecorative("polished_ash",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.5f, 6.0f)
+                    .sound(SoundType.POLISHED_TUFF)));
+    public static final DeferredBlock<StairBlock> POLISHED_ASH_STAIRS = registerStairs("polished_ash_stairs", POLISHED_ASH);
+    public static final DeferredBlock<SlabBlock> POLISHED_ASH_SLAB = registerSlab("polished_ash_slab", POLISHED_ASH);
+    public static final DeferredBlock<WallBlock> POLISHED_ASH_WALL = registerWall("polished_ash_wall", POLISHED_ASH);
+
+    public static final DeferredBlock<Block> ASH_BRICKS = registerDecorative("ash_bricks",
+            () -> new Block(BlockBehaviour.Properties.ofFullCopy(POLISHED_ASH.get()).sound(SoundType.TUFF_BRICKS)));
+    public static final DeferredBlock<StairBlock> ASH_BRICK_STAIRS = registerStairs("ash_brick_stairs", ASH_BRICKS);
+    public static final DeferredBlock<SlabBlock> ASH_BRICK_SLAB = registerSlab("ash_brick_slab", ASH_BRICKS);
+    public static final DeferredBlock<WallBlock> ASH_BRICK_WALL = registerWall("ash_brick_wall", ASH_BRICKS);
+
+    public static final DeferredBlock<Block> CHISELED_ASH_BRICKS = registerDecorative("chiseled_ash_bricks",
+            () -> new Block(BlockBehaviour.Properties.ofFullCopy(ASH_BRICKS.get())));
+
+    // Decorative for now; see the Solar Glass idea in docs/IDEAS.md for making it generate.
+    public static final DeferredBlock<TransparentBlock> SOLAR_GLASS = registerDecorative("solar_glass",
+            () -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
+    public static final DeferredBlock<IronBarsBlock> SOLAR_GLASS_PANE = registerDecorative("solar_glass_pane",
+            () -> new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)));
 
     public static final DeferredBlock<StairBlock> TURBINE_CASING_STAIRS = registerStairs("turbine_casing_stairs", TURBINE_CASING);
     public static final DeferredBlock<SlabBlock> TURBINE_CASING_SLAB = registerSlab("turbine_casing_slab", TURBINE_CASING);

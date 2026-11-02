@@ -62,6 +62,15 @@ public class ModBlockStateProvider extends BlockStateProvider {
         fermentationVatBlock();
         blockWithItem(ModBlocks.SALT_BLOCK);
         blockWithItem(ModBlocks.SALT_BRICKS);
+        blockWithItem(ModBlocks.ASH_BRICKS);
+        simpleBlockWithItem(ModBlocks.SOLAR_GLASS.get(),
+                models().cubeAll("solar_glass", blockTexture(ModBlocks.SOLAR_GLASS.get())).renderType("minecraft:cutout"));
+        // Like vanilla panes: the glass texture on the faces, a _pane_top strip on the edges,
+        // and a flat item icon of the glass.
+        paneBlockWithRenderType(ModBlocks.SOLAR_GLASS_PANE.get(), blockTexture(ModBlocks.SOLAR_GLASS.get()),
+                modLoc("block/solar_glass_pane_top"), "minecraft:cutout");
+        itemModels().withExistingParent("solar_glass_pane", mcLoc("item/generated"))
+                .texture("layer0", blockTexture(ModBlocks.SOLAR_GLASS.get()));
         ModBlockFamilies.ALL.forEach(this::blockFamily);
         // Placed switched on, so the item shows the glowing model.
         litFacingCustomModelBlock(ModBlocks.SALT_LAMP, false);
@@ -137,7 +146,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ResourceLocation baseTex = ModBlockFamilies.baseTexture(family);
         if (baseTex == null) baseTex = baseModel;
         ResourceLocation tex = baseTex;
-        family.getVariants().forEach((variant, block) -> {
+        ModBlockFamilies.variants(family).forEach((variant, block) -> {
             String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
             switch (variant) {
                 case STAIRS -> {

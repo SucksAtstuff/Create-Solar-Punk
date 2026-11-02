@@ -101,22 +101,26 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_salt", has(ModTags.Items.DUSTS_SALT))
                 .save(output);
 
-        // Salt Bricks: 2x2 Polished Salt (itself 2x2 Salt Blocks), like Deepslate's
-        // polished -> bricks chain, or straight from a Salt Block in a stonecutter.
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.SALT_BRICKS.get(), 4)
-                .pattern("SS")
-                .pattern("SS")
-                .define('S', ModBlocks.POLISHED_SALT.get())
-                .unlockedBy("has_polished_salt", has(ModBlocks.POLISHED_SALT.get()))
-                .save(output);
-        SingleItemRecipeBuilder.stonecutting(Ingredient.of(ModBlocks.POLISHED_SALT.get()), RecipeCategory.BUILDING_BLOCKS, ModBlocks.SALT_BRICKS.get())
-                .unlockedBy("has_polished_salt", has(ModBlocks.POLISHED_SALT.get()))
-                .save(output, id("salt_bricks_from_polished_salt_stonecutting"));
-        SingleItemRecipeBuilder.stonecutting(Ingredient.of(ModBlocks.SALT_BLOCK.get()), RecipeCategory.BUILDING_BLOCKS, ModBlocks.SALT_BRICKS.get())
-                .unlockedBy("has_salt_block", has(ModBlocks.SALT_BLOCK.get()))
-                .save(output, id("salt_bricks_from_salt_block_stonecutting"));
+        bricksRecipes(output, ModBlocks.SALT_BRICKS.get(), ModBlocks.POLISHED_SALT.get(), ModBlocks.SALT_BLOCK.get());
+        bricksRecipes(output, ModBlocks.ASH_BRICKS.get(), ModBlocks.POLISHED_ASH.get(), ModBlocks.ASH_BLOCK.get());
 
         ModBlockFamilies.ALL.forEach(family -> blockFamilyRecipes(output, family));
+
+        // Like stained glass: 8 Glass around one Photovoltaic Cell.
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.SOLAR_GLASS.get(), 8)
+                .pattern("GGG")
+                .pattern("GPG")
+                .pattern("GGG")
+                .define('G', Tags.Items.GLASS_BLOCKS_COLORLESS)
+                .define('P', ModItems.PHOTOVOLTAIC_CELL.get())
+                .unlockedBy("has_photovoltaic_cell", has(ModItems.PHOTOVOLTAIC_CELL.get()))
+                .save(output);
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.SOLAR_GLASS_PANE.get(), 16)
+                .pattern("GGG")
+                .pattern("GGG")
+                .define('G', ModBlocks.SOLAR_GLASS.get())
+                .unlockedBy("has_solar_glass", has(ModBlocks.SOLAR_GLASS.get()))
+                .save(output);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, ModBlocks.SALT_LAMP.get())
                 .requires(ModTags.Items.STORAGE_BLOCKS_SALT)
@@ -128,6 +132,22 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(ModTags.Items.STORAGE_BLOCKS_SALT)
                 .unlockedBy("has_salt_block", has(ModTags.Items.STORAGE_BLOCKS_SALT))
                 .save(output, id("salt_from_salt_block"));
+
+        // Ash: blasting only, so it comes from a Blast Furnace or Create's Bulk Blasting,
+        // not a plain Furnace. Packs into the Ash Block that wasteland decay also leaves.
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(ModItems.BIOMASS.get()), RecipeCategory.MISC, ModItems.ASH.get(), 0.1f, 100)
+                .unlockedBy("has_biomass", has(ModItems.BIOMASS.get()))
+                .save(output, id("ash_from_blasting_biomass"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.ASH_BLOCK.get())
+                .pattern("AA")
+                .pattern("AA")
+                .define('A', ModItems.ASH.get())
+                .unlockedBy("has_ash", has(ModItems.ASH.get()))
+                .save(output);
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.ASH.get(), 4)
+                .requires(ModBlocks.ASH_BLOCK.get())
+                .unlockedBy("has_ash_block", has(ModBlocks.ASH_BLOCK.get()))
+                .save(output, id("ash_from_ash_block"));
 
         // Lithium ore chain: Raw Lithium and Lithium Dust both smelt to the same ingot.
         // Not using vanilla's oreSmelting/oreBlasting helpers, which save under the
@@ -334,6 +354,23 @@ public class ModRecipeProvider extends RecipeProvider {
                 .save(output, id(metal + "_ingot_from_block"));
     }
 
+    // Bricks: 2x2 of the polished block (itself 2x2 of the raw block), like Deepslate's
+    // polished -> bricks chain, or straight from either one in a stonecutter.
+    private void bricksRecipes(RecipeOutput output, Block bricks, Block polished, Block raw) {
+        String bricksName = BuiltInRegistries.BLOCK.getKey(bricks).getPath();
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, bricks, 4)
+                .pattern("SS")
+                .pattern("SS")
+                .define('S', polished)
+                .unlockedBy(getHasName(polished), has(polished))
+                .save(output);
+        for (Block from : List.of(polished, raw)) {
+            SingleItemRecipeBuilder.stonecutting(Ingredient.of(from), RecipeCategory.BUILDING_BLOCKS, bricks)
+                    .unlockedBy(getHasName(from), has(from))
+                    .save(output, id(bricksName + "_from_" + BuiltInRegistries.BLOCK.getKey(from).getPath() + "_stonecutting"));
+        }
+    }
+
     // Vanilla's crafting recipes for every variant (stairs, slab, wall, polished, chiseled...),
     // plus stonecutting each one straight from the base block. Vanilla's own stonecutter helper
     // would save under the minecraft namespace, so these are built by hand.
@@ -342,7 +379,7 @@ public class ModRecipeProvider extends RecipeProvider {
 
         Block base = family.getBaseBlock();
         String baseName = BuiltInRegistries.BLOCK.getKey(base).getPath();
-        family.getVariants().forEach((variant, block) -> {
+        ModBlockFamilies.variants(family).forEach((variant, block) -> {
             if (variant == BlockFamily.Variant.CRACKED) return; // smelted, not cut
             int count = variant == BlockFamily.Variant.SLAB ? 2 : 1;
             String name = BuiltInRegistries.BLOCK.getKey(block).getPath();

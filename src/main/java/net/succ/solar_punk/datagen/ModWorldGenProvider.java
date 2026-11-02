@@ -113,15 +113,14 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
         )));
 
         // Hard-rock ore. The 2-arg OreConfiguration never discards next to air, like Salt.
-        // The Y range straddles the deepslate transition, so it targets both stone and
-        // deepslate, but both currently place LITHIUM_ORE: DEEPSLATE_LITHIUM_ORE exists
-        // but isn't generated yet.
+        // The Y range straddles the deepslate transition, so it places Lithium Ore in stone
+        // and Deepslate Lithium Ore in deepslate.
         context.register(LITHIUM_ORE_CONFIGURED, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(
                 List.of(
                         OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
                                 ModBlocks.LITHIUM_ORE.get().defaultBlockState()),
                         OreConfiguration.target(new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES),
-                                ModBlocks.LITHIUM_ORE.get().defaultBlockState())
+                                ModBlocks.DEEPSLATE_LITHIUM_ORE.get().defaultBlockState())
                 ),
                 7
         )));

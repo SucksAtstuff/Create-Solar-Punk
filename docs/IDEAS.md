@@ -119,6 +119,10 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
 - **Solar Glass** - a see-through panel that makes much less than a Brass Panel but works as
   a window or skylight. Pairs with the Greenhouse idea: a greenhouse roof that also powers
   its own sprinklers.
+  - The block exists as decorative glass (crafted from Glass and a Photovoltaic Cell). Making
+    it generate means a block entity and FE capability; its ID can stay the same, so placed
+    glass would start working.
+  - A Solar Glass Pane exists too; if the glass generates, the pane could as well (less).
 - **Solar Canopy / Pergola** - a panel raised on posts, so the space underneath stays usable
   (paths, markets, parking for trains and contraptions). Mostly a model variant; could just be
   a Brass Panel on a post block.
@@ -153,11 +157,9 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
 
 ### Natural and reclaimed materials
 
-- **Ash Bricks / Ashcrete** - turn the Ash Blocks left by wasteland decay into building
-  blocks (mix Ash with Water and Gravel). Ties cleanup of polluted land to building.
-- **Salt Bricks and Salt Lamps** - polished salt, salt bricks, stairs and slabs from the
-  existing Salt Block, plus a warm glowing salt lamp. Salt is already plentiful once a
-  Crystallizer or salt deposit is running.
+- **Ashcrete** - a concrete-like block mixed from Ash, Water and Gravel in a Mixer, maybe in
+  colours like vanilla concrete. Polished Ash and Ash Bricks already exist; this would be the
+  Create-native, mass-produced option.
 - **Charred Timber** - dark scorched planks (like Japanese shou sugi ban), made by applying
   Biochar to planks or by item application with a Blaze Burner. A second use for Biochar
   besides Fertilizer.
@@ -172,7 +174,9 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
 - **Brass filigree railings and arches** - curvy art nouveau metalwork, the look most
   solarpunk art leans on. Brass and Andesite variants to match Create.
 - **Lithium / Beryllium blocks with variants** - polished, tiled and pillar versions of the
-  existing storage blocks.
+  existing storage blocks. Polished and tiled (as `cut`) fit the family system; a pillar
+  doesn't (no family variant, and it's a rotatable `RotatedPillarBlock`), so it would be
+  registered and modelled on its own.
 
 ## Compat
 

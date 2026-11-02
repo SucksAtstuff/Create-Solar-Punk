@@ -24,8 +24,11 @@
 - New **Salt Stairs** and **Salt Slab**.
 - New **Polished Salt** with stairs, slab and wall.
 - New **Salt Bricks** with stairs, slab and wall, plus **Chiseled Salt Bricks**.
+- New **Polished Ash** and **Ash Bricks**, each with stairs, slab and wall, plus **Chiseled Ash Bricks**.
+- New **Solar Glass** and **Solar Glass Pane**: decorative framed glass.
 - New stairs, slabs and walls for the Turbine Casing and Fusion Reactor Casing, so engine rooms can match.
 - Decorative blocks now have their own **Create: Solarpunk Building Blocks** creative tab.
+- New **Ash** item: blast Biomass in a Blast Furnace or with Bulk Blasting, and craft 4 into an Ash Block. Ash Blocks now need a shovel and drop Ash, like Snow.
 
 ### Sun Readouts
 
@@ -33,6 +36,8 @@
 - New **Sun Offset** Display Link readout on Solar Panels: shows how far the panel is turned away from the sun, so 0° means it's facing the sun head on. Handy for lining up sun-tracking arrays. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/53
 
 ## Fixes
+
+- Lithium Ore now generates as **Deepslate Lithium Ore** in deepslate, instead of stone-looking ore.
 
 - Solar blocks on Create: Aeronautics contraptions now get shaded by the world around them, so flying one indoors or underground stops it working. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/52
 - Solar blocks on contraptions now follow the real sun angle: tilt the contraption toward the sun for full output, or away from it for less. Sun-tracking solar arrays are now possible. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/52

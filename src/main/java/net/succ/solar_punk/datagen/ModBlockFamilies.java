@@ -7,6 +7,7 @@ import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,24 @@ public final class ModBlockFamilies {
             .chiseled(ModBlocks.CHISELED_SALT_BRICKS.get())
             .getFamily();
 
+    // The Ash Block is soft (shovel), but its variants are pressed into stone-like blocks.
+    public static final BlockFamily ASH = new BlockFamily.Builder(ModBlocks.ASH_BLOCK.get())
+            .polished(ModBlocks.POLISHED_ASH.get())
+            .getFamily();
+
+    public static final BlockFamily POLISHED_ASH = new BlockFamily.Builder(ModBlocks.POLISHED_ASH.get())
+            .stairs(ModBlocks.POLISHED_ASH_STAIRS.get())
+            .slab(ModBlocks.POLISHED_ASH_SLAB.get())
+            .wall(ModBlocks.POLISHED_ASH_WALL.get())
+            .getFamily();
+
+    public static final BlockFamily ASH_BRICKS = new BlockFamily.Builder(ModBlocks.ASH_BRICKS.get())
+            .stairs(ModBlocks.ASH_BRICK_STAIRS.get())
+            .slab(ModBlocks.ASH_BRICK_SLAB.get())
+            .wall(ModBlocks.ASH_BRICK_WALL.get())
+            .chiseled(ModBlocks.CHISELED_ASH_BRICKS.get())
+            .getFamily();
+
     // Decorative only: not part of the multiblocks.
     public static final BlockFamily TURBINE_CASING = new BlockFamily.Builder(ModBlocks.TURBINE_CASING.get())
             .stairs(ModBlocks.TURBINE_CASING_STAIRS.get())
@@ -57,12 +76,20 @@ public final class ModBlockFamilies {
             .wall(ModBlocks.FUSION_REACTOR_CASING_WALL.get())
             .getFamily();
 
-    public static final List<BlockFamily> ALL = List.of(SALT, POLISHED_SALT, SALT_BRICKS, TURBINE_CASING, FUSION_REACTOR_CASING);
+    public static final List<BlockFamily> ALL = List.of(SALT, POLISHED_SALT, SALT_BRICKS, ASH, POLISHED_ASH, ASH_BRICKS, TURBINE_CASING, FUSION_REACTOR_CASING);
 
     // Base blocks whose texture isn't at textures/block/<id>.png.
     private static final Map<Block, ResourceLocation> BASE_TEXTURES = Map.of(
             ModBlocks.TURBINE_CASING.get(), tex("industrial_iron_casing/industrial_iron_casing"),
             ModBlocks.FUSION_REACTOR_CASING.get(), tex("fusion_reactor_casing/fusion_reactor_casing"));
+
+    // BlockFamily keeps its variants in a HashMap, so they come out in a different order each
+    // run. Datagen goes through them in Variant order instead, so tag files don't reshuffle.
+    public static Map<BlockFamily.Variant, Block> variants(BlockFamily family) {
+        Map<BlockFamily.Variant, Block> sorted = new EnumMap<>(BlockFamily.Variant.class);
+        sorted.putAll(family.getVariants());
+        return sorted;
+    }
 
     // The texture stairs, slabs and walls use, or null for textures/block/<base id>.png.
     @Nullable

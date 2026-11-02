@@ -43,19 +43,21 @@ public class ModItemTagProvider extends ItemTagsProvider {
         tag(ModTags.Items.SALT).add(ModItems.SALT.get());
 
         // Salt block item
+        tag(Tags.Items.GLASS_BLOCKS).add(ModBlocks.SOLAR_GLASS.get().asItem());
+        tag(Tags.Items.GLASS_PANES).add(ModBlocks.SOLAR_GLASS_PANE.get().asItem());
         tag(Tags.Items.STORAGE_BLOCKS).add(ModBlocks.SALT_BLOCK.get().asItem());
         tag(ModTags.Items.STORAGE_BLOCKS_SALT).add(ModBlocks.SALT_BLOCK.get().asItem());
 
         // Lithium ore chain: the standard c:raw_materials, c:ingots, c:nuggets and c:dusts tags
-        tag(Tags.Items.ORES).add(ModBlocks.LITHIUM_ORE.get().asItem());
-        tag(ModTags.Items.ORES_LITHIUM).add(ModBlocks.LITHIUM_ORE.get().asItem());
+        tag(Tags.Items.ORES).add(ModBlocks.LITHIUM_ORE.get().asItem(), ModBlocks.DEEPSLATE_LITHIUM_ORE.get().asItem());
+        tag(ModTags.Items.ORES_LITHIUM).add(ModBlocks.LITHIUM_ORE.get().asItem(), ModBlocks.DEEPSLATE_LITHIUM_ORE.get().asItem());
         tag(Tags.Items.RAW_MATERIALS).add(ModItems.RAW_LITHIUM.get());
         tag(ModTags.Items.RAW_MATERIALS_LITHIUM).add(ModItems.RAW_LITHIUM.get());
         tag(Tags.Items.INGOTS).add(ModItems.LITHIUM_INGOT.get());
         tag(ModTags.Items.INGOTS_LITHIUM).add(ModItems.LITHIUM_INGOT.get());
         tag(Tags.Items.NUGGETS).add(ModItems.LITHIUM_NUGGET.get());
         tag(ModTags.Items.NUGGETS_LITHIUM).add(ModItems.LITHIUM_NUGGET.get());
-        tag(Tags.Items.DUSTS).add(ModItems.LITHIUM_DUST.get(), ModItems.CARBON_DUST.get());
+        tag(Tags.Items.DUSTS).add(ModItems.LITHIUM_DUST.get(), ModItems.CARBON_DUST.get(), ModItems.ASH.get());
         tag(ModTags.Items.DUSTS_LITHIUM).add(ModItems.LITHIUM_DUST.get());
 
         // Beryllium: no ore of its own (see ModItems), just the dust byproduct

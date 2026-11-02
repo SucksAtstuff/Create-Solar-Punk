@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_polished_ash": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:polished_ash"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "solarpunk:polished_ash_slab"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_polished_ash"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "solarpunk:polished_ash_slab"
+    ]
+  }
+}

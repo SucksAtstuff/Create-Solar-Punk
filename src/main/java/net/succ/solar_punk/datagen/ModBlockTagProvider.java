@@ -38,10 +38,10 @@ public class ModBlockTagProvider extends BlockTagsProvider {
     protected void addTags(HolderLookup.Provider provider) {
         // Casing stairs, slabs and walls come off with a Wrench, like the casings themselves.
         for (BlockFamily family : List.of(ModBlockFamilies.TURBINE_CASING, ModBlockFamilies.FUSION_REACTOR_CASING))
-            family.getVariants().values().forEach(block -> tag(blockTag("create", "wrench_pickup")).add(block));
+            ModBlockFamilies.variants(family).values().forEach(block -> tag(blockTag("create", "wrench_pickup")).add(block));
 
         // Building block families: shape tags, and every variant is pickaxe-mineable.
-        ModBlockFamilies.ALL.forEach(family -> family.getVariants().forEach((variant, block) -> {
+        ModBlockFamilies.ALL.forEach(family -> ModBlockFamilies.variants(family).forEach((variant, block) -> {
             switch (variant) {
                 case STAIRS -> tag(BlockTags.STAIRS).add(block);
                 case SLAB -> tag(BlockTags.SLABS).add(block);
@@ -59,6 +59,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.FIREBOX_BOILER.get())
                 .add(ModBlocks.SALT_BLOCK.get())
                 .add(ModBlocks.SALT_BRICKS.get())
+                .add(ModBlocks.ASH_BRICKS.get())
                 .add(ModBlocks.SALT_LAMP.get())
                 .add(ModBlocks.LITHIUM_ORE.get())
                 .add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get())
@@ -95,6 +96,10 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.ASH_BLOCK.get())
                 .add(ModBlocks.DEAD_GRASS_BLOCK.get())
                 .add(ModBlocks.RUINED_DIRT.get());
+
+        tag(Tags.Blocks.GLASS_BLOCKS).add(ModBlocks.SOLAR_GLASS.get());
+        tag(BlockTags.IMPERMEABLE).add(ModBlocks.SOLAR_GLASS.get());
+        tag(Tags.Blocks.GLASS_PANES).add(ModBlocks.SOLAR_GLASS_PANE.get());
 
         tag(Tags.Blocks.STORAGE_BLOCKS).add(ModBlocks.SALT_BLOCK.get())
                 .add(ModBlocks.LITHIUM_BLOCK.get())
