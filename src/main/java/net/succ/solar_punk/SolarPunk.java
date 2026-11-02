@@ -28,6 +28,7 @@ import net.succ.solar_punk.item.ModCreativeModeTabs;
 import net.succ.solar_punk.item.ModDataComponents;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.network.SelectPipeShapePayload;
+import net.succ.solar_punk.network.SelectRailingShapePayload;
 import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
 import net.succ.solar_punk.sound.ModSounds;
@@ -58,6 +59,7 @@ public class SolarPunk {
         modEventBus.addListener(SolarPunk::registerCapabilities);
         modEventBus.addListener(SolarPunk::commonSetup);
         modEventBus.addListener(SelectPipeShapePayload::register);
+        modEventBus.addListener(SelectRailingShapePayload::register);
 
         NeoForge.EVENT_BUS.addListener(GlobalWarmingHandler::onLevelTick);
 

@@ -127,7 +127,8 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
   (paths, markets, parking for trains and contraptions). Mostly a model variant; could just be
   a Brass Panel on a post block.
 - **Solar Railing / Fence** - a fence with a thin panel on top, for lining bridges and
-  balconies. Low output, high charm.
+  balconies. Low output, high charm. Could reuse the filigree railing's connecting and
+  placement code.
 
 ### Living buildings
 
@@ -171,8 +172,10 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
 
 ### Machine-themed decor
 
-- **Brass filigree railings and arches** - curvy art nouveau metalwork, the look most
-  solarpunk art leans on. Brass and Andesite variants to match Create.
+- **Filigree railings and arches** - done: Brass and Andesite Filigree Railings and Railing
+  Slopes (gentle half-block slopes) and Steep Slopes (45 degrees, follow stairs when placed on them),
+  with Create-style placement arrows.
+  - Possible extras: more materials (copper, iron) need only a texture and a few lines each.
 - **Lithium / Beryllium blocks with variants** - polished, tiled and pillar versions of the
   existing storage blocks. Polished and tiled (as `cut`) fit the family system; a pillar
   doesn't (no family variant, and it's a rotatable `RotatedPillarBlock`), so it would be

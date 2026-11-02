@@ -2,6 +2,7 @@ package net.succ.solar_punk;
 
 import net.succ.solar_punk.client.renderer.AcceleratorParticleRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.succ.solar_punk.item.FiligreeRailingItem;
 import net.succ.solar_punk.item.ParticleAcceleratorPipeItem;
 import net.minecraft.client.renderer.item.ItemProperties;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
@@ -47,6 +48,7 @@ import net.succ.solar_punk.compat.ponder.SolarPunkPonderPlugin;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -134,6 +136,11 @@ public class ModClientEvents {
             ItemProperties.register(ModBlocks.PARTICLE_ACCELERATOR_PIPE.get().asItem(),
                     ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "shape"),
                     (stack, level, entity, seed) -> ParticleAcceleratorPipeItem.getShape(stack).ordinal());
+            // Same for the filigree railing items (flat, slope, steep slope)
+            for (var railing : List.of(ModBlocks.BRASS_FILIGREE_RAILING, ModBlocks.ANDESITE_FILIGREE_RAILING))
+                ItemProperties.register(railing.get().asItem(),
+                        ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "railing_shape"),
+                        (stack, level, entity, seed) -> FiligreeRailingItem.getShape(stack).ordinal());
 
             // Only the Turbine Rotor gets a Flywheel visualizer, since it really is a full
             // shaft. Half-shaft machines use HalfShaftRenderer instead.
@@ -166,6 +173,8 @@ public class ModClientEvents {
         tip(ModBlocks.LITHIUM_BREEDER_MODULE);
         tip(ModBlocks.BERYLLIUM_REFLECTOR_MODULE);
         tip(ModBlocks.PARTICLE_ACCELERATOR_PIPE);
+        tip(ModBlocks.BRASS_FILIGREE_RAILING);
+        tip(ModBlocks.ANDESITE_FILIGREE_RAILING);
         tip(ModBlocks.PARTICLE_ACCELERATOR_INPUT);
         tip(ModBlocks.SALT_LAMP);
     }

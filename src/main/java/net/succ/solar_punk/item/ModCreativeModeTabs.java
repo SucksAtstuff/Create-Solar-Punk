@@ -8,7 +8,6 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -33,14 +32,16 @@ public class ModCreativeModeTabs {
                     .displayItems((parameters, output) -> {
                         // Everything the mod registers except the building blocks, so new blocks
                         // and items show up on their own: blocks in ModBlocks order, then items
-                        // in ModItems order, then fluid buckets. Blocks without an item (fluids,
-                        // the extra pipe shapes) are skipped, and so are sequenced assembly's
+                        // in ModItems order, then fluid buckets. Blocks without an item of their
+                        // own (fluids, the extra pipe shapes and railing slopes, which borrow
+                        // another block's item) are skipped, and so are sequenced assembly's
                         // in-between items.
                         Set<Block> decorative = ModBlocks.decorativeBlocks().stream()
                                 .map(DeferredBlock::get).collect(Collectors.toSet());
                         for (DeferredHolder<Block, ? extends Block> block : ModBlocks.BLOCKS.getEntries()) {
-                            Item item = block.get().asItem();
-                            if (item != Items.AIR && !decorative.contains(block.get())) output.accept(item);
+                            if (block.get().asItem() instanceof BlockItem item && item.getBlock() == block.get()
+                                    && !decorative.contains(block.get()))
+                                output.accept(item);
                         }
                         List<Item> items = ModItems.ITEMS.getEntries().stream()
                                 .<Item>map(DeferredHolder::get)

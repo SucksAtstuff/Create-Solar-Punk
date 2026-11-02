@@ -17,29 +17,35 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.succ.solar_punk.block.custom.PipeShape;
-import net.succ.solar_punk.item.ParticleAcceleratorPipeItem;
-import net.succ.solar_punk.network.SelectPipeShapePayload;
 
-// Radial menu for picking a Particle Accelerator Pipe's shape, styled and controlled
-// like Create's toolbox menu: hold the toolbelt key (Alt), point at a shape, release.
-// Scrolling, clicking and the hotbar number keys work too. The current shape sits in
-// the middle.
-public class PipeShapeMenu extends AbstractSimiScreen {
+import java.util.List;
+import java.util.function.IntConsumer;
+import java.util.function.Predicate;
 
-    private static final PipeShape[] SHAPES = PipeShape.values();
+// Radial menu for picking which shape a held item places (Particle Accelerator Pipes, filigree
+// railings), styled and controlled like Create's toolbox menu: hold the toolbelt key (Alt),
+// point at a shape, release. Scrolling, clicking and the hotbar number keys work too. The
+// current shape sits in the middle. Opened by ShapeMenuHandler.
+public class RadialShapeMenu extends AbstractSimiScreen {
 
-    private final PipeShape current;
+    private final List<ItemStack> options;
+    private final Predicate<ItemStack> stillHeld;
+    private final IntConsumer onPick;
+    private final int current;
     private int ticksOpen;
     private int hoveredSlot = -1;
     private boolean scrollMode;
     private int scrollSlot;
     private boolean cancelled;
 
-    public PipeShapeMenu(PipeShape current) {
+    // options: one stack per shape, in slot order (slot 0 at the top). stillHeld closes the menu
+    // if the item leaves the main hand. onPick gets the chosen slot when it isn't the current one.
+    public RadialShapeMenu(List<ItemStack> options, int current, Predicate<ItemStack> stillHeld, IntConsumer onPick) {
+        this.options = options;
         this.current = current;
-        this.scrollSlot = current.ordinal();
+        this.stillHeld = stillHeld;
+        this.onPick = onPick;
+        this.scrollSlot = current;
     }
 
     @Override
@@ -51,9 +57,10 @@ public class PipeShapeMenu extends AbstractSimiScreen {
         float hoveredY = mouseY - window.getGuiScaledHeight() / 2f;
         float distance = hoveredX * hoveredX + hoveredY * hoveredY;
         hoveredSlot = -1;
+        float slotAngle = 360f / options.size();
         if (distance > 25 && distance < 10000)
-            // 4 slots, 90 degrees each, slot 0 at the top
-            hoveredSlot = (Mth.floor(AngleHelper.deg(Mth.atan2(hoveredY, hoveredX)) + 360 + 90 + 45) % 360) / 90;
+            // equal slices, slot 0 at the top
+            hoveredSlot = Mth.floor(((AngleHelper.deg(Mth.atan2(hoveredY, hoveredX)) + 360 + 90 + slotAngle / 2) % 360) / slotAngle);
         if (scrollMode && distance > 150)
             scrollMode = false;
         int selected = selected();
@@ -62,21 +69,21 @@ public class PipeShapeMenu extends AbstractSimiScreen {
         ms.pushPose();
         ms.translate(width / 2f, height / 2f, 0);
 
-        // the shape the pipe is set to now, in the middle
+        // the shape the item is set to now, in the middle
         AllGuiTextures.TOOLBELT_INACTIVE_SLOT.render(graphics, -12, -12);
-        GuiGameElement.of(stackOf(current)).at(-9, -9).render(graphics);
+        GuiGameElement.of(options.get(current)).at(-9, -9).render(graphics);
 
         Component tip = null;
-        for (int slot = 0; slot < SHAPES.length; slot++) {
+        for (int slot = 0; slot < options.size(); slot++) {
             ms.pushPose();
             TransformStack.of(ms)
-                    .rotateZDegrees(slot * 90)
+                    .rotateZDegrees(slot * slotAngle)
                     .translate(0, -40 + (10 * (1 - fade) * (1 - fade)), 0)
-                    .rotateZDegrees(-slot * 90);
+                    .rotateZDegrees(-slot * slotAngle);
             ms.translate(-12, -12, 0);
 
             AllGuiTextures.TOOLBELT_SLOT.render(graphics, 0, 0);
-            ItemStack stack = stackOf(SHAPES[slot]);
+            ItemStack stack = options.get(slot);
             GuiGameElement.of(stack).at(3, 3).render(graphics);
             if (slot == selected) {
                 AllGuiTextures.TOOLBELT_SLOT_HIGHLIGHT.render(graphics, -1, -1);
@@ -102,10 +109,6 @@ public class PipeShapeMenu extends AbstractSimiScreen {
         return scrollMode ? scrollSlot : hoveredSlot;
     }
 
-    private ItemStack stackOf(PipeShape shape) {
-        return ParticleAcceleratorPipeItem.stackOf(minecraft.player.getMainHandItem().getItem(), shape);
-    }
-
     @Override
     public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         Color color = BACKGROUND_COLOR.scaleAlpha(Math.min(1, (ticksOpen + AnimationTickHolder.getPartialTicks()) / 20f));
@@ -115,8 +118,8 @@ public class PipeShapeMenu extends AbstractSimiScreen {
     @Override
     public void tick() {
         ticksOpen++;
-        // the pipe left the main hand (e.g. dropped), so there's nothing to set
-        if (!(minecraft.player.getMainHandItem().getItem() instanceof ParticleAcceleratorPipeItem)) {
+        // the item left the main hand (e.g. dropped), so there's nothing to set
+        if (!stillHeld.test(minecraft.player.getMainHandItem())) {
             cancelled = true;
             onClose();
         }
@@ -127,18 +130,15 @@ public class PipeShapeMenu extends AbstractSimiScreen {
     public void removed() {
         super.removed();
         int selected = selected();
-        if (cancelled || selected < 0 || SHAPES[selected] == current)
+        if (cancelled || selected < 0 || selected == current)
             return;
-        PipeShape shape = SHAPES[selected];
-        // set it here too, so the held item changes straight away
-        ParticleAcceleratorPipeItem.setShape(minecraft.player.getMainHandItem(), shape);
-        PacketDistributor.sendToServer(new SelectPipeShapePayload(shape));
+        onPick.accept(selected);
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         scrollMode = true;
-        scrollSlot = Math.floorMod(scrollSlot - (int) Math.signum(scrollY), SHAPES.length);
+        scrollSlot = Math.floorMod(scrollSlot - (int) Math.signum(scrollY), options.size());
         return true;
     }
 
@@ -154,7 +154,7 @@ public class PipeShapeMenu extends AbstractSimiScreen {
     @Override
     public boolean keyPressed(int code, int scanCode, int modifiers) {
         KeyMapping[] hotbarBinds = minecraft.options.keyHotbarSlots;
-        for (int i = 0; i < SHAPES.length && i < hotbarBinds.length; i++) {
+        for (int i = 0; i < options.size() && i < hotbarBinds.length; i++) {
             if (hotbarBinds[i].matches(code, scanCode)) {
                 scrollMode = true;
                 scrollSlot = i;

@@ -19,6 +19,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
 import net.succ.solar_punk.block.custom.BiofilterBlock;
+import net.succ.solar_punk.block.custom.FiligreeRailingBlock;
+import net.succ.solar_punk.block.custom.FiligreeRailingSlopeBlock;
+import net.succ.solar_punk.block.custom.FiligreeRailingSteepSlopeBlock;
 import net.succ.solar_punk.block.custom.SaltLampBlock;
 import net.succ.solar_punk.block.custom.BiofuelEngineBlock;
 import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
@@ -48,6 +51,7 @@ import net.succ.solar_punk.block.custom.TurbineBladeBlock;
 import net.succ.solar_punk.block.custom.TurbineCasingBlock;
 import net.succ.solar_punk.block.custom.TurbineCasingGlassBlock;
 import net.succ.solar_punk.block.custom.TurbineRotorBlock;
+import net.succ.solar_punk.item.FiligreeRailingItem;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.ArrayList;
@@ -393,6 +397,28 @@ public class ModBlocks {
     public static final DeferredBlock<Block> CHISELED_ASH_BRICKS = registerDecorative("chiseled_ash_bricks",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(ASH_BRICKS.get())));
 
+    // Filigree railings: one item per material places every shape (flat, slope, steep slope,
+    // picked from a radial menu), so the slope blocks have no items of their own.
+    public static final DeferredBlock<FiligreeRailingBlock> BRASS_FILIGREE_RAILING = registerDecorativeCustomItem("brass_filigree_railing",
+            () -> new FiligreeRailingBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS)
+                    .mapColor(MapColor.TERRACOTTA_YELLOW)),
+            block -> new FiligreeRailingItem(block, ModBlocks.BRASS_FILIGREE_RAILING_SLOPE,
+                    ModBlocks.BRASS_FILIGREE_RAILING_STEEP_SLOPE, new Item.Properties()));
+    public static final DeferredBlock<FiligreeRailingSlopeBlock> BRASS_FILIGREE_RAILING_SLOPE = BLOCKS.register("brass_filigree_railing_slope",
+            () -> new FiligreeRailingSlopeBlock(BlockBehaviour.Properties.ofFullCopy(BRASS_FILIGREE_RAILING.get())));
+    public static final DeferredBlock<FiligreeRailingSteepSlopeBlock> BRASS_FILIGREE_RAILING_STEEP_SLOPE = BLOCKS.register("brass_filigree_railing_steep_slope",
+            () -> new FiligreeRailingSteepSlopeBlock(BlockBehaviour.Properties.ofFullCopy(BRASS_FILIGREE_RAILING.get())));
+
+    public static final DeferredBlock<FiligreeRailingBlock> ANDESITE_FILIGREE_RAILING = registerDecorativeCustomItem("andesite_filigree_railing",
+            () -> new FiligreeRailingBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS)
+                    .mapColor(MapColor.STONE)),
+            block -> new FiligreeRailingItem(block, ModBlocks.ANDESITE_FILIGREE_RAILING_SLOPE,
+                    ModBlocks.ANDESITE_FILIGREE_RAILING_STEEP_SLOPE, new Item.Properties()));
+    public static final DeferredBlock<FiligreeRailingSlopeBlock> ANDESITE_FILIGREE_RAILING_SLOPE = BLOCKS.register("andesite_filigree_railing_slope",
+            () -> new FiligreeRailingSlopeBlock(BlockBehaviour.Properties.ofFullCopy(ANDESITE_FILIGREE_RAILING.get())));
+    public static final DeferredBlock<FiligreeRailingSteepSlopeBlock> ANDESITE_FILIGREE_RAILING_STEEP_SLOPE = BLOCKS.register("andesite_filigree_railing_steep_slope",
+            () -> new FiligreeRailingSteepSlopeBlock(BlockBehaviour.Properties.ofFullCopy(ANDESITE_FILIGREE_RAILING.get())));
+
     // Decorative for now; see the Solar Glass idea in docs/IDEAS.md for making it generate.
     public static final DeferredBlock<TransparentBlock> SOLAR_GLASS = registerDecorative("solar_glass",
             () -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
@@ -433,6 +459,13 @@ public class ModBlocks {
     // Blocks shown in the Building Blocks creative tab instead of the main one.
     private static <T extends Block> DeferredBlock<T> registerDecorative(String name, Supplier<T> block) {
         DeferredBlock<T> registered = registerBlock(name, block);
+        DECORATIVE_BLOCKS.add(registered);
+        return registered;
+    }
+
+    private static <T extends Block> DeferredBlock<T> registerDecorativeCustomItem(String name, Supplier<T> block,
+            Function<T, ? extends BlockItem> itemFactory) {
+        DeferredBlock<T> registered = registerBlockCustomItem(name, block, itemFactory);
         DECORATIVE_BLOCKS.add(registered);
         return registered;
     }

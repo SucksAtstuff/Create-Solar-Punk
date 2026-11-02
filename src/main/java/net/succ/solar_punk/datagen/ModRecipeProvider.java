@@ -3,6 +3,8 @@ package net.succ.solar_punk.datagen;
 import java.util.List;
 import net.succ.solar_punk.recipe.ParticleAcceleratorRecipe;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.BlockFamily;
@@ -105,6 +107,12 @@ public class ModRecipeProvider extends RecipeProvider {
         bricksRecipes(output, ModBlocks.ASH_BRICKS.get(), ModBlocks.POLISHED_ASH.get(), ModBlocks.ASH_BLOCK.get());
 
         ModBlockFamilies.ALL.forEach(family -> blockFamilyRecipes(output, family));
+
+        // 6 of the material in two rows make 8 railings. One item places every shape.
+        filigreeRailingRecipe(output, ModBlocks.BRASS_FILIGREE_RAILING.get(),
+                Ingredient.of(ModTags.Items.PLATES_BRASS), has(ModTags.Items.PLATES_BRASS));
+        filigreeRailingRecipe(output, ModBlocks.ANDESITE_FILIGREE_RAILING.get(),
+                Ingredient.of(createItem("andesite_alloy")), has(createItem("andesite_alloy")));
 
         // Like stained glass: 8 Glass around one Photovoltaic Cell.
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.SOLAR_GLASS.get(), 8)
@@ -352,6 +360,16 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(blockTag)
                 .unlockedBy("has_" + metal + "_block", has(blockTag))
                 .save(output, id(metal + "_ingot_from_block"));
+    }
+
+    private void filigreeRailingRecipe(RecipeOutput output, Block railing, Ingredient material,
+                                       Criterion<InventoryChangeTrigger.TriggerInstance> unlock) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, railing, 8)
+                .pattern("SSS")
+                .pattern("SSS")
+                .define('S', material)
+                .unlockedBy("has_material", unlock)
+                .save(output);
     }
 
     // Bricks: 2x2 of the polished block (itself 2x2 of the raw block), like Deepslate's

@@ -23,14 +23,23 @@ import net.neoforged.neoforge.client.model.generators.ModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.succ.solar_punk.SolarPunk;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
+import net.succ.solar_punk.block.custom.FiligreeRailingBlock;
+import net.succ.solar_punk.block.custom.RailingShape;
+import net.succ.solar_punk.block.custom.FiligreeRailingSteepSlopeBlock;
+import net.minecraft.world.level.block.state.properties.Half;
+import net.succ.solar_punk.block.custom.FiligreeRailingSlopeBlock;
 import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
 import net.succ.solar_punk.block.custom.TurbineBladeBlock;
 import net.succ.solar_punk.fluid.ModFluids;
+
+import java.util.Map;
 
 public class ModBlockStateProvider extends BlockStateProvider {
     public ModBlockStateProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
@@ -65,6 +74,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
         blockWithItem(ModBlocks.ASH_BRICKS);
         simpleBlockWithItem(ModBlocks.SOLAR_GLASS.get(),
                 models().cubeAll("solar_glass", blockTexture(ModBlocks.SOLAR_GLASS.get())).renderType("minecraft:cutout"));
+        filigreeRailingBlock(ModBlocks.BRASS_FILIGREE_RAILING, ModBlocks.BRASS_FILIGREE_RAILING);
+        filigreeRailingSlopeBlock(ModBlocks.BRASS_FILIGREE_RAILING_SLOPE, ModBlocks.BRASS_FILIGREE_RAILING);
+        filigreeRailingSlopeBlock(ModBlocks.BRASS_FILIGREE_RAILING_STEEP_SLOPE, ModBlocks.BRASS_FILIGREE_RAILING);
+        filigreeRailingBlock(ModBlocks.ANDESITE_FILIGREE_RAILING, ModBlocks.BRASS_FILIGREE_RAILING);
+        filigreeRailingSlopeBlock(ModBlocks.ANDESITE_FILIGREE_RAILING_SLOPE, ModBlocks.ANDESITE_FILIGREE_RAILING);
+        filigreeRailingSlopeBlock(ModBlocks.ANDESITE_FILIGREE_RAILING_STEEP_SLOPE, ModBlocks.ANDESITE_FILIGREE_RAILING);
         // Like vanilla panes: the glass texture on the faces, a _pane_top strip on the edges,
         // and a flat item icon of the glass.
         paneBlockWithRenderType(ModBlocks.SOLAR_GLASS_PANE.get(), blockTexture(ModBlocks.SOLAR_GLASS.get()),
@@ -97,6 +112,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         fluidBlock(ModFluids.BIOFUEL_BLOCK,     mcLoc("block/water_still"));
         fluidBlock(ModFluids.FERTILIZER_BLOCK,  mcLoc("block/water_still"));
         fluidBlock(ModFluids.STEAM_BLOCK,       mcLoc("block/water_still"));
+        fluidBlock(ModFluids.DEUTERIUM_BLOCK,   mcLoc("block/water_still"));
 
         ResourceLocation casingTex = modLoc("block/industrial_iron_casing/industrial_iron_casing");
         ResourceLocation glassCasingTex = modLoc("block/industrial_iron_casing/industrial_iron_glass_casing");
@@ -174,6 +190,91 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 }
             }
         });
+    }
+
+    // A straight run (POST off) shows <id>_straight (running north-south), turned to the run's
+    // axis. Everything else shows <id>_post plus an <id>_side (pointing north) turned to face
+    // each connected direction. The item uses <id>_inventory. No uvlock: the models map their
+    // own texture sheet. The brass railing's models are hand-crafted; other materials get
+    // copies of them with their own textures/block/<material>_filigree.png.
+    private void filigreeRailingBlock(DeferredBlock<FiligreeRailingBlock> block, DeferredBlock<FiligreeRailingBlock> source) {
+        String path = block.getId().getPath();
+        ModelFile post = filigreeRailingModel(block, source, "_post");
+        ModelFile side = filigreeRailingModel(block, source, "_side");
+        ModelFile straight = filigreeRailingModel(block, source, "_straight");
+        ModelFile inventory = filigreeRailingModel(block, source, "_inventory");
+        MultiPartBlockStateBuilder builder = getMultipartBuilder(block.get());
+        builder.part().modelFile(straight).addModel()
+                .condition(FiligreeRailingBlock.POST, false).condition(FiligreeRailingBlock.NORTH, true).end();
+        builder.part().modelFile(straight).rotationY(90).addModel()
+                .condition(FiligreeRailingBlock.POST, false).condition(FiligreeRailingBlock.EAST, true).end();
+        builder.part().modelFile(post).addModel().condition(FiligreeRailingBlock.POST, true).end();
+        Map<Direction, BooleanProperty> sides = Map.of(
+                Direction.NORTH, FiligreeRailingBlock.NORTH, Direction.EAST, FiligreeRailingBlock.EAST,
+                Direction.SOUTH, FiligreeRailingBlock.SOUTH, Direction.WEST, FiligreeRailingBlock.WEST);
+        for (Direction direction : Direction.Plane.HORIZONTAL) {
+            builder.part().modelFile(side).rotationY(horizontalYRot(direction)).addModel()
+                    .condition(FiligreeRailingBlock.POST, true).condition(sides.get(direction), true).end();
+        }
+        // The item shows the shape it's set to: the "railing_shape" item property is the
+        // RailingShape's ordinal (registered in ModClientEvents), and each override swaps in that
+        // slope's item model (see filigreeRailingSlopeBlock).
+        ItemModelBuilder item = itemModels().getBuilder(path).parent(inventory);
+        for (RailingShape shape : RailingShape.values()) {
+            if (shape == RailingShape.FLAT) continue;
+            item.override()
+                    .predicate(modLoc("railing_shape"), shape.ordinal())
+                    .model(new UncheckedModelFile(modLoc("item/" + path + "_" + shape.getSerializedName())))
+                    .end();
+        }
+    }
+
+    private ModelFile filigreeRailingModel(DeferredBlock<FiligreeRailingBlock> block,
+                                           DeferredBlock<FiligreeRailingBlock> source, String part) {
+        String path = block.getId().getPath();
+        String sourcePath = source.getId().getPath();
+        if (path.equals(sourcePath)) return new UncheckedModelFile(modLoc("block/" + path + part));
+        ResourceLocation texture = modLoc("block/" + path.replace("_railing", ""));
+        return models().withExistingParent(path + part, modLoc("block/" + sourcePath + part))
+                .texture("0", texture).texture("particle", texture).renderType("minecraft:cutout");
+    }
+
+    // The railing's slope models, authored climbing north and turned to FACING:
+    // <railing>_slope_up (LOWER), <railing>_slope_down (UPPER) and <railing>_slope_full (FULL,
+    // the steep slope). They're small hand-written JSONs that load the shared
+    // filigree_railing_slope_*.obj with the material's texture (OBJ allows the half-block slope's
+    // angle, which block model JSON doesn't). The item shows the piece it places by hand.
+    private void filigreeRailingSlopeBlock(DeferredBlock<? extends FiligreeRailingSlopeBlock> block, DeferredBlock<?> railing) {
+        String railingPath = railing.getId().getPath();
+        Map<FiligreeRailingSlopeBlock.Part, ModelFile> models = Map.of(
+                FiligreeRailingSlopeBlock.Part.LOWER, new UncheckedModelFile(modLoc("block/" + railingPath + "_slope_up")),
+                FiligreeRailingSlopeBlock.Part.UPPER, new UncheckedModelFile(modLoc("block/" + railingPath + "_slope_down")),
+                FiligreeRailingSlopeBlock.Part.FULL, new UncheckedModelFile(modLoc("block/" + railingPath + "_slope_full")));
+        getVariantBuilder(block.get()).forAllStatesExcept(state -> ConfiguredModel.builder()
+                .modelFile(models.get(state.getValue(FiligreeRailingSlopeBlock.PART)))
+                .rotationY(horizontalYRot(state.getValue(FiligreeRailingSlopeBlock.FACING)))
+                .build(), FiligreeRailingSlopeBlock.WATERLOGGED);
+        // Item model for the railing item's slope shape. The slopes are taller than a block (the
+        // steep one reaches down into the block below), so they're shrunk and re-centred.
+        boolean steep = block.get() instanceof FiligreeRailingSteepSlopeBlock;
+        itemModels().getBuilder(block.getId().getPath())
+                .parent(models.get(steep ? FiligreeRailingSlopeBlock.Part.FULL : FiligreeRailingSlopeBlock.Part.LOWER))
+                .transforms()
+                    .transform(ItemDisplayContext.GUI)
+                        .rotation(30, 225, 0).translation(0, steep ? 4.25f : -1.75f, 0).scale(0.5f).end()
+                    .transform(ItemDisplayContext.GROUND)
+                        .rotation(0, 0, 0).translation(0, steep ? 6 : 2, 0).scale(0.2f).end()
+                    .transform(ItemDisplayContext.FIXED)
+                        .rotation(0, 90, 0).translation(0, steep ? 4.25f : -1.75f, 0).scale(0.45f).end()
+                    .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
+                        .rotation(75, 45, 0).translation(0, steep ? 4.5f : 1.5f, 0).scale(0.3f).end()
+                    .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND)
+                        .rotation(75, 45, 0).translation(0, steep ? 4.5f : 1.5f, 0).scale(0.3f).end()
+                    .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND)
+                        .rotation(0, 45, 0).translation(0, steep ? 5 : 0, 0).scale(0.32f).end()
+                    .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)
+                        .rotation(0, 225, 0).translation(0, steep ? 5 : 0, 0).scale(0.32f).end()
+                .end();
     }
 
     // For blocks whose models are hand-crafted (Blockbench), with a "_lit" variant.

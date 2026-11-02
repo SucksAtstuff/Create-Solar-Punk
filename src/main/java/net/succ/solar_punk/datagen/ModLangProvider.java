@@ -246,6 +246,12 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.turbine_rotor.tooltip.condition1", "Valid 7x7 structure with Turbine Blades");
         add("block.solarpunk.turbine_rotor.tooltip.behaviour1", "Output grows with height and blade quality. Condensed water must be piped out of any casing face, or the turbine stops when it fills up.");
 
+        for (String railing : new String[]{"brass_filigree_railing", "andesite_filigree_railing"}) {
+            add("block.solarpunk." + railing + ".tooltip.summary", "A decorative railing that _connects_ to its neighbours. One item places every shape: _flat_, _slope_ and _steep slope_.");
+            add("block.solarpunk." + railing + ".tooltip.condition1", "Hold the Toolbelt key (Alt)");
+            add("block.solarpunk." + railing + ".tooltip.behaviour1", "Opens a menu to pick the _shape_ it places. Steep slopes placed on _stairs_ follow them.");
+        }
+
         add("block.solarpunk.particle_accelerator_pipe.tooltip.summary", "Builds the ring of a _Particle Accelerator_. One pipe places every shape: _straight_, _bends_ and _diagonals_.");
         add("block.solarpunk.particle_accelerator_pipe.tooltip.condition1", "Hold the Toolbelt key (Alt)");
         add("block.solarpunk.particle_accelerator_pipe.tooltip.behaviour1", "Opens a menu to pick the _shape_ it places.");

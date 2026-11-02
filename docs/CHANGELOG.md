@@ -26,8 +26,9 @@
 - New **Salt Bricks** with stairs, slab and wall, plus **Chiseled Salt Bricks**.
 - New **Polished Ash** and **Ash Bricks**, each with stairs, slab and wall, plus **Chiseled Ash Bricks**.
 - New **Solar Glass** and **Solar Glass Pane**: decorative framed glass.
+- New **Brass** and **Andesite Filigree Railings**: art nouveau railings that connect to their neighbours. Hold Alt to switch the item between flat, slope and steep slope, for ramps, arches and staircases. Steep slopes placed on stairs follow them automatically, and Create-style placement arrows help extend runs and slopes.
 - New stairs, slabs and walls for the Turbine Casing and Fusion Reactor Casing, so engine rooms can match.
-- Decorative blocks now have their own **Create: Solarpunk Building Blocks** creative tab.
+- Decorative blocks now have their own **Create: Solarpunk Building Blocks** creative tab, and the main tab is now grouped by power type.
 - New **Ash** item: blast Biomass in a Blast Furnace or with Bulk Blasting, and craft 4 into an Ash Block. Ash Blocks now need a shovel and drop Ash, like Snow.
 
 ### Sun Readouts
@@ -38,7 +39,7 @@
 ## Fixes
 
 - Lithium Ore now generates as **Deepslate Lithium Ore** in deepslate, instead of stone-looking ore.
-
+- The mod now only loads on Minecraft 1.21.1. It was wrongly marked as working on later 1.21 versions, which it doesn't support.
 - Solar blocks on Create: Aeronautics contraptions now get shaded by the world around them, so flying one indoors or underground stops it working. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/52
 - Solar blocks on contraptions now follow the real sun angle: tilt the contraption toward the sun for full output, or away from it for less. Sun-tracking solar arrays are now possible. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/52
 - Contraptions now cast shade: parking one over solar blocks, on the ground or on another contraption, blocks their sunlight.

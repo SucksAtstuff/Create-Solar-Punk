@@ -1,0 +1,11 @@
+{
+	"parent": "minecraft:block/block",
+	"loader": "neoforge:obj",
+	"model": "solarpunk:models/block/filigree_railing_slope_full.obj",
+	"flip_v": true,
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"texture": "solarpunk:block/andesite_filigree",
+		"particle": "solarpunk:block/andesite_filigree"
+	}
+}
