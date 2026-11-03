@@ -36,6 +36,10 @@ import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
+import net.succ.solar_punk.block.custom.TrellisBlock;
+import net.succ.solar_punk.block.custom.TrellisPlant;
+import net.succ.solar_punk.block.custom.SolarShinglesBlock;
+import net.minecraft.world.level.block.state.properties.StairsShape;
 import net.succ.solar_punk.block.custom.TurbineBladeBlock;
 import net.succ.solar_punk.fluid.ModFluids;
 
@@ -90,6 +94,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
         // Placed switched on, so the item shows the glowing model.
         litFacingCustomModelBlock(ModBlocks.SALT_LAMP, false);
         simpleBlockItem(ModBlocks.SALT_LAMP.get(), new UncheckedModelFile(modLoc("block/salt_lamp_lit")));
+        litCustomModelBlock(ModBlocks.GARDEN_LIGHT, false);
+        simpleBlockItem(ModBlocks.GARDEN_LIGHT.get(), new UncheckedModelFile(modLoc("block/garden_light_lit")));
+        trellisBlock();
+        solarShinglesBlock();
         blockWithItem(ModBlocks.LITHIUM_ORE);
         blockWithItem(ModBlocks.DEEPSLATE_LITHIUM_ORE);
         blockWithItem(ModBlocks.LITHIUM_BLOCK);
@@ -275,6 +283,52 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)
                         .rotation(0, 225, 0).translation(0, steep ? 5 : 0, 0).scale(0.32f).end()
                 .end();
+    }
+
+    // OBJ models, all sloping up toward the south (so FACING south is unrotated), one set per
+    // HALF. Right corners use their FACING; a left corner is the right corner of the facing
+    // counter-clockwise from it, as with vanilla stairs.
+    private void solarShinglesBlock() {
+        getVariantBuilder(ModBlocks.SOLAR_SHINGLES.get()).forAllStatesExcept(state -> {
+            Direction facing = state.getValue(SolarShinglesBlock.FACING);
+            StairsShape shape = state.getValue(SolarShinglesBlock.SHAPE);
+            String half = state.getValue(SolarShinglesBlock.HALF) == Half.TOP ? "top" : "bottom";
+            String suffix = switch (shape) {
+                case STRAIGHT -> "";
+                case INNER_LEFT, INNER_RIGHT -> "_inner_corner";
+                case OUTER_LEFT, OUTER_RIGHT -> "_outer_corner";
+            };
+            if (shape == StairsShape.INNER_LEFT || shape == StairsShape.OUTER_LEFT) facing = facing.getCounterClockWise();
+            return ConfiguredModel.builder()
+                    .modelFile(new UncheckedModelFile(modLoc("block/solar_shingles_" + half + "_slope" + suffix)))
+                    .rotationY((int) facing.toYRot())
+                    .uvLock(false)
+                    .build();
+        }, SolarShinglesBlock.WATERLOGGED);
+        simpleBlockItem(ModBlocks.SOLAR_SHINGLES.get(), new UncheckedModelFile(modLoc("block/solar_shingles_bottom_slope")));
+    }
+
+    // Hand-made models: "trellis" with vines, "trellis_no_vines" without (also the item).
+    // Every flower shares trellis_flowers; its grey flower is tinted per flower at runtime.
+    private void trellisBlock() {
+        ModelFile vines   = new UncheckedModelFile(modLoc("block/trellis"));
+        ModelFile noVines = new UncheckedModelFile(modLoc("block/trellis_no_vines"));
+        ModelFile glow    = new UncheckedModelFile(modLoc("block/trellis_glow"));
+        ModelFile flowers = new UncheckedModelFile(modLoc("block/trellis_flowers"));
+        getVariantBuilder(ModBlocks.TRELLIS.get()).forAllStatesExcept(state -> {
+            TrellisPlant plant = state.getValue(TrellisBlock.PLANT);
+            ModelFile model = switch (plant) {
+                case NONE -> noVines;
+                case VINES -> vines;
+                case GLOW_BERRIES -> glow;
+                default -> flowers;
+            };
+            return ConfiguredModel.builder()
+                    .modelFile(model)
+                    .rotationY(horizontalYRot(state.getValue(TrellisBlock.FACING)))
+                    .build();
+        }, TrellisBlock.WATERLOGGED);
+        simpleBlockItem(ModBlocks.TRELLIS.get(), noVines);
     }
 
     // For blocks whose models are hand-crafted (Blockbench), with a "_lit" variant.

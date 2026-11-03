@@ -23,6 +23,10 @@ import net.succ.solar_punk.block.custom.FiligreeRailingBlock;
 import net.succ.solar_punk.block.custom.FiligreeRailingSlopeBlock;
 import net.succ.solar_punk.block.custom.FiligreeRailingSteepSlopeBlock;
 import net.succ.solar_punk.block.custom.SaltLampBlock;
+import net.succ.solar_punk.block.custom.GardenLightBlock;
+import net.succ.solar_punk.block.custom.TrellisBlock;
+import net.succ.solar_punk.block.custom.TrellisPlant;
+import net.succ.solar_punk.block.custom.SolarShinglesBlock;
 import net.succ.solar_punk.block.custom.BiofuelEngineBlock;
 import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
@@ -424,6 +428,14 @@ public class ModBlocks {
             () -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
     public static final DeferredBlock<IronBarsBlock> SOLAR_GLASS_PANE = registerDecorative("solar_glass_pane",
             () -> new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)));
+    // Decorative stepped roofing that bends into corners like stairs; see SolarShinglesBlock.
+    public static final DeferredBlock<SolarShinglesBlock> SOLAR_SHINGLES = registerDecorative("solar_shingles",
+            () -> new SolarShinglesBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLUE)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.5f, 6.0f)
+                    .sound(SoundType.COPPER)
+                    .noOcclusion()));
 
     public static final DeferredBlock<StairBlock> TURBINE_CASING_STAIRS = registerStairs("turbine_casing_stairs", TURBINE_CASING);
     public static final DeferredBlock<SlabBlock> TURBINE_CASING_SLAB = registerSlab("turbine_casing_slab", TURBINE_CASING);
@@ -440,6 +452,25 @@ public class ModBlocks {
                     .sound(SoundType.AMETHYST)
                     .noOcclusion()
                     .lightLevel(state -> state.getValue(SaltLampBlock.LIT) ? 12 : 0)));
+
+    public static final DeferredBlock<GardenLightBlock> GARDEN_LIGHT = registerDecorative("garden_light",
+            () -> new GardenLightBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .strength(0.5f)
+                    .sound(SoundType.LANTERN)
+                    .noOcclusion()
+                    .pushReaction(PushReaction.DESTROY)
+                    .lightLevel(state -> state.getValue(GardenLightBlock.LIT) ? 10 : 0)));
+
+    public static final DeferredBlock<TrellisBlock> TRELLIS = registerDecorative("trellis",
+            () -> new TrellisBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(0.4f)
+                    .sound(SoundType.LADDER)
+                    .lightLevel(state -> state.getValue(TrellisBlock.PLANT) == TrellisPlant.GLOW_BERRIES ? 14 : 0)
+                    .noOcclusion()
+                    .ignitedByLava()
+                    .pushReaction(PushReaction.DESTROY)));
 
     private static BlockBehaviour.Properties acceleratorPipeProperties() {
         return BlockBehaviour.Properties.of()

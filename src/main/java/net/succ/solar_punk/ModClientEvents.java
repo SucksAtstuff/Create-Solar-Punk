@@ -23,6 +23,9 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.minecraft.client.renderer.BiomeColors;
+import net.minecraft.world.level.FoliageColor;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.succ.solar_punk.block.ModBlocks;
@@ -30,6 +33,8 @@ import net.succ.solar_punk.block.custom.FusionReactorCasingBlock;
 import net.succ.solar_punk.block.custom.FusionReactorCasingGlassBlock;
 import net.succ.solar_punk.block.custom.KineticSprinklerItem;
 import net.succ.solar_punk.block.custom.TurbineCasingBlock;
+import net.succ.solar_punk.block.custom.TrellisBlock;
+import net.succ.solar_punk.client.FlowerTint;
 import net.succ.solar_punk.block.custom.TurbineCasingGlassBlock;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.client.model.CasingModel;
@@ -67,6 +72,21 @@ public class ModClientEvents {
                 return Objects.requireNonNull(GeoRenderProvider.of(item).getGeoItemRenderer());
             }
         }, item);
+    }
+
+    // Trellis tint 0: the grey vines take the biome's foliage colour, like leaves.
+    // Tint 1: the grey flower takes the colour of the flower that was used (FlowerTint).
+    @SubscribeEvent
+    public static void onRegisterBlockColors(RegisterColorHandlersEvent.Block event) {
+        event.register((state, level, pos, tintIndex) -> {
+            if (tintIndex == 1) {
+                Block flower = state.getValue(TrellisBlock.PLANT).flowerBlock();
+                return flower != null ? FlowerTint.of(flower) : -1;
+            }
+            return level != null && pos != null
+                    ? BiomeColors.getAverageFoliageColor(level, pos)
+                    : FoliageColor.getDefaultColor();
+        }, ModBlocks.TRELLIS.get());
     }
 
     @SubscribeEvent
@@ -177,6 +197,9 @@ public class ModClientEvents {
         tip(ModBlocks.ANDESITE_FILIGREE_RAILING);
         tip(ModBlocks.PARTICLE_ACCELERATOR_INPUT);
         tip(ModBlocks.SALT_LAMP);
+        tip(ModBlocks.GARDEN_LIGHT);
+        tip(ModBlocks.TRELLIS);
+        tip(ModBlocks.SOLAR_SHINGLES);
     }
 
     private static void tip(Supplier<? extends Block> block) {

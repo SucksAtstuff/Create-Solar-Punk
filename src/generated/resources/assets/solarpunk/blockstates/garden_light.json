@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "charged=false,lit=false": {
+      "model": "solarpunk:block/garden_light"
+    },
+    "charged=false,lit=true": {
+      "model": "solarpunk:block/garden_light_lit"
+    },
+    "charged=true,lit=false": {
+      "model": "solarpunk:block/garden_light"
+    },
+    "charged=true,lit=true": {
+      "model": "solarpunk:block/garden_light_lit"
+    }
+  }
+}

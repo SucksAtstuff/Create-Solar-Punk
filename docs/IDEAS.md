@@ -109,13 +109,17 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
 - **Solar Garden Light** - a small post light that charges by day and glows at night, no
   wiring. The cheap early-game cousin of the streetlights, and a nice first use of a
   Photovoltaic Cell.
+  - Built (the Garden Light): charges if it sees the sky during the day, glows through the
+    night after. No block entity, just a CHARGED block state and a scheduled tick.
 - **Solar Shingles** - stair and slab shaped roof panels that make a small amount of FE.
   Lets a roof be the solar array instead of a flat field of panels next to the house.
-  - Output depends on which way the slope faces and the sun's angle (`SolarHelper` already
-    has the sun angle), so a south-facing roof beats a north-facing one.
-  - Open: does each shingle hold its own tiny buffer, or do touching shingles join into one
-    network that outputs from a single **Roof Inverter** block? The inverter is less
-    capability spam and gives one place for goggle info.
+  - Built: one stair-like block (low and high pieces alternate up a roof, corners bend like
+    stairs). Output depends on which way the slope faces (`SolarHelper.tiltFactor`). Vanilla's
+    sun moves east to west straight overhead, so east roofs win in the morning and west roofs
+    in the evening; north and south roofs are equal. A south bias would need a fake latitude.
+  - Each shingle has its own buffer and FE capability, and energy flows to touching shingles
+    that hold less, so pulling from any one shingle drains the whole roof through it. No
+    Roof Inverter needed.
 - **Solar Glass** - a see-through panel that makes much less than a Brass Panel but works as
   a window or skylight. Pairs with the Greenhouse idea: a greenhouse roof that also powers
   its own sprinklers.
@@ -139,6 +143,9 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
 - **Living Wall** - a thin vertical panel of moss and ferns placed on the side of a block.
   Same pollution absorption as the Green Roof, smaller amount.
 - **Trellis** - a climbable lattice that vines, glow berries and flowers grow up on their own.
+  - Built: Vines first, then a small flower (tinted from the flower's own texture) or Glow
+    Berries (light 14) on top; Shears peel off a layer. Vines spread to bare trellises above
+    or beside. Flowers and berries don't spread yet, and modded flowers aren't supported.
   - Possible new climbing crop (hops or grapes) that only grows on a trellis and gives a
     better Biomass yield, or ferments faster in the Fermentation Vat.
 - **Planter Box** - a wooden or brick box that holds dirt so crops and flowers grow on roofs

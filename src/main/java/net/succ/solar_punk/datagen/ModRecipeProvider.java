@@ -136,6 +136,36 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_salt_block", has(ModTags.Items.STORAGE_BLOCKS_SALT))
                 .save(output);
 
+        // A Photovoltaic Cell over a glowing bulb on an Andesite Alloy stake.
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.GARDEN_LIGHT.get(), 2)
+                .pattern("P")
+                .pattern("G")
+                .pattern("A")
+                .define('P', ModItems.PHOTOVOLTAIC_CELL.get())
+                .define('G', Items.GLOWSTONE_DUST)
+                .define('A', createItem("andesite_alloy"))
+                .unlockedBy("has_photovoltaic_cell", has(ModItems.PHOTOVOLTAIC_CELL.get()))
+                .save(output);
+
+        // Solar Glass Panes on an Andesite Alloy backing, laid like stairs.
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.SOLAR_SHINGLES.get(), 6)
+                .pattern("P  ")
+                .pattern("AP ")
+                .pattern("AAP")
+                .define('P', ModBlocks.SOLAR_GLASS_PANE.get())
+                .define('A', createItem("andesite_alloy"))
+                .unlockedBy("has_solar_glass_pane", has(ModBlocks.SOLAR_GLASS_PANE.get()))
+                .save(output);
+
+        // Sticks in a lattice, like a Ladder.
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.TRELLIS.get(), 4)
+                .pattern("S S")
+                .pattern(" S ")
+                .pattern("S S")
+                .define('S', Items.STICK)
+                .unlockedBy("has_stick", has(Items.STICK))
+                .save(output);
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SALT.get(), 9)
                 .requires(ModTags.Items.STORAGE_BLOCKS_SALT)
                 .unlockedBy("has_salt_block", has(ModTags.Items.STORAGE_BLOCKS_SALT))

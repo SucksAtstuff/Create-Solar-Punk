@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "A": {
+      "item": "create:andesite_alloy"
+    },
+    "P": {
+      "item": "solarpunk:solar_glass_pane"
+    }
+  },
+  "pattern": [
+    "P  ",
+    "AP ",
+    "AAP"
+  ],
+  "result": {
+    "count": 6,
+    "id": "solarpunk:solar_shingles"
+  }
+}

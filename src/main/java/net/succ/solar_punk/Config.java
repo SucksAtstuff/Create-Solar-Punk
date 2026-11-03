@@ -80,6 +80,10 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_BRASS_NOON_FE;
     private static final ModConfigSpec.IntValue CFG_BRASS_BUFFER;
     private static final ModConfigSpec.IntValue CFG_BRASS_MAX_EXTRACT;
+    private static final ModConfigSpec.IntValue CFG_SHINGLE_MORNING_FE;
+    private static final ModConfigSpec.IntValue CFG_SHINGLE_NOON_FE;
+    private static final ModConfigSpec.IntValue CFG_SHINGLE_BUFFER;
+    private static final ModConfigSpec.IntValue CFG_SHINGLE_MAX_EXTRACT;
 
     private static final ModConfigSpec.IntValue CFG_GEYSER_RPM;
     private static final ModConfigSpec.IntValue CFG_GEYSER_SU;
@@ -238,6 +242,13 @@ public class Config {
         CFG_BRASS_NOON_FE     = BUILDER.comment("FE/t generated at noon (clear weather)").defineInRange("noon_fe_per_tick", 80, 1, 100_000);
         CFG_BRASS_BUFFER      = BUILDER.comment("Internal FE buffer capacity").defineInRange("buffer_capacity", 100_000, 1000, 10_000_000);
         CFG_BRASS_MAX_EXTRACT = BUILDER.comment("Max FE extracted per tick by adjacent cables").defineInRange("max_extract", 80, 1, 100_000);
+        BUILDER.pop();
+
+        BUILDER.push("solar_shingles");
+        CFG_SHINGLE_MORNING_FE  = BUILDER.comment("FE/t per shingle at dawn and dusk, before the roof angle is applied").defineInRange("morning_fe_per_tick", 4, 1, 100_000);
+        CFG_SHINGLE_NOON_FE     = BUILDER.comment("FE/t per shingle at noon (clear weather), before the roof angle is applied").defineInRange("noon_fe_per_tick", 8, 1, 100_000);
+        CFG_SHINGLE_BUFFER      = BUILDER.comment("FE buffer per shingle. Energy flows across a roof towards whichever shingle is being drained, so this also limits how fast a big roof can deliver").defineInRange("buffer_capacity", 4_000, 100, 10_000_000);
+        CFG_SHINGLE_MAX_EXTRACT = BUILDER.comment("Max FE per tick a single shingle hands to adjacent cables, which is the most a whole roof can deliver through one shingle").defineInRange("max_extract", 1_000, 1, 1_000_000);
         BUILDER.pop();
 
         BUILDER.push("geyser_cap");
@@ -552,6 +563,7 @@ public class Config {
 
     public static int andesiteMorningRpm, andesiteNoonRpm, andesiteMorningSu, andesiteNoonSu;
     public static int brassMorningFe, brassNoonFe, brassBuffer, brassMaxExtract;
+    public static int shingleMorningFe, shingleNoonFe, shingleBuffer, shingleMaxExtract;
     public static int geyserCapRpm, geyserCapSu;
     public static boolean geyserEruptions;
     public static int geyserMinIntervalTicks, geyserMaxIntervalTicks, geyserWarningTicks, geyserEruptionTicks, geyserHeight;
@@ -621,6 +633,10 @@ public class Config {
         brassNoonFe          = CFG_BRASS_NOON_FE.get();
         brassBuffer          = CFG_BRASS_BUFFER.get();
         brassMaxExtract      = CFG_BRASS_MAX_EXTRACT.get();
+        shingleMorningFe     = CFG_SHINGLE_MORNING_FE.get();
+        shingleNoonFe        = CFG_SHINGLE_NOON_FE.get();
+        shingleBuffer        = CFG_SHINGLE_BUFFER.get();
+        shingleMaxExtract    = CFG_SHINGLE_MAX_EXTRACT.get();
 
         geyserCapRpm         = CFG_GEYSER_RPM.get();
         geyserCapSu          = CFG_GEYSER_SU.get();

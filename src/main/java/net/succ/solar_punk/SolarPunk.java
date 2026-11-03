@@ -95,6 +95,11 @@ public class SolarPunk {
                 ModBlockEntities.BRASS_SOLAR_PANEL.get(),
                 (be, side) -> be.energyStorage
         );
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                ModBlockEntities.SOLAR_SHINGLES.get(),
+                (be, side) -> be.energyStorage
+        );
         // No sky check here (unlike the Solar Heater), so every face is open.
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,

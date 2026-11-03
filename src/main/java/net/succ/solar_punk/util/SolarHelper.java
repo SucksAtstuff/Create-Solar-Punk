@@ -196,6 +196,26 @@ public final class SolarHelper {
      */
     @Nullable
     public static Double sunOffset(Level level, BlockPos pos) {
+        Vec3 local = localSunDirection(level, pos);
+        if (local == null) return null;
+        return Math.toDegrees(Math.acos(Mth.clamp(local.y, -1, 1)));
+    }
+
+    /**
+     * How much sun a surface facing {@code normal} (a unit vector in the block's own frame)
+     * catches compared to a flat one at {@code pos}: 1 for flat, more when tilted toward the
+     * sun, 0 when facing away. Capped at {@code max}, since the ratio blows up as the sun nears
+     * the horizon. 1 while the sun is down or its direction is unknown.
+     */
+    public static double tiltFactor(Level level, BlockPos pos, Vec3 normal, double max) {
+        Vec3 local = localSunDirection(level, pos);
+        if (local == null || local.y <= 0) return 1;
+        return Mth.clamp(normal.dot(local) / local.y, 0, max);
+    }
+
+    /** Unit vector toward the sun in the frame of the block at {@code pos}, or null while it's down (eclipsed in space) or unknown. */
+    @Nullable
+    private static Vec3 localSunDirection(Level level, BlockPos pos) {
         if (level == null) return null;
 
         Vec3 local;
@@ -210,7 +230,7 @@ public final class SolarHelper {
             SableCompat.Placement placement = SableCompat.placement(level, pos);
             local = placement != null ? placement.toLocal(world) : world;
         }
-        return Math.toDegrees(Math.acos(Mth.clamp(local.normalize().y, -1, 1)));
+        return local.normalize();
     }
 
     public static boolean isRaining(Level level) {

@@ -8,9 +8,18 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
+import net.succ.solar_punk.block.custom.TrellisBlock;
+import net.succ.solar_punk.block.custom.TrellisPlant;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.Set;
@@ -36,6 +45,17 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         // Like vanilla glass and panes: only drop with Silk Touch.
         dropWhenSilkTouch(ModBlocks.SOLAR_GLASS.get());
         dropWhenSilkTouch(ModBlocks.SOLAR_GLASS_PANE.get());
+        // The trellis drops itself plus everything growing on it: a Vine for any plant, and the
+        // flower or Glow Berries on top of the vines.
+        add(ModBlocks.TRELLIS.get(), block -> {
+            LootTable.Builder table = createSingleItemTable(block);
+            for (TrellisPlant plant : TrellisPlant.values()) {
+                if (plant == TrellisPlant.NONE) continue;
+                table.withPool(trellisPlantPool(block, plant, Items.VINE));
+                if (plant != TrellisPlant.VINES) table.withPool(trellisPlantPool(block, plant, plant.item()));
+            }
+            return table;
+        });
         // A double slab drops two slabs.
         ModBlockFamilies.ALL.forEach(family -> {
             Block slab = family.get(BlockFamily.Variant.SLAB);
@@ -45,6 +65,14 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         for (Block block : getKnownBlocks()) {
             if (!map.containsKey(block.getLootTable())) dropSelf(block);
         }
+    }
+
+    private LootPool.Builder trellisPlantPool(Block trellis, TrellisPlant plant, Item drop) {
+        return applyExplosionCondition(drop, LootPool.lootPool()
+                .add(LootItem.lootTableItem(drop))
+                .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(trellis)
+                        .setProperties(StatePropertiesPredicate.Builder.properties()
+                                .hasProperty(TrellisBlock.PLANT, plant))));
     }
 
     @Override

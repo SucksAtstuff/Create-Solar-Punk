@@ -27,6 +27,7 @@ import net.succ.solar_punk.block.entity.custom.KineticSprinklerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.ParticleAcceleratorInputBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineCasingBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineRotorBlockEntity;
+import net.succ.solar_punk.block.entity.custom.SolarShinglesBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCasingBlockEntity;
 
@@ -87,6 +88,11 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BrassSolarPanelBlockEntity>> BRASS_SOLAR_PANEL =
             BLOCK_ENTITIES.register("brass_solar_panel", () -> BlockEntityType.Builder
                     .of((pos, state) -> new BrassSolarPanelBlockEntity(ModBlockEntities.BRASS_SOLAR_PANEL.get(), pos, state), ModBlocks.BRASS_SOLAR_PANEL.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SolarShinglesBlockEntity>> SOLAR_SHINGLES =
+            BLOCK_ENTITIES.register("solar_shingles", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new SolarShinglesBlockEntity(ModBlockEntities.SOLAR_SHINGLES.get(), pos, state), ModBlocks.SOLAR_SHINGLES.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HeatBatteryBlockEntity>> HEAT_BATTERY =

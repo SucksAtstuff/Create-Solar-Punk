@@ -67,6 +67,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.BRASS_FILIGREE_RAILING_STEEP_SLOPE.get())
                 .add(ModBlocks.ANDESITE_FILIGREE_RAILING_STEEP_SLOPE.get())
                 .add(ModBlocks.SALT_LAMP.get())
+                .add(ModBlocks.GARDEN_LIGHT.get())
+                .add(ModBlocks.SOLAR_SHINGLES.get())
                 .add(ModBlocks.LITHIUM_ORE.get())
                 .add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get())
                 .add(ModBlocks.LITHIUM_BLOCK.get())
@@ -102,6 +104,9 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.ASH_BLOCK.get())
                 .add(ModBlocks.DEAD_GRASS_BLOCK.get())
                 .add(ModBlocks.RUINED_DIRT.get());
+
+        tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.TRELLIS.get());
+        tag(BlockTags.CLIMBABLE).add(ModBlocks.TRELLIS.get());
 
         tag(Tags.Blocks.GLASS_BLOCKS).add(ModBlocks.SOLAR_GLASS.get());
         tag(BlockTags.IMPERMEABLE).add(ModBlocks.SOLAR_GLASS.get());

@@ -1,0 +1,154 @@
+{
+  "variants": {
+    "facing=east,half=bottom,shape=inner_left": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_inner_corner",
+      "y": 180
+    },
+    "facing=east,half=bottom,shape=inner_right": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_inner_corner",
+      "y": 270
+    },
+    "facing=east,half=bottom,shape=outer_left": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_outer_corner",
+      "y": 180
+    },
+    "facing=east,half=bottom,shape=outer_right": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_outer_corner",
+      "y": 270
+    },
+    "facing=east,half=bottom,shape=straight": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope",
+      "y": 270
+    },
+    "facing=east,half=top,shape=inner_left": {
+      "model": "solarpunk:block/solar_shingles_top_slope_inner_corner",
+      "y": 180
+    },
+    "facing=east,half=top,shape=inner_right": {
+      "model": "solarpunk:block/solar_shingles_top_slope_inner_corner",
+      "y": 270
+    },
+    "facing=east,half=top,shape=outer_left": {
+      "model": "solarpunk:block/solar_shingles_top_slope_outer_corner",
+      "y": 180
+    },
+    "facing=east,half=top,shape=outer_right": {
+      "model": "solarpunk:block/solar_shingles_top_slope_outer_corner",
+      "y": 270
+    },
+    "facing=east,half=top,shape=straight": {
+      "model": "solarpunk:block/solar_shingles_top_slope",
+      "y": 270
+    },
+    "facing=north,half=bottom,shape=inner_left": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_inner_corner",
+      "y": 90
+    },
+    "facing=north,half=bottom,shape=inner_right": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_inner_corner",
+      "y": 180
+    },
+    "facing=north,half=bottom,shape=outer_left": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_outer_corner",
+      "y": 90
+    },
+    "facing=north,half=bottom,shape=outer_right": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_outer_corner",
+      "y": 180
+    },
+    "facing=north,half=bottom,shape=straight": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope",
+      "y": 180
+    },
+    "facing=north,half=top,shape=inner_left": {
+      "model": "solarpunk:block/solar_shingles_top_slope_inner_corner",
+      "y": 90
+    },
+    "facing=north,half=top,shape=inner_right": {
+      "model": "solarpunk:block/solar_shingles_top_slope_inner_corner",
+      "y": 180
+    },
+    "facing=north,half=top,shape=outer_left": {
+      "model": "solarpunk:block/solar_shingles_top_slope_outer_corner",
+      "y": 90
+    },
+    "facing=north,half=top,shape=outer_right": {
+      "model": "solarpunk:block/solar_shingles_top_slope_outer_corner",
+      "y": 180
+    },
+    "facing=north,half=top,shape=straight": {
+      "model": "solarpunk:block/solar_shingles_top_slope",
+      "y": 180
+    },
+    "facing=south,half=bottom,shape=inner_left": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_inner_corner",
+      "y": 270
+    },
+    "facing=south,half=bottom,shape=inner_right": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_inner_corner"
+    },
+    "facing=south,half=bottom,shape=outer_left": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_outer_corner",
+      "y": 270
+    },
+    "facing=south,half=bottom,shape=outer_right": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_outer_corner"
+    },
+    "facing=south,half=bottom,shape=straight": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope"
+    },
+    "facing=south,half=top,shape=inner_left": {
+      "model": "solarpunk:block/solar_shingles_top_slope_inner_corner",
+      "y": 270
+    },
+    "facing=south,half=top,shape=inner_right": {
+      "model": "solarpunk:block/solar_shingles_top_slope_inner_corner"
+    },
+    "facing=south,half=top,shape=outer_left": {
+      "model": "solarpunk:block/solar_shingles_top_slope_outer_corner",
+      "y": 270
+    },
+    "facing=south,half=top,shape=outer_right": {
+      "model": "solarpunk:block/solar_shingles_top_slope_outer_corner"
+    },
+    "facing=south,half=top,shape=straight": {
+      "model": "solarpunk:block/solar_shingles_top_slope"
+    },
+    "facing=west,half=bottom,shape=inner_left": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_inner_corner"
+    },
+    "facing=west,half=bottom,shape=inner_right": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_inner_corner",
+      "y": 90
+    },
+    "facing=west,half=bottom,shape=outer_left": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_outer_corner"
+    },
+    "facing=west,half=bottom,shape=outer_right": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope_outer_corner",
+      "y": 90
+    },
+    "facing=west,half=bottom,shape=straight": {
+      "model": "solarpunk:block/solar_shingles_bottom_slope",
+      "y": 90
+    },
+    "facing=west,half=top,shape=inner_left": {
+      "model": "solarpunk:block/solar_shingles_top_slope_inner_corner"
+    },
+    "facing=west,half=top,shape=inner_right": {
+      "model": "solarpunk:block/solar_shingles_top_slope_inner_corner",
+      "y": 90
+    },
+    "facing=west,half=top,shape=outer_left": {
+      "model": "solarpunk:block/solar_shingles_top_slope_outer_corner"
+    },
+    "facing=west,half=top,shape=outer_right": {
+      "model": "solarpunk:block/solar_shingles_top_slope_outer_corner",
+      "y": 90
+    },
+    "facing=west,half=top,shape=straight": {
+      "model": "solarpunk:block/solar_shingles_top_slope",
+      "y": 90
+    }
+  }
+}

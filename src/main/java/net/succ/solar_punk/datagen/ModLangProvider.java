@@ -237,6 +237,11 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.biofilter.tooltip.behaviour1", "Collects _Carbon Dust_ from what it removes. Take it out by hand or with a funnel, and _compact_ it into _Biochar_.");
 
         add("block.solarpunk.salt_lamp.tooltip.summary", "A warm, glowing chunk of _Salt_. Right-click to switch it _on_ or _off_.");
+        add("block.solarpunk.garden_light.tooltip.summary", "A small solar light for paths and gardens. Charges while it can _see the sky_ during the day, then glows through the _night_. Place it in the shade and it stays dark.");
+        add("block.solarpunk.solar_shingles.tooltip.summary", "Stepped solar roofing that makes a little _FE_. Bends into _corners_ like stairs, and each row placed up a roof switches between a _low_ and a _high_ piece by itself.");
+        add("block.solarpunk.solar_shingles.tooltip.condition1", "In sunlight");
+        add("block.solarpunk.solar_shingles.tooltip.behaviour1", "Each shingle stores what it makes. Take power from _any_ shingle and the rest of the roof sends its energy along to it. Roofs sloping _toward the sun_ make more, so east-facing roofs do best in the morning and west-facing ones in the evening.");
+        add("block.solarpunk.trellis.tooltip.summary", "A wooden lattice that hangs on walls and can be _climbed_ like a ladder. Right-click with _Vines_ to grow vines on it, then add a _small flower_ or _Glow Berries_ to the vines. _Shears_ trim off the top layer. Vines slowly _climb_ onto bare trellises above and beside them.");
 
         add("block.solarpunk.kinetic_sprinkler.tooltip.summary", "Pipe in _water_ to hydrate _farmland_ and speed up _crop growth_ in a 5x5 area below it.");
         add("block.solarpunk.kinetic_sprinkler.tooltip.condition1", "When supplied with Fertilizer instead of water");

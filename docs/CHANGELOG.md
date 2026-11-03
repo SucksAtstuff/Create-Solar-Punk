@@ -26,6 +26,9 @@
 - New **Salt Bricks** with stairs, slab and wall, plus **Chiseled Salt Bricks**.
 - New **Polished Ash** and **Ash Bricks**, each with stairs, slab and wall, plus **Chiseled Ash Bricks**.
 - New **Solar Glass** and **Solar Glass Pane**: decorative framed glass.
+- New **Solar Shingles**: stepped solar roofing that makes a little FE, so your roof can be the solar array. Roofs sloping toward the sun make more.
+- New **Garden Light**: a small solar light that charges in the sun during the day and glows through the night.
+- New **Trellis**: a climbable wooden lattice for walls. Grow Vines on it, then add a flower or Glow Berries.
 - New **Brass** and **Andesite Filigree Railings**: art nouveau railings that connect to their neighbours. Hold Alt to switch the item between flat, slope and steep slope, for ramps, arches and staircases. Steep slopes placed on stairs follow them automatically, and Create-style placement arrows help extend runs and slopes.
 - New stairs, slabs and walls for the Turbine Casing and Fusion Reactor Casing, so engine rooms can match.
 - Decorative blocks now have their own **Create: Solarpunk Building Blocks** creative tab, and the main tab is now grouped by power type.
