@@ -77,6 +77,16 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.accelerator_too_slow", "Too slow: needs %1$s RPM");
         add("create.solar_punk.tooltip.accelerator_overstressed", "Overstressed");
 
+        add("create.solar_punk.tooltip.greenhouse_header", "Greenhouse");
+        add("create.solar_punk.tooltip.greenhouse_status", "Status: ");
+        add("create.solar_punk.tooltip.greenhouse_sealed", "Sealed");
+        add("create.solar_punk.tooltip.greenhouse_not_sealed", "Not sealed, or too big");
+        add("create.solar_punk.tooltip.greenhouse_front_blocked", "Front is blocked");
+        add("create.solar_punk.tooltip.greenhouse_other_controller", "Another controller runs this greenhouse");
+        add("create.solar_punk.tooltip.greenhouse_volume", "Space: ");
+        add("create.solar_punk.tooltip.greenhouse_crops", "Plants under glass: ");
+        add("create.solar_punk.tooltip.greenhouse_boost", "Growth speed: ");
+        add("create.solar_punk.tooltip.greenhouse_bees", "Bees pollinating: ");
         add("create.solar_punk.tooltip.sprinkler_header", "Sprinkler");
         add("create.solar_punk.tooltip.sprinkler_status", "Status: ");
 
@@ -250,6 +260,9 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.solar_glass_shingles.tooltip.summary", "_Solar Shingles_ made of _Solar Glass_. Make as much _FE_ as a Solar Glass block, and step and bend into corners like normal shingles.");
         add("block.solarpunk.solar_glass_shingles.tooltip.condition1", "In sunlight");
         add("block.solarpunk.solar_glass_shingles.tooltip.behaviour1", "Each shingle stores what it makes and passes it along the roof, like normal shingles. Roofs sloping _toward the sun_ make more.");
+        add("block.solarpunk.greenhouse_controller.tooltip.summary", "Turns a closed room with a _glass roof_ into a greenhouse. Place it in a wall facing _inside_. Needs no power.");
+        add("block.solarpunk.greenhouse_controller.tooltip.condition1", "When the greenhouse is sealed");
+        add("block.solarpunk.greenhouse_controller.tooltip.behaviour1", "Plants under _Greenhouse Glass_ or _Solar Glass_ grow faster, and faster still with _bees_ inside. A sealed greenhouse is also safe from _pollution_ decay. Walls can be glass or any solid block, and an _open door_ breaks the seal.");
         add("block.solarpunk.trellis.tooltip.summary", "A wooden lattice that hangs on walls and can be _climbed_ like a ladder. Right-click with _Vines_ to grow vines on it, then add a _small flower_ or _Glow Berries_ to the vines. _Shears_ trim off the top layer. Vines slowly _climb_ onto bare trellises above and beside them, and soak up _pollution_ like leaves do.");
 
         add("block.solarpunk.kinetic_sprinkler.tooltip.summary", "Pipe in _water_ to hydrate _farmland_ and speed up _crop growth_ in a 5x5 area below it.");

@@ -1,6 +1,7 @@
 {
   "textures": {
-    "particle": "#wall"
+    "particle": "#wall",
+    "top": "#wall"
   },
   "elements": [
     {
@@ -16,12 +17,12 @@
       ],
       "faces": {
         "down": {
-          "texture": "#wall",
+          "texture": "#top",
           "cullface": "down",
           "tintindex": 0
         },
         "up": {
-          "texture": "#wall",
+          "texture": "#top",
           "tintindex": 0
         },
         "north": {

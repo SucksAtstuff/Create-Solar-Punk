@@ -213,6 +213,7 @@ public class ModClientEvents {
         tip(ModBlocks.SALT_LAMP);
         tip(ModBlocks.GARDEN_LIGHT);
         tip(ModBlocks.TRELLIS);
+        tip(ModBlocks.GREENHOUSE_CONTROLLER);
         tip(ModBlocks.SOLAR_SHINGLES);
         tip(ModBlocks.SOLAR_GLASS_SHINGLES);
         tip(ModBlocks.SOLAR_GLASS);

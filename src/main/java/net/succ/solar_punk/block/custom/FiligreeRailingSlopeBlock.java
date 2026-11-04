@@ -40,13 +40,18 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 // A railing that climbs toward FACING. Three shapes (PART):
-//  - LOWER and UPPER are the two halves of a gentle climb, one block up over two: LOWER rises
-//    half a block, and UPPER, one block further and one block higher, finishes it. A steady
-//    ramp repeats lower, upper, lower, upper.
+//  - LOWER and UPPER (the "up" and "down" models) are the pieces of a gentle climb, half a
+//    block up per block, sitting a quarter block higher than a flat railing. UPPER goes one
+//    block further and one block higher than LOWER, and the next LOWER one block further on
+//    the same level, so a ramp repeats lower, upper, lower. A gentle run starts and ends on a
+//    LOWER: the flat railings at its ends show the START and END transition pieces
+//    (RailingTransition), which take up the quarter block. So a run is
+//    flat, START, LOWER, (UPPER, LOWER)..., END, flat.
 //  - FULL climbs a whole block in one, like a staircase. Its low end reaches down into the
 //    block below. Only the steep slope block (FiligreeRailingSteepSlopeBlock) uses it.
-// Flat railings join the ends listed by flatEnds(): beside LOWER's low end, beside UPPER's
-// high end, and beside FULL's high end or diagonally below its low end.
+// Flat railings join the ends listed by flatEnds(): beside LOWER's low end (START), in front
+// of and one block above LOWER's high end (END), and beside FULL's high end or diagonally
+// below its low end.
 //
 // Slopes have no item of their own: the material's FiligreeRailingItem places them, set to a
 // slope shape in its radial menu. Holding it set to a slope and looking at the same kind of
@@ -136,14 +141,14 @@ public class FiligreeRailingSlopeBlock extends HorizontalDirectionalBlock implem
     static List<FlatEnd> flatEnds(BlockState state) {
         Direction facing = state.getValue(FACING);
         return switch (state.getValue(PART)) {
-            case LOWER -> List.of(new FlatEnd(facing.getOpposite(), 0));
-            case UPPER -> List.of(new FlatEnd(facing, 0));
+            case LOWER -> List.of(new FlatEnd(facing.getOpposite(), 0), new FlatEnd(facing, 1));
+            case UPPER -> List.of();
             case FULL -> List.of(new FlatEnd(facing, 0), new FlatEnd(facing.getOpposite(), -1));
         };
     }
 
-    // A full slope's low end joins a flat railing diagonally below it, which never hears about
-    // the slope through normal neighbour updates, so refresh it here.
+    // A flat railing diagonally above or below an end (a gentle slope's END, a full slope's low
+    // end) never hears about the slope through normal neighbour updates, so refresh it here.
     @Override
     protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         super.onPlace(state, level, pos, oldState, movedByPiston);
@@ -157,12 +162,19 @@ public class FiligreeRailingSlopeBlock extends HorizontalDirectionalBlock implem
     }
 
     private static void refreshDiagonalFlat(Level level, BlockState state, BlockPos pos) {
-        if (level.isClientSide || state.getValue(PART) != Part.FULL) return;
-        BlockPos flatPos = pos.relative(state.getValue(FACING).getOpposite()).below();
-        BlockState flat = level.getBlockState(flatPos);
-        if (flat.getBlock() instanceof FiligreeRailingBlock) {
-            BlockState updated = FiligreeRailingBlock.connectedState(flat, level, flatPos);
-            if (updated != flat) level.setBlock(flatPos, updated, Block.UPDATE_ALL);
+        if (level.isClientSide) return;
+        Direction facing = state.getValue(FACING);
+        // Both diagonals, whatever this slope is (or was): a removed or rotated slope has to
+        // clear the transition it gave its old neighbour too.
+        for (Direction side : new Direction[]{facing, facing.getOpposite()}) {
+            for (int dy : new int[]{1, -1}) {
+                BlockPos flatPos = pos.relative(side).above(dy);
+                BlockState flat = level.getBlockState(flatPos);
+                if (flat.getBlock() instanceof FiligreeRailingBlock) {
+                    BlockState updated = FiligreeRailingBlock.connectedState(flat, level, flatPos);
+                    if (updated != flat) level.setBlock(flatPos, updated, Block.UPDATE_ALL);
+                }
+            }
         }
     }
 
@@ -175,19 +187,46 @@ public class FiligreeRailingSlopeBlock extends HorizontalDirectionalBlock implem
     // authored climbing north. The panel is about 15 pixels tall above it, like a flat railing.
     private static float bottomRail(Part part, float z) {
         return switch (part) {
-            case LOWER -> (16 - z) / 2;   // 0 at the south edge, 8 at the north edge
-            case UPPER -> -z / 2;         // -8 at the south edge, 0 at the north edge
-            case FULL -> -z;              // -16 at the south edge, 0 at the north edge
+            case LOWER -> (16 - z) / 2 + 4;   // 4 at the south edge, 12 at the north edge
+            case UPPER -> -z / 2 + 4;         // -4 at the south edge, 4 at the north edge
+            case FULL -> -z;                  // -16 at the south edge, 0 at the north edge
         };
+    }
+
+    // The transition pieces, authored climbing north: START is flat in its south half and rises
+    // to 4 pixels at the north edge, END dips to -4 at the south edge and is flat in its north half.
+    private static float transitionBottomRail(RailingTransition.Kind kind, float z) {
+        return switch (kind) {
+            case START -> z < 8 ? (8 - z) / 2 : 0;
+            case END -> z > 8 ? -(z - 8) / 2 : 0;
+        };
+    }
+
+    // Outline and collision of a flat railing showing a transition piece.
+    private static final Map<RailingTransition, VoxelShape> TRANSITION_SHAPES = new EnumMap<>(RailingTransition.class);
+    static {
+        for (RailingTransition t : RailingTransition.values()) {
+            if (t.kind == null) continue;
+            TRANSITION_SHAPES.put(t, slicedShape(z -> transitionBottomRail(t.kind, z), t.climb));
+        }
+    }
+
+    static VoxelShape transitionShape(RailingTransition transition) {
+        return TRANSITION_SHAPES.get(transition);
+    }
+
+    private static VoxelShape slopeShape(Part part, Direction facing) {
+        return slicedShape(z -> bottomRail(part, z), facing);
     }
 
     // The rails, sliced every 2 pixels along the climb and clipped to the block, then turned from
     // north to `facing` the way the blockstate turns the model.
-    private static VoxelShape slopeShape(Part part, Direction facing) {
+    private static VoxelShape slicedShape(java.util.function.Function<Float, Float> bottom, Direction facing) {
         VoxelShape shape = Shapes.empty();
         for (int z = 0; z < 16; z += 2) {
-            float low = Math.max(0, Math.min(bottomRail(part, z), bottomRail(part, z + 2)));
-            float high = Math.min(16, Math.max(bottomRail(part, z), bottomRail(part, z + 2)) + 15);
+            float a = bottom.apply((float) z), b = bottom.apply((float) z + 2);
+            float low = Math.max(0, Math.min(a, b));
+            float high = Math.min(16, Math.max(a, b) + 15);
             if (high <= low) continue;
             shape = Shapes.or(shape, rotated(7, low, z, 9, high, z + 2, facing));
         }

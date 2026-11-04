@@ -209,7 +209,7 @@ public class GlobalWarmingHandler {
 
             if (pollution >= threshold) {
                 // High pollution: decay blocks and convert biome
-                replaceSurfaceBlocks(level, chunkPos, GlobalWarmingHandler::getDecayReplacement);
+                replaceSurfaceBlocks(level, chunkPos, GlobalWarmingHandler::getDecayReplacement, true);
                 if (allDead != null) {
                     ChunkAccess chunk = level.getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL, false);
                     if (chunk != null) {
@@ -221,7 +221,7 @@ public class GlobalWarmingHandler {
                 }
             } else {
                 // Below threshold: heal blocks gradually
-                replaceSurfaceBlocks(level, chunkPos, GlobalWarmingHandler::getHealReplacement);
+                replaceSurfaceBlocks(level, chunkPos, GlobalWarmingHandler::getHealReplacement, false);
             }
         }
 
@@ -240,7 +240,7 @@ public class GlobalWarmingHandler {
 
             // Keep healing blocks even after biome is restored, until pollution is gone
             if (data.getPollution(chunkPos) > 0)
-                replaceSurfaceBlocks(level, chunkPos, GlobalWarmingHandler::getHealReplacement);
+                replaceSurfaceBlocks(level, chunkPos, GlobalWarmingHandler::getHealReplacement, false);
         }
 
         if (!biomesToResend.isEmpty()) {
@@ -269,9 +269,10 @@ public class GlobalWarmingHandler {
     }
 
     // Picks Config.blocksDecayedPerInterval random columns in the chunk and replaces the
-    // first block near the surface that `replacement` has a replacement for.
+    // first block near the surface that `replacement` has a replacement for. When decaying,
+    // a column that reaches a sealed greenhouse is left alone (GreenhouseProtection).
     private static void replaceSurfaceBlocks(ServerLevel level, ChunkPos chunkPos,
-                                             Function<BlockState, BlockState> replacement) {
+                                             Function<BlockState, BlockState> replacement, boolean decaying) {
         if (Config.blocksDecayedPerInterval <= 0) return;
         LevelChunk chunk = level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
         if (chunk == null) return;
@@ -286,6 +287,7 @@ public class GlobalWarmingHandler {
 
             for (int dy = 0; dy >= -4; dy--) {
                 BlockPos pos = new BlockPos(worldX, surfaceY + dy, worldZ);
+                if (decaying && GreenhouseProtection.isProtected(level, pos)) break;
                 BlockState state = level.getBlockState(pos);
                 BlockState replaced = replacement.apply(state);
                 if (replaced == null) continue;

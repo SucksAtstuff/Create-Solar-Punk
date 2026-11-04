@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "C": {
+      "item": "create:copper_casing"
+    },
+    "G": {
+      "item": "solarpunk:greenhouse_glass"
+    },
+    "R": {
+      "item": "minecraft:comparator"
+    },
+    "S": {
+      "tag": "c:plates/copper"
+    }
+  },
+  "pattern": [
+    " G ",
+    "SCS",
+    " R "
+  ],
+  "result": {
+    "count": 1,
+    "id": "solarpunk:greenhouse_controller"
+  }
+}

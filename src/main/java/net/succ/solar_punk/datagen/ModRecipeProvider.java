@@ -148,6 +148,48 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_solar_glass", has(ModBlocks.SOLAR_GLASS.get()))
                 .save(output);
 
+        // Greenhouse glass: copper framed, like the copper-tier greenhouse it's meant for.
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.GREENHOUSE_GLASS.get(), 8)
+                .pattern("GGG")
+                .pattern("GCG")
+                .pattern("GGG")
+                .define('G', Tags.Items.GLASS_BLOCKS_COLORLESS)
+                .define('C', Tags.Items.INGOTS_COPPER)
+                .unlockedBy("has_copper_ingot", has(Tags.Items.INGOTS_COPPER))
+                .save(output);
+        // Copper tier, like the greenhouse glass: a Copper Casing with a glass top.
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModBlocks.GREENHOUSE_CONTROLLER.get())
+                .pattern(" G ")
+                .pattern("SCS")
+                .pattern(" R ")
+                .define('G', ModBlocks.GREENHOUSE_GLASS.get())
+                .define('S', ModTags.Items.PLATES_COPPER)
+                .define('C', createItem("copper_casing"))
+                .define('R', Items.COMPARATOR)
+                .unlockedBy("has_greenhouse_glass", has(ModBlocks.GREENHOUSE_GLASS.get()))
+                .save(output);
+        // Frosted with sand.
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.GREENHOUSE_PANEL.get(), 8)
+                .pattern("GGG")
+                .pattern("GSG")
+                .pattern("GGG")
+                .define('G', ModBlocks.GREENHOUSE_GLASS.get())
+                .define('S', Tags.Items.SANDS)
+                .unlockedBy("has_greenhouse_glass", has(ModBlocks.GREENHOUSE_GLASS.get()))
+                .save(output);
+        for (var pane : List.of(List.of(ModBlocks.GREENHOUSE_GLASS, ModBlocks.GREENHOUSE_GLASS_PANE),
+                List.of(ModBlocks.CLEAR_GREENHOUSE_GLASS, ModBlocks.CLEAR_GREENHOUSE_GLASS_PANE))) {
+            ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, pane.get(1).get(), 16)
+                    .pattern("GGG")
+                    .pattern("GGG")
+                    .define('G', pane.get(0).get())
+                    .unlockedBy(getHasName(pane.get(0).get()), has(pane.get(0).get()))
+                    .save(output);
+        }
+        // The plain and clear glass, and the two panel patterns, stonecut into each other.
+        stonecutBothWays(output, ModBlocks.GREENHOUSE_GLASS.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS.get());
+        stonecutBothWays(output, ModBlocks.GREENHOUSE_PANEL.get(), ModBlocks.LARGE_GREENHOUSE_PANEL.get());
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, ModBlocks.SALT_LAMP.get())
                 .requires(ModTags.Items.STORAGE_BLOCKS_SALT)
                 .requires(Items.TORCH)
@@ -431,6 +473,16 @@ public class ModRecipeProvider extends RecipeProvider {
 
     // Bricks: 2x2 of the polished block (itself 2x2 of the raw block), like Deepslate's
     // polished -> bricks chain, or straight from either one in a stonecutter.
+    private void stonecutBothWays(RecipeOutput output, Block a, Block b) {
+        for (Block[] pair : new Block[][] {{a, b}, {b, a}}) {
+            String to = BuiltInRegistries.BLOCK.getKey(pair[1]).getPath();
+            String from = BuiltInRegistries.BLOCK.getKey(pair[0]).getPath();
+            SingleItemRecipeBuilder.stonecutting(Ingredient.of(pair[0]), RecipeCategory.BUILDING_BLOCKS, pair[1])
+                    .unlockedBy(getHasName(pair[0]), has(pair[0]))
+                    .save(output, id(to + "_from_" + from + "_stonecutting"));
+        }
+    }
+
     private void bricksRecipes(RecipeOutput output, Block bricks, Block polished, Block raw) {
         String bricksName = BuiltInRegistries.BLOCK.getKey(bricks).getPath();
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, bricks, 4)

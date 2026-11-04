@@ -26,6 +26,8 @@ public class ModTriggers {
             TRIGGERS.register("gasifier_running", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> BIOFUEL_ENGINE_ON =
             TRIGGERS.register("biofuel_engine_on", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> GREENHOUSE_SEALED =
+            TRIGGERS.register("greenhouse_sealed", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> FERMENTATION_DONE =
             TRIGGERS.register("fermentation_done", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> TOWER_BUILT =

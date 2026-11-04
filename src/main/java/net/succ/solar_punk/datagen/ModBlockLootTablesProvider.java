@@ -22,6 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.succ.solar_punk.item.ModItems;
 
+import java.util.List;
 import java.util.Set;
 
 public class ModBlockLootTablesProvider extends BlockLootSubProvider {
@@ -45,6 +46,9 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         // Like vanilla glass and panes: only drop with Silk Touch.
         dropWhenSilkTouch(ModBlocks.SOLAR_GLASS.get());
         dropWhenSilkTouch(ModBlocks.SOLAR_GLASS_PANE.get());
+        for (var glass : List.of(ModBlocks.GREENHOUSE_GLASS, ModBlocks.GREENHOUSE_GLASS_PANE, ModBlocks.CLEAR_GREENHOUSE_GLASS,
+                ModBlocks.CLEAR_GREENHOUSE_GLASS_PANE, ModBlocks.GREENHOUSE_PANEL, ModBlocks.LARGE_GREENHOUSE_PANEL))
+            dropWhenSilkTouch(glass.get());
         // The trellis drops itself plus everything growing on it: a Vine for any plant, and the
         // flower or Glow Berries on top of the vines.
         add(ModBlocks.TRELLIS.get(), block -> {

@@ -13,6 +13,11 @@
 - With global warming on, the Biofilter now collects **Carbon Dust** from the pollution it cleans up. Take it out by hand or with a funnel.
 - Compact 4 Carbon Dust into Biochar with a Mechanical Press and Basin, for Fertilizer or the Particle Accelerator.
 
+### Greenhouses
+
+- New **Greenhouse Controller**: place it in the wall of a closed room with a glass roof, facing inside, and plants under the glass grow faster. Bees inside speed them up even more, and with global warming on, a sealed greenhouse is safe from pollution decay. Needs no power, can be turned or picked up with a Wrench, and has a Ponder scene.
+- New **Greenhouse Glass** and **Clear Greenhouse Glass**: copper-framed glass for greenhouses and conservatories, each with a pane. Also comes as frosted **Greenhouse Panels** in two patterns, which still let light through.
+
 ### New Recipes
 
 - New Particle Accelerator recipes: **Slime Balls** from Biomass, **Beryllium Dust** from Lithium Dust, and **Glowstone Dust** from Redstone and Lithium Dust.
@@ -22,6 +27,7 @@
 
 - New advancements for the Particle Accelerator: crafting the coils, closing your first ring, your first collision, getting a Tritium Capsule and running a huge ring.
 - New Fusion Reactor advancement for breeding your own Tritium.
+- New advancement for sealing your first greenhouse.
 
 ### Building Blocks
 
@@ -35,7 +41,7 @@
 - New **Rammed Earth** in 25 colours, with stairs, slabs and walls: pack soil, Gravel, Clay and Ash or Biochar together with a Mechanical Press. The soil you use (Dirt, Sand, Red Sand, Mud, Clay, Ash, Salt, Ruined Dirt, or any Terracotta) picks the colour. Every colour also comes as **Rammed Earth Bricks**, with stairs, slab and wall, and **Chiseled Rammed Earth Bricks**.
 - New **Garden Light**: a small solar light that charges in the sun during the day and glows through the night.
 - New **Trellis**: a climbable wooden lattice for walls. Grow Vines on it, then add a flower or Glow Berries. With global warming on, a Trellis with vines soaks up pollution like leaves do.
-- New **Brass** and **Andesite Filigree Railings**: art nouveau railings that connect to their neighbours. Hold Alt to switch the item between flat, slope and steep slope, for ramps, arches and staircases. Steep slopes placed on stairs follow them automatically, and Create-style placement arrows help extend runs and slopes.
+- New **Brass** and **Andesite Filigree Railings**: art nouveau railings that connect to their neighbours. Hold Alt to switch the item between flat, slope and steep slope, for ramps, arches and staircases. Gentle slopes blend into flat railings at both ends, steep slopes placed on stairs follow them automatically, and Create-style placement arrows help extend runs and slopes.
 - New stairs, slabs and walls for the Turbine Casing and Fusion Reactor Casing, so engine rooms can match.
 - Decorative blocks now have their own **Create: Solarpunk Building Blocks** creative tab, and the main tab is now grouped by power type.
 - New **Ash** item: blast Biomass in a Blast Furnace or with Bulk Blasting, and craft 4 into an Ash Block. Ash Blocks now need a shovel and drop Ash, like Snow.

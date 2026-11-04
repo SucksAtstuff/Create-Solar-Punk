@@ -58,26 +58,11 @@ In rough priority order.
 - **Anaerobic digester** - see Next Up.
 - **Algae bioreactor** - light + water + CO2 to biomass, an alternative to farming. Could use the
   Biofilter's Carbon Dust.
-- **Greenhouse** - a new **Greenhouse Glass** block and a **Greenhouse Controller**. Any shape
-  works (a big dome, or just a box around the farm) as long as the glass fully seals the crops
-  in; the ground can be any solid block. Crops inside grow faster, more with a Kinetic
-  Sprinkler and Fertilizer. A proper home for Biomass farms.
-  - The Controller is required: one placed inside makes the space a greenhouse, and without
-    one the glass is just glass. It runs the detection, applies the growth boost, and shows
-    goggle info (sealed or not, volume, crop count, current boost).
-  - Detection: the Controller flood fills the air inside every few seconds, capped at a max
-    volume, so crops never have to check anything themselves.
-  - No power: the Controller runs on its own, like a real greenhouse that only needs its
-    glass. Powered add-ons (grow lights and the like) take their own power if they're added.
-  - One Controller per greenhouse: a second one in the same space does nothing, so boosts
-    never stack. Its goggle info should say another Controller already runs this greenhouse.
-  - Possible extras: crops inside are safe from pollution decay and wasteland biomes, and
-    grow whatever the outside biome or season.
-  - Pollination: vanilla Beehives or Bee Nests inside the greenhouse (with bees) give the
-    crops a further growth boost. No new block needed, and the flood fill can count them
-    while it scans.
-  - Solar Glass could count as greenhouse glass too, so the roof also makes FE.
-  - Open: do doors and trapdoors count as sealed? Does a gap of one block break it?
+- **Greenhouse extras** - the Greenhouse Controller works; possible additions:
+  - Plants inside keep their normal biome (the chunk still turns into the dead biome, only
+    decay is blocked), and grow whatever the outside season.
+  - Powered add-ons such as grow lights, taking their own power.
+  - A Display Link readout of the boost and plant count.
 
 ## Geothermal
 
@@ -135,13 +120,8 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
 - **Charred Timber** - dark scorched planks (like Japanese shou sugi ban), made by applying
   Biochar to planks or by item application with a Blaze Burner. A second use for Biochar
   besides Fertilizer.
-- **Rammed Earth extras** - follow-ups for the existing sets.
-  - Polished Rammed Earth: one more light grey texture, then raw -> polished -> bricks like
-    Salt and Ash (`bricksRecipes()` already takes a polished step).
-  - A plain top texture: every face currently shows the stripes, but the layers should only
-    show on the sides. A tinted `cube_column` parent would do it.
-  - A Tuff colour was skipped because it tints almost the same as Ashen; it would need a
-    greener tint than real Tuff.
+- **Tuff Rammed Earth** - skipped because Tuff tints almost the same as Ashen; it would need a
+  greener tint than real Tuff.
 
 ### Machine-themed decor
 

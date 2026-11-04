@@ -12,6 +12,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -38,6 +39,7 @@ import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
 import net.succ.solar_punk.block.custom.TrellisBlock;
+import net.succ.solar_punk.block.custom.RailingTransition;
 import net.succ.solar_punk.block.custom.TrellisPlant;
 import net.succ.solar_punk.block.custom.SolarShinglesBlock;
 import net.minecraft.world.level.block.state.properties.StairsShape;
@@ -91,6 +93,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 modLoc("block/solar_glass_pane_top"), "minecraft:cutout");
         itemModels().withExistingParent("solar_glass_pane", mcLoc("item/generated"))
                 .texture("layer0", blockTexture(ModBlocks.SOLAR_GLASS.get()));
+        facingCustomModelBlock(ModBlocks.GREENHOUSE_CONTROLLER, true);
+        greenhouseGlass(ModBlocks.GREENHOUSE_GLASS.get(), ModBlocks.GREENHOUSE_GLASS_PANE.get(), "greenhouse_glass");
+        greenhouseGlass(ModBlocks.CLEAR_GREENHOUSE_GLASS.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS_PANE.get(), "greenhouse_glass_clear");
+        // Frosted panels: opaque textures, so a solid render type, but glass properties let light through.
+        simpleBlockWithItem(ModBlocks.GREENHOUSE_PANEL.get(), cubeAll(ModBlocks.GREENHOUSE_PANEL.get()));
+        simpleBlockWithItem(ModBlocks.LARGE_GREENHOUSE_PANEL.get(),
+                models().cubeAll("large_greenhouse_panel", modLoc("block/greenhouse_panel_large")));
         ModBlockFamilies.ALL.forEach(this::blockFamily);
         // Placed switched on, so the item shows the glowing model.
         litFacingCustomModelBlock(ModBlocks.SALT_LAMP, false);
@@ -206,51 +215,78 @@ public class ModBlockStateProvider extends BlockStateProvider {
         });
     }
 
+    // Greenhouse glass and its pane, like Solar Glass. Both kinds share one pane edge texture.
+    private void greenhouseGlass(Block glass, IronBarsBlock pane, String texture) {
+        ResourceLocation tex = modLoc("block/" + texture);
+        String glassPath = BuiltInRegistries.BLOCK.getKey(glass).getPath();
+        simpleBlockWithItem(glass, models().cubeAll(glassPath, tex).renderType("minecraft:cutout"));
+        paneBlockWithRenderType(pane, tex, modLoc("block/greenhouse_glass_pane_top"), "minecraft:cutout");
+        itemModels().withExistingParent(BuiltInRegistries.BLOCK.getKey(pane).getPath(), mcLoc("item/generated"))
+                .texture("layer0", tex);
+    }
+
     // A tinted family (Rammed Earth), base block included: the same shapes as above, built on
-    // the copies of vanilla's parents in models/block/tinted/ whose faces have tintindex 0.
+    // the copies of vanilla's parents in models/block/tinted/ whose faces have tintindex 0. A
+    // <texture>_top.png, if one exists, goes on the top and bottom faces of every shape.
     private void tintedBlockFamily(BlockFamily family) {
         ResourceLocation tex = ModBlockFamilies.baseTexture(family);
+        ResourceLocation top = topOrSide(tex);
         Block base = family.getBaseBlock();
         String basePath = BuiltInRegistries.BLOCK.getKey(base).getPath();
-        ModelFile cube = tinted(basePath, "cube_all").texture("all", tex);
+        ModelFile cube = tintedCube(basePath, tex);
         simpleBlockWithItem(base, cube);
         ModBlockFamilies.variants(family).forEach((variant, block) -> {
             String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
             switch (variant) {
                 case STAIRS -> {
                     stairsBlock((StairBlock) block,
-                            sideTopBottom(tinted(path, "stairs"), tex),
-                            sideTopBottom(tinted(path + "_inner", "inner_stairs"), tex),
-                            sideTopBottom(tinted(path + "_outer", "outer_stairs"), tex));
+                            sideTopBottom(tinted(path, "stairs"), tex, top),
+                            sideTopBottom(tinted(path + "_inner", "inner_stairs"), tex, top),
+                            sideTopBottom(tinted(path + "_outer", "outer_stairs"), tex, top));
                     simpleBlockItem(block, new UncheckedModelFile(modLoc("block/" + path)));
                 }
                 case SLAB -> {
-                    slabBlock((SlabBlock) block, sideTopBottom(tinted(path, "slab"), tex),
-                            sideTopBottom(tinted(path + "_top", "slab_top"), tex), cube);
+                    slabBlock((SlabBlock) block, sideTopBottom(tinted(path, "slab"), tex, top),
+                            sideTopBottom(tinted(path + "_top", "slab_top"), tex, top), cube);
                     simpleBlockItem(block, new UncheckedModelFile(modLoc("block/" + path)));
                 }
                 case WALL -> {
                     wallBlock((WallBlock) block,
-                            tinted(path + "_post", "wall_post").texture("wall", tex),
-                            tinted(path + "_side", "wall_side").texture("wall", tex),
-                            tinted(path + "_side_tall", "wall_side_tall").texture("wall", tex));
-                    itemModels().withExistingParent(path, modLoc("block/tinted/wall_inventory")).texture("wall", tex);
+                            tinted(path + "_post", "wall_post").texture("wall", tex).texture("top", top),
+                            tinted(path + "_side", "wall_side").texture("wall", tex).texture("top", top),
+                            tinted(path + "_side_tall", "wall_side_tall").texture("wall", tex).texture("top", top));
+                    itemModels().withExistingParent(path, modLoc("block/tinted/wall_inventory"))
+                            .texture("wall", tex).texture("top", top);
                 }
                 default -> {
                     ResourceLocation variantTex = ModBlockFamilies.tintedVariantTexture(block);
                     if (variantTex == null) throw new IllegalStateException("No tinted texture for " + path);
-                    simpleBlockWithItem(block, tinted(path, "cube_all").texture("all", variantTex));
+                    simpleBlockWithItem(block, tintedCube(path, variantTex));
                 }
             }
         });
+    }
+
+    // A tinted full block: cube_all, or cube_column when a <texture>_top.png exists.
+    private ModelFile tintedCube(String path, ResourceLocation tex) {
+        ResourceLocation top = topOrSide(tex);
+        return top.equals(tex)
+                ? tinted(path, "cube_all").texture("all", tex)
+                : tinted(path, "cube_column").texture("side", tex).texture("end", top);
+    }
+
+    // <texture>_top if that texture exists, otherwise the texture itself.
+    private ResourceLocation topOrSide(ResourceLocation tex) {
+        ResourceLocation top = tex.withSuffix("_top");
+        return models().existingFileHelper.exists(top, ModelProvider.TEXTURE) ? top : tex;
     }
 
     private BlockModelBuilder tinted(String path, String parent) {
         return models().withExistingParent(path, modLoc("block/tinted/" + parent));
     }
 
-    private static BlockModelBuilder sideTopBottom(BlockModelBuilder model, ResourceLocation tex) {
-        return model.texture("side", tex).texture("top", tex).texture("bottom", tex);
+    private static BlockModelBuilder sideTopBottom(BlockModelBuilder model, ResourceLocation side, ResourceLocation top) {
+        return model.texture("side", side).texture("top", top).texture("bottom", top);
     }
 
     // A straight run (POST off) shows <id>_straight (running north-south), turned to the run's
@@ -265,11 +301,23 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModelFile straight = filigreeRailingModel(block, source, "_straight");
         ModelFile inventory = filigreeRailingModel(block, source, "_inventory");
         MultiPartBlockStateBuilder builder = getMultipartBuilder(block.get());
+        RailingTransition none = RailingTransition.NONE;
         builder.part().modelFile(straight).addModel()
-                .condition(FiligreeRailingBlock.POST, false).condition(FiligreeRailingBlock.NORTH, true).end();
+                .condition(FiligreeRailingBlock.POST, false).condition(FiligreeRailingBlock.NORTH, true)
+                .condition(FiligreeRailingBlock.TRANSITION, none).end();
         builder.part().modelFile(straight).rotationY(90).addModel()
-                .condition(FiligreeRailingBlock.POST, false).condition(FiligreeRailingBlock.EAST, true).end();
+                .condition(FiligreeRailingBlock.POST, false).condition(FiligreeRailingBlock.EAST, true)
+                .condition(FiligreeRailingBlock.TRANSITION, none).end();
         builder.part().modelFile(post).addModel().condition(FiligreeRailingBlock.POST, true).end();
+        // Where it meets a gentle slope's end, the START or END piece (authored climbing north)
+        // replaces the railing, turned to the climb. The OBJ models are shared by every material.
+        for (RailingTransition t : RailingTransition.values()) {
+            if (t.kind == null) continue;
+            String piece = t.kind == RailingTransition.Kind.START ? "_slope_start" : "_slope_end";
+            builder.part().modelFile(new UncheckedModelFile(modLoc("block/" + path + piece)))
+                    .rotationY(horizontalYRot(t.climb)).addModel()
+                    .condition(FiligreeRailingBlock.TRANSITION, t).end();
+        }
         Map<Direction, BooleanProperty> sides = Map.of(
                 Direction.NORTH, FiligreeRailingBlock.NORTH, Direction.EAST, FiligreeRailingBlock.EAST,
                 Direction.SOUTH, FiligreeRailingBlock.SOUTH, Direction.WEST, FiligreeRailingBlock.WEST);
@@ -322,19 +370,19 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 .parent(models.get(steep ? FiligreeRailingSlopeBlock.Part.FULL : FiligreeRailingSlopeBlock.Part.LOWER))
                 .transforms()
                     .transform(ItemDisplayContext.GUI)
-                        .rotation(30, 225, 0).translation(0, steep ? 4.25f : -1.75f, 0).scale(0.5f).end()
+                        .rotation(30, 225, 0).translation(0, steep ? 4.25f : -3.75f, 0).scale(0.5f).end()
                     .transform(ItemDisplayContext.GROUND)
-                        .rotation(0, 0, 0).translation(0, steep ? 6 : 2, 0).scale(0.2f).end()
+                        .rotation(0, 0, 0).translation(0, steep ? 6 : 1.2f, 0).scale(0.2f).end()
                     .transform(ItemDisplayContext.FIXED)
-                        .rotation(0, 90, 0).translation(0, steep ? 4.25f : -1.75f, 0).scale(0.45f).end()
+                        .rotation(0, 90, 0).translation(0, steep ? 4.25f : -3.55f, 0).scale(0.45f).end()
                     .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
-                        .rotation(75, 45, 0).translation(0, steep ? 4.5f : 1.5f, 0).scale(0.3f).end()
+                        .rotation(75, 45, 0).translation(0, steep ? 4.5f : 0.3f, 0).scale(0.3f).end()
                     .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND)
-                        .rotation(75, 45, 0).translation(0, steep ? 4.5f : 1.5f, 0).scale(0.3f).end()
+                        .rotation(75, 45, 0).translation(0, steep ? 4.5f : 0.3f, 0).scale(0.3f).end()
                     .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND)
-                        .rotation(0, 45, 0).translation(0, steep ? 5 : 0, 0).scale(0.32f).end()
+                        .rotation(0, 45, 0).translation(0, steep ? 5 : -1.3f, 0).scale(0.32f).end()
                     .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)
-                        .rotation(0, 225, 0).translation(0, steep ? 5 : 0, 0).scale(0.32f).end()
+                        .rotation(0, 225, 0).translation(0, steep ? 5 : -1.3f, 0).scale(0.32f).end()
                 .end();
     }
 

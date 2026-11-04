@@ -226,6 +226,10 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_LEAF_ABSORPTION_PER_INTERVAL;
     private static final ModConfigSpec.IntValue CFG_TRELLIS_ABSORPTION_PER_INTERVAL;
     private static final ModConfigSpec.IntValue CFG_BIOFILTER_SU;
+    private static final ModConfigSpec.IntValue CFG_GREENHOUSE_SCAN_INTERVAL;
+    private static final ModConfigSpec.IntValue CFG_GREENHOUSE_MAX_VOLUME;
+    private static final ModConfigSpec.DoubleValue CFG_GREENHOUSE_GROWTH_BOOST;
+    private static final ModConfigSpec.DoubleValue CFG_GREENHOUSE_POLLINATION_BONUS;
     private static final ModConfigSpec.DoubleValue CFG_BIOFILTER_ABSORPTION_PER_RPM;
     private static final ModConfigSpec.IntValue CFG_BIOFILTER_RADIUS_BLOCKS;
     private static final ModConfigSpec.IntValue CFG_BIOFILTER_POLLUTION_PER_CARBON;
@@ -411,6 +415,13 @@ public class Config {
         BUILDER.push("kinetic_sprinkler");
         CFG_SPRINKLER_FLUID_PER_CYCLE = BUILDER.comment("mB of fluid consumed per cycle").defineInRange("fluid_per_cycle_mb", 100, 1, 10_000);
         CFG_SPRINKLER_RANGE           = BUILDER.comment("Horizontal radius (blocks) of the watering area").defineInRange("range", 2, 1, 16);
+        BUILDER.pop();
+
+        BUILDER.push("greenhouse_controller");
+        CFG_GREENHOUSE_SCAN_INTERVAL     = BUILDER.comment("Ticks between checks of whether the greenhouse is sealed").defineInRange("scan_interval_ticks", 100, 20, 12_000);
+        CFG_GREENHOUSE_MAX_VOLUME        = BUILDER.comment("Most air blocks a greenhouse can hold. A bigger (or leaking) space doesn't count as sealed").defineInRange("max_volume", 8192, 8, 262_144);
+        CFG_GREENHOUSE_GROWTH_BOOST      = BUILDER.comment("Extra growth for plants under the glass roof of a sealed greenhouse (1.0 = twice as fast)").defineInRange("growth_boost", 1.0, 0.0, 100.0);
+        CFG_GREENHOUSE_POLLINATION_BONUS = BUILDER.comment("Extra growth on top of growth_boost while bees are inside").defineInRange("pollination_bonus", 0.5, 0.0, 100.0);
         BUILDER.pop();
 
         BUILDER.push("biofilter");
@@ -631,6 +642,8 @@ public class Config {
 
     public static boolean globalWarmingEnabled;
     public static int pollutionPerSource, pollutionRadiusBlocks, pollutionDecayRate;
+    public static int greenhouseScanInterval, greenhouseMaxVolume;
+    public static double greenhouseGrowthBoost, greenhousePollinationBonus;
     public static int leafAbsorptionPerInterval, trellisAbsorptionPerInterval, biofilterSu, biofilterRadiusBlocks, biofilterPollutionPerCarbon;
     public static double biofilterAbsorptionPerRpm;
     public static int biomeDecayThreshold, biomeDecayInterval, blocksDecayedPerInterval;
@@ -768,6 +781,10 @@ public class Config {
         leafAbsorptionPerInterval       = CFG_LEAF_ABSORPTION_PER_INTERVAL.get();
         trellisAbsorptionPerInterval    = CFG_TRELLIS_ABSORPTION_PER_INTERVAL.get();
         biofilterSu                     = CFG_BIOFILTER_SU.get();
+        greenhouseScanInterval          = CFG_GREENHOUSE_SCAN_INTERVAL.get();
+        greenhouseMaxVolume             = CFG_GREENHOUSE_MAX_VOLUME.get();
+        greenhouseGrowthBoost           = CFG_GREENHOUSE_GROWTH_BOOST.get();
+        greenhousePollinationBonus      = CFG_GREENHOUSE_POLLINATION_BONUS.get();
         biofilterAbsorptionPerRpm       = CFG_BIOFILTER_ABSORPTION_PER_RPM.get();
         biofilterRadiusBlocks           = CFG_BIOFILTER_RADIUS_BLOCKS.get();
         biofilterPollutionPerCarbon     = CFG_BIOFILTER_POLLUTION_PER_CARBON.get();

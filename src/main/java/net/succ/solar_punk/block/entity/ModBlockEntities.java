@@ -29,6 +29,7 @@ import net.succ.solar_punk.block.entity.custom.TurbineCasingBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineRotorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarShinglesBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarGlassBlockEntity;
+import net.succ.solar_punk.block.entity.custom.GreenhouseControllerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCasingBlockEntity;
 
@@ -127,6 +128,12 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("particle_accelerator_input", () -> BlockEntityType.Builder
                     .of((pos, state) -> new ParticleAcceleratorInputBlockEntity(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), pos, state),
                             ModBlocks.PARTICLE_ACCELERATOR_INPUT.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GreenhouseControllerBlockEntity>> GREENHOUSE_CONTROLLER =
+            BLOCK_ENTITIES.register("greenhouse_controller", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new GreenhouseControllerBlockEntity(ModBlockEntities.GREENHOUSE_CONTROLLER.get(), pos, state),
+                            ModBlocks.GREENHOUSE_CONTROLLER.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<KineticSprinklerBlockEntity>> KINETIC_SPRINKLER =

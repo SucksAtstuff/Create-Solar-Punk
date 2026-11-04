@@ -4,6 +4,8 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.TransparentBlock;
+import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.StairBlock;
@@ -22,6 +24,7 @@ import net.succ.solar_punk.block.custom.FiligreeRailingSlopeBlock;
 import net.succ.solar_punk.block.custom.FiligreeRailingSteepSlopeBlock;
 import net.succ.solar_punk.block.custom.SaltLampBlock;
 import net.succ.solar_punk.block.custom.GardenLightBlock;
+import net.succ.solar_punk.block.custom.GreenhouseControllerBlock;
 import net.succ.solar_punk.block.custom.TrellisBlock;
 import net.succ.solar_punk.block.custom.TrellisPlant;
 import net.succ.solar_punk.block.custom.SolarShinglesBlock;
@@ -178,6 +181,14 @@ public class ModBlocks {
                     .noOcclusion()));
 
     // Biofuel and farming
+
+    // Copper tier: turns a glass-roofed space in front of it into a greenhouse.
+    public static final DeferredBlock<GreenhouseControllerBlock> GREENHOUSE_CONTROLLER = registerBlock("greenhouse_controller",
+            () -> new GreenhouseControllerBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_ORANGE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.0f, 6.0f)
+                    .sound(SoundType.COPPER)));
 
     public static final DeferredBlock<BiomassGasifierBlock> BIOMASS_GASIFIER = registerBlock("biomass_gasifier",
             () -> new BiomassGasifierBlock(BlockBehaviour.Properties.of()
@@ -470,6 +481,20 @@ public class ModBlocks {
             () -> new SolarGlassBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
     public static final DeferredBlock<SolarGlassPaneBlock> SOLAR_GLASS_PANE = registerDecorative("solar_glass_pane",
             () -> new SolarGlassPaneBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)));
+    // Greenhouse glass: decorative for now; meant to be what seals a future greenhouse (see
+    // docs/IDEAS.md). The panels are frosted: opaque-looking but they still let light through.
+    public static final DeferredBlock<TransparentBlock> GREENHOUSE_GLASS = registerDecorative("greenhouse_glass",
+            () -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
+    public static final DeferredBlock<IronBarsBlock> GREENHOUSE_GLASS_PANE = registerDecorative("greenhouse_glass_pane",
+            () -> new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)));
+    public static final DeferredBlock<TransparentBlock> CLEAR_GREENHOUSE_GLASS = registerDecorative("clear_greenhouse_glass",
+            () -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
+    public static final DeferredBlock<IronBarsBlock> CLEAR_GREENHOUSE_GLASS_PANE = registerDecorative("clear_greenhouse_glass_pane",
+            () -> new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)));
+    public static final DeferredBlock<TransparentBlock> GREENHOUSE_PANEL = registerDecorative("greenhouse_panel",
+            () -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
+    public static final DeferredBlock<TransparentBlock> LARGE_GREENHOUSE_PANEL = registerDecorative("large_greenhouse_panel",
+            () -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
     // Decorative stepped roofing that bends into corners like stairs; see SolarShinglesBlock.
     public static final DeferredBlock<SolarShinglesBlock> SOLAR_SHINGLES = registerDecorative("solar_shingles",
             () -> new SolarShinglesBlock(BlockBehaviour.Properties.of()

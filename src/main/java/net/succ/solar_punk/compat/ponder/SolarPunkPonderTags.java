@@ -52,7 +52,8 @@ public class SolarPunkPonderTags {
         helper.addToTag(BIO_MACHINES)
                 .add(ModBlocks.BIOMASS_GASIFIER.getId())
                 .add(ModBlocks.BIOFUEL_ENGINE.getId())
-                .add(ModBlocks.FERMENTATION_VAT.getId());
+                .add(ModBlocks.FERMENTATION_VAT.getId())
+                .add(ModBlocks.GREENHOUSE_CONTROLLER.getId());
 
         helper.registerTag(SOLAR_TOWER)
                 .addToIndex()

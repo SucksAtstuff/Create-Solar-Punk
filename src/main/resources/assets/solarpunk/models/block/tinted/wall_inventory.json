@@ -37,7 +37,8 @@
     }
   },
   "textures": {
-    "particle": "#wall"
+    "particle": "#wall",
+    "top": "#wall"
   },
   "elements": [
     {
@@ -59,7 +60,7 @@
             12,
             12
           ],
-          "texture": "#wall",
+          "texture": "#top",
           "cullface": "down",
           "tintindex": 0
         },
@@ -70,7 +71,7 @@
             12,
             12
           ],
-          "texture": "#wall",
+          "texture": "#top",
           "tintindex": 0
         },
         "north": {
@@ -135,7 +136,7 @@
             11,
             16
           ],
-          "texture": "#wall",
+          "texture": "#top",
           "cullface": "down",
           "tintindex": 0
         },
@@ -146,7 +147,7 @@
             11,
             16
           ],
-          "texture": "#wall",
+          "texture": "#top",
           "tintindex": 0
         },
         "north": {

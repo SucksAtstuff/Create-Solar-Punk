@@ -26,6 +26,12 @@ public class ModTags {
                 ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "pollution_sources")
         );
 
+        // Greenhouse walls that let light in: plants under them grow faster (GreenhouseControllerBlockEntity).
+        public static final TagKey<Block> GREENHOUSE_GLASS = TagKey.create(
+                Registries.BLOCK,
+                ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "greenhouse_glass")
+        );
+
         public static final TagKey<Block> REACTOR_CASING = TagKey.create(
                 Registries.BLOCK,
                 ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "reactor_casing")

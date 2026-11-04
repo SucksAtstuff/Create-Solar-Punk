@@ -6,7 +6,8 @@
       },
       "when": {
         "north": "true",
-        "post": "false"
+        "post": "false",
+        "transition": "none"
       }
     },
     {
@@ -16,7 +17,8 @@
       },
       "when": {
         "east": "true",
-        "post": "false"
+        "post": "false",
+        "transition": "none"
       }
     },
     {
@@ -25,6 +27,76 @@
       },
       "when": {
         "post": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/andesite_filigree_railing_slope_start"
+      },
+      "when": {
+        "transition": "start_north"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/andesite_filigree_railing_slope_start",
+        "y": 90
+      },
+      "when": {
+        "transition": "start_east"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/andesite_filigree_railing_slope_start",
+        "y": 180
+      },
+      "when": {
+        "transition": "start_south"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/andesite_filigree_railing_slope_start",
+        "y": 270
+      },
+      "when": {
+        "transition": "start_west"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/andesite_filigree_railing_slope_end"
+      },
+      "when": {
+        "transition": "end_north"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/andesite_filigree_railing_slope_end",
+        "y": 90
+      },
+      "when": {
+        "transition": "end_east"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/andesite_filigree_railing_slope_end",
+        "y": 180
+      },
+      "when": {
+        "transition": "end_south"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/andesite_filigree_railing_slope_end",
+        "y": 270
+      },
+      "when": {
+        "transition": "end_west"
       }
     },
     {

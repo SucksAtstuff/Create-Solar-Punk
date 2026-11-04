@@ -69,6 +69,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.SALT_LAMP.get())
                 .add(ModBlocks.GARDEN_LIGHT.get())
                 .add(ModBlocks.SOLAR_SHINGLES.get())
+                .add(ModBlocks.GREENHOUSE_CONTROLLER.get())
                 .add(ModBlocks.LITHIUM_ORE.get())
                 .add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get())
                 .add(ModBlocks.LITHIUM_BLOCK.get())
@@ -111,6 +112,16 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         tag(Tags.Blocks.GLASS_BLOCKS).add(ModBlocks.SOLAR_GLASS.get());
         tag(BlockTags.IMPERMEABLE).add(ModBlocks.SOLAR_GLASS.get());
         tag(Tags.Blocks.GLASS_PANES).add(ModBlocks.SOLAR_GLASS_PANE.get());
+        tag(Tags.Blocks.GLASS_BLOCKS).add(ModBlocks.GREENHOUSE_GLASS.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS.get(),
+                ModBlocks.GREENHOUSE_PANEL.get(), ModBlocks.LARGE_GREENHOUSE_PANEL.get());
+        tag(BlockTags.IMPERMEABLE).add(ModBlocks.GREENHOUSE_GLASS.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS.get(),
+                ModBlocks.GREENHOUSE_PANEL.get(), ModBlocks.LARGE_GREENHOUSE_PANEL.get());
+        tag(Tags.Blocks.GLASS_PANES).add(ModBlocks.GREENHOUSE_GLASS_PANE.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS_PANE.get());
+        // Roofs a greenhouse's plants grow faster under: every greenhouse glass block, and Solar Glass.
+        tag(ModTags.Blocks.GREENHOUSE_GLASS).add(ModBlocks.GREENHOUSE_GLASS.get(), ModBlocks.GREENHOUSE_GLASS_PANE.get(),
+                ModBlocks.CLEAR_GREENHOUSE_GLASS.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS_PANE.get(),
+                ModBlocks.GREENHOUSE_PANEL.get(), ModBlocks.LARGE_GREENHOUSE_PANEL.get(),
+                ModBlocks.SOLAR_GLASS.get(), ModBlocks.SOLAR_GLASS_PANE.get(), ModBlocks.SOLAR_GLASS_SHINGLES.get());
 
         tag(Tags.Blocks.STORAGE_BLOCKS).add(ModBlocks.SALT_BLOCK.get())
                 .add(ModBlocks.LITHIUM_BLOCK.get())

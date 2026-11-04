@@ -45,6 +45,9 @@ public class ModItemTagProvider extends ItemTagsProvider {
         // Salt block item
         tag(Tags.Items.GLASS_BLOCKS).add(ModBlocks.SOLAR_GLASS.get().asItem());
         tag(Tags.Items.GLASS_PANES).add(ModBlocks.SOLAR_GLASS_PANE.get().asItem());
+        tag(Tags.Items.GLASS_BLOCKS).add(ModBlocks.GREENHOUSE_GLASS.get().asItem(), ModBlocks.CLEAR_GREENHOUSE_GLASS.get().asItem(),
+                ModBlocks.GREENHOUSE_PANEL.get().asItem(), ModBlocks.LARGE_GREENHOUSE_PANEL.get().asItem());
+        tag(Tags.Items.GLASS_PANES).add(ModBlocks.GREENHOUSE_GLASS_PANE.get().asItem(), ModBlocks.CLEAR_GREENHOUSE_GLASS_PANE.get().asItem());
         tag(Tags.Items.STORAGE_BLOCKS).add(ModBlocks.SALT_BLOCK.get().asItem());
         tag(ModTags.Items.STORAGE_BLOCKS_SALT).add(ModBlocks.SALT_BLOCK.get().asItem());
 

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_large_greenhouse_panel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:large_greenhouse_panel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "solarpunk:greenhouse_panel_from_large_greenhouse_panel_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_large_greenhouse_panel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "solarpunk:greenhouse_panel_from_large_greenhouse_panel_stonecutting"
+    ]
+  }
+}

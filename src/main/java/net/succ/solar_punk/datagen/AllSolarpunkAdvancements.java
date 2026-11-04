@@ -201,6 +201,14 @@ public class AllSolarpunkAdvancements implements DataProvider {
             .after(ROOT)
     );
 
+    public static final SolarpunkAdvancement GREENHOUSE = SolarpunkAdvancement.create("greenhouse", b -> b
+            .icon(ModBlocks.GREENHOUSE_CONTROLLER.get())
+            .title("Glasshouse Gardener")
+            .description("Seal a greenhouse with a Greenhouse Controller.")
+            .withCustomTrigger(ModTriggers.GREENHOUSE_SEALED)
+            .after(BIOMASS)
+    );
+
     public static final SolarpunkAdvancement GASIFIER = SolarpunkAdvancement.create("gasifier", b -> b
             .icon(ModBlocks.BIOMASS_GASIFIER.get())
             .title("Burning Clean")

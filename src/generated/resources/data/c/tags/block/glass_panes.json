@@ -1,5 +1,7 @@
 {
   "values": [
-    "solarpunk:solar_glass_pane"
+    "solarpunk:solar_glass_pane",
+    "solarpunk:greenhouse_glass_pane",
+    "solarpunk:clear_greenhouse_glass_pane"
   ]
 }
