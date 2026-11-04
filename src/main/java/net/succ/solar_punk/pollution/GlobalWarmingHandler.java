@@ -178,9 +178,9 @@ public class GlobalWarmingHandler {
         return totals;
     }
 
-    private static void handlePollutedChunks(ServerLevel level, PollutionSavedData data) {
-        long threshold = Config.biomeDecayThreshold;
-
+    // The dead biome everywhere except the biome cells inside sealed greenhouses, which keep
+    // their original biome. Null if dead_biome doesn't name a real biome.
+    private static BiomeResolver deadResolver(ServerLevel level) {
         // tryParse: dead_biome isn't validated, and a typo shouldn't throw every interval
         ResourceLocation deadBiomeId = ResourceLocation.tryParse(Config.deadBiome);
         Optional<Holder.Reference<Biome>> deadBiomeHolder = deadBiomeId == null ? Optional.empty()
@@ -189,7 +189,41 @@ public class GlobalWarmingHandler {
                 .flatMap(reg -> reg.getHolder(ResourceKey.create(Registries.BIOME, deadBiomeId)));
 
         Holder<Biome> deadBiome = deadBiomeHolder.orElse(null);
-        BiomeResolver allDead = deadBiome != null ? (x, y, z, sampler) -> deadBiome : null;
+        if (deadBiome == null) return null;
+        BiomeResolver original = level.getChunkSource().getGenerator().getBiomeSource()::getNoiseBiome;
+        return (x, y, z, sampler) -> GreenhouseProtection.isProtectedQuart(level, x, y, z)
+                ? original.getNoiseBiome(x, y, z, sampler) : deadBiome;
+    }
+
+    /**
+     * Redoes the biomes of these chunks if they're currently converted, so a greenhouse that
+     * just sealed or unsealed shows its living-biome patch right away instead of at the next
+     * decay interval.
+     */
+    public static void refreshGreenhouseBiomes(ServerLevel level, Set<ChunkPos> chunks) {
+        if (!Config.globalWarmingEnabled || chunks.isEmpty()) return;
+        PollutionSavedData data = PollutionSavedData.get(level);
+        BiomeResolver dead = null;
+        List<ChunkAccess> biomesToResend = new ArrayList<>();
+        for (ChunkPos chunkPos : chunks) {
+            if (!data.getConvertedChunks().contains(chunkPos)) continue;
+            ChunkAccess chunk = level.getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL, false);
+            if (chunk == null) continue;
+            if (dead == null) dead = deadResolver(level);
+            if (dead == null) return;
+            chunk.fillBiomesFromNoise(dead, level.getChunkSource().randomState().sampler());
+            chunk.setUnsaved(true);
+            biomesToResend.add(chunk);
+        }
+        if (!biomesToResend.isEmpty()) {
+            level.getChunkSource().chunkMap.resendBiomesForChunks(biomesToResend);
+        }
+    }
+
+    private static void handlePollutedChunks(ServerLevel level, PollutionSavedData data) {
+        long threshold = Config.biomeDecayThreshold;
+
+        BiomeResolver allDead = deadResolver(level);
         BiomeResolver original = level.getChunkSource().getGenerator().getBiomeSource()::getNoiseBiome;
 
         List<ChunkAccess> biomesToResend = new ArrayList<>();

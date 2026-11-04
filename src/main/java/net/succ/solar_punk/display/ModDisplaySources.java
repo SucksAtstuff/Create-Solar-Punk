@@ -16,6 +16,7 @@ import net.succ.solar_punk.block.entity.custom.AndesiteSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BrassSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCasingBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
+import net.succ.solar_punk.block.entity.custom.GreenhouseControllerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarPowerTowerBlockEntity;
@@ -129,6 +130,21 @@ public class ModDisplaySources {
                 return Component.literal(Math.round(offset) + "°").withStyle(ChatFormatting.YELLOW);
             }));
 
+    // --- Greenhouse Controller ---
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> GREENHOUSE_STATUS = register("greenhouse_status",
+            () -> new NumericLineDisplaySource<>(ModDisplaySources::greenhouse,
+                    GreenhouseControllerBlockEntity::getStatusText));
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> GREENHOUSE_PLANT_COUNT = register("greenhouse_plant_count",
+            () -> new NumericLineDisplaySource<>(ModDisplaySources::greenhouse,
+                    gh -> Component.literal(String.valueOf(gh.getCropCount())).withStyle(ChatFormatting.AQUA)));
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> GREENHOUSE_GROWTH = register("greenhouse_growth",
+            () -> new NumericLineDisplaySource<>(ModDisplaySources::greenhouse,
+                    gh -> Component.literal(gh.getGrowthText()).withStyle(
+                            gh.getStatus() == GreenhouseControllerBlockEntity.Status.SEALED ? ChatFormatting.GREEN : ChatFormatting.GRAY)));
+
     private static DeferredHolder<DisplaySource, DisplaySource> register(String name, Supplier<DisplaySource> source) {
         return DISPLAY_SOURCES.register(name, source);
     }
@@ -154,6 +170,11 @@ public class ModDisplaySources {
     private static BlockEntity solarPanel(DisplayLinkContext context) {
         BlockEntity be = context.getSourceBlockEntity();
         return be instanceof AndesiteSolarPanelBlockEntity || be instanceof BrassSolarPanelBlockEntity ? be : null;
+    }
+
+    @Nullable
+    private static GreenhouseControllerBlockEntity greenhouse(DisplayLinkContext context) {
+        return context.getSourceBlockEntity() instanceof GreenhouseControllerBlockEntity be ? be : null;
     }
 
     @Nullable

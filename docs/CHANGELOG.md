@@ -22,6 +22,9 @@
 
 - New **Greenhouse Controller**: place it in the wall of a closed room with a glass roof, facing inside, and plants under the glass grow faster. Bees inside speed them up even more, and with global warming on, a sealed greenhouse is safe from pollution decay. Needs no power, can be turned or picked up with a Wrench, and has a Ponder scene.
 - New **Greenhouse Glass** and **Clear Greenhouse Glass**: copper-framed glass for greenhouses and conservatories, each with a pane. Also comes as frosted **Greenhouse Panels** in two patterns, which still let light through.
+- When pollution turns a chunk into the dead biome, the inside of a sealed greenhouse keeps its original biome, so grass and leaves in there stay green.
+- With Serene Seasons, crops under any greenhouse glass (and Solar Glass) grow in every season.
+- New Display Link readouts on the Greenhouse Controller: **Greenhouse Status**, **Greenhouse Plant Count** and **Greenhouse Growth Speed**.
 
 ### New Recipes
 
@@ -59,6 +62,7 @@
 ## Fixes
 
 - Lithium Ore now generates as **Deepslate Lithium Ore** in deepslate, instead of stone-looking ore.
+- Geysers no longer generate on top of or in water, so you won't find stone domes floating on oceans, lakes and rivers.
 - The mod now only loads on Minecraft 1.21.1. It was wrongly marked as working on later 1.21 versions, which it doesn't support.
 - Solar blocks on Create: Aeronautics contraptions now get shaded by the world around them, so flying one indoors or underground stops it working. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/52
 - Solar blocks on contraptions now follow the real sun angle: tilt the contraption toward the sun for full output, or away from it for less. Sun-tracking solar arrays are now possible. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/52

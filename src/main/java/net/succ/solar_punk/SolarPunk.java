@@ -247,6 +247,10 @@ public class SolarPunk {
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), ModDisplaySources.PARTICLE_ACCELERATOR_RECIPE.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), ModDisplaySources.PARTICLE_ACCELERATOR_PROGRESS.get());
 
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.GREENHOUSE_CONTROLLER.get(), ModDisplaySources.GREENHOUSE_STATUS.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.GREENHOUSE_CONTROLLER.get(), ModDisplaySources.GREENHOUSE_PLANT_COUNT.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.GREENHOUSE_CONTROLLER.get(), ModDisplaySources.GREENHOUSE_GROWTH.get());
+
             // Generators: capacity and generated RPM for stress tooltips
             BlockStressValues.CAPACITIES.register(ModBlocks.ANDESITE_SOLAR_PANEL.get(),
                 () -> (double) Config.andesiteNoonSu);

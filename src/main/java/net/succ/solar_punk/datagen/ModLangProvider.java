@@ -126,6 +126,9 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.display_source.particle_accelerator_status", "Particle Accelerator Status");
         add("solarpunk.display_source.particle_accelerator_recipe", "Particle Accelerator Recipe");
         add("solarpunk.display_source.particle_accelerator_progress", "Particle Accelerator Progress");
+        add("solarpunk.display_source.greenhouse_status", "Greenhouse Status");
+        add("solarpunk.display_source.greenhouse_plant_count", "Greenhouse Plant Count");
+        add("solarpunk.display_source.greenhouse_growth", "Greenhouse Growth Speed");
 
         add("create.solar_punk.tooltip.fermentation_vat_header", "Fermentation Vat");
         add("create.solar_punk.tooltip.vat_too_small", "Needs at least 2x2 footprint");

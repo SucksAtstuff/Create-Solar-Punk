@@ -9,6 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
@@ -29,6 +30,7 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.GreenhouseControllerBlock;
+import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import net.succ.solar_punk.pollution.GreenhouseProtection;
 
 import java.util.ArrayDeque;
@@ -89,11 +91,14 @@ public class GreenhouseControllerBlockEntity extends BlockEntity implements IHav
             ModTriggers.fireNearby(level, worldPosition, ModTriggers.GREENHOUSE_SEALED);
         }
 
+        // Polluted chunks keep their living biome inside the greenhouse; refresh them when
+        // the area changes so the patch appears or goes away right away.
         if (status == Status.SEALED && protectedArea != null) {
-            GreenhouseProtection.register(level, worldPosition, protectedArea);
+            GlobalWarmingHandler.refreshGreenhouseBiomes(level,
+                    GreenhouseProtection.register(level, worldPosition, protectedArea));
         } else {
             protectedArea = null;
-            GreenhouseProtection.unregister(level, worldPosition);
+            GlobalWarmingHandler.refreshGreenhouseBiomes(level, GreenhouseProtection.unregister(level, worldPosition));
         }
 
         if (status != oldStatus || volume != oldVolume || cropCount != oldCrops || bees != oldBees) {
@@ -265,13 +270,44 @@ public class GreenhouseControllerBlockEntity extends BlockEntity implements IHav
     @Override
     public void setRemoved() {
         super.setRemoved();
-        if (level instanceof ServerLevel serverLevel) GreenhouseProtection.unregister(serverLevel, worldPosition);
+        if (!(level instanceof ServerLevel serverLevel)) return;
+        var chunks = GreenhouseProtection.unregister(serverLevel, worldPosition);
+        // Broken, not unloaded: turn the living-biome patch back into the dead biome.
+        if (!unloading) GlobalWarmingHandler.refreshGreenhouseBiomes(serverLevel, chunks);
     }
+
+    // Set when the chunk unloads (called before setRemoved) so unloading doesn't touch biomes.
+    private boolean unloading = false;
 
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
+        unloading = true;
         if (level instanceof ServerLevel serverLevel) GreenhouseProtection.unregister(serverLevel, worldPosition);
+    }
+
+    // --- Display Link readouts ---
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public int getCropCount() {
+        return cropCount;
+    }
+
+    public MutableComponent getStatusText() {
+        return switch (status) {
+            case SEALED -> Component.translatable("create.solar_punk.tooltip.greenhouse_sealed").withStyle(ChatFormatting.GREEN);
+            case NOT_SEALED -> Component.translatable("create.solar_punk.tooltip.greenhouse_not_sealed").withStyle(ChatFormatting.RED);
+            case FRONT_BLOCKED -> Component.translatable("create.solar_punk.tooltip.greenhouse_front_blocked").withStyle(ChatFormatting.RED);
+            case OTHER_CONTROLLER -> Component.translatable("create.solar_punk.tooltip.greenhouse_other_controller").withStyle(ChatFormatting.RED);
+        };
+    }
+
+    /** Growth speed compared to outside, e.g. "2.5x", or "1x" when not sealed. */
+    public String getGrowthText() {
+        return status == Status.SEALED ? speedText() : "1x";
     }
 
     @Override

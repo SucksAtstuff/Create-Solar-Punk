@@ -1,6 +1,7 @@
 package net.succ.solar_punk.datagen;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -125,6 +126,10 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 ModBlocks.CLEAR_GREENHOUSE_GLASS.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS_PANE.get(),
                 ModBlocks.GREENHOUSE_PANEL.get(), ModBlocks.LARGE_GREENHOUSE_PANEL.get(),
                 ModBlocks.SOLAR_GLASS.get(), ModBlocks.SOLAR_GLASS_PANE.get(), ModBlocks.SOLAR_GLASS_SHINGLES.get());
+        // Serene Seasons: crops under greenhouse glass grow whatever the season. Harmless
+        // without Serene Seasons installed, the tag is just never read.
+        tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("sereneseasons", "greenhouse_glass")))
+                .addTag(ModTags.Blocks.GREENHOUSE_GLASS);
 
         tag(Tags.Blocks.STORAGE_BLOCKS).add(ModBlocks.SALT_BLOCK.get())
                 .add(ModBlocks.LITHIUM_BLOCK.get())

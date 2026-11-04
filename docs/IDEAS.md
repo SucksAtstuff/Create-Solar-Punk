@@ -47,13 +47,10 @@ In rough priority order.
 
 ## Biofuel expansion
 
-- **Algae bioreactor** - light + water + CO2 to biomass, an alternative to farming. Could use the
-  Biofilter's Carbon Dust.
-- **Greenhouse extras** - the Greenhouse Controller works; possible additions:
-  - Plants inside keep their normal biome (the chunk still turns into the dead biome, only
-    decay is blocked), and grow whatever the outside season.
-  - Powered add-ons such as grow lights, taking their own power.
-  - A Display Link readout of the boost and plant count.
+- **Powered grow lights** - FE-powered lights for greenhouses. What exactly they do is still
+  open.
+  - The controller's scan could find them inside the greenhouse, like it counts bees.
+  - Pairs with the FE storage and Hydrogen ideas, since they'd need steady power.
 
 ## Geothermal
 
@@ -111,12 +108,40 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
 - **Charred Timber** - dark scorched planks (like Japanese shou sugi ban), made by applying
   Biochar to planks or by item application with a Blaze Burner. A second use for Biochar
   besides Fertilizer.
-- **Tuff Rammed Earth** - skipped because Tuff tints almost the same as Ashen; it would need a
-  greener tint than real Tuff.
 
 ### Machine-themed decor
 
 - **More filigree railing materials** (iron) - only a texture and a few lines each.
+
+## Seasonal events
+
+Purely cosmetic texture swaps for part of the year. Easter, Halloween, Christmas and Pride are
+the big ones worth doing first.
+
+- **Easter (date moves each year)** - pastel-painted solar panel cells, little decorated eggs
+  hidden on the Trellis, and pastel Garden Lights. Rare chance of an egg item popping out of a
+  harvested crop.
+- **Halloween (Oct 31, or the last week of October)** - Garden Lights become carved pumpkin
+  lanterns with a flickering orange glow, cobwebs on the railings, bats perched on the solar
+  panels, and green or purple "spooky" steam from the geyser.
+- **Christmas (Dec 24-26, or most of December)** - Garden Lights in red and green, string
+  lights wound around the Trellis and railings, snow caps on solar panels and Shingles, and a
+  little Santa hat on the geyser cap.
+- **Valentine's Day (Feb 14)** - Garden Lights glow pink or red, the Trellis gets little
+  heart-shaped flowers, and the geyser puffs pink steam.
+- **St. Patrick's Day (Mar 17)** - solar panel cells turn green, clovers show up on the
+  Trellis, and the Garden Light glows green.
+- **April Fools' (Apr 1)** - a chaos pick. Solar panels show a moon or a smiley face, Garden
+  Lights look upside down, or the geyser cap has googly eyes.
+- **Earth Day (Apr 22)** - solar panels get a globe or leaf pattern, and moss or flowers grow
+  over Rammed Earth.
+- **Day of the Dead (Nov 1-2)** - marigolds on the Trellis and papel picado (cut-paper bunting)
+  strung on the railings. Could be folded into Halloween instead.
+- **Pride Month (June)** - rainbow-striped solar panel cells, Garden Lights that slowly cycle
+  through rainbow colors, rainbow ribbons on the railings, and rainbow steam from the geyser.
+  Could use other pride flags (trans, bi, etc.) as random variants per block.
+- **New Year's Eve (Dec 31 - Jan 1)** - gold and silver Garden Lights, confetti on the solar
+  panels, and sparkler particles from the geyser.
 
 ## Compat
 
