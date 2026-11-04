@@ -52,6 +52,20 @@ public class ModFluidTypes {
                             .temperature(300)
             ));
 
+    // Made from mob and farm waste in the Fermentation Vat: darker and thicker than Fertilizer.
+    public static final Supplier<FluidType> RICH_FERTILIZER_TYPE = FLUID_TYPES.register("rich_fertilizer",
+            () -> new BaseFluidType(
+                    WATER_STILL,
+                    WATER_FLOW,
+                    WATER_OVERLAY,
+                    0xFF4A5E1C,
+                    new Vector3f(74f / 255f, 94f / 255f, 28f / 255f),
+                    FluidType.Properties.create()
+                            .density(1200)
+                            .viscosity(1500)
+                            .temperature(300)
+            ));
+
     public static final Supplier<FluidType> FERTILIZER_TYPE = FLUID_TYPES.register("fertilizer",
             () -> new BaseFluidType(
                     WATER_STILL,

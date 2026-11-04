@@ -84,7 +84,7 @@ public class FermentationVatScenes {
 
         setLit(scene, USAGE_WIDTH, USAGE_HEIGHT, true);
         scene.world().modifyBlockEntity(CONTROLLER, FermentationVatBlockEntity.class, be ->
-                be.biofuelTank.fill(new FluidStack(ModFluids.BIOFUEL_SOURCE.get(), 4000),
+                be.outputTank.fill(new FluidStack(ModFluids.BIOFUEL_SOURCE.get(), 4000),
                         IFluidHandler.FluidAction.EXECUTE));
         scene.effects().indicateSuccess(top);
         scene.overlay().showText(70)

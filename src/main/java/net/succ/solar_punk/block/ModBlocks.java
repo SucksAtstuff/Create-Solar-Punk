@@ -476,6 +476,16 @@ public class ModBlocks {
     public static final DeferredBlock<FiligreeRailingSteepSlopeBlock> ANDESITE_FILIGREE_RAILING_STEEP_SLOPE = BLOCKS.register("andesite_filigree_railing_steep_slope",
             () -> new FiligreeRailingSteepSlopeBlock(BlockBehaviour.Properties.ofFullCopy(ANDESITE_FILIGREE_RAILING.get())));
 
+    public static final DeferredBlock<FiligreeRailingBlock> COPPER_FILIGREE_RAILING = registerDecorativeCustomItem("copper_filigree_railing",
+            () -> new FiligreeRailingBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS)
+                    .mapColor(MapColor.COLOR_ORANGE)),
+            block -> new FiligreeRailingItem(block, ModBlocks.COPPER_FILIGREE_RAILING_SLOPE,
+                    ModBlocks.COPPER_FILIGREE_RAILING_STEEP_SLOPE, new Item.Properties()));
+    public static final DeferredBlock<FiligreeRailingSlopeBlock> COPPER_FILIGREE_RAILING_SLOPE = BLOCKS.register("copper_filigree_railing_slope",
+            () -> new FiligreeRailingSlopeBlock(BlockBehaviour.Properties.ofFullCopy(COPPER_FILIGREE_RAILING.get())));
+    public static final DeferredBlock<FiligreeRailingSteepSlopeBlock> COPPER_FILIGREE_RAILING_STEEP_SLOPE = BLOCKS.register("copper_filigree_railing_steep_slope",
+            () -> new FiligreeRailingSteepSlopeBlock(BlockBehaviour.Properties.ofFullCopy(COPPER_FILIGREE_RAILING.get())));
+
     // Glass that makes a little FE under open sky; see SolarGlassBlockEntity.
     public static final DeferredBlock<SolarGlassBlock> SOLAR_GLASS = registerDecorative("solar_glass",
             () -> new SolarGlassBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));

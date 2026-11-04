@@ -5,6 +5,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -84,7 +85,11 @@ public class ModItemTagProvider extends ItemTagsProvider {
         tag(Tags.Items.BUCKETS).add(ModFluids.BIOFUEL_BUCKET.get())
                 .add(ModFluids.MOLTEN_SALT_BUCKET.get())
                 .add(ModFluids.STEAM_BUCKET.get())
-                .add(ModFluids.FERTILIZER_BUCKET.get());
+                .add(ModFluids.FERTILIZER_BUCKET.get())
+                .add(ModFluids.RICH_FERTILIZER_BUCKET.get());
+        // Waste the Fermentation Vat turns into Rich Fertilizer.
+        tag(ModTags.Items.FERMENTATION_WASTE).add(Items.ROTTEN_FLESH, Items.SPIDER_EYE, Items.POISONOUS_POTATO,
+                Items.BONE, Items.PUFFERFISH);
         tag(BUCKETS_BIOFUEL).add(ModFluids.BIOFUEL_BUCKET.get());
         tag(BUCKETS_MOLTEN_SALT).add(ModFluids.MOLTEN_SALT_BUCKET.get());
         tag(BUCKETS_FERTILIZER).add(ModFluids.FERTILIZER_BUCKET.get());

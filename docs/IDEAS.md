@@ -7,15 +7,7 @@ with the strongest / most on-theme ideas near the top of each section.
 
 In rough priority order.
 
-1. **Anaerobic digester** - turns waste (rotten flesh, spider eyes, poisonous potatoes, spare
-   crops) and water into a **stronger Fertilizer**, for the Kinetic Sprinkler and the
-   Greenhouse. Fits the "nothing is wasted" theme of the Particle Accelerator's Leather
-   recipe.
-   - Not a fuel: the Fermentation Vat already turns organic matter into Biofuel, so a second
-     burnable fluid would only duplicate it.
-   - Biogas could come back later as a byproduct if something needs it, such as a route to
-     Hydrogen for the hydrogen chain.
-2. **Grid-powered streetlights** that switch on at dusk. A visible everyday use for FE.
+1. **Grid-powered streetlights** that switch on at dusk. A visible everyday use for FE.
 
 ## Biggest gaps in the renewable lineup
 
@@ -55,7 +47,6 @@ In rough priority order.
 
 ## Biofuel expansion
 
-- **Anaerobic digester** - see Next Up.
 - **Algae bioreactor** - light + water + CO2 to biomass, an alternative to farming. Could use the
   Biofilter's Carbon Dust.
 - **Greenhouse extras** - the Greenhouse Controller works; possible additions:
@@ -125,7 +116,7 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
 
 ### Machine-themed decor
 
-- **More filigree railing materials** (copper, iron) - only a texture and a few lines each.
+- **More filigree railing materials** (iron) - only a texture and a few lines each.
 
 ## Compat
 

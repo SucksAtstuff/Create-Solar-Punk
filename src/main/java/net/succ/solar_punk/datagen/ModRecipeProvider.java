@@ -131,6 +131,8 @@ public class ModRecipeProvider extends RecipeProvider {
                 Ingredient.of(ModTags.Items.PLATES_BRASS), has(ModTags.Items.PLATES_BRASS));
         filigreeRailingRecipe(output, ModBlocks.ANDESITE_FILIGREE_RAILING.get(),
                 Ingredient.of(createItem("andesite_alloy")), has(createItem("andesite_alloy")));
+        filigreeRailingRecipe(output, ModBlocks.COPPER_FILIGREE_RAILING.get(),
+                Ingredient.of(ModTags.Items.PLATES_COPPER), has(ModTags.Items.PLATES_COPPER));
 
         // Like stained glass: 8 Glass around one Photovoltaic Cell.
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.SOLAR_GLASS.get(), 8)

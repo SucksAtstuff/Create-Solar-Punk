@@ -1,5 +1,7 @@
 package net.succ.solar_punk.compat.jei;
 
+import net.succ.solar_punk.ModTags;
+import net.minecraft.world.item.crafting.Ingredient;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -15,11 +17,13 @@ import net.succ.solar_punk.item.ModItems;
 // this shows a single display-only entry.
 public class FermentationVatCategory extends SolarPunkCategory<FermentationVatCategory.DisplayRecipe> {
 
-    public record DisplayRecipe() {}
+    // Plant matter makes Biofuel; waste makes Rich Fertilizer.
+    public record DisplayRecipe(boolean waste) {}
 
     public static final RecipeType<DisplayRecipe> RECIPE_TYPE = type("fermentation_vat", DisplayRecipe.class);
 
-    public static final DisplayRecipe INSTANCE = new DisplayRecipe();
+    public static final DisplayRecipe BIOFUEL = new DisplayRecipe(false);
+    public static final DisplayRecipe RICH_FERTILIZER = new DisplayRecipe(true);
 
     public FermentationVatCategory(IGuiHelper guiHelper) {
         super(guiHelper, RECIPE_TYPE, ModBlocks.FERMENTATION_VAT.get(), 110, 50);
@@ -27,8 +31,13 @@ public class FermentationVatCategory extends SolarPunkCategory<FermentationVatCa
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, DisplayRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 5, 12)
-                .addItemStack(new ItemStack(ModItems.BIOMASS.get()));
+        if (recipe.waste()) {
+            builder.addSlot(RecipeIngredientRole.INPUT, 5, 12)
+                    .addIngredients(Ingredient.of(ModTags.Items.FERMENTATION_WASTE));
+        } else {
+            builder.addSlot(RecipeIngredientRole.INPUT, 5, 12)
+                    .addItemStack(new ItemStack(ModItems.BIOMASS.get()));
+        }
 
         builder.addSlot(RecipeIngredientRole.INPUT, 26, 12)
                 .setFluidRenderer(1000, false, 16, 16)
@@ -36,6 +45,6 @@ public class FermentationVatCategory extends SolarPunkCategory<FermentationVatCa
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 83, 12)
                 .setFluidRenderer(1000, false, 16, 16)
-                .addFluidStack(ModFluids.BIOFUEL_SOURCE.get(), 1000);
+                .addFluidStack(recipe.waste() ? ModFluids.RICH_FERTILIZER_SOURCE.get() : ModFluids.BIOFUEL_SOURCE.get(), 1000);
     }
 }

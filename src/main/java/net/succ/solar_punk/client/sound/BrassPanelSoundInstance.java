@@ -10,6 +10,6 @@ public class BrassPanelSoundInstance extends MachineSoundInstance {
 
     // The reference volume every other machine sound is matched against.
     public BrassPanelSoundInstance(BrassSolarPanelBlockEntity be) {
-        super(ModSounds.ALTERNATOR.get(), be, 0.75f);
+        super(ModSounds.BRASS_SOLAR_PANEL_HUM.get(), be, 0.75f);
     }
 }

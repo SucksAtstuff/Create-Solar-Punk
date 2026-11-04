@@ -32,7 +32,7 @@ public class ModLangProvider extends LanguageProvider {
 
         // Sound subtitles - format: subtitles.solarpunk.<sound event path>, referenced by
         // sounds.json. One entry per SoundEvent registered in ModSounds.
-        add("subtitles.solarpunk.alternator", "Solar panel hums");
+        add("subtitles.solarpunk.brass_solar_panel_hum", "Solar panel hums");
         add("subtitles.solarpunk.geyser_puff", "Geyser puffs");
         add("subtitles.solarpunk.particle_accelerator_hum", "Particle Accelerator hums");
         add("subtitles.solarpunk.particle_collision", "Particles collide");
@@ -170,6 +170,7 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.progress", "Progress: ");
         add("create.solar_punk.tooltip.water", "Water: ");
         add("create.solar_punk.tooltip.fertilizer", "Fertilizer: ");
+        add("create.solar_punk.tooltip.rich_fertilizer", "Rich Fertilizer: ");
         add("create.solar_punk.tooltip.evaporation", "Evaporation: ");
         add("create.solar_punk.tooltip.output_fluid", "Output: ");
         add("create.solar_punk.tooltip.salt_output", "Salt: ");
@@ -214,7 +215,7 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.kinetic_battery.tooltip.condition2", "When a Redstone signal is applied");
         add("block.solarpunk.kinetic_battery.tooltip.behaviour2", "Discharges at 16 RPM with 256 SU of stress capacity until empty.");
 
-        add("block.solarpunk.fermentation_vat.tooltip.summary", "Ferments _Biomass_ and water into _Biofuel_. Requires at least a _2x2 footprint_ and _4 blocks tall_ to operate.");
+        add("block.solarpunk.fermentation_vat.tooltip.summary", "Ferments _Biomass_ and water into _Biofuel_, or mob and farm _waste_ into _Rich Fertilizer_. Requires at least a _2x2 footprint_ and _4 blocks tall_ to operate.");
         add("block.solarpunk.fermentation_vat.tooltip.condition1", "Larger footprint");
         add("block.solarpunk.fermentation_vat.tooltip.behaviour1", "Increases batch size and output. A 3x3 footprint processes 9 Biomass per batch. Taller vats produce super-linearly more Biofuel per batch.");
 
@@ -267,13 +268,13 @@ public class ModLangProvider extends LanguageProvider {
 
         add("block.solarpunk.kinetic_sprinkler.tooltip.summary", "Pipe in _water_ to hydrate _farmland_ and speed up _crop growth_ in a 5x5 area below it.");
         add("block.solarpunk.kinetic_sprinkler.tooltip.condition1", "When supplied with Fertilizer instead of water");
-        add("block.solarpunk.kinetic_sprinkler.tooltip.behaviour1", "_Bone meals_ every crop in range each second.");
+        add("block.solarpunk.kinetic_sprinkler.tooltip.behaviour1", "_Bone meals_ every crop in range each second. _Rich Fertilizer_ reaches a block further and lasts twice as long.");
 
         add("block.solarpunk.turbine_rotor.tooltip.summary", "The core of the _Steam Turbine_ multiblock. Pipe _Steam_ into the casing walls and collect _Rotational Force_ from the cap rotor. Can be built standing up or on its side.");
         add("block.solarpunk.turbine_rotor.tooltip.condition1", "Valid 7x7 structure with Turbine Blades");
         add("block.solarpunk.turbine_rotor.tooltip.behaviour1", "Output grows with height and blade quality. Condensed water must be piped out of any casing face, or the turbine stops when it fills up.");
 
-        for (String railing : new String[]{"brass_filigree_railing", "andesite_filigree_railing"}) {
+        for (String railing : new String[]{"brass_filigree_railing", "andesite_filigree_railing", "copper_filigree_railing"}) {
             add("block.solarpunk." + railing + ".tooltip.summary", "A decorative railing that _connects_ to its neighbours. One item places every shape: _flat_, _slope_ and _steep slope_.");
             add("block.solarpunk." + railing + ".tooltip.condition1", "Hold the Toolbelt key (Alt)");
             add("block.solarpunk." + railing + ".tooltip.behaviour1", "Opens a menu to pick the _shape_ it places. Steep slopes placed on _stairs_ follow them.");

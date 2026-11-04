@@ -143,6 +143,8 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_TICKS;
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_WATER_PER_BATCH;
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_BIOFUEL_PER_BATCH;
+    private static final ModConfigSpec.IntValue CFG_FERMENTATION_RICH_FERTILIZER_PER_BATCH;
+    private static final ModConfigSpec.IntValue CFG_SPRINKLER_RICH_EXTRA_RANGE;
 
     private static final ModConfigSpec.IntValue CFG_GASIFIER_BURN_TICKS;
     private static final ModConfigSpec.IntValue CFG_PELLET_BURN_TICKS;
@@ -382,6 +384,7 @@ public class Config {
         CFG_FERMENTATION_TICKS            = BUILDER.comment("Ticks per fermentation batch").defineInRange("fermentation_ticks", 400, 1, 100_000);
         CFG_FERMENTATION_WATER_PER_BATCH  = BUILDER.comment("mB of water consumed per batch (per footprint block)").defineInRange("water_per_batch_mb", 1000, 1, 100_000);
         CFG_FERMENTATION_BIOFUEL_PER_BATCH = BUILDER.comment("mB of biofuel produced per batch (per footprint block)").defineInRange("biofuel_per_batch_mb", 1000, 1, 100_000);
+        CFG_FERMENTATION_RICH_FERTILIZER_PER_BATCH = BUILDER.comment("mB of Rich Fertilizer produced per batch of waste (per footprint block)").defineInRange("rich_fertilizer_per_batch_mb", 500, 1, 100_000);
         BUILDER.pop();
 
         BUILDER.push("biomass_gasifier");
@@ -415,6 +418,7 @@ public class Config {
         BUILDER.push("kinetic_sprinkler");
         CFG_SPRINKLER_FLUID_PER_CYCLE = BUILDER.comment("mB of fluid consumed per cycle").defineInRange("fluid_per_cycle_mb", 100, 1, 10_000);
         CFG_SPRINKLER_RANGE           = BUILDER.comment("Horizontal radius (blocks) of the watering area").defineInRange("range", 2, 1, 16);
+        CFG_SPRINKLER_RICH_EXTRA_RANGE = BUILDER.comment("Extra radius (blocks) while spraying Rich Fertilizer, which also lasts twice as long").defineInRange("rich_fertilizer_extra_range", 1, 0, 16);
         BUILDER.pop();
 
         BUILDER.push("greenhouse_controller");
@@ -613,7 +617,8 @@ public class Config {
 
     public static int solarHeaterMeltTicks, solarHeaterEvaporationTicks, solarHeaterWaterPerSalt;
     public static int fireboxBoilerSteamPerTick;
-    public static int fermentationTicks, fermentationWaterPerBatch, fermentationBiofuelPerBatch;
+    public static int fermentationTicks, fermentationWaterPerBatch, fermentationBiofuelPerBatch, fermentationRichFertilizerPerBatch;
+    public static int sprinklerRichExtraRange;
     public static int gasifierBurnTicks, pelletBurnTicks, pelletBiocharAmount;
     public static int biofuelConsumeMb, biofuelConsumePeriod;
     public static int heatBatteryMaxHeat, heatBatteryHeatPerMb, heatBatteryHeatDecay;
@@ -723,6 +728,7 @@ public class Config {
         fermentationTicks          = CFG_FERMENTATION_TICKS.get();
         fermentationWaterPerBatch  = CFG_FERMENTATION_WATER_PER_BATCH.get();
         fermentationBiofuelPerBatch = CFG_FERMENTATION_BIOFUEL_PER_BATCH.get();
+        fermentationRichFertilizerPerBatch = CFG_FERMENTATION_RICH_FERTILIZER_PER_BATCH.get();
 
         gasifierBurnTicks    = CFG_GASIFIER_BURN_TICKS.get();
         pelletBurnTicks      = CFG_PELLET_BURN_TICKS.get();
@@ -739,6 +745,7 @@ public class Config {
 
         sprinklerFluidPerCycle = CFG_SPRINKLER_FLUID_PER_CYCLE.get();
         sprinklerRange         = CFG_SPRINKLER_RANGE.get();
+        sprinklerRichExtraRange = CFG_SPRINKLER_RICH_EXTRA_RANGE.get();
 
         reactorSteamPerLayerPerTick          = CFG_REACTOR_STEAM_PER_LAYER_PER_TICK.get();
         reactorLithiumOutputRatio            = CFG_REACTOR_LITHIUM_OUTPUT_RATIO.get();

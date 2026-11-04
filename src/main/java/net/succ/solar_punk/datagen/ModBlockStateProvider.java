@@ -87,6 +87,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
         filigreeRailingBlock(ModBlocks.ANDESITE_FILIGREE_RAILING, ModBlocks.BRASS_FILIGREE_RAILING);
         filigreeRailingSlopeBlock(ModBlocks.ANDESITE_FILIGREE_RAILING_SLOPE, ModBlocks.ANDESITE_FILIGREE_RAILING);
         filigreeRailingSlopeBlock(ModBlocks.ANDESITE_FILIGREE_RAILING_STEEP_SLOPE, ModBlocks.ANDESITE_FILIGREE_RAILING);
+        filigreeRailingBlock(ModBlocks.COPPER_FILIGREE_RAILING, ModBlocks.BRASS_FILIGREE_RAILING);
+        filigreeRailingSlopeBlock(ModBlocks.COPPER_FILIGREE_RAILING_SLOPE, ModBlocks.COPPER_FILIGREE_RAILING);
+        filigreeRailingSlopeBlock(ModBlocks.COPPER_FILIGREE_RAILING_STEEP_SLOPE, ModBlocks.COPPER_FILIGREE_RAILING);
         // Like vanilla panes: the glass texture on the faces, a _pane_top strip on the edges,
         // and a flat item icon of the glass.
         paneBlockWithRenderType(ModBlocks.SOLAR_GLASS_PANE.get(), blockTexture(ModBlocks.SOLAR_GLASS.get()),
@@ -130,6 +133,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         fluidBlock(ModFluids.MOLTEN_SALT_BLOCK, modLoc("block/molten_salt_still"));
         fluidBlock(ModFluids.BIOFUEL_BLOCK,     mcLoc("block/water_still"));
         fluidBlock(ModFluids.FERTILIZER_BLOCK,  mcLoc("block/water_still"));
+        fluidBlock(ModFluids.RICH_FERTILIZER_BLOCK, mcLoc("block/water_still"));
         fluidBlock(ModFluids.STEAM_BLOCK,       mcLoc("block/water_still"));
         fluidBlock(ModFluids.DEUTERIUM_BLOCK,   mcLoc("block/water_still"));
 

@@ -43,7 +43,8 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
         @Override
         public boolean isFluidValid(FluidStack stack) {
             Fluid f = stack.getFluid();
-            return f.isSame(Fluids.WATER) || f.isSame(ModFluids.FERTILIZER_SOURCE.get());
+            return f.isSame(Fluids.WATER) || f.isSame(ModFluids.FERTILIZER_SOURCE.get())
+                    || f.isSame(ModFluids.RICH_FERTILIZER_SOURCE.get());
         }
 
         @Override
@@ -56,8 +57,14 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
         super(type, pos, state);
     }
 
+    // Rich Fertilizer works like Fertilizer, but reaches further and lasts twice as long.
+    private boolean hasRichFertilizer() {
+        return !fluidTank.isEmpty() && fluidTank.getFluid().getFluid().isSame(ModFluids.RICH_FERTILIZER_SOURCE.get());
+    }
+
     private boolean hasFertilizer() {
-        return !fluidTank.isEmpty() && fluidTank.getFluid().getFluid().isSame(ModFluids.FERTILIZER_SOURCE.get());
+        return !fluidTank.isEmpty() && (hasRichFertilizer()
+                || fluidTank.getFluid().getFluid().isSame(ModFluids.FERTILIZER_SOURCE.get()));
     }
 
     @Override
@@ -68,12 +75,15 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
         if (fluidTank.isEmpty()) return;
 
         boolean fertilizer = hasFertilizer();
-        fluidTank.drain(Config.sprinklerFluidPerCycle, IFluidHandler.FluidAction.EXECUTE);
+        boolean rich = hasRichFertilizer();
+        fluidTank.drain(rich ? Math.max(1, Config.sprinklerFluidPerCycle / 2) : Config.sprinklerFluidPerCycle,
+                IFluidHandler.FluidAction.EXECUTE);
+        int range = Config.sprinklerRange + (rich ? Config.sprinklerRichExtraRange : 0);
 
         ServerLevel serverLevel = (ServerLevel) level;
 
-        for (int x = -Config.sprinklerRange; x <= Config.sprinklerRange; x++) {
-            for (int z = -Config.sprinklerRange; z <= Config.sprinklerRange; z++) {
+        for (int x = -range; x <= range; x++) {
+            for (int z = -range; z <= range; z++) {
                 for (int dy = 1; dy <= SCAN_DEPTH; dy++) {
                     BlockPos checkPos = worldPosition.offset(x, -dy, z);
                     BlockState checkState = level.getBlockState(checkPos);
@@ -123,7 +133,7 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
                 .forGoggles(tooltip, 1);
 
         boolean fertilizer = hasFertilizer();
-        GoggleHelper.tank(tooltip, fertilizer ? "fertilizer" : "water", fluidTank,
+        GoggleHelper.tank(tooltip, hasRichFertilizer() ? "rich_fertilizer" : fertilizer ? "fertilizer" : "water", fluidTank,
                 fertilizer ? ChatFormatting.GREEN : ChatFormatting.AQUA);
 
         return true;

@@ -49,6 +49,10 @@ public class ModTags {
     // Common c: tags for our materials, so other mods' versions work in our recipes and
     // machines (and ours in theirs), plus Create's sheets and zinc that our recipes use.
     public static class Items {
+        // Mob and farm waste the Fermentation Vat turns into Rich Fertilizer instead of Biofuel.
+        public static final TagKey<Item> FERMENTATION_WASTE = TagKey.create(
+                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "fermentation_waste"));
+
         // Salt: other mods disagree on the tag (Northstar uses c:dusts/salt, Create: Food
         // uses c:salt), so ours is in all three and recipes accept any of them.
         public static final TagKey<Item> GEMS_SALT = common("gems/salt");
