@@ -1,0 +1,17 @@
+{
+  "type": "solarpunk:particle_accelerator",
+  "ingredients": [
+    {
+      "count": 8,
+      "tag": "c:dusts/lithium"
+    }
+  ],
+  "min_diameter": 9,
+  "min_speed": 128,
+  "processing_time": 400,
+  "result": {
+    "count": 1,
+    "id": "solarpunk:beryllium_dust"
+  },
+  "stress": 16384.0
+}

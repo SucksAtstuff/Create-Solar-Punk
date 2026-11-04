@@ -1,6 +1,7 @@
 package net.succ.solar_punk.datagen;
 
 import java.util.List;
+import java.util.stream.Stream;
 import net.succ.solar_punk.recipe.ParticleAcceleratorRecipe;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.minecraft.advancements.Criterion;
@@ -62,6 +63,20 @@ public class ModRecipeProvider extends RecipeProvider {
         particleAccelerator(output, "leather",
                 List.of(new SizedIngredient(Ingredient.of(Items.ROTTEN_FLESH), 16)),
                 new ItemStack(Items.LEATHER), 5, 4096, 64, 200);
+        // Spare Biomass packed into slime, which is hard to farm early on.
+        particleAccelerator(output, "slime_ball",
+                List.of(new SizedIngredient(Ingredient.of(ModItems.BIOMASS.get()), 16)),
+                new ItemStack(Items.SLIME_BALL), 5, 4096, 64, 200);
+        // Protons on Lithium-7 make Beryllium-7, a real reaction: a Beryllium route that
+        // doesn't depend on the crushing byproduct.
+        particleAccelerator(output, "beryllium_dust",
+                List.of(new SizedIngredient(Ingredient.of(ModTags.Items.DUSTS_LITHIUM), 8)),
+                new ItemStack(ModItems.BERYLLIUM_DUST.get()), 9, 16384, 128, 400);
+        // "Charged up" Redstone, for players without easy Nether access.
+        particleAccelerator(output, "glowstone_dust",
+                List.of(new SizedIngredient(Ingredient.of(Tags.Items.DUSTS_REDSTONE), 4),
+                        new SizedIngredient(Ingredient.of(ModTags.Items.DUSTS_LITHIUM), 1)),
+                new ItemStack(Items.GLOWSTONE_DUST, 2), 9, 16384, 128, 400);
         // Tritium bred from Lithium, with Beryllium as the neutron source, caught in an Empty
         // Fuel Capsule. The capsule is worth 4x the Lithium that goes in (reactor_tritium_capsule_mb),
         // so one ring at 256 RPM keeps a pure-Lithium-blanket reactor running.
@@ -105,6 +120,9 @@ public class ModRecipeProvider extends RecipeProvider {
 
         bricksRecipes(output, ModBlocks.SALT_BRICKS.get(), ModBlocks.POLISHED_SALT.get(), ModBlocks.SALT_BLOCK.get());
         bricksRecipes(output, ModBlocks.ASH_BRICKS.get(), ModBlocks.POLISHED_ASH.get(), ModBlocks.ASH_BLOCK.get());
+        // Rammed Earth has no polished step: its bricks come straight from the block.
+        ModBlocks.RAMMED_EARTH.values().forEach(set ->
+                bricksRecipes(output, set.bricks().get(), set.block().get(), set.block().get()));
 
         ModBlockFamilies.ALL.forEach(family -> blockFamilyRecipes(output, family));
 
@@ -155,6 +173,15 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('P', ModBlocks.SOLAR_GLASS_PANE.get())
                 .define('A', createItem("andesite_alloy"))
                 .unlockedBy("has_solar_glass_pane", has(ModBlocks.SOLAR_GLASS_PANE.get()))
+                .save(output);
+
+        // Solar Glass laid like stairs.
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.SOLAR_GLASS_SHINGLES.get(), 6)
+                .pattern("G  ")
+                .pattern("GG ")
+                .pattern("GGG")
+                .define('G', ModBlocks.SOLAR_GLASS.get())
+                .unlockedBy("has_solar_glass", has(ModBlocks.SOLAR_GLASS.get()))
                 .save(output);
 
         // Sticks in a lattice, like a Ladder.
@@ -412,7 +439,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('S', polished)
                 .unlockedBy(getHasName(polished), has(polished))
                 .save(output);
-        for (Block from : List.of(polished, raw)) {
+        for (Block from : Stream.of(polished, raw).distinct().toList()) {
             SingleItemRecipeBuilder.stonecutting(Ingredient.of(from), RecipeCategory.BUILDING_BLOCKS, bricks)
                     .unlockedBy(getHasName(from), has(from))
                     .save(output, id(bricksName + "_from_" + BuiltInRegistries.BLOCK.getKey(from).getPath() + "_stonecutting"));

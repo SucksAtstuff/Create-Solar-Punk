@@ -28,6 +28,7 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.block.custom.TrellisBlock;
 import net.succ.solar_punk.compat.sable.SableCompat;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,9 +43,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 // Global warming: every second, active pollution sources near players add pollution to
-// the chunks around them. Pollution slowly decays, leaves absorb some, and past
-// Config.biomeDecayThreshold a chunk's surface decays and its biome turns into the dead
-// biome. Once it drops back below, the chunk heals and its biome is restored.
+// the chunks around them. Pollution slowly decays, leaves and planted trellises absorb
+// some, and past Config.biomeDecayThreshold a chunk's surface decays and its biome turns
+// into the dead biome. Once it drops back below, the chunk heals and its biome is restored.
 public class GlobalWarmingHandler {
 
     // Blocks matched by Config.autoDetectKeywords, built lazily and reset on config reload.
@@ -200,9 +201,9 @@ public class GlobalWarmingHandler {
             ChunkPos chunkPos = entry.getKey();
             if (!level.isLoaded(chunkPos.getMiddleBlockPosition(64))) continue;
 
-            // Leaf absorption: trees slow the spread before they die off
-            if (Config.leafAbsorptionPerInterval > 0) {
-                long absorbed = countLeaves(level, chunkPos) * Config.leafAbsorptionPerInterval;
+            // Leaf and trellis absorption: plants slow the spread before they die off
+            if (Config.leafAbsorptionPerInterval > 0 || Config.trellisAbsorptionPerInterval > 0) {
+                long absorbed = plantAbsorption(level, chunkPos);
                 if (absorbed > 0) data.reducePollution(chunkPos, absorbed);
             }
 
@@ -247,21 +248,24 @@ public class GlobalWarmingHandler {
         }
     }
 
-    private static long countLeaves(ServerLevel level, ChunkPos chunkPos) {
+    // Pollution absorbed this interval by leaves and planted trellises near the chunk's surface.
+    private static long plantAbsorption(ServerLevel level, ChunkPos chunkPos) {
         LevelChunk chunk = level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
         if (chunk == null) return 0;
-        long count = 0;
+        long leaves = 0, trellises = 0;
         for (int lx = 0; lx < 16; lx++) {
             for (int lz = 0; lz < 16; lz++) {
                 int worldX = chunkPos.getMinBlockX() + lx;
                 int worldZ = chunkPos.getMinBlockZ() + lz;
                 int surfaceY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, lx, lz);
                 for (int dy = -2; dy <= 10; dy++) {
-                    if (level.getBlockState(new BlockPos(worldX, surfaceY + dy, worldZ)).is(BlockTags.LEAVES)) count++;
+                    BlockState state = level.getBlockState(new BlockPos(worldX, surfaceY + dy, worldZ));
+                    if (state.is(BlockTags.LEAVES)) leaves++;
+                    else if (state.is(ModBlocks.TRELLIS.get()) && state.getValue(TrellisBlock.PLANT).hasVines()) trellises++;
                 }
             }
         }
-        return count;
+        return leaves * Config.leafAbsorptionPerInterval + trellises * Config.trellisAbsorptionPerInterval;
     }
 
     // Picks Config.blocksDecayedPerInterval random columns in the chunk and replaces the

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sandy_rammed_earth": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:sandy_rammed_earth"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "solarpunk:sandy_rammed_earth_slab_from_sandy_rammed_earth_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_sandy_rammed_earth"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "solarpunk:sandy_rammed_earth_slab_from_sandy_rammed_earth_stonecutting"
+    ]
+  }
+}

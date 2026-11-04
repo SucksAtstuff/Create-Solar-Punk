@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.ModelFile.UncheckedModelFile;
 import net.neoforged.neoforge.client.model.generators.ModelProvider;
@@ -97,7 +98,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         litCustomModelBlock(ModBlocks.GARDEN_LIGHT, false);
         simpleBlockItem(ModBlocks.GARDEN_LIGHT.get(), new UncheckedModelFile(modLoc("block/garden_light_lit")));
         trellisBlock();
-        solarShinglesBlock();
+        solarShinglesBlock(ModBlocks.SOLAR_SHINGLES.get(), "solar_shingles");
+        solarShinglesBlock(ModBlocks.SOLAR_GLASS_SHINGLES.get(), "solar_glass_shingles");
         blockWithItem(ModBlocks.LITHIUM_ORE);
         blockWithItem(ModBlocks.DEEPSLATE_LITHIUM_ORE);
         blockWithItem(ModBlocks.LITHIUM_BLOCK);
@@ -166,6 +168,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
     // Every variant of a ModBlockFamilies family. Stairs, slabs and walls use the base
     // block's texture; full-block variants (polished, chiseled...) use their own.
     private void blockFamily(BlockFamily family) {
+        if (ModBlockFamilies.isTinted(family)) {
+            tintedBlockFamily(family);
+            return;
+        }
         ResourceLocation baseModel = blockTexture(family.getBaseBlock()); // block/<base id>
         ResourceLocation baseTex = ModBlockFamilies.baseTexture(family);
         if (baseTex == null) baseTex = baseModel;
@@ -198,6 +204,53 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 }
             }
         });
+    }
+
+    // A tinted family (Rammed Earth), base block included: the same shapes as above, built on
+    // the copies of vanilla's parents in models/block/tinted/ whose faces have tintindex 0.
+    private void tintedBlockFamily(BlockFamily family) {
+        ResourceLocation tex = ModBlockFamilies.baseTexture(family);
+        Block base = family.getBaseBlock();
+        String basePath = BuiltInRegistries.BLOCK.getKey(base).getPath();
+        ModelFile cube = tinted(basePath, "cube_all").texture("all", tex);
+        simpleBlockWithItem(base, cube);
+        ModBlockFamilies.variants(family).forEach((variant, block) -> {
+            String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
+            switch (variant) {
+                case STAIRS -> {
+                    stairsBlock((StairBlock) block,
+                            sideTopBottom(tinted(path, "stairs"), tex),
+                            sideTopBottom(tinted(path + "_inner", "inner_stairs"), tex),
+                            sideTopBottom(tinted(path + "_outer", "outer_stairs"), tex));
+                    simpleBlockItem(block, new UncheckedModelFile(modLoc("block/" + path)));
+                }
+                case SLAB -> {
+                    slabBlock((SlabBlock) block, sideTopBottom(tinted(path, "slab"), tex),
+                            sideTopBottom(tinted(path + "_top", "slab_top"), tex), cube);
+                    simpleBlockItem(block, new UncheckedModelFile(modLoc("block/" + path)));
+                }
+                case WALL -> {
+                    wallBlock((WallBlock) block,
+                            tinted(path + "_post", "wall_post").texture("wall", tex),
+                            tinted(path + "_side", "wall_side").texture("wall", tex),
+                            tinted(path + "_side_tall", "wall_side_tall").texture("wall", tex));
+                    itemModels().withExistingParent(path, modLoc("block/tinted/wall_inventory")).texture("wall", tex);
+                }
+                default -> {
+                    ResourceLocation variantTex = ModBlockFamilies.tintedVariantTexture(block);
+                    if (variantTex == null) throw new IllegalStateException("No tinted texture for " + path);
+                    simpleBlockWithItem(block, tinted(path, "cube_all").texture("all", variantTex));
+                }
+            }
+        });
+    }
+
+    private BlockModelBuilder tinted(String path, String parent) {
+        return models().withExistingParent(path, modLoc("block/tinted/" + parent));
+    }
+
+    private static BlockModelBuilder sideTopBottom(BlockModelBuilder model, ResourceLocation tex) {
+        return model.texture("side", tex).texture("top", tex).texture("bottom", tex);
     }
 
     // A straight run (POST off) shows <id>_straight (running north-south), turned to the run's
@@ -288,8 +341,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
     // OBJ models, all sloping up toward the south (so FACING south is unrotated), one set per
     // HALF. Right corners use their FACING; a left corner is the right corner of the facing
     // counter-clockwise from it, as with vanilla stairs.
-    private void solarShinglesBlock() {
-        getVariantBuilder(ModBlocks.SOLAR_SHINGLES.get()).forAllStatesExcept(state -> {
+    private void solarShinglesBlock(Block block, String name) {
+        getVariantBuilder(block).forAllStatesExcept(state -> {
             Direction facing = state.getValue(SolarShinglesBlock.FACING);
             StairsShape shape = state.getValue(SolarShinglesBlock.SHAPE);
             String half = state.getValue(SolarShinglesBlock.HALF) == Half.TOP ? "top" : "bottom";
@@ -300,12 +353,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
             };
             if (shape == StairsShape.INNER_LEFT || shape == StairsShape.OUTER_LEFT) facing = facing.getCounterClockWise();
             return ConfiguredModel.builder()
-                    .modelFile(new UncheckedModelFile(modLoc("block/solar_shingles_" + half + "_slope" + suffix)))
+                    .modelFile(new UncheckedModelFile(modLoc("block/" + name + "_" + half + "_slope" + suffix)))
                     .rotationY((int) facing.toYRot())
                     .uvLock(false)
                     .build();
         }, SolarShinglesBlock.WATERLOGGED);
-        simpleBlockItem(ModBlocks.SOLAR_SHINGLES.get(), new UncheckedModelFile(modLoc("block/solar_shingles_bottom_slope")));
+        simpleBlockItem(block, new UncheckedModelFile(modLoc("block/" + name + "_bottom_slope")));
     }
 
     // Hand-made models: "trellis" with vines, "trellis_no_vines" without (also the item).

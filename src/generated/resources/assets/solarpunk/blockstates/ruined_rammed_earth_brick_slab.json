@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "solarpunk:block/ruined_rammed_earth_brick_slab"
+    },
+    "type=double": {
+      "model": "solarpunk:block/ruined_rammed_earth_bricks"
+    },
+    "type=top": {
+      "model": "solarpunk:block/ruined_rammed_earth_brick_slab_top"
+    }
+  }
+}

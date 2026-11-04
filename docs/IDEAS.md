@@ -22,8 +22,8 @@ In rough priority order.
 - **Hydrogen chain** - an Electrolyzer splits Water into Hydrogen using FE from Brass Panels,
   and a Fuel Cell turns it back into SU or FE. Gives solar FE a storage use, and ties into
   Northstar's Liquid Hydrogen, which the Steam Turbine already burns.
-  - The problem it solves: Brass Panel FE has nowhere to go beyond each panel's small buffer,
-    and solar stops at night. Hydrogen made at noon can run the base after dark.
+  - The problem it solves: solar FE has nowhere to go beyond each block's small buffer, and
+    solar stops at night. Hydrogen made at noon can run the base after dark.
   - Better than a plain battery: storage is only limited by tank space, and Hydrogen can be
     piped across the base or carried on trains and contraptions, so a desert solar field can
     ship fuel home.
@@ -35,8 +35,9 @@ In rough priority order.
   - Open: is Oxygen a byproduct, and does anything use it, or is it just vented?
   - Open: could the Electrolyzer give a little Deuterium as a rare byproduct for the Fusion
     Reactor?
-- **FE storage** - FE only exists in a Brass Panel's small buffer right now. A Thermal
-  Generator (Molten Salt heat to FE) or a large battery multiblock.
+- **FE storage** - FE only exists in the small buffers of the Brass Panel, Solar Shingles and
+  Solar Glass right now. A Thermal Generator (Molten Salt heat to FE) or a large battery
+  multiblock.
 - **Tidal / wave power** - SU from ocean water levels, changing with the time of day, so it's
   different from Create's water wheel.
 - **Dedicated grid-scale storage** beyond Heat Battery / Kinetic Battery - a gravity battery
@@ -75,6 +76,7 @@ In rough priority order.
   - Pollination: vanilla Beehives or Bee Nests inside the greenhouse (with bees) give the
     crops a further growth boost. No new block needed, and the flood fill can count them
     while it scans.
+  - Solar Glass could count as greenhouse glass too, so the roof also makes FE.
   - Open: do doors and trapdoors count as sealed? Does a gap of one block break it?
 
 ## Geothermal
@@ -106,48 +108,13 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
 ### Solar you can build with
 
 - **Grid-powered streetlights** - see Next Up.
-- **Solar Garden Light** - a small post light that charges by day and glows at night, no
-  wiring. The cheap early-game cousin of the streetlights, and a nice first use of a
-  Photovoltaic Cell.
-  - Built (the Garden Light): charges if it sees the sky during the day, glows through the
-    night after. No block entity, just a CHARGED block state and a scheduled tick.
-- **Solar Shingles** - stair and slab shaped roof panels that make a small amount of FE.
-  Lets a roof be the solar array instead of a flat field of panels next to the house.
-  - Built: one stair-like block (low and high pieces alternate up a roof, corners bend like
-    stairs). Output depends on which way the slope faces (`SolarHelper.tiltFactor`). Vanilla's
-    sun moves east to west straight overhead, so east roofs win in the morning and west roofs
-    in the evening; north and south roofs are equal. A south bias would need a fake latitude.
-  - Each shingle has its own buffer and FE capability, and energy flows to touching shingles
-    that hold less, so pulling from any one shingle drains the whole roof through it. No
-    Roof Inverter needed.
-- **Solar Glass** - a see-through panel that makes much less than a Brass Panel but works as
-  a window or skylight. Pairs with the Greenhouse idea: a greenhouse roof that also powers
-  its own sprinklers.
-  - The block exists as decorative glass (crafted from Glass and a Photovoltaic Cell). Making
-    it generate means a block entity and FE capability; its ID can stay the same, so placed
-    glass would start working.
-  - A Solar Glass Pane exists too; if the glass generates, the pane could as well (less).
-- **Solar Canopy / Pergola** - a panel raised on posts, so the space underneath stays usable
-  (paths, markets, parking for trains and contraptions). Mostly a model variant; could just be
-  a Brass Panel on a post block.
-- **Solar Railing / Fence** - a fence with a thin panel on top, for lining bridges and
-  balconies. Low output, high charm. Could reuse the filigree railing's connecting and
-  placement code.
 
 ### Living buildings
 
 - **Green Roof** - a grass or moss slab that absorbs pollution like leaves do. Gives the
-  global warming system a building-shaped answer besides trees and the Biofilter.
+  global warming system a roof-shaped answer besides trees, trellises and the Biofilter.
   - Could slowly spread flowers on top of itself, and dry out to dead grass in heavy
     pollution, so it doubles as a visible pollution meter.
-- **Living Wall** - a thin vertical panel of moss and ferns placed on the side of a block.
-  Same pollution absorption as the Green Roof, smaller amount.
-- **Trellis** - a climbable lattice that vines, glow berries and flowers grow up on their own.
-  - Built: Vines first, then a small flower (tinted from the flower's own texture) or Glow
-    Berries (light 14) on top; Shears peel off a layer. Vines spread to bare trellises above
-    or beside. Flowers and berries don't spread yet, and modded flowers aren't supported.
-  - Possible new climbing crop (hops or grapes) that only grows on a trellis and gives a
-    better Biomass yield, or ferments faster in the Fermentation Vat.
 - **Planter Box** - a wooden or brick box that holds dirt so crops and flowers grow on roofs
   and balconies. A Kinetic Sprinkler in range waters it like farmland.
 - **Solar Plant Bed** - a raised bed with a small panel built in, a self-contained garden for
@@ -156,8 +123,8 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
   nearby.
   - Small on purpose: one bed, one crop, slower than a proper farm. A way to grow food and
     Biomass in a city build without a field.
-  - Bigger version of the idea (agrivoltaics, which is real): crops planted under a Solar
-    Canopy grow at normal speed in the shade, and the panel gets a small output bonus from
+  - Bigger version of the idea (agrivoltaics, which is real): crops planted under raised
+    solar panels grow at normal speed in the shade, and the panel gets a small output bonus from
     the plants cooling it. Rewards stacking farms and solar instead of building them side
     by side.
   - Open: does the grow light need the panel's own charge only, or can it take FE from the
@@ -165,28 +132,20 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
 
 ### Natural and reclaimed materials
 
-- **Ashcrete** - a concrete-like block mixed from Ash, Water and Gravel in a Mixer, maybe in
-  colours like vanilla concrete. Polished Ash and Ash Bricks already exist; this would be the
-  Create-native, mass-produced option.
 - **Charred Timber** - dark scorched planks (like Japanese shou sugi ban), made by applying
   Biochar to planks or by item application with a Blaze Burner. A second use for Biochar
   besides Fertilizer.
-- **Rammed Earth** - layered earth blocks pressed from Dirt, Clay and Gravel in a Mechanical
-  Press, with a few color bands by input (red sand, terracotta). A good Create-native recipe.
-- **Bamboo panels and lattice** - bamboo screens and lattice walls; the lattice could share
-  the Trellis model.
-- **Cork** has no vanilla source, so skip it unless a cork oak tree is added.
+- **Rammed Earth extras** - follow-ups for the existing sets.
+  - Polished Rammed Earth: one more light grey texture, then raw -> polished -> bricks like
+    Salt and Ash (`bricksRecipes()` already takes a polished step).
+  - A plain top texture: every face currently shows the stripes, but the layers should only
+    show on the sides. A tinted `cube_column` parent would do it.
+  - A Tuff colour was skipped because it tints almost the same as Ashen; it would need a
+    greener tint than real Tuff.
 
 ### Machine-themed decor
 
-- **Filigree railings and arches** - done: Brass and Andesite Filigree Railings and Railing
-  Slopes (gentle half-block slopes) and Steep Slopes (45 degrees, follow stairs when placed on them),
-  with Create-style placement arrows.
-  - Possible extras: more materials (copper, iron) need only a texture and a few lines each.
-- **Lithium / Beryllium blocks with variants** - polished, tiled and pillar versions of the
-  existing storage blocks. Polished and tiled (as `cut`) fit the family system; a pillar
-  doesn't (no family variant, and it's a rotatable `RotatedPillarBlock`), so it would be
-  registered and modelled on its own.
+- **More filigree railing materials** (copper, iron) - only a texture and a few lines each.
 
 ## Compat
 

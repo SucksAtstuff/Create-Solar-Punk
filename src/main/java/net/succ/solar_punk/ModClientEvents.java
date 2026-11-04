@@ -87,6 +87,20 @@ public class ModClientEvents {
                     ? BiomeColors.getAverageFoliageColor(level, pos)
                     : FoliageColor.getDefaultColor();
         }, ModBlocks.TRELLIS.get());
+
+        // Rammed Earth: every colour's grey model is tinted with its RammedEarthColor.
+        ModBlocks.RAMMED_EARTH.forEach((color, set) -> {
+            int argb = 0xFF000000 | color.color;
+            set.all().forEach(block -> event.register((state, level, pos, tintIndex) -> argb, block.get()));
+        });
+    }
+
+    @SubscribeEvent
+    public static void onRegisterItemColors(RegisterColorHandlersEvent.Item event) {
+        ModBlocks.RAMMED_EARTH.forEach((color, set) -> {
+            int argb = 0xFF000000 | color.color;
+            set.all().forEach(block -> event.register((stack, tintIndex) -> argb, block.get()));
+        });
     }
 
     @SubscribeEvent
@@ -200,6 +214,9 @@ public class ModClientEvents {
         tip(ModBlocks.GARDEN_LIGHT);
         tip(ModBlocks.TRELLIS);
         tip(ModBlocks.SOLAR_SHINGLES);
+        tip(ModBlocks.SOLAR_GLASS_SHINGLES);
+        tip(ModBlocks.SOLAR_GLASS);
+        tip(ModBlocks.SOLAR_GLASS_PANE);
     }
 
     private static void tip(Supplier<? extends Block> block) {

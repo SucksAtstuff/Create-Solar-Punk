@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_muddy_rammed_earth_bricks": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:muddy_rammed_earth_bricks"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "solarpunk:muddy_rammed_earth_brick_wall_from_muddy_rammed_earth_bricks_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_muddy_rammed_earth_bricks"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "solarpunk:muddy_rammed_earth_brick_wall_from_muddy_rammed_earth_bricks_stonecutting"
+    ]
+  }
+}

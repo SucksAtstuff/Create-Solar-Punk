@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "solarpunk:light_blue_terracotta_rammed_earth"
+  },
+  "result": {
+    "count": 1,
+    "id": "solarpunk:light_blue_terracotta_rammed_earth_wall"
+  }
+}

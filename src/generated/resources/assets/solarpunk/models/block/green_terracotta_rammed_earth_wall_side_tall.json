@@ -1,0 +1,6 @@
+{
+  "parent": "solarpunk:block/tinted/wall_side_tall",
+  "textures": {
+    "wall": "solarpunk:block/rammed_earth"
+  }
+}

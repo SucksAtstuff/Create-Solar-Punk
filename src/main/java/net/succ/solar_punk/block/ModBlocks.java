@@ -3,8 +3,6 @@ package net.succ.solar_punk.block;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.IronBarsBlock;
-import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -27,6 +25,9 @@ import net.succ.solar_punk.block.custom.GardenLightBlock;
 import net.succ.solar_punk.block.custom.TrellisBlock;
 import net.succ.solar_punk.block.custom.TrellisPlant;
 import net.succ.solar_punk.block.custom.SolarShinglesBlock;
+import net.succ.solar_punk.block.custom.RammedEarthColor;
+import net.succ.solar_punk.block.custom.SolarGlassBlock;
+import net.succ.solar_punk.block.custom.SolarGlassPaneBlock;
 import net.succ.solar_punk.block.custom.BiofuelEngineBlock;
 import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
@@ -60,7 +61,9 @@ import net.succ.solar_punk.item.ModItems;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -401,6 +404,45 @@ public class ModBlocks {
     public static final DeferredBlock<Block> CHISELED_ASH_BRICKS = registerDecorative("chiseled_ash_bricks",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(ASH_BRICKS.get())));
 
+    // Rammed Earth: per RammedEarthColor a block, bricks and chiseled bricks, the block and the
+    // bricks each with stairs, slab and wall. Each shape shares one grey texture tinted per colour
+    // (see ModClientEvents). Families are in datagen/ModBlockFamilies.
+    public record RammedEarthSet(DeferredBlock<Block> block, DeferredBlock<StairBlock> stairs,
+                                 DeferredBlock<SlabBlock> slab, DeferredBlock<WallBlock> wall,
+                                 DeferredBlock<Block> bricks, DeferredBlock<StairBlock> brickStairs,
+                                 DeferredBlock<SlabBlock> brickSlab, DeferredBlock<WallBlock> brickWall,
+                                 DeferredBlock<Block> chiseledBricks) {
+        public List<DeferredBlock<? extends Block>> all() {
+            return List.of(block, stairs, slab, wall, bricks, brickStairs, brickSlab, brickWall, chiseledBricks);
+        }
+    }
+
+    public static final Map<RammedEarthColor, RammedEarthSet> RAMMED_EARTH = registerRammedEarth();
+
+    private static Map<RammedEarthColor, RammedEarthSet> registerRammedEarth() {
+        Map<RammedEarthColor, RammedEarthSet> sets = new EnumMap<>(RammedEarthColor.class);
+        for (RammedEarthColor color : RammedEarthColor.values()) {
+            DeferredBlock<Block> block = registerDecorative(color.id,
+                    () -> new Block(BlockBehaviour.Properties.of()
+                            .mapColor(color.mapColor)
+                            .requiresCorrectToolForDrops()
+                            .strength(1.5f, 6.0f)
+                            .sound(SoundType.PACKED_MUD)));
+            DeferredBlock<StairBlock> stairs = registerStairs(color.id + "_stairs", block);
+            DeferredBlock<SlabBlock> slab = registerSlab(color.id + "_slab", block);
+            DeferredBlock<WallBlock> wall = registerWall(color.id + "_wall", block);
+            DeferredBlock<Block> bricks = registerDecorative(color.id + "_bricks",
+                    () -> new Block(BlockBehaviour.Properties.ofFullCopy(block.get()).sound(SoundType.MUD_BRICKS)));
+            sets.put(color, new RammedEarthSet(block, stairs, slab, wall, bricks,
+                    registerStairs(color.id + "_brick_stairs", bricks),
+                    registerSlab(color.id + "_brick_slab", bricks),
+                    registerWall(color.id + "_brick_wall", bricks),
+                    registerDecorative("chiseled_" + color.id + "_bricks",
+                            () -> new Block(BlockBehaviour.Properties.ofFullCopy(bricks.get())))));
+        }
+        return Collections.unmodifiableMap(sets);
+    }
+
     // Filigree railings: one item per material places every shape (flat, slope, steep slope,
     // picked from a radial menu), so the slope blocks have no items of their own.
     public static final DeferredBlock<FiligreeRailingBlock> BRASS_FILIGREE_RAILING = registerDecorativeCustomItem("brass_filigree_railing",
@@ -423,11 +465,11 @@ public class ModBlocks {
     public static final DeferredBlock<FiligreeRailingSteepSlopeBlock> ANDESITE_FILIGREE_RAILING_STEEP_SLOPE = BLOCKS.register("andesite_filigree_railing_steep_slope",
             () -> new FiligreeRailingSteepSlopeBlock(BlockBehaviour.Properties.ofFullCopy(ANDESITE_FILIGREE_RAILING.get())));
 
-    // Decorative for now; see the Solar Glass idea in docs/IDEAS.md for making it generate.
-    public static final DeferredBlock<TransparentBlock> SOLAR_GLASS = registerDecorative("solar_glass",
-            () -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
-    public static final DeferredBlock<IronBarsBlock> SOLAR_GLASS_PANE = registerDecorative("solar_glass_pane",
-            () -> new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)));
+    // Glass that makes a little FE under open sky; see SolarGlassBlockEntity.
+    public static final DeferredBlock<SolarGlassBlock> SOLAR_GLASS = registerDecorative("solar_glass",
+            () -> new SolarGlassBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
+    public static final DeferredBlock<SolarGlassPaneBlock> SOLAR_GLASS_PANE = registerDecorative("solar_glass_pane",
+            () -> new SolarGlassPaneBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)));
     // Decorative stepped roofing that bends into corners like stairs; see SolarShinglesBlock.
     public static final DeferredBlock<SolarShinglesBlock> SOLAR_SHINGLES = registerDecorative("solar_shingles",
             () -> new SolarShinglesBlock(BlockBehaviour.Properties.of()
@@ -436,6 +478,10 @@ public class ModBlocks {
                     .strength(1.5f, 6.0f)
                     .sound(SoundType.COPPER)
                     .noOcclusion()));
+    // Solar Shingles made of Solar Glass: same block, glass models and Solar Glass output.
+    public static final DeferredBlock<SolarShinglesBlock> SOLAR_GLASS_SHINGLES = registerDecorative("solar_glass_shingles",
+            () -> new SolarShinglesBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)
+                    .mapColor(MapColor.COLOR_BLUE)));
 
     public static final DeferredBlock<StairBlock> TURBINE_CASING_STAIRS = registerStairs("turbine_casing_stairs", TURBINE_CASING);
     public static final DeferredBlock<SlabBlock> TURBINE_CASING_SLAB = registerSlab("turbine_casing_slab", TURBINE_CASING);

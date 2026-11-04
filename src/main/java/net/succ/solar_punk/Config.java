@@ -84,6 +84,12 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_SHINGLE_NOON_FE;
     private static final ModConfigSpec.IntValue CFG_SHINGLE_BUFFER;
     private static final ModConfigSpec.IntValue CFG_SHINGLE_MAX_EXTRACT;
+    private static final ModConfigSpec.IntValue CFG_SOLAR_GLASS_MORNING_FE;
+    private static final ModConfigSpec.IntValue CFG_SOLAR_GLASS_NOON_FE;
+    private static final ModConfigSpec.IntValue CFG_SOLAR_GLASS_PANE_MORNING_FE;
+    private static final ModConfigSpec.IntValue CFG_SOLAR_GLASS_PANE_NOON_FE;
+    private static final ModConfigSpec.IntValue CFG_SOLAR_GLASS_BUFFER;
+    private static final ModConfigSpec.IntValue CFG_SOLAR_GLASS_MAX_EXTRACT;
 
     private static final ModConfigSpec.IntValue CFG_GEYSER_RPM;
     private static final ModConfigSpec.IntValue CFG_GEYSER_SU;
@@ -218,6 +224,7 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_POLLUTION_RADIUS_BLOCKS;
     private static final ModConfigSpec.IntValue CFG_POLLUTION_DECAY_RATE;
     private static final ModConfigSpec.IntValue CFG_LEAF_ABSORPTION_PER_INTERVAL;
+    private static final ModConfigSpec.IntValue CFG_TRELLIS_ABSORPTION_PER_INTERVAL;
     private static final ModConfigSpec.IntValue CFG_BIOFILTER_SU;
     private static final ModConfigSpec.DoubleValue CFG_BIOFILTER_ABSORPTION_PER_RPM;
     private static final ModConfigSpec.IntValue CFG_BIOFILTER_RADIUS_BLOCKS;
@@ -249,6 +256,15 @@ public class Config {
         CFG_SHINGLE_NOON_FE     = BUILDER.comment("FE/t per shingle at noon (clear weather), before the roof angle is applied").defineInRange("noon_fe_per_tick", 8, 1, 100_000);
         CFG_SHINGLE_BUFFER      = BUILDER.comment("FE buffer per shingle. Energy flows across a roof towards whichever shingle is being drained, so this also limits how fast a big roof can deliver").defineInRange("buffer_capacity", 4_000, 100, 10_000_000);
         CFG_SHINGLE_MAX_EXTRACT = BUILDER.comment("Max FE per tick a single shingle hands to adjacent cables, which is the most a whole roof can deliver through one shingle").defineInRange("max_extract", 1_000, 1, 1_000_000);
+        BUILDER.pop();
+
+        BUILDER.push("solar_glass");
+        CFG_SOLAR_GLASS_MORNING_FE      = BUILDER.comment("FE/t per Solar Glass block at dawn and dusk").defineInRange("morning_fe_per_tick", 2, 1, 100_000);
+        CFG_SOLAR_GLASS_NOON_FE         = BUILDER.comment("FE/t per Solar Glass block at noon (clear weather)").defineInRange("noon_fe_per_tick", 4, 1, 100_000);
+        CFG_SOLAR_GLASS_PANE_MORNING_FE = BUILDER.comment("FE/t per Solar Glass Pane at dawn and dusk").defineInRange("pane_morning_fe_per_tick", 1, 1, 100_000);
+        CFG_SOLAR_GLASS_PANE_NOON_FE    = BUILDER.comment("FE/t per Solar Glass Pane at noon (clear weather)").defineInRange("pane_noon_fe_per_tick", 2, 1, 100_000);
+        CFG_SOLAR_GLASS_BUFFER          = BUILDER.comment("FE buffer per glass block or pane. Energy flows across touching glass (and Solar Shingles) towards whichever block is being drained").defineInRange("buffer_capacity", 2_000, 100, 10_000_000);
+        CFG_SOLAR_GLASS_MAX_EXTRACT     = BUILDER.comment("Max FE per tick a single glass block or pane hands to adjacent cables").defineInRange("max_extract", 1_000, 1, 1_000_000);
         BUILDER.pop();
 
         BUILDER.push("geyser_cap");
@@ -537,6 +553,7 @@ public class Config {
         CFG_POLLUTION_RADIUS_BLOCKS = BUILDER.comment("Block radius around each active pollution source that receives pollution (0 = source chunk only).").defineInRange("pollution_radius_blocks", 64, 0, 512);
         CFG_POLLUTION_DECAY_RATE   = BUILDER.comment("Pollution units removed from each chunk per second (0 = pollution never decays).").defineInRange("pollution_decay_rate_per_second", 1, 0, 1_000_000);
         CFG_LEAF_ABSORPTION_PER_INTERVAL = BUILDER.comment("Pollution absorbed per leaf block in a chunk each decay interval. 0 to disable tree absorption.").defineInRange("leaf_absorption_per_interval", 1, 0, 1_000_000);
+        CFG_TRELLIS_ABSORPTION_PER_INTERVAL = BUILDER.comment("Pollution absorbed per Trellis with vines on it in a chunk each decay interval, counted near the surface like leaves. 0 to disable.").defineInRange("trellis_absorption_per_interval", 1, 0, 1_000_000);
         CFG_BIOFILTER_ABSORPTION_PER_RPM = BUILDER.comment(
                 "Pollution units removed per second, per RPM of rotational speed driving the Biofilter.",
                 "Scales with actual speed rather than a flat rate, so a cheap 16 RPM feed and a maxed-out",
@@ -564,6 +581,7 @@ public class Config {
     public static int andesiteMorningRpm, andesiteNoonRpm, andesiteMorningSu, andesiteNoonSu;
     public static int brassMorningFe, brassNoonFe, brassBuffer, brassMaxExtract;
     public static int shingleMorningFe, shingleNoonFe, shingleBuffer, shingleMaxExtract;
+    public static int solarGlassMorningFe, solarGlassNoonFe, solarGlassPaneMorningFe, solarGlassPaneNoonFe, solarGlassBuffer, solarGlassMaxExtract;
     public static int geyserCapRpm, geyserCapSu;
     public static boolean geyserEruptions;
     public static int geyserMinIntervalTicks, geyserMaxIntervalTicks, geyserWarningTicks, geyserEruptionTicks, geyserHeight;
@@ -613,7 +631,7 @@ public class Config {
 
     public static boolean globalWarmingEnabled;
     public static int pollutionPerSource, pollutionRadiusBlocks, pollutionDecayRate;
-    public static int leafAbsorptionPerInterval, biofilterSu, biofilterRadiusBlocks, biofilterPollutionPerCarbon;
+    public static int leafAbsorptionPerInterval, trellisAbsorptionPerInterval, biofilterSu, biofilterRadiusBlocks, biofilterPollutionPerCarbon;
     public static double biofilterAbsorptionPerRpm;
     public static int biomeDecayThreshold, biomeDecayInterval, blocksDecayedPerInterval;
     public static String deadBiome;
@@ -637,6 +655,12 @@ public class Config {
         shingleNoonFe        = CFG_SHINGLE_NOON_FE.get();
         shingleBuffer        = CFG_SHINGLE_BUFFER.get();
         shingleMaxExtract    = CFG_SHINGLE_MAX_EXTRACT.get();
+        solarGlassMorningFe     = CFG_SOLAR_GLASS_MORNING_FE.get();
+        solarGlassNoonFe        = CFG_SOLAR_GLASS_NOON_FE.get();
+        solarGlassPaneMorningFe = CFG_SOLAR_GLASS_PANE_MORNING_FE.get();
+        solarGlassPaneNoonFe    = CFG_SOLAR_GLASS_PANE_NOON_FE.get();
+        solarGlassBuffer        = CFG_SOLAR_GLASS_BUFFER.get();
+        solarGlassMaxExtract    = CFG_SOLAR_GLASS_MAX_EXTRACT.get();
 
         geyserCapRpm         = CFG_GEYSER_RPM.get();
         geyserCapSu          = CFG_GEYSER_SU.get();
@@ -742,6 +766,7 @@ public class Config {
         pollutionRadiusBlocks = CFG_POLLUTION_RADIUS_BLOCKS.get();
         pollutionDecayRate    = CFG_POLLUTION_DECAY_RATE.get();
         leafAbsorptionPerInterval       = CFG_LEAF_ABSORPTION_PER_INTERVAL.get();
+        trellisAbsorptionPerInterval    = CFG_TRELLIS_ABSORPTION_PER_INTERVAL.get();
         biofilterSu                     = CFG_BIOFILTER_SU.get();
         biofilterAbsorptionPerRpm       = CFG_BIOFILTER_ABSORPTION_PER_RPM.get();
         biofilterRadiusBlocks           = CFG_BIOFILTER_RADIUS_BLOCKS.get();

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "solarpunk:block/red_rammed_earth_slab"
+    },
+    "type=double": {
+      "model": "solarpunk:block/red_rammed_earth"
+    },
+    "type=top": {
+      "model": "solarpunk:block/red_rammed_earth_slab_top"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "solarpunk:block/lime_terracotta_rammed_earth_slab"
+    },
+    "type=double": {
+      "model": "solarpunk:block/lime_terracotta_rammed_earth"
+    },
+    "type=top": {
+      "model": "solarpunk:block/lime_terracotta_rammed_earth_slab_top"
+    }
+  }
+}

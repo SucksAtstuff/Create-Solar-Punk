@@ -1,0 +1,8 @@
+{
+  "parent": "solarpunk:block/tinted/inner_stairs",
+  "textures": {
+    "bottom": "solarpunk:block/rammed_earth",
+    "side": "solarpunk:block/rammed_earth",
+    "top": "solarpunk:block/rammed_earth"
+  }
+}

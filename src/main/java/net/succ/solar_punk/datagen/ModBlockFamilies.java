@@ -8,8 +8,10 @@ import net.succ.solar_punk.block.ModBlocks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 // Building block sets (stairs, slabs, walls, polished and chiseled variants) built on a base
 // block. Each family in ALL gets its blockstates, models, loot, tags, crafting recipes and
@@ -76,12 +78,54 @@ public final class ModBlockFamilies {
             .wall(ModBlocks.FUSION_REACTOR_CASING_WALL.get())
             .getFamily();
 
-    public static final List<BlockFamily> ALL = List.of(SALT, POLISHED_SALT, SALT_BRICKS, ASH, POLISHED_ASH, ASH_BRICKS, TURBINE_CASING, FUSION_REACTOR_CASING);
+    // Two per Rammed Earth colour: the block, and its bricks (with the chiseled bricks). Tinted:
+    // every colour shares the grey rammed_earth textures, and the models use the tinted parents
+    // in models/block/tinted/.
+    public static final List<BlockFamily> RAMMED_EARTH = ModBlocks.RAMMED_EARTH.values().stream()
+            .flatMap(set -> Stream.of(
+                    new BlockFamily.Builder(set.block().get())
+                            .stairs(set.stairs().get())
+                            .slab(set.slab().get())
+                            .wall(set.wall().get())
+                            .getFamily(),
+                    new BlockFamily.Builder(set.bricks().get())
+                            .stairs(set.brickStairs().get())
+                            .slab(set.brickSlab().get())
+                            .wall(set.brickWall().get())
+                            .chiseled(set.chiseledBricks().get())
+                            .getFamily()))
+            .toList();
+
+    public static final List<BlockFamily> ALL = Stream.concat(
+            Stream.of(SALT, POLISHED_SALT, SALT_BRICKS, ASH, POLISHED_ASH, ASH_BRICKS, TURBINE_CASING, FUSION_REACTOR_CASING),
+            RAMMED_EARTH.stream()).toList();
 
     // Base blocks whose texture isn't at textures/block/<id>.png.
-    private static final Map<Block, ResourceLocation> BASE_TEXTURES = Map.of(
-            ModBlocks.TURBINE_CASING.get(), tex("industrial_iron_casing/industrial_iron_casing"),
-            ModBlocks.FUSION_REACTOR_CASING.get(), tex("fusion_reactor_casing/fusion_reactor_casing"));
+    private static final Map<Block, ResourceLocation> BASE_TEXTURES = new HashMap<>();
+    static {
+        BASE_TEXTURES.put(ModBlocks.TURBINE_CASING.get(), tex("industrial_iron_casing/industrial_iron_casing"));
+        BASE_TEXTURES.put(ModBlocks.FUSION_REACTOR_CASING.get(), tex("fusion_reactor_casing/fusion_reactor_casing"));
+        ModBlocks.RAMMED_EARTH.values().forEach(set -> {
+            BASE_TEXTURES.put(set.block().get(), tex("rammed_earth"));
+            BASE_TEXTURES.put(set.bricks().get(), tex("rammed_earth_bricks"));
+        });
+    }
+
+    // Tinted full-block variants (the chiseled bricks), which share one grey texture.
+    private static final Map<Block, ResourceLocation> TINTED_VARIANT_TEXTURES = new HashMap<>();
+    static {
+        ModBlocks.RAMMED_EARTH.values().forEach(set ->
+                TINTED_VARIANT_TEXTURES.put(set.chiseledBricks().get(), tex("chiseled_rammed_earth")));
+    }
+
+    @Nullable
+    public static ResourceLocation tintedVariantTexture(Block block) {
+        return TINTED_VARIANT_TEXTURES.get(block);
+    }
+
+    public static boolean isTinted(BlockFamily family) {
+        return RAMMED_EARTH.contains(family);
+    }
 
     // BlockFamily keeps its variants in a HashMap, so they come out in a different order each
     // run. Datagen goes through them in Variant order instead, so tag files don't reshuffle.

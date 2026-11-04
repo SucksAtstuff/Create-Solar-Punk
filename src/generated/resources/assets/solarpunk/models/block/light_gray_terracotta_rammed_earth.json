@@ -1,0 +1,6 @@
+{
+  "parent": "solarpunk:block/tinted/cube_all",
+  "textures": {
+    "all": "solarpunk:block/rammed_earth"
+  }
+}

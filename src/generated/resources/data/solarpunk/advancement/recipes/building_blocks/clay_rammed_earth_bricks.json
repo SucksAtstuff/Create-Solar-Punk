@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_clay_rammed_earth": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:clay_rammed_earth"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "solarpunk:clay_rammed_earth_bricks"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_clay_rammed_earth"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "solarpunk:clay_rammed_earth_bricks"
+    ]
+  }
+}

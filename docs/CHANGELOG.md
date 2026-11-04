@@ -13,6 +13,11 @@
 - With global warming on, the Biofilter now collects **Carbon Dust** from the pollution it cleans up. Take it out by hand or with a funnel.
 - Compact 4 Carbon Dust into Biochar with a Mechanical Press and Basin, for Fertilizer or the Particle Accelerator.
 
+### New Recipes
+
+- New Particle Accelerator recipes: **Slime Balls** from Biomass, **Beryllium Dust** from Lithium Dust, and **Glowstone Dust** from Redstone and Lithium Dust.
+- Mix Carbon Dust or Biochar with Salt in a Mixer to make **Gunpowder**.
+
 ### Advancements
 
 - New advancements for the Particle Accelerator: crafting the coils, closing your first ring, your first collision, getting a Tritium Capsule and running a huge ring.
@@ -25,10 +30,11 @@
 - New **Polished Salt** with stairs, slab and wall.
 - New **Salt Bricks** with stairs, slab and wall, plus **Chiseled Salt Bricks**.
 - New **Polished Ash** and **Ash Bricks**, each with stairs, slab and wall, plus **Chiseled Ash Bricks**.
-- New **Solar Glass** and **Solar Glass Pane**: decorative framed glass.
-- New **Solar Shingles**: stepped solar roofing that makes a little FE, so your roof can be the solar array. Roofs sloping toward the sun make more.
+- New **Solar Glass** and **Solar Glass Pane**: framed glass that makes a little FE under open sky, for skylights and windows.
+- New **Solar Shingles**: stepped solar roofing that makes a little FE, so your roof can be the solar array. Roofs sloping toward the sun make more. Also comes in **Solar Glass Shingles**, a glass version.
+- New **Rammed Earth** in 25 colours, with stairs, slabs and walls: pack soil, Gravel, Clay and Ash or Biochar together with a Mechanical Press. The soil you use (Dirt, Sand, Red Sand, Mud, Clay, Ash, Salt, Ruined Dirt, or any Terracotta) picks the colour. Every colour also comes as **Rammed Earth Bricks**, with stairs, slab and wall, and **Chiseled Rammed Earth Bricks**.
 - New **Garden Light**: a small solar light that charges in the sun during the day and glows through the night.
-- New **Trellis**: a climbable wooden lattice for walls. Grow Vines on it, then add a flower or Glow Berries.
+- New **Trellis**: a climbable wooden lattice for walls. Grow Vines on it, then add a flower or Glow Berries. With global warming on, a Trellis with vines soaks up pollution like leaves do.
 - New **Brass** and **Andesite Filigree Railings**: art nouveau railings that connect to their neighbours. Hold Alt to switch the item between flat, slope and steep slope, for ramps, arches and staircases. Steep slopes placed on stairs follow them automatically, and Create-style placement arrows help extend runs and slopes.
 - New stairs, slabs and walls for the Turbine Casing and Fusion Reactor Casing, so engine rooms can match.
 - Decorative blocks now have their own **Create: Solarpunk Building Blocks** creative tab, and the main tab is now grouped by power type.

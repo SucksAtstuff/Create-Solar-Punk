@@ -28,6 +28,7 @@ import net.succ.solar_punk.block.entity.custom.ParticleAcceleratorInputBlockEnti
 import net.succ.solar_punk.block.entity.custom.TurbineCasingBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineRotorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarShinglesBlockEntity;
+import net.succ.solar_punk.block.entity.custom.SolarGlassBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCasingBlockEntity;
 
@@ -92,7 +93,14 @@ public class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SolarShinglesBlockEntity>> SOLAR_SHINGLES =
             BLOCK_ENTITIES.register("solar_shingles", () -> BlockEntityType.Builder
-                    .of((pos, state) -> new SolarShinglesBlockEntity(ModBlockEntities.SOLAR_SHINGLES.get(), pos, state), ModBlocks.SOLAR_SHINGLES.get())
+                    .of((pos, state) -> new SolarShinglesBlockEntity(ModBlockEntities.SOLAR_SHINGLES.get(), pos, state),
+                            ModBlocks.SOLAR_SHINGLES.get(), ModBlocks.SOLAR_GLASS_SHINGLES.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SolarGlassBlockEntity>> SOLAR_GLASS =
+            BLOCK_ENTITIES.register("solar_glass", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new SolarGlassBlockEntity(ModBlockEntities.SOLAR_GLASS.get(), pos, state),
+                            ModBlocks.SOLAR_GLASS.get(), ModBlocks.SOLAR_GLASS_PANE.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HeatBatteryBlockEntity>> HEAT_BATTERY =
