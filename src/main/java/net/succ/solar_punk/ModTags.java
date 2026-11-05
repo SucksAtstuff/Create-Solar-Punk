@@ -75,6 +75,14 @@ public class ModTags {
         public static final TagKey<Item> PLATES_IRON = common("plates/iron");
         public static final TagKey<Item> PLATES_COPPER = common("plates/copper");
         public static final TagKey<Item> PLATES_BRASS = common("plates/brass");
+        public static final TagKey<Item> PLATES_GOLD = common("plates/gold");
+
+        // Same tags as Succ's Essentials Extended, so wires from either mod work in both.
+        public static final TagKey<Item> WIRES = common("wires");
+        public static final TagKey<Item> WIRES_METAL = common("wires/all_metal");
+        public static final TagKey<Item> WIRES_COPPER = common("wires/copper");
+        public static final TagKey<Item> WIRES_IRON = common("wires/iron");
+        public static final TagKey<Item> WIRES_GOLD = common("wires/gold");
         public static final TagKey<Item> INGOTS_ZINC = common("ingots/zinc");
 
         private static TagKey<Item> common(String path) {

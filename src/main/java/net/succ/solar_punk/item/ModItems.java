@@ -96,6 +96,29 @@ public class ModItems {
     public static final DeferredItem<Item> TRITIUM_CAPSULE = ITEMS.register("tritium_capsule",
             () -> new Item(new Item.Properties()));
 
+    // Wires, cut from metal sheets with a Mechanical Saw (ModCuttingRecipeGen), and wound
+    // onto an Empty Spool. For connecting electrical blocks. No use yet.
+    public static final DeferredItem<Item> COPPER_WIRE = ITEMS.register("copper_wire",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> IRON_WIRE = ITEMS.register("iron_wire",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> GOLD_WIRE = ITEMS.register("gold_wire",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> EMPTY_SPOOL = ITEMS.register("empty_spool",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> COPPER_SPOOL = ITEMS.register("copper_spool",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> IRON_SPOOL = ITEMS.register("iron_spool",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> GOLD_SPOOL = ITEMS.register("gold_spool",
+            () -> new Item(new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

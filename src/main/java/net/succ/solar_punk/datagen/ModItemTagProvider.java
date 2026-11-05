@@ -95,6 +95,12 @@ public class ModItemTagProvider extends ItemTagsProvider {
         tag(BUCKETS_FERTILIZER).add(ModFluids.FERTILIZER_BUCKET.get());
         tag(BUCKETS_STEAM).add(ModFluids.STEAM_BUCKET.get());
 
+        tag(ModTags.Items.WIRES).addTag(ModTags.Items.WIRES_METAL);
+        tag(ModTags.Items.WIRES_METAL).add(ModItems.COPPER_WIRE.get(), ModItems.IRON_WIRE.get(), ModItems.GOLD_WIRE.get());
+        tag(ModTags.Items.WIRES_COPPER).add(ModItems.COPPER_WIRE.get());
+        tag(ModTags.Items.WIRES_IRON).add(ModItems.IRON_WIRE.get());
+        tag(ModTags.Items.WIRES_GOLD).add(ModItems.GOLD_WIRE.get());
+
         // Create compat
         tag(BLAZE_BURNER_FUEL_REGULAR)
                 .add(ModItems.BIOMASS.get())

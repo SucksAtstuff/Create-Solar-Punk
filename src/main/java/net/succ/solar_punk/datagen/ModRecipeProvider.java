@@ -20,6 +20,7 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -307,6 +308,20 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_iron_sheet", has(ModTags.Items.PLATES_IRON))
                 .save(output);
 
+        // Empty Spool: a stick axle between two plank flanges.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.EMPTY_SPOOL.get(), 2)
+                .pattern("P")
+                .pattern("S")
+                .pattern("P")
+                .define('P', ItemTags.PLANKS)
+                .define('S', Tags.Items.RODS_WOODEN)
+                .unlockedBy("has_wire", has(ModTags.Items.WIRES))
+                .save(output);
+
+        wireSpool(output, ModTags.Items.WIRES_COPPER, ModItems.COPPER_SPOOL.get());
+        wireSpool(output, ModTags.Items.WIRES_IRON, ModItems.IRON_SPOOL.get());
+        wireSpool(output, ModTags.Items.WIRES_GOLD, ModItems.GOLD_SPOOL.get());
+
         // Brass-tier, since the Crystallizer is the Solar Heater's faster, pricier counterpart.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CRYSTALLIZER.get())
                 .pattern("BGB")
@@ -419,6 +434,18 @@ public class ModRecipeProvider extends RecipeProvider {
                 new SolarHeaterRecipe(ingredient, result),
                 null
         );
+    }
+
+    // An Empty Spool wound with 4 wires.
+    private static void wireSpool(RecipeOutput output, TagKey<Item> wire, Item spool) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, spool)
+                .pattern(" W ")
+                .pattern("WSW")
+                .pattern(" W ")
+                .define('W', wire)
+                .define('S', ModItems.EMPTY_SPOOL.get())
+                .unlockedBy("has_wire", has(wire))
+                .save(output);
     }
 
     // Smelting and blasting recipes turning `input` into a metal ingot.

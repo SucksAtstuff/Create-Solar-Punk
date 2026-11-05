@@ -1,0 +1,14 @@
+{
+  "type": "create:cutting",
+  "ingredients": [
+    {
+      "tag": "c:plates/gold"
+    }
+  ],
+  "results": [
+    {
+      "count": 3,
+      "id": "solarpunk:gold_wire"
+    }
+  ]
+}

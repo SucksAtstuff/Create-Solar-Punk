@@ -39,6 +39,13 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.INCOMPLETE_SUPERCONDUCTING_COIL.get());
         basicItem(ModItems.EMPTY_FUEL_CAPSULE.get());
         basicItem(ModItems.TRITIUM_CAPSULE.get());
+        basicItem(ModItems.COPPER_WIRE.get());
+        basicItem(ModItems.IRON_WIRE.get());
+        basicItem(ModItems.GOLD_WIRE.get());
+        basicItem(ModItems.EMPTY_SPOOL.get());
+        basicItem(ModItems.COPPER_SPOOL.get());
+        basicItem(ModItems.IRON_SPOOL.get());
+        basicItem(ModItems.GOLD_SPOOL.get());
         basicItem(ModFluids.MOLTEN_SALT_BUCKET.get());
         basicItem(ModFluids.BIOFUEL_BUCKET.get());
         basicItem(ModFluids.FERTILIZER_BUCKET.get());

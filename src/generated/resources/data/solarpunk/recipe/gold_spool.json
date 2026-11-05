@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "item": "solarpunk:empty_spool"
+    },
+    "W": {
+      "tag": "c:wires/gold"
+    }
+  },
+  "pattern": [
+    " W ",
+    "WSW",
+    " W "
+  ],
+  "result": {
+    "count": 1,
+    "id": "solarpunk:gold_spool"
+  }
+}
