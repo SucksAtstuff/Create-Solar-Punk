@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_charred_timber": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:charred_timber"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "solarpunk:charred_timber_slab"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_charred_timber"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "solarpunk:charred_timber_slab"
+    ]
+  }
+}

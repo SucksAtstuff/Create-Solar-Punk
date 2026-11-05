@@ -210,6 +210,38 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_photovoltaic_cell", has(ModItems.PHOTOVOLTAIC_CELL.get()))
                 .save(output);
 
+        // An amethyst-tinted glass tube under an iron rail, wired up with copper.
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModBlocks.GROW_LAMP.get(), 2)
+                .pattern("SWS")
+                .pattern("GAG")
+                .define('S', ModTags.Items.PLATES_IRON)
+                .define('W', ModTags.Items.WIRES_COPPER)
+                .define('G', Tags.Items.GLASS_PANES_COLORLESS)
+                .define('A', Items.AMETHYST_SHARD)
+                .unlockedBy("has_copper_wire", has(ModTags.Items.WIRES_COPPER))
+                .save(output);
+
+        // A brass insulator on a brass base.
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModBlocks.WIRE_CONNECTOR.get(), 4)
+                .pattern("N")
+                .pattern("S")
+                .define('N', createItem("brass_nugget"))
+                .define('S', ModTags.Items.PLATES_BRASS)
+                .unlockedBy("has_wire", has(ModTags.Items.WIRES))
+                .save(output);
+
+        // A shaded glowstone bulb, wired down an iron post.
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.STREETLAMP.get())
+                .pattern("SGS")
+                .pattern(" W ")
+                .pattern(" I ")
+                .define('S', ModTags.Items.PLATES_IRON)
+                .define('G', Items.GLOWSTONE_DUST)
+                .define('W', ModTags.Items.WIRES_COPPER)
+                .define('I', Tags.Items.INGOTS_IRON)
+                .unlockedBy("has_copper_wire", has(ModTags.Items.WIRES_COPPER))
+                .save(output);
+
         // Solar Glass Panes on an Andesite Alloy backing, laid like stairs.
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.SOLAR_SHINGLES.get(), 6)
                 .pattern("P  ")
@@ -532,6 +564,7 @@ public class ModRecipeProvider extends RecipeProvider {
     // would save under the minecraft namespace, so these are built by hand.
     private void blockFamilyRecipes(RecipeOutput output, BlockFamily family) {
         generateRecipes(output, family, FeatureFlags.DEFAULT_FLAGS);
+        if (ModBlockFamilies.isWooden(family)) return;
 
         Block base = family.getBaseBlock();
         String baseName = BuiltInRegistries.BLOCK.getKey(base).getPath();

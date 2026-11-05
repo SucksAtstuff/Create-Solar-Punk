@@ -13,6 +13,8 @@ import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -24,6 +26,9 @@ import net.succ.solar_punk.block.custom.FiligreeRailingSlopeBlock;
 import net.succ.solar_punk.block.custom.FiligreeRailingSteepSlopeBlock;
 import net.succ.solar_punk.block.custom.SaltLampBlock;
 import net.succ.solar_punk.block.custom.GardenLightBlock;
+import net.succ.solar_punk.block.custom.StreetlampBlock;
+import net.succ.solar_punk.block.custom.GrowLampBlock;
+import net.succ.solar_punk.block.custom.WireConnectorBlock;
 import net.succ.solar_punk.block.custom.GreenhouseControllerBlock;
 import net.succ.solar_punk.block.custom.TrellisBlock;
 import net.succ.solar_punk.block.custom.TrellisPlant;
@@ -92,6 +97,15 @@ public class ModBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
+
+    // Strung together with spools of wire to carry FE; see WireConnectorBlockEntity.
+    public static final DeferredBlock<WireConnectorBlock> WIRE_CONNECTOR = registerBlock("wire_connector",
+            () -> new WireConnectorBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_YELLOW)
+                    .strength(0.5f)
+                    .sound(SoundType.COPPER)
+                    .noOcclusion()
+                    .pushReaction(PushReaction.DESTROY)));
 
     public static final DeferredBlock<KineticBatteryBlock> KINETIC_BATTERY = registerBlock("kinetic_battery",
             () -> new KineticBatteryBlock(BlockBehaviour.Properties.of()
@@ -189,6 +203,16 @@ public class ModBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(3.0f, 6.0f)
                     .sound(SoundType.COPPER)));
+
+    // FE-powered grow light; see GrowLampBlockEntity.
+    public static final DeferredBlock<GrowLampBlock> GROW_LAMP = registerBlock("grow_lamp",
+            () -> new GrowLampBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .strength(1.0f, 3.0f)
+                    .sound(SoundType.LANTERN)
+                    .noOcclusion()
+                    .pushReaction(PushReaction.DESTROY)
+                    .lightLevel(state -> state.getValue(GrowLampBlock.LIT) ? 15 : 0)));
 
     public static final DeferredBlock<BiomassGasifierBlock> BIOMASS_GASIFIER = registerBlock("biomass_gasifier",
             () -> new BiomassGasifierBlock(BlockBehaviour.Properties.of()
@@ -542,6 +566,29 @@ public class ModBlocks {
                     .noOcclusion()
                     .pushReaction(PushReaction.DESTROY)
                     .lightLevel(state -> state.getValue(GardenLightBlock.LIT) ? 10 : 0)));
+
+    // Two cells tall; only the upper half (the lamp head) gives off light.
+    public static final DeferredBlock<StreetlampBlock> STREETLAMP = registerDecorative("streetlamp",
+            () -> new StreetlampBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .requiresCorrectToolForDrops()
+                    .strength(2.0f, 4.0f)
+                    .sound(SoundType.LANTERN)
+                    .noOcclusion()
+                    .pushReaction(PushReaction.BLOCK)
+                    .lightLevel(state -> state.getValue(StreetlampBlock.LIT)
+                            && state.getValue(StreetlampBlock.HALF) == DoubleBlockHalf.UPPER ? 15 : 0)));
+
+    // Scorched planks, made by applying Biochar to planks. Charring makes wood fire resistant,
+    // so unlike planks it doesn't burn.
+    public static final DeferredBlock<Block> CHARRED_TIMBER = registerDecorative("charred_timber",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLACK)
+                    .instrument(NoteBlockInstrument.BASS)
+                    .strength(2.0f, 3.0f)
+                    .sound(SoundType.WOOD)));
+    public static final DeferredBlock<StairBlock> CHARRED_TIMBER_STAIRS = registerStairs("charred_timber_stairs", CHARRED_TIMBER);
+    public static final DeferredBlock<SlabBlock> CHARRED_TIMBER_SLAB = registerSlab("charred_timber_slab", CHARRED_TIMBER);
 
     public static final DeferredBlock<TrellisBlock> TRELLIS = registerDecorative("trellis",
             () -> new TrellisBlock(BlockBehaviour.Properties.of()

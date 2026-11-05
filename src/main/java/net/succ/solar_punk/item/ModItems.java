@@ -4,6 +4,7 @@ import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
+import net.succ.solar_punk.wire.WireTier;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.succ.solar_punk.SolarPunk;
@@ -97,7 +98,7 @@ public class ModItems {
             () -> new Item(new Item.Properties()));
 
     // Wires, cut from metal sheets with a Mechanical Saw (ModCuttingRecipeGen), and wound
-    // onto an Empty Spool. For connecting electrical blocks. No use yet.
+    // onto an Empty Spool. A spool strings wires between Wire Connectors (see SpoolItem).
     public static final DeferredItem<Item> COPPER_WIRE = ITEMS.register("copper_wire",
             () -> new Item(new Item.Properties()));
 
@@ -110,14 +111,14 @@ public class ModItems {
     public static final DeferredItem<Item> EMPTY_SPOOL = ITEMS.register("empty_spool",
             () -> new Item(new Item.Properties()));
 
-    public static final DeferredItem<Item> COPPER_SPOOL = ITEMS.register("copper_spool",
-            () -> new Item(new Item.Properties()));
+    public static final DeferredItem<SpoolItem> COPPER_SPOOL = ITEMS.register("copper_spool",
+            () -> new SpoolItem(WireTier.COPPER, new Item.Properties()));
 
-    public static final DeferredItem<Item> IRON_SPOOL = ITEMS.register("iron_spool",
-            () -> new Item(new Item.Properties()));
+    public static final DeferredItem<SpoolItem> IRON_SPOOL = ITEMS.register("iron_spool",
+            () -> new SpoolItem(WireTier.IRON, new Item.Properties()));
 
-    public static final DeferredItem<Item> GOLD_SPOOL = ITEMS.register("gold_spool",
-            () -> new Item(new Item.Properties()));
+    public static final DeferredItem<SpoolItem> GOLD_SPOOL = ITEMS.register("gold_spool",
+            () -> new SpoolItem(WireTier.GOLD, new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

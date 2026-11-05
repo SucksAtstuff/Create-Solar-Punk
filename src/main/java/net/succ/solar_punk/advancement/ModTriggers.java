@@ -47,6 +47,11 @@ public class ModTriggers {
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> ACCELERATOR_BIG_RING =
             TRIGGERS.register("accelerator_big_ring", SolarpunkTrigger::new);
 
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> DISPENSED_WIRE_CONNECTOR =
+            TRIGGERS.register("dispensed_wire_connector", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> DISPENSED_GROW_LAMP =
+            TRIGGERS.register("dispensed_grow_lamp", SolarpunkTrigger::new);
+
     public static void register(IEventBus bus) {
         TRIGGERS.register(bus);
     }

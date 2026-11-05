@@ -21,10 +21,18 @@
 ### Greenhouses
 
 - New **Greenhouse Controller**: place it in the wall of a closed room with a glass roof, facing inside, and plants under the glass grow faster. Bees inside speed them up even more, and with global warming on, a sealed greenhouse is safe from pollution decay. Needs no power, can be turned or picked up with a Wrench, and has a Ponder scene.
+- New **Grow Lamp**: an FE-powered purple grow light. Hang it under a ceiling or from a wall, and crops below it grow faster, at night and underground too. A redstone signal switches it off.
 - New **Greenhouse Glass** and **Clear Greenhouse Glass**: copper-framed glass for greenhouses and conservatories, each with a pane. Also comes as frosted **Greenhouse Panels** in two patterns, which still let light through.
 - When pollution turns a chunk into the dead biome, the inside of a sealed greenhouse keeps its original biome, so grass and leaves in there stay green.
 - With Serene Seasons, crops under any greenhouse glass (and Solar Glass) grow in every season.
 - New Display Link readouts on the Greenhouse Controller: **Greenhouse Status**, **Greenhouse Plant Count** and **Greenhouse Growth Speed**.
+
+### Wires
+
+- New **Wire Connectors**: small brass insulators that go on any face of any block.
+- Cut **Iron**, **Copper** and **Gold Wire** from metal sheets with a Mechanical Saw, and wind 4 onto an Empty Spool. Click two Wire Connectors with a spool to string a wire between them. Longer wires use more of the spool.
+- Power going into one connector comes out into the blocks under the other connectors it's wired to, so one solar roof can light a whole street. Generators that don't push power out on their own get drained.
+- Gold wire carries the most power and reaches furthest, then Copper, then Iron. Shears cut a connector's wires and give them back.
 
 ### New Recipes
 
@@ -48,11 +56,17 @@
 - New **Solar Shingles**: stepped solar roofing that makes a little FE, so your roof can be the solar array. Roofs sloping toward the sun make more. Also comes in **Solar Glass Shingles**, a glass version.
 - New **Rammed Earth** in 25 colours, with stairs, slabs and walls: pack soil, Gravel, Clay and Ash or Biochar together with a Mechanical Press. The soil you use (Dirt, Sand, Red Sand, Mud, Clay, Ash, Salt, Ruined Dirt, or any Terracotta) picks the colour. Every colour also comes as **Rammed Earth Bricks**, with stairs, slab and wall, and **Chiseled Rammed Earth Bricks**.
 - New **Garden Light**: a small solar light that charges in the sun during the day and glows through the night.
+- New **Streetlamp**: a two-block-tall street light that runs on FE and switches itself on at dusk. Power it with cables or Wire Connectors, or set it on a Brass Solar Panel or Solar Glass.
+- New **Charred Timber**: dark scorched planks, made by applying Biochar to any planks, with stairs and slabs. Unlike planks, it doesn't burn.
 - New **Trellis**: a climbable wooden lattice for walls. Grow Vines on it, then add a flower or Glow Berries. With global warming on, a Trellis with vines soaks up pollution like leaves do.
 - New **Brass**, **Andesite** and **Copper Filigree Railings**: art nouveau railings that connect to their neighbours. Hold Alt to switch the item between flat, slope and steep slope, for ramps, arches and staircases. Gentle slopes blend into flat railings at both ends, steep slopes placed on stairs follow them automatically, and Create-style placement arrows help extend runs and slopes.
 - New stairs, slabs and walls for the Turbine Casing and Fusion Reactor Casing, so engine rooms can match.
 - Decorative blocks now have their own **Create: Solarpunk Building Blocks** creative tab, and the main tab is now grouped by power type.
 - New **Ash** item: blast Biomass in a Blast Furnace or with Bulk Blasting, and craft 4 into an Ash Block. Ash Blocks now need a shovel and drop Ash, like Snow.
+
+### Christmas
+
+- During December, Garden Lights dress up for Christmas.
 
 ### Sun Readouts
 

@@ -228,6 +228,16 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_LEAF_ABSORPTION_PER_INTERVAL;
     private static final ModConfigSpec.IntValue CFG_TRELLIS_ABSORPTION_PER_INTERVAL;
     private static final ModConfigSpec.IntValue CFG_BIOFILTER_SU;
+    private static final ModConfigSpec.IntValue CFG_STREETLAMP_FE_PER_TICK;
+    private static final ModConfigSpec.IntValue CFG_STREETLAMP_BUFFER;
+    private static final ModConfigSpec.IntValue CFG_STREETLAMP_MAX_RECEIVE;
+    private static final ModConfigSpec.IntValue CFG_GROW_LAMP_FE_PER_TICK, CFG_GROW_LAMP_BUFFER, CFG_GROW_LAMP_MAX_RECEIVE, CFG_GROW_LAMP_RANGE;
+    private static final ModConfigSpec.DoubleValue CFG_GROW_LAMP_GROWTH_BOOST;
+    private static final ModConfigSpec.IntValue CFG_WIRE_IRON_RATE, CFG_WIRE_IRON_LENGTH;
+    private static final ModConfigSpec.IntValue CFG_WIRE_COPPER_RATE, CFG_WIRE_COPPER_LENGTH;
+    private static final ModConfigSpec.IntValue CFG_WIRE_GOLD_RATE, CFG_WIRE_GOLD_LENGTH;
+    private static final ModConfigSpec.IntValue CFG_WIRE_BLOCKS_PER_WIRE;
+    private static final ModConfigSpec.IntValue CFG_WIRE_MAX_CONNECTIONS;
     private static final ModConfigSpec.IntValue CFG_GREENHOUSE_SCAN_INTERVAL;
     private static final ModConfigSpec.IntValue CFG_GREENHOUSE_MAX_VOLUME;
     private static final ModConfigSpec.DoubleValue CFG_GREENHOUSE_GROWTH_BOOST;
@@ -430,6 +440,31 @@ public class Config {
 
         BUILDER.push("biofilter");
         CFG_BIOFILTER_SU = BUILDER.comment("Stress units consumed while the Biofilter is running").defineInRange("su", 256, 1, 1_000_000);
+        BUILDER.pop();
+
+        BUILDER.push("streetlamp");
+        CFG_STREETLAMP_FE_PER_TICK = BUILDER.comment("FE/t a Streetlamp uses while lit").defineInRange("fe_per_tick", 2, 0, 100_000);
+        CFG_STREETLAMP_BUFFER      = BUILDER.comment("FE a Streetlamp stores. The default runs it through a whole night").defineInRange("buffer_capacity", 30_000, 100, 10_000_000);
+        CFG_STREETLAMP_MAX_RECEIVE = BUILDER.comment("Max FE per tick a Streetlamp accepts").defineInRange("max_receive", 100, 1, 1_000_000);
+        BUILDER.pop();
+
+        BUILDER.push("grow_lamp");
+        CFG_GROW_LAMP_FE_PER_TICK   = BUILDER.comment("FE/t a Grow Lamp uses while lit").defineInRange("fe_per_tick", 8, 0, 100_000);
+        CFG_GROW_LAMP_BUFFER        = BUILDER.comment("FE a Grow Lamp stores").defineInRange("buffer_capacity", 10_000, 100, 10_000_000);
+        CFG_GROW_LAMP_MAX_RECEIVE   = BUILDER.comment("Max FE per tick a Grow Lamp accepts").defineInRange("max_receive", 200, 1, 1_000_000);
+        CFG_GROW_LAMP_RANGE         = BUILDER.comment("How many blocks below a Grow Lamp it reaches plants, in a 3x3 area under it").defineInRange("range", 6, 1, 32);
+        CFG_GROW_LAMP_GROWTH_BOOST  = BUILDER.comment("Extra growth for plants under a lit Grow Lamp (1.0 = twice as fast). Stacks with greenhouses and other lamps").defineInRange("growth_boost", 1.0, 0.0, 100.0);
+        BUILDER.pop();
+
+        BUILDER.push("wires");
+        CFG_WIRE_IRON_RATE       = BUILDER.comment("Max FE per tick through one Iron Wire").defineInRange("iron_fe_per_tick", 256, 1, 1_000_000_000);
+        CFG_WIRE_IRON_LENGTH     = BUILDER.comment("Longest Iron Wire, in blocks").defineInRange("iron_max_length", 16, 1, 64);
+        CFG_WIRE_COPPER_RATE     = BUILDER.comment("Max FE per tick through one Copper Wire").defineInRange("copper_fe_per_tick", 1024, 1, 1_000_000_000);
+        CFG_WIRE_COPPER_LENGTH   = BUILDER.comment("Longest Copper Wire, in blocks").defineInRange("copper_max_length", 24, 1, 64);
+        CFG_WIRE_GOLD_RATE       = BUILDER.comment("Max FE per tick through one Gold Wire").defineInRange("gold_fe_per_tick", 4096, 1, 1_000_000_000);
+        CFG_WIRE_GOLD_LENGTH     = BUILDER.comment("Longest Gold Wire, in blocks").defineInRange("gold_max_length", 32, 1, 64);
+        CFG_WIRE_BLOCKS_PER_WIRE = BUILDER.comment("Blocks of length one wire item covers. A spool holds 4 wires").defineInRange("blocks_per_wire", 8, 1, 64);
+        CFG_WIRE_MAX_CONNECTIONS = BUILDER.comment("Most wires one Wire Connector can hold").defineInRange("max_connections", 8, 1, 64);
         BUILDER.pop();
 
         // Each knob is interpolated by blanket composition (blanketEfficiency: 0 = pure
@@ -651,6 +686,11 @@ public class Config {
     public static double greenhouseGrowthBoost, greenhousePollinationBonus;
     public static int leafAbsorptionPerInterval, trellisAbsorptionPerInterval, biofilterSu, biofilterRadiusBlocks, biofilterPollutionPerCarbon;
     public static double biofilterAbsorptionPerRpm;
+    public static int streetlampFePerTick, streetlampBuffer, streetlampMaxReceive;
+    public static int growLampFePerTick, growLampBuffer, growLampMaxReceive, growLampRange;
+    public static double growLampGrowthBoost;
+    public static int wireIronRate, wireIronLength, wireCopperRate, wireCopperLength, wireGoldRate, wireGoldLength;
+    public static int wireBlocksPerWire, wireMaxConnections;
     public static int biomeDecayThreshold, biomeDecayInterval, blocksDecayedPerInterval;
     public static String deadBiome;
     public static Map<String, Integer> perBlockPollution = new HashMap<>();
@@ -788,6 +828,22 @@ public class Config {
         leafAbsorptionPerInterval       = CFG_LEAF_ABSORPTION_PER_INTERVAL.get();
         trellisAbsorptionPerInterval    = CFG_TRELLIS_ABSORPTION_PER_INTERVAL.get();
         biofilterSu                     = CFG_BIOFILTER_SU.get();
+        streetlampFePerTick             = CFG_STREETLAMP_FE_PER_TICK.get();
+        streetlampBuffer                = CFG_STREETLAMP_BUFFER.get();
+        streetlampMaxReceive            = CFG_STREETLAMP_MAX_RECEIVE.get();
+        growLampFePerTick               = CFG_GROW_LAMP_FE_PER_TICK.get();
+        growLampBuffer                  = CFG_GROW_LAMP_BUFFER.get();
+        growLampMaxReceive              = CFG_GROW_LAMP_MAX_RECEIVE.get();
+        growLampRange                   = CFG_GROW_LAMP_RANGE.get();
+        growLampGrowthBoost             = CFG_GROW_LAMP_GROWTH_BOOST.get();
+        wireIronRate                    = CFG_WIRE_IRON_RATE.get();
+        wireIronLength                  = CFG_WIRE_IRON_LENGTH.get();
+        wireCopperRate                  = CFG_WIRE_COPPER_RATE.get();
+        wireCopperLength                = CFG_WIRE_COPPER_LENGTH.get();
+        wireGoldRate                    = CFG_WIRE_GOLD_RATE.get();
+        wireGoldLength                  = CFG_WIRE_GOLD_LENGTH.get();
+        wireBlocksPerWire               = CFG_WIRE_BLOCKS_PER_WIRE.get();
+        wireMaxConnections              = CFG_WIRE_MAX_CONNECTIONS.get();
         greenhouseScanInterval          = CFG_GREENHOUSE_SCAN_INTERVAL.get();
         greenhouseMaxVolume             = CFG_GREENHOUSE_MAX_VOLUME.get();
         greenhouseGrowthBoost           = CFG_GREENHOUSE_GROWTH_BOOST.get();

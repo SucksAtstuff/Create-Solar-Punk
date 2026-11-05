@@ -14,12 +14,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.animal.Bee;
-import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.block.BambooStalkBlock;
-import net.minecraft.world.level.block.BonemealableBlock;
-import net.minecraft.world.level.block.BushBlock;
-import net.minecraft.world.level.block.CactusBlock;
-import net.minecraft.world.level.block.SugarCaneBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,6 +21,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.Tags;
 import net.succ.solar_punk.Config;
+import net.succ.solar_punk.util.PlantGrowth;
 import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.GreenhouseControllerBlock;
@@ -188,30 +183,11 @@ public class GreenhouseControllerBlockEntity extends BlockEntity implements IHav
     // Every plant counts (so fully grown crops show up on the goggles too); only the ones that
     // still random tick get the boost.
     private static boolean isPlant(BlockState state) {
-        var block = state.getBlock();
-        return block instanceof BonemealableBlock || block instanceof BushBlock || block instanceof SugarCaneBlock
-                || block instanceof CactusBlock || block instanceof BambooStalkBlock;
+        return PlantGrowth.isPlant(state);
     }
 
-    // Extra random ticks on top of vanilla's: a plant gets randomTickSpeed / 4096 random ticks
-    // per game tick on average, so over one second the boost adds that times 20 times the bonus.
     private void grow(ServerLevel level) {
-        int tickSpeed = level.getGameRules().getInt(GameRules.RULE_RANDOMTICKING);
-        if (tickSpeed <= 0 || crops.isEmpty()) return;
-        double chance = boostMultiplier() * 20.0 * tickSpeed / 4096.0;
-        for (BlockPos cell : crops) {
-            BlockState state = level.getBlockState(cell);
-            if (!isGrowing(state)) continue;
-            double rolls = chance;
-            while (rolls > 0) {
-                if (rolls >= 1 || level.random.nextDouble() < rolls) {
-                    state.randomTick(level, cell, level.random);
-                    state = level.getBlockState(cell);
-                    if (!isGrowing(state)) break;
-                }
-                rolls -= 1;
-            }
-        }
+        PlantGrowth.boost(level, crops, boostMultiplier());
     }
 
     // Growth speed compared to outside, e.g. "2x" or "2.5x".
@@ -221,7 +197,7 @@ public class GreenhouseControllerBlockEntity extends BlockEntity implements IHav
     }
 
     private static boolean isGrowing(BlockState state) {
-        return state.isRandomlyTicking() && isPlant(state);
+        return PlantGrowth.isGrowing(state);
     }
 
     /** Extra growth on top of normal, e.g. 1.0 = twice as fast. */

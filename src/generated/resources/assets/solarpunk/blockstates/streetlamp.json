@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "half=lower,lit=false": {
+      "model": "solarpunk:block/streetlamp"
+    },
+    "half=lower,lit=true": {
+      "model": "solarpunk:block/streetlamp_lit"
+    },
+    "half=upper,lit=false": {
+      "model": "solarpunk:block/streetlamp_top"
+    },
+    "half=upper,lit=true": {
+      "model": "solarpunk:block/streetlamp_top"
+    }
+  }
+}

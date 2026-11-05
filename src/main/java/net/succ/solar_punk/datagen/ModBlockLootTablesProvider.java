@@ -16,6 +16,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePrope
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
+import net.succ.solar_punk.block.custom.StreetlampBlock;
 import net.succ.solar_punk.block.custom.TrellisBlock;
 import net.succ.solar_punk.block.custom.TrellisPlant;
 import net.minecraft.world.item.Item;
@@ -43,6 +44,8 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         // should ever produce a drop, same as vanilla's tall-flower loot tables.
         add(ModBlocks.SOLAR_MIRROR.get(), block ->
                 createSinglePropConditionTable(block, SolarMirrorBlock.HALF, DoubleBlockHalf.LOWER));
+        add(ModBlocks.STREETLAMP.get(), block ->
+                createSinglePropConditionTable(block, StreetlampBlock.HALF, DoubleBlockHalf.LOWER));
         // Like vanilla glass and panes: only drop with Silk Touch.
         dropWhenSilkTouch(ModBlocks.SOLAR_GLASS.get());
         dropWhenSilkTouch(ModBlocks.SOLAR_GLASS_PANE.get());

@@ -4,10 +4,12 @@ import com.simibubi.create.api.data.recipe.ItemApplicationRecipeGen;
 import net.minecraft.core.HolderLookup;
 import net.neoforged.neoforge.common.Tags;
 import net.minecraft.data.PackOutput;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -35,6 +37,12 @@ public class ModItemApplicationRecipeGen extends ItemApplicationRecipeGen {
         .require(ModBlocks.FUSION_REACTOR_CASING.get())
         .require(Tags.Items.GLASS_BLOCKS_COLORLESS)
         .output(ModBlocks.FUSION_REACTOR_CASING_GLASS.get()));
+
+    // Charred Timber: Biochar rubbed into planks.
+    GeneratedRecipe CHARRED_TIMBER = create("charred_timber", b -> b
+        .require(ItemTags.PLANKS)
+        .require(ModItems.BIOCHAR.get())
+        .output(ModBlocks.CHARRED_TIMBER.get()));
 
     public ModItemApplicationRecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, SolarPunk.MODID);

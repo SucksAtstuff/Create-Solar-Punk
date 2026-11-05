@@ -78,6 +78,23 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.accelerator_overstressed", "Overstressed");
 
         add("create.solar_punk.tooltip.greenhouse_header", "Greenhouse");
+        add("create.solar_punk.tooltip.streetlamp_header", "Streetlamp");
+        add("create.solar_punk.tooltip.wire_connector_header", "Wire Connector");
+        add("create.solar_punk.tooltip.wires", "Wires: ");
+        add("create.solar_punk.tooltip.grow_lamp_header", "Grow Lamp");
+        add("create.solar_punk.tooltip.grow_lamp_plants", "Plants: ");
+        add("create.solar_punk.tooltip.throughput", "Throughput: ");
+
+        add("message.solarpunk.wire.started", "Wire started. Click another Wire Connector to finish it");
+        add("message.solarpunk.wire.cancelled", "Wire cancelled");
+        add("message.solarpunk.wire.start_missing", "The connector this wire started from is gone");
+        add("message.solarpunk.wire.already_connected", "These connectors are already wired together");
+        add("message.solarpunk.wire.full", "That connector can't hold any more wires");
+        add("message.solarpunk.wire.too_long", "Too long: this wire reaches at most %s blocks");
+        add("message.solarpunk.wire.not_enough", "Not enough wire on the spool: needs %s");
+        add("item.solarpunk.spool.wires_left", "%s wires left (%s blocks)");
+        add("item.solarpunk.spool.stats", "Carries %s, up to %s blocks long");
+        add("item.solarpunk.spool.started", "Wire started at %s, %s, %s");
         add("create.solar_punk.tooltip.greenhouse_status", "Status: ");
         add("create.solar_punk.tooltip.greenhouse_sealed", "Sealed");
         add("create.solar_punk.tooltip.greenhouse_not_sealed", "Not sealed, or too big");
@@ -252,6 +269,18 @@ public class ModLangProvider extends LanguageProvider {
 
         add("block.solarpunk.salt_lamp.tooltip.summary", "A warm, glowing chunk of _Salt_. Right-click to switch it _on_ or _off_.");
         add("block.solarpunk.garden_light.tooltip.summary", "A small solar light for paths and gardens. Charges while it can _see the sky_ during the day, then glows through the _night_. Place it in the shade and it stays dark.");
+        add("block.solarpunk.streetlamp.tooltip.summary", "A tall street light that runs on _FE_. Switches itself _on at dusk_ and off at dawn, as long as it has power stored.");
+        add("block.solarpunk.streetlamp.tooltip.condition1", "When powered");
+        add("block.solarpunk.streetlamp.tooltip.behaviour1", "Takes _FE_ from cables or from a _Brass Solar Panel_ or _Solar Glass_ touching its base. A full charge lasts a whole night.");
+        add("block.solarpunk.grow_lamp.tooltip.summary", "A purple grow light that runs on _FE_. Hang it under a ceiling, or from a wall or another Grow Lamp at either end.");
+        add("block.solarpunk.grow_lamp.tooltip.condition1", "When powered");
+        add("block.solarpunk.grow_lamp.tooltip.behaviour1", "Lights up so crops grow at _night_ and _underground_, and makes plants in a _3x3_ area below it grow _faster_. A _redstone_ signal switches it off.");
+        add("block.solarpunk.wire_connector.tooltip.summary", "Place on any block, then click two connectors with a _Spool_ to string a wire between them. Carries _FE_ from block to block.");
+        add("block.solarpunk.wire_connector.tooltip.condition1", "When wired");
+        add("block.solarpunk.wire_connector.tooltip.behaviour1", "Power going into a connector comes out into the blocks under the _other connectors_ it's wired to. Generators that don't push power out are drained. _Gold_ wire carries the most and reaches furthest, then _Copper_, then _Iron_.");
+        add("block.solarpunk.wire_connector.tooltip.condition2", "Right-click with Shears");
+        add("block.solarpunk.wire_connector.tooltip.behaviour2", "Cuts every wire on it and drops the wires.");
+        add("block.solarpunk.charred_timber.tooltip.summary", "Planks scorched black with _Biochar_. Charred wood _doesn't burn_.");
         add("block.solarpunk.solar_glass.tooltip.summary", "Glass with solar cells in it that makes a little _FE_. Works as a _skylight_, or a window with _open sky_ above it.");
         add("block.solarpunk.solar_glass.tooltip.condition1", "In sunlight");
         add("block.solarpunk.solar_glass.tooltip.behaviour1", "Each block stores what it makes. Take power from _any_ glass block and the touching glass sends its energy along to it. Connects with _Solar Shingles_ the same way.");

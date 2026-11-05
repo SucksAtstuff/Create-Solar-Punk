@@ -37,6 +37,9 @@ import net.succ.solar_punk.block.custom.FiligreeRailingSlopeBlock;
 import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
+import net.succ.solar_punk.block.custom.StreetlampBlock;
+import net.succ.solar_punk.block.custom.WireConnectorBlock;
+import net.succ.solar_punk.block.custom.GrowLampBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
 import net.succ.solar_punk.block.custom.TrellisBlock;
 import net.succ.solar_punk.block.custom.RailingTransition;
@@ -109,6 +112,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockItem(ModBlocks.SALT_LAMP.get(), new UncheckedModelFile(modLoc("block/salt_lamp_lit")));
         litCustomModelBlock(ModBlocks.GARDEN_LIGHT, false);
         simpleBlockItem(ModBlocks.GARDEN_LIGHT.get(), new UncheckedModelFile(modLoc("block/garden_light_lit")));
+        streetlampBlock();
+        wireConnectorBlock();
+        growLampBlock();
+        blockWithItem(ModBlocks.CHARRED_TIMBER);
         trellisBlock();
         solarShinglesBlock(ModBlocks.SOLAR_SHINGLES.get(), "solar_shingles");
         solarShinglesBlock(ModBlocks.SOLAR_GLASS_SHINGLES.get(), "solar_glass_shingles");
@@ -614,6 +621,49 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     .build();
         });
         simpleBlockItem(ModBlocks.SOLAR_MIRROR.get(), itemModel);
+    }
+
+    // The lower half draws the whole two-block lamp; the upper half is an invisible
+    // placeholder (see StreetlampBlock).
+    private void streetlampBlock() {
+        ModelFile unlit = new UncheckedModelFile(modLoc("block/streetlamp"));
+        ModelFile lit = new UncheckedModelFile(modLoc("block/streetlamp_lit"));
+        ModelFile top = new UncheckedModelFile(modLoc("block/streetlamp_top"));
+        getVariantBuilder(ModBlocks.STREETLAMP.get()).forAllStates(state -> ConfiguredModel.builder()
+                .modelFile(state.getValue(StreetlampBlock.HALF) == DoubleBlockHalf.UPPER ? top
+                        : state.getValue(StreetlampBlock.LIT) ? lit : unlit)
+                .build());
+        simpleBlockItem(ModBlocks.STREETLAMP.get(), unlit);
+    }
+
+    // Pointing away from the block it's on, rotated like an End Rod (the model points up).
+    private void wireConnectorBlock() {
+        ModelFile model = new UncheckedModelFile(modLoc("block/wire_connector"));
+        getVariantBuilder(ModBlocks.WIRE_CONNECTOR.get()).forAllStates(state -> {
+            Direction facing = state.getValue(WireConnectorBlock.FACING);
+            int x = switch (facing) {
+                case UP -> 0;
+                case DOWN -> 180;
+                default -> 90;
+            };
+            int y = facing.getAxis().isHorizontal() ? (int) facing.toYRot() + 180 : 0;
+            return ConfiguredModel.builder().modelFile(model).rotationX(x).rotationY(y % 360).build();
+        });
+        simpleBlockItem(ModBlocks.WIRE_CONNECTOR.get(), model);
+    }
+
+    // Hung under a ceiling (grow_lamp_top) or from a wall or another lamp at an end, which shows
+    // a mounting rail (grow_lamp_side). The models run along Z.
+    private void growLampBlock() {
+        getVariantBuilder(ModBlocks.GROW_LAMP.get()).forAllStates(state -> {
+            String name = "block/grow_lamp_" + (state.getValue(GrowLampBlock.CEILING) ? "top" : "side")
+                    + (state.getValue(GrowLampBlock.LIT) ? "_lit" : "");
+            return ConfiguredModel.builder()
+                    .modelFile(new UncheckedModelFile(modLoc(name)))
+                    .rotationY(state.getValue(GrowLampBlock.AXIS) == Direction.Axis.X ? 90 : 0)
+                    .build();
+        });
+        simpleBlockItem(ModBlocks.GROW_LAMP.get(), new UncheckedModelFile(modLoc("block/grow_lamp_side_lit")));
     }
 
     private void kineticSprinklerBlock() {

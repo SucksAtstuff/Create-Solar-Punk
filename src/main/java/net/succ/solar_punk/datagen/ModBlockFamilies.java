@@ -20,7 +20,8 @@ import java.util.stream.Stream;
 // covered: it keeps its own entries in each provider.
 //
 // Stairs, slabs and walls use the base block's texture (see baseTexture for ones stored
-// elsewhere). Assumes stone-like sets: every variant is pickaxe-mineable and stonecuttable from the base.
+// elsewhere). Sets are stone-like (every variant pickaxe-mineable and stonecuttable from the
+// base) unless isWooden: then axe-mineable, wooden stair/slab tags, crafting only.
 // Full-block variants (polished, chiseled, cut...) use textures/block/<variant id>.png on
 // every face, or as the sides only when a <variant id>_top.png exists for the top and bottom.
 //
@@ -96,8 +97,15 @@ public final class ModBlockFamilies {
                             .getFamily()))
             .toList();
 
+    // Wooden: axe-mineable and in the wooden stair/slab tags, with no stonecutter recipes.
+    public static final BlockFamily CHARRED_TIMBER = new BlockFamily.Builder(ModBlocks.CHARRED_TIMBER.get())
+            .stairs(ModBlocks.CHARRED_TIMBER_STAIRS.get())
+            .slab(ModBlocks.CHARRED_TIMBER_SLAB.get())
+            .getFamily();
+
     public static final List<BlockFamily> ALL = Stream.concat(
-            Stream.of(SALT, POLISHED_SALT, SALT_BRICKS, ASH, POLISHED_ASH, ASH_BRICKS, TURBINE_CASING, FUSION_REACTOR_CASING),
+            Stream.of(SALT, POLISHED_SALT, SALT_BRICKS, ASH, POLISHED_ASH, ASH_BRICKS, TURBINE_CASING, FUSION_REACTOR_CASING,
+                    CHARRED_TIMBER),
             RAMMED_EARTH.stream()).toList();
 
     // Base blocks whose texture isn't at textures/block/<id>.png.
@@ -121,6 +129,10 @@ public final class ModBlockFamilies {
     @Nullable
     public static ResourceLocation tintedVariantTexture(Block block) {
         return TINTED_VARIANT_TEXTURES.get(block);
+    }
+
+    public static boolean isWooden(BlockFamily family) {
+        return family == CHARRED_TIMBER;
     }
 
     public static boolean isTinted(BlockFamily family) {

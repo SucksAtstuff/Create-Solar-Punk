@@ -3,12 +3,6 @@
 A running list of possible future features. Nothing here is committed. Grouped by theme,
 with the strongest / most on-theme ideas near the top of each section.
 
-## Next Up (2.1 Shortlist)
-
-In rough priority order.
-
-1. **Grid-powered streetlights** that switch on at dusk. A visible everyday use for FE.
-
 ## Biggest gaps in the renewable lineup
 
 - **Hydrogen chain** - an Electrolyzer splits Water into Hydrogen using FE from Brass Panels,
@@ -45,13 +39,6 @@ In rough priority order.
 - **Stirling dish concentrator** - direct SU/FE from a focused dish, no molten salt loop.
   Overlaps the Solar Heater and tower, so low priority.
 
-## Biofuel expansion
-
-- **Powered grow lights** - FE-powered lights for greenhouses. What exactly they do is still
-  open.
-  - The controller's scan could find them inside the greenhouse, like it counts bees.
-  - Pairs with the FE storage and Hydrogen ideas, since they'd need steady power.
-
 ## Geothermal
 
 Vents are meant to be scarce, so ideas here should make a natural vent worth more rather than
@@ -78,10 +65,6 @@ Pure decoration drifts from the mod's power focus, so the best ideas here also d
 small: make power, absorb pollution, give light, or use up a byproduct. Blocks that are only
 decorative should at least come from the mod's own materials (Salt, Biochar, Ash, Lithium).
 
-### Solar you can build with
-
-- **Grid-powered streetlights** - see Next Up.
-
 ### Living buildings
 
 - **Green Roof** - a grass or moss slab that absorbs pollution like leaves do. Gives the
@@ -103,12 +86,6 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
   - Open: does the grow light need the panel's own charge only, or can it take FE from the
     grid so it also works in caves and space stations?
 
-### Natural and reclaimed materials
-
-- **Charred Timber** - dark scorched planks (like Japanese shou sugi ban), made by applying
-  Biochar to planks or by item application with a Blaze Burner. A second use for Biochar
-  besides Fertilizer.
-
 ### Machine-themed decor
 
 - **More filigree railing materials** (iron) - only a texture and a few lines each.
@@ -124,9 +101,8 @@ the big ones worth doing first.
 - **Halloween (Oct 31, or the last week of October)** - Garden Lights become carved pumpkin
   lanterns with a flickering orange glow, cobwebs on the railings, bats perched on the solar
   panels, and green or purple "spooky" steam from the geyser.
-- **Christmas (Dec 24-26, or most of December)** - Garden Lights in red and green, string
-  lights wound around the Trellis and railings, snow caps on solar panels and Shingles, and a
-  little Santa hat on the geyser cap.
+- **Christmas (December)** - string lights wound around the Trellis and railings, snow caps on
+  solar panels and Shingles, and a little Santa hat on the geyser cap.
 - **Valentine's Day (Feb 14)** - Garden Lights glow pink or red, the Trellis gets little
   heart-shaped flowers, and the geyser puffs pink steam.
 - **St. Patrick's Day (Mar 17)** - solar panel cells turn green, clovers show up on the

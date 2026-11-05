@@ -168,6 +168,25 @@ public class AllSolarpunkAdvancements implements DataProvider {
             .special(TaskType.EXPERT)
     );
 
+    // Hidden: a Dispenser puts a Wire Connector or Grow Lamp on your head (HeadwearDispenseBehavior).
+    public static final SolarpunkAdvancement DISPENSED_WIRE_CONNECTOR = SolarpunkAdvancement.create("dispensed_wire_connector", b -> b
+            .icon(ModBlocks.WIRE_CONNECTOR.get())
+            .title("Fashionably Wired")
+            .description("Have a Dispenser put a Wire Connector on your head.")
+            .withCustomTrigger(ModTriggers.DISPENSED_WIRE_CONNECTOR)
+            .after(ROOT)
+            .special(TaskType.SECRET)
+    );
+
+    public static final SolarpunkAdvancement DISPENSED_GROW_LAMP = SolarpunkAdvancement.create("dispensed_grow_lamp", b -> b
+            .icon(ModBlocks.GROW_LAMP.get())
+            .title("TO ME, MY X-MEN!")
+            .description("Have a Dispenser put a Grow Lamp on your head.")
+            .withCustomTrigger(ModTriggers.DISPENSED_GROW_LAMP)
+            .after(ROOT)
+            .special(TaskType.SECRET)
+    );
+
     // -------------------------------------------------------------------------
     // Geothermal branch
     // -------------------------------------------------------------------------

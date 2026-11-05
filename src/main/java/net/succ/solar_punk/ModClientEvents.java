@@ -42,6 +42,8 @@ import net.succ.solar_punk.client.model.ModSpriteShifts;
 import net.succ.solar_punk.client.model.TankModel;
 import net.succ.solar_punk.client.renderer.FermentationVatRenderer;
 import net.succ.solar_punk.client.renderer.FusionReactorCoreRenderer;
+import net.succ.solar_punk.client.renderer.WireConnectorRenderer;
+import net.succ.solar_punk.client.SeasonalModels;
 import net.succ.solar_punk.client.renderer.GeyserCapRenderer;
 import net.succ.solar_punk.client.renderer.HalfShaftRenderer;
 import net.succ.solar_punk.client.renderer.KineticBatteryRenderer;
@@ -114,6 +116,7 @@ public class ModClientEvents {
         event.register(ModelResourceLocation.standalone(SolarPowerTowerRenderer.GAUGE_DIAL.modelLocation()));
         event.register(ModelResourceLocation.standalone(SolarMirrorRenderer.POST.modelLocation()));
         event.register(ModelResourceLocation.standalone(SolarMirrorRenderer.PLATE.modelLocation()));
+        SeasonalModels.registerAdditional(event);
     }
 
     @SubscribeEvent
@@ -138,6 +141,7 @@ public class ModClientEvents {
             UnaryOperator<BakedModel> wrapper = wrappers.get(key.id().getPath());
             return wrapper != null ? wrapper.apply(model) : model;
         });
+        SeasonalModels.apply(event.getModels());
     }
 
     @SubscribeEvent
@@ -157,6 +161,7 @@ public class ModClientEvents {
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_MIRROR.get(), SolarMirrorRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.KINETIC_SPRINKLER.get(), KineticSprinklerRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.FUSION_REACTOR_CORE.get(), FusionReactorCoreRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.WIRE_CONNECTOR.get(), WireConnectorRenderer::new);
     }
 
     @SubscribeEvent
@@ -213,6 +218,10 @@ public class ModClientEvents {
         tip(ModBlocks.PARTICLE_ACCELERATOR_INPUT);
         tip(ModBlocks.SALT_LAMP);
         tip(ModBlocks.GARDEN_LIGHT);
+        tip(ModBlocks.STREETLAMP);
+        tip(ModBlocks.WIRE_CONNECTOR);
+        tip(ModBlocks.GROW_LAMP);
+        tip(ModBlocks.CHARRED_TIMBER);
         tip(ModBlocks.TRELLIS);
         tip(ModBlocks.GREENHOUSE_CONTROLLER);
         tip(ModBlocks.SOLAR_SHINGLES);

@@ -1,5 +1,6 @@
 package net.succ.solar_punk.item;
 
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
@@ -24,6 +25,12 @@ public class ModDataComponents {
             DATA_COMPONENTS.registerComponentType("railing_shape", builder -> builder
                     .persistent(RailingShape.CODEC)
                     .networkSynchronized(RailingShape.STREAM_CODEC));
+
+    // The Wire Connector a spool's wire was started from, until it's clicked on a second one.
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<GlobalPos>> WIRE_START =
+            DATA_COMPONENTS.registerComponentType("wire_start", builder -> builder
+                    .persistent(GlobalPos.CODEC)
+                    .networkSynchronized(GlobalPos.STREAM_CODEC));
 
     public static void register(IEventBus eventBus) {
         DATA_COMPONENTS.register(eventBus);

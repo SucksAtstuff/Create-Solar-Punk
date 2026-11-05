@@ -1,0 +1,28 @@
+{
+  "parent": "solarpunk:root",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:dispensed_wire_connector"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.solarpunk.dispensed_wire_connector.desc"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:wire_connector"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.dispensed_wire_connector"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

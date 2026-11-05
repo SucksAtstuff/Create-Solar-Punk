@@ -29,6 +29,9 @@ import net.succ.solar_punk.block.entity.custom.TurbineCasingBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineRotorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarShinglesBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarGlassBlockEntity;
+import net.succ.solar_punk.block.entity.custom.StreetlampBlockEntity;
+import net.succ.solar_punk.block.entity.custom.GrowLampBlockEntity;
+import net.succ.solar_punk.block.entity.custom.WireConnectorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GreenhouseControllerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCasingBlockEntity;
@@ -102,6 +105,21 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("solar_glass", () -> BlockEntityType.Builder
                     .of((pos, state) -> new SolarGlassBlockEntity(ModBlockEntities.SOLAR_GLASS.get(), pos, state),
                             ModBlocks.SOLAR_GLASS.get(), ModBlocks.SOLAR_GLASS_PANE.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WireConnectorBlockEntity>> WIRE_CONNECTOR =
+            BLOCK_ENTITIES.register("wire_connector", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new WireConnectorBlockEntity(ModBlockEntities.WIRE_CONNECTOR.get(), pos, state), ModBlocks.WIRE_CONNECTOR.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GrowLampBlockEntity>> GROW_LAMP =
+            BLOCK_ENTITIES.register("grow_lamp", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new GrowLampBlockEntity(ModBlockEntities.GROW_LAMP.get(), pos, state), ModBlocks.GROW_LAMP.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<StreetlampBlockEntity>> STREETLAMP =
+            BLOCK_ENTITIES.register("streetlamp", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new StreetlampBlockEntity(ModBlockEntities.STREETLAMP.get(), pos, state), ModBlocks.STREETLAMP.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HeatBatteryBlockEntity>> HEAT_BATTERY =

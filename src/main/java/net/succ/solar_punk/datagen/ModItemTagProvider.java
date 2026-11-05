@@ -3,6 +3,8 @@ package net.succ.solar_punk.datagen;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -39,6 +41,10 @@ public class ModItemTagProvider extends ItemTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         tag(Tags.Items.GEMS).add(ModItems.SALT.get());
+
+        copy(BlockTags.PLANKS, ItemTags.PLANKS);
+        copy(BlockTags.WOODEN_STAIRS, ItemTags.WOODEN_STAIRS);
+        copy(BlockTags.WOODEN_SLABS, ItemTags.WOODEN_SLABS);
         tag(ModTags.Items.GEMS_SALT).add(ModItems.SALT.get());
         tag(ModTags.Items.DUSTS_SALT).add(ModItems.SALT.get());
         tag(ModTags.Items.SALT).add(ModItems.SALT.get());
