@@ -186,7 +186,7 @@ No Solar Power Tower yet? A **Firebox Boiler** (iron, a furnace, and a bucket, f
 
 ## Thanks
 
-Thanks to [Firstwitch](https://firstwitch.carrd.co/) for textures and models.
+Thanks to [Firstwitch](https://modrinth.com/user/Firstwitch) for textures and models.
 
 Thanks to the following people for their ideas:
 
