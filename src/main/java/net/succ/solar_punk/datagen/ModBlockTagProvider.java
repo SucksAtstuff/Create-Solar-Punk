@@ -42,9 +42,13 @@ public class ModBlockTagProvider extends BlockTagsProvider {
             ModBlockFamilies.variants(family).values().forEach(block -> tag(blockTag("create", "wrench_pickup")).add(block));
 
         // Building block families: shape tags, and every variant is pickaxe-mineable (axe
-        // for wooden ones, whose wooden_stairs/wooden_slabs tags are already in stairs/slabs).
+        // for wooden ones, whose wooden_stairs/wooden_slabs tags are already in stairs/slabs,
+        // and hoe for moss).
         ModBlockFamilies.ALL.forEach(family -> {
             boolean wooden = ModBlockFamilies.isWooden(family);
+            TagKey<Block> tool = wooden ? BlockTags.MINEABLE_WITH_AXE
+                    : ModBlockFamilies.isMoss(family) ? BlockTags.MINEABLE_WITH_HOE
+                    : BlockTags.MINEABLE_WITH_PICKAXE;
             ModBlockFamilies.variants(family).forEach((variant, block) -> {
                 switch (variant) {
                     case STAIRS -> tag(wooden ? BlockTags.WOODEN_STAIRS : BlockTags.STAIRS).add(block);
@@ -52,7 +56,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                     case WALL -> tag(BlockTags.WALLS).add(block);
                     default -> {}
                 }
-                tag(wooden ? BlockTags.MINEABLE_WITH_AXE : BlockTags.MINEABLE_WITH_PICKAXE).add(block);
+                tag(tool).add(block);
             });
         });
 
@@ -74,11 +78,15 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.COPPER_FILIGREE_RAILING.get())
                 .add(ModBlocks.COPPER_FILIGREE_RAILING_SLOPE.get())
                 .add(ModBlocks.COPPER_FILIGREE_RAILING_STEEP_SLOPE.get())
+                .add(ModBlocks.IRON_FILIGREE_RAILING.get())
+                .add(ModBlocks.IRON_FILIGREE_RAILING_SLOPE.get())
+                .add(ModBlocks.IRON_FILIGREE_RAILING_STEEP_SLOPE.get())
                 .add(ModBlocks.SALT_LAMP.get())
                 .add(ModBlocks.GARDEN_LIGHT.get())
                 .add(ModBlocks.STREETLAMP.get())
                 .add(ModBlocks.WIRE_CONNECTOR.get())
                 .add(ModBlocks.GROW_LAMP.get())
+                .add(ModBlocks.SOLAR_PLANT_BED.get())
                 .add(ModBlocks.SOLAR_SHINGLES.get())
                 .add(ModBlocks.GREENHOUSE_CONTROLLER.get())
                 .add(ModBlocks.LITHIUM_ORE.get())

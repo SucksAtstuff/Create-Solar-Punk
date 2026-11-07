@@ -233,6 +233,10 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_STREETLAMP_MAX_RECEIVE;
     private static final ModConfigSpec.IntValue CFG_GROW_LAMP_FE_PER_TICK, CFG_GROW_LAMP_BUFFER, CFG_GROW_LAMP_MAX_RECEIVE, CFG_GROW_LAMP_RANGE;
     private static final ModConfigSpec.DoubleValue CFG_GROW_LAMP_GROWTH_BOOST;
+    private static final ModConfigSpec.IntValue CFG_SOLAR_PLANT_BED_MORNING_FE, CFG_SOLAR_PLANT_BED_NOON_FE, CFG_SOLAR_PLANT_BED_FE_PER_TICK, CFG_SOLAR_PLANT_BED_BUFFER;
+    private static final ModConfigSpec.DoubleValue CFG_SOLAR_PLANT_BED_GROWTH_BOOST;
+    private static final ModConfigSpec.DoubleValue CFG_AGRIVOLTAICS_BONUS;
+    private static final ModConfigSpec.IntValue CFG_AGRIVOLTAICS_RANGE;
     private static final ModConfigSpec.IntValue CFG_WIRE_IRON_RATE, CFG_WIRE_IRON_LENGTH;
     private static final ModConfigSpec.IntValue CFG_WIRE_COPPER_RATE, CFG_WIRE_COPPER_LENGTH;
     private static final ModConfigSpec.IntValue CFG_WIRE_GOLD_RATE, CFG_WIRE_GOLD_LENGTH;
@@ -265,6 +269,11 @@ public class Config {
         CFG_BRASS_NOON_FE     = BUILDER.comment("FE/t generated at noon (clear weather)").defineInRange("noon_fe_per_tick", 80, 1, 100_000);
         CFG_BRASS_BUFFER      = BUILDER.comment("Internal FE buffer capacity").defineInRange("buffer_capacity", 100_000, 1000, 10_000_000);
         CFG_BRASS_MAX_EXTRACT = BUILDER.comment("Max FE extracted per tick by adjacent cables").defineInRange("max_extract", 80, 1, 100_000);
+        BUILDER.pop();
+
+        BUILDER.push("agrivoltaics");
+        CFG_AGRIVOLTAICS_BONUS = BUILDER.comment("Extra output for an Andesite or Brass Solar Panel with a plant below it, cooling it (0.1 = 10% more). 0 to disable").defineInRange("bonus", 0.1, 0.0, 10.0);
+        CFG_AGRIVOLTAICS_RANGE = BUILDER.comment("How many blocks below a panel it looks for a plant, through air").defineInRange("range", 4, 1, 16);
         BUILDER.pop();
 
         BUILDER.push("solar_shingles");
@@ -456,6 +465,14 @@ public class Config {
         CFG_GROW_LAMP_GROWTH_BOOST  = BUILDER.comment("Extra growth for plants under a lit Grow Lamp (1.0 = twice as fast). Stacks with greenhouses and other lamps").defineInRange("growth_boost", 1.0, 0.0, 100.0);
         BUILDER.pop();
 
+        BUILDER.push("solar_plant_bed");
+        CFG_SOLAR_PLANT_BED_MORNING_FE   = BUILDER.comment("FE/t a Solar Plant Bed's panel makes at dawn and dusk").defineInRange("morning_fe_per_tick", 2, 0, 100_000);
+        CFG_SOLAR_PLANT_BED_NOON_FE      = BUILDER.comment("FE/t a Solar Plant Bed's panel makes at noon (clear weather)").defineInRange("noon_fe_per_tick", 4, 0, 100_000);
+        CFG_SOLAR_PLANT_BED_FE_PER_TICK  = BUILDER.comment("FE/t the grow light uses while lit at night").defineInRange("fe_per_tick", 2, 0, 100_000);
+        CFG_SOLAR_PLANT_BED_BUFFER       = BUILDER.comment("FE a Solar Plant Bed stores. The default runs the light through a whole night").defineInRange("buffer_capacity", 24_000, 100, 10_000_000);
+        CFG_SOLAR_PLANT_BED_GROWTH_BOOST = BUILDER.comment("Extra growth for the plant on a Solar Plant Bed while its light is on (1.0 = twice as fast)").defineInRange("growth_boost", 1.0, 0.0, 100.0);
+        BUILDER.pop();
+
         BUILDER.push("wires");
         CFG_WIRE_IRON_RATE       = BUILDER.comment("Max FE per tick through one Iron Wire").defineInRange("iron_fe_per_tick", 256, 1, 1_000_000_000);
         CFG_WIRE_IRON_LENGTH     = BUILDER.comment("Longest Iron Wire, in blocks").defineInRange("iron_max_length", 16, 1, 64);
@@ -602,7 +619,7 @@ public class Config {
                         modIdPathValidator("pollution_blacklist"));
         CFG_POLLUTION_RADIUS_BLOCKS = BUILDER.comment("Block radius around each active pollution source that receives pollution (0 = source chunk only).").defineInRange("pollution_radius_blocks", 64, 0, 512);
         CFG_POLLUTION_DECAY_RATE   = BUILDER.comment("Pollution units removed from each chunk per second (0 = pollution never decays).").defineInRange("pollution_decay_rate_per_second", 1, 0, 1_000_000);
-        CFG_LEAF_ABSORPTION_PER_INTERVAL = BUILDER.comment("Pollution absorbed per leaf block in a chunk each decay interval. 0 to disable tree absorption.").defineInRange("leaf_absorption_per_interval", 1, 0, 1_000_000);
+        CFG_LEAF_ABSORPTION_PER_INTERVAL = BUILDER.comment("Pollution absorbed per leaf block (or Moss Stairs/Slab) in a chunk each decay interval. 0 to disable tree absorption.").defineInRange("leaf_absorption_per_interval", 1, 0, 1_000_000);
         CFG_TRELLIS_ABSORPTION_PER_INTERVAL = BUILDER.comment("Pollution absorbed per Trellis with vines on it in a chunk each decay interval, counted near the surface like leaves. 0 to disable.").defineInRange("trellis_absorption_per_interval", 1, 0, 1_000_000);
         CFG_BIOFILTER_ABSORPTION_PER_RPM = BUILDER.comment(
                 "Pollution units removed per second, per RPM of rotational speed driving the Biofilter.",
@@ -630,6 +647,8 @@ public class Config {
 
     public static int andesiteMorningRpm, andesiteNoonRpm, andesiteMorningSu, andesiteNoonSu;
     public static int brassMorningFe, brassNoonFe, brassBuffer, brassMaxExtract;
+    public static double agrivoltaicsBonus;
+    public static int agrivoltaicsRange;
     public static int shingleMorningFe, shingleNoonFe, shingleBuffer, shingleMaxExtract;
     public static int solarGlassMorningFe, solarGlassNoonFe, solarGlassPaneMorningFe, solarGlassPaneNoonFe, solarGlassBuffer, solarGlassMaxExtract;
     public static int geyserCapRpm, geyserCapSu;
@@ -689,6 +708,8 @@ public class Config {
     public static int streetlampFePerTick, streetlampBuffer, streetlampMaxReceive;
     public static int growLampFePerTick, growLampBuffer, growLampMaxReceive, growLampRange;
     public static double growLampGrowthBoost;
+    public static int solarPlantBedMorningFe, solarPlantBedNoonFe, solarPlantBedFePerTick, solarPlantBedBuffer;
+    public static double solarPlantBedGrowthBoost;
     public static int wireIronRate, wireIronLength, wireCopperRate, wireCopperLength, wireGoldRate, wireGoldLength;
     public static int wireBlocksPerWire, wireMaxConnections;
     public static int biomeDecayThreshold, biomeDecayInterval, blocksDecayedPerInterval;
@@ -708,6 +729,8 @@ public class Config {
         brassMorningFe       = CFG_BRASS_MORNING_FE.get();
         brassNoonFe          = CFG_BRASS_NOON_FE.get();
         brassBuffer          = CFG_BRASS_BUFFER.get();
+        agrivoltaicsBonus = CFG_AGRIVOLTAICS_BONUS.get();
+        agrivoltaicsRange = CFG_AGRIVOLTAICS_RANGE.get();
         brassMaxExtract      = CFG_BRASS_MAX_EXTRACT.get();
         shingleMorningFe     = CFG_SHINGLE_MORNING_FE.get();
         shingleNoonFe        = CFG_SHINGLE_NOON_FE.get();
@@ -836,6 +859,11 @@ public class Config {
         growLampMaxReceive              = CFG_GROW_LAMP_MAX_RECEIVE.get();
         growLampRange                   = CFG_GROW_LAMP_RANGE.get();
         growLampGrowthBoost             = CFG_GROW_LAMP_GROWTH_BOOST.get();
+        solarPlantBedMorningFe               = CFG_SOLAR_PLANT_BED_MORNING_FE.get();
+        solarPlantBedNoonFe                  = CFG_SOLAR_PLANT_BED_NOON_FE.get();
+        solarPlantBedFePerTick               = CFG_SOLAR_PLANT_BED_FE_PER_TICK.get();
+        solarPlantBedBuffer                  = CFG_SOLAR_PLANT_BED_BUFFER.get();
+        solarPlantBedGrowthBoost             = CFG_SOLAR_PLANT_BED_GROWTH_BOOST.get();
         wireIronRate                    = CFG_WIRE_IRON_RATE.get();
         wireIronLength                  = CFG_WIRE_IRON_LENGTH.get();
         wireCopperRate                  = CFG_WIRE_COPPER_RATE.get();

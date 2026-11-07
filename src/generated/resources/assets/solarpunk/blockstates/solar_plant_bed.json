@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "solarpunk:block/solar_plant_bed"
+    },
+    "lit=true": {
+      "model": "solarpunk:block/solar_plant_bed_lit"
+    }
+  }
+}

@@ -83,6 +83,7 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.wires", "Wires: ");
         add("create.solar_punk.tooltip.grow_lamp_header", "Grow Lamp");
         add("create.solar_punk.tooltip.grow_lamp_plants", "Plants: ");
+        add("create.solar_punk.tooltip.solar_plant_bed_header", "Solar Plant Bed");
         add("create.solar_punk.tooltip.throughput", "Throughput: ");
 
         add("message.solarpunk.wire.started", "Wire started. Click another Wire Connector to finish it");
@@ -109,6 +110,7 @@ public class ModLangProvider extends LanguageProvider {
 
         add("create.solar_punk.tooltip.fe_header", "Generator Stats");
         add("create.solar_punk.tooltip.generating", "Generating: ");
+        add("create.solar_punk.tooltip.agrivoltaics", "Cooled by plants below: +%s%%");
         add("create.solar_punk.tooltip.stored", "Stored: ");
 
         add("create.solar_punk.tooltip.kinetic_battery_header", "Kinetic Battery");
@@ -218,10 +220,14 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.andesite_solar_panel.tooltip.summary", "Generates _Rotational Force_ from sunlight. Output scales with sun angle and weather.");
         add("block.solarpunk.andesite_solar_panel.tooltip.condition1", "During the day with a clear sky");
         add("block.solarpunk.andesite_solar_panel.tooltip.behaviour1", "8 RPM with 1024 SU at dawn and dusk, 16 RPM with 4096 SU at noon. _Rain_ drops it to the dawn rate and it stops at _night_.");
+        add("block.solarpunk.andesite_solar_panel.tooltip.condition2", "Raised over plants");
+        add("block.solarpunk.andesite_solar_panel.tooltip.behaviour2", "Crops, flowers or saplings up to _4 blocks_ below cool the panel for _10%_ more output, and still grow at normal speed in its shade.");
 
         add("block.solarpunk.brass_solar_panel.tooltip.summary", "Generates _Forge Energy_ from sunlight. Output scales with sun angle and weather.");
         add("block.solarpunk.brass_solar_panel.tooltip.condition1", "During the day with a clear sky");
         add("block.solarpunk.brass_solar_panel.tooltip.behaviour1", "40 FE/t at dawn and dusk, 80 FE/t at noon. _Rain_ drops it to the dawn rate and it stops at _night_.");
+        add("block.solarpunk.brass_solar_panel.tooltip.condition2", "Raised over plants");
+        add("block.solarpunk.brass_solar_panel.tooltip.behaviour2", "Crops, flowers or saplings up to _4 blocks_ below cool the panel for _10%_ more output, and still grow at normal speed in its shade.");
 
         add("block.solarpunk.heat_battery.tooltip.summary", "Stores thermal energy as _Molten Salt_ and supplies heat to a _Boiler_ placed above it.");
         add("block.solarpunk.heat_battery.tooltip.condition1", "When filled with Molten Salt");
@@ -275,6 +281,11 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.grow_lamp.tooltip.summary", "A purple grow light that runs on _FE_. Hang it under a ceiling, or from a wall or another Grow Lamp at either end.");
         add("block.solarpunk.grow_lamp.tooltip.condition1", "When powered");
         add("block.solarpunk.grow_lamp.tooltip.behaviour1", "Lights up so crops grow at _night_ and _underground_, and makes plants in a _3x3_ area below it grow _faster_. A _redstone_ signal switches it off.");
+        add("block.solarpunk.solar_plant_bed.tooltip.summary", "A raised bed for _one plant_, for roofs and balconies. Its soil never dries out, so it needs _no water_ nearby.");
+        add("block.solarpunk.solar_plant_bed.tooltip.condition1", "During the day");
+        add("block.solarpunk.solar_plant_bed.tooltip.behaviour1", "The panel on top charges from _sunlight_. Needs open sky above the panel.");
+        add("block.solarpunk.solar_plant_bed.tooltip.condition2", "At night");
+        add("block.solarpunk.solar_plant_bed.tooltip.behaviour2", "The grow light runs on the stored charge and makes the plant grow _faster_. A _redstone_ signal switches it off.");
         add("block.solarpunk.wire_connector.tooltip.summary", "Place on any block, then click two connectors with a _Spool_ to string a wire between them. Carries _FE_ from block to block.");
         add("block.solarpunk.wire_connector.tooltip.condition1", "When wired");
         add("block.solarpunk.wire_connector.tooltip.behaviour1", "Power going into a connector comes out into the blocks under the _other connectors_ it's wired to. Generators that don't push power out are drained. _Gold_ wire carries the most and reaches furthest, then _Copper_, then _Iron_.");
@@ -306,7 +317,7 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.turbine_rotor.tooltip.condition1", "Valid 7x7 structure with Turbine Blades");
         add("block.solarpunk.turbine_rotor.tooltip.behaviour1", "Output grows with height and blade quality. Condensed water must be piped out of any casing face, or the turbine stops when it fills up.");
 
-        for (String railing : new String[]{"brass_filigree_railing", "andesite_filigree_railing", "copper_filigree_railing"}) {
+        for (String railing : new String[]{"brass_filigree_railing", "andesite_filigree_railing", "copper_filigree_railing", "iron_filigree_railing"}) {
             add("block.solarpunk." + railing + ".tooltip.summary", "A decorative railing that _connects_ to its neighbours. One item places every shape: _flat_, _slope_ and _steep slope_.");
             add("block.solarpunk." + railing + ".tooltip.condition1", "Hold the Toolbelt key (Alt)");
             add("block.solarpunk." + railing + ".tooltip.behaviour1", "Opens a menu to pick the _shape_ it places. Steep slopes placed on _stairs_ follow them.");

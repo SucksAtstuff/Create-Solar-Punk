@@ -93,6 +93,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
         filigreeRailingBlock(ModBlocks.COPPER_FILIGREE_RAILING, ModBlocks.BRASS_FILIGREE_RAILING);
         filigreeRailingSlopeBlock(ModBlocks.COPPER_FILIGREE_RAILING_SLOPE, ModBlocks.COPPER_FILIGREE_RAILING);
         filigreeRailingSlopeBlock(ModBlocks.COPPER_FILIGREE_RAILING_STEEP_SLOPE, ModBlocks.COPPER_FILIGREE_RAILING);
+        filigreeRailingBlock(ModBlocks.IRON_FILIGREE_RAILING, ModBlocks.BRASS_FILIGREE_RAILING);
+        filigreeRailingSlopeBlock(ModBlocks.IRON_FILIGREE_RAILING_SLOPE, ModBlocks.IRON_FILIGREE_RAILING);
+        filigreeRailingSlopeBlock(ModBlocks.IRON_FILIGREE_RAILING_STEEP_SLOPE, ModBlocks.IRON_FILIGREE_RAILING);
         // Like vanilla panes: the glass texture on the faces, a _pane_top strip on the edges,
         // and a flat item icon of the glass.
         paneBlockWithRenderType(ModBlocks.SOLAR_GLASS_PANE.get(), blockTexture(ModBlocks.SOLAR_GLASS.get()),
@@ -115,6 +118,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         streetlampBlock();
         wireConnectorBlock();
         growLampBlock();
+        litCustomModelBlock(ModBlocks.SOLAR_PLANT_BED, false);
+        simpleBlockItem(ModBlocks.SOLAR_PLANT_BED.get(), new UncheckedModelFile(modLoc("block/solar_plant_bed_lit")));
         blockWithItem(ModBlocks.CHARRED_TIMBER);
         trellisBlock();
         solarShinglesBlock(ModBlocks.SOLAR_SHINGLES.get(), "solar_shingles");

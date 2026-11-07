@@ -28,6 +28,7 @@ import net.succ.solar_punk.block.custom.SaltLampBlock;
 import net.succ.solar_punk.block.custom.GardenLightBlock;
 import net.succ.solar_punk.block.custom.StreetlampBlock;
 import net.succ.solar_punk.block.custom.GrowLampBlock;
+import net.succ.solar_punk.block.custom.SolarPlantBedBlock;
 import net.succ.solar_punk.block.custom.WireConnectorBlock;
 import net.succ.solar_punk.block.custom.GreenhouseControllerBlock;
 import net.succ.solar_punk.block.custom.TrellisBlock;
@@ -213,6 +214,15 @@ public class ModBlocks {
                     .noOcclusion()
                     .pushReaction(PushReaction.DESTROY)
                     .lightLevel(state -> state.getValue(GrowLampBlock.LIT) ? 15 : 0)));
+
+    // Raised bed with its own panel and grow light; see SolarPlantBedBlockEntity.
+    public static final DeferredBlock<SolarPlantBedBlock> SOLAR_PLANT_BED = registerBlock("solar_plant_bed",
+            () -> new SolarPlantBedBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_ORANGE)
+                    .strength(2.0f, 6.0f)
+                    .sound(SoundType.COPPER)
+                    .noOcclusion()
+                    .lightLevel(state -> state.getValue(SolarPlantBedBlock.LIT) ? 13 : 0)));
 
     public static final DeferredBlock<BiomassGasifierBlock> BIOMASS_GASIFIER = registerBlock("biomass_gasifier",
             () -> new BiomassGasifierBlock(BlockBehaviour.Properties.of()
@@ -510,6 +520,16 @@ public class ModBlocks {
     public static final DeferredBlock<FiligreeRailingSteepSlopeBlock> COPPER_FILIGREE_RAILING_STEEP_SLOPE = BLOCKS.register("copper_filigree_railing_steep_slope",
             () -> new FiligreeRailingSteepSlopeBlock(BlockBehaviour.Properties.ofFullCopy(COPPER_FILIGREE_RAILING.get())));
 
+    public static final DeferredBlock<FiligreeRailingBlock> IRON_FILIGREE_RAILING = registerDecorativeCustomItem("iron_filigree_railing",
+            () -> new FiligreeRailingBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS)
+                    .mapColor(MapColor.METAL)),
+            block -> new FiligreeRailingItem(block, ModBlocks.IRON_FILIGREE_RAILING_SLOPE,
+                    ModBlocks.IRON_FILIGREE_RAILING_STEEP_SLOPE, new Item.Properties()));
+    public static final DeferredBlock<FiligreeRailingSlopeBlock> IRON_FILIGREE_RAILING_SLOPE = BLOCKS.register("iron_filigree_railing_slope",
+            () -> new FiligreeRailingSlopeBlock(BlockBehaviour.Properties.ofFullCopy(IRON_FILIGREE_RAILING.get())));
+    public static final DeferredBlock<FiligreeRailingSteepSlopeBlock> IRON_FILIGREE_RAILING_STEEP_SLOPE = BLOCKS.register("iron_filigree_railing_steep_slope",
+            () -> new FiligreeRailingSteepSlopeBlock(BlockBehaviour.Properties.ofFullCopy(IRON_FILIGREE_RAILING.get())));
+
     // Glass that makes a little FE under open sky; see SolarGlassBlockEntity.
     public static final DeferredBlock<SolarGlassBlock> SOLAR_GLASS = registerDecorative("solar_glass",
             () -> new SolarGlassBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
@@ -590,6 +610,10 @@ public class ModBlocks {
     public static final DeferredBlock<StairBlock> CHARRED_TIMBER_STAIRS = registerStairs("charred_timber_stairs", CHARRED_TIMBER);
     public static final DeferredBlock<SlabBlock> CHARRED_TIMBER_SLAB = registerSlab("charred_timber_slab", CHARRED_TIMBER);
 
+    // Green roofing from vanilla's Moss Block. With global warming on it absorbs pollution like leaves.
+    public static final DeferredBlock<StairBlock> MOSS_STAIRS = registerStairs("moss_stairs", () -> Blocks.MOSS_BLOCK);
+    public static final DeferredBlock<SlabBlock> MOSS_SLAB = registerSlab("moss_slab", () -> Blocks.MOSS_BLOCK);
+
     public static final DeferredBlock<TrellisBlock> TRELLIS = registerDecorative("trellis",
             () -> new TrellisBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
@@ -634,16 +658,16 @@ public class ModBlocks {
     }
 
     // Stairs, slabs and walls copy every property of the block they're made from.
-    private static DeferredBlock<StairBlock> registerStairs(String name, DeferredBlock<? extends Block> base) {
+    private static DeferredBlock<StairBlock> registerStairs(String name, Supplier<? extends Block> base) {
         return registerDecorative(name, () -> new StairBlock(base.get().defaultBlockState(),
                 BlockBehaviour.Properties.ofFullCopy(base.get())));
     }
 
-    private static DeferredBlock<SlabBlock> registerSlab(String name, DeferredBlock<? extends Block> base) {
+    private static DeferredBlock<SlabBlock> registerSlab(String name, Supplier<? extends Block> base) {
         return registerDecorative(name, () -> new SlabBlock(BlockBehaviour.Properties.ofFullCopy(base.get())));
     }
 
-    private static DeferredBlock<WallBlock> registerWall(String name, DeferredBlock<? extends Block> base) {
+    private static DeferredBlock<WallBlock> registerWall(String name, Supplier<? extends Block> base) {
         return registerDecorative(name, () -> new WallBlock(BlockBehaviour.Properties.ofFullCopy(base.get()).forceSolidOn()));
     }
 

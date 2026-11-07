@@ -176,7 +176,8 @@ public class ModClientEvents {
                     ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "shape"),
                     (stack, level, entity, seed) -> ParticleAcceleratorPipeItem.getShape(stack).ordinal());
             // Same for the filigree railing items (flat, slope, steep slope)
-            for (var railing : List.of(ModBlocks.BRASS_FILIGREE_RAILING, ModBlocks.ANDESITE_FILIGREE_RAILING, ModBlocks.COPPER_FILIGREE_RAILING))
+            for (var railing : List.of(ModBlocks.BRASS_FILIGREE_RAILING, ModBlocks.ANDESITE_FILIGREE_RAILING, ModBlocks.COPPER_FILIGREE_RAILING,
+                    ModBlocks.IRON_FILIGREE_RAILING))
                 ItemProperties.register(railing.get().asItem(),
                         ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "railing_shape"),
                         (stack, level, entity, seed) -> FiligreeRailingItem.getShape(stack).ordinal());
@@ -215,12 +216,14 @@ public class ModClientEvents {
         tip(ModBlocks.BRASS_FILIGREE_RAILING);
         tip(ModBlocks.ANDESITE_FILIGREE_RAILING);
         tip(ModBlocks.COPPER_FILIGREE_RAILING);
+        tip(ModBlocks.IRON_FILIGREE_RAILING);
         tip(ModBlocks.PARTICLE_ACCELERATOR_INPUT);
         tip(ModBlocks.SALT_LAMP);
         tip(ModBlocks.GARDEN_LIGHT);
         tip(ModBlocks.STREETLAMP);
         tip(ModBlocks.WIRE_CONNECTOR);
         tip(ModBlocks.GROW_LAMP);
+        tip(ModBlocks.SOLAR_PLANT_BED);
         tip(ModBlocks.CHARRED_TIMBER);
         tip(ModBlocks.TRELLIS);
         tip(ModBlocks.GREENHOUSE_CONTROLLER);

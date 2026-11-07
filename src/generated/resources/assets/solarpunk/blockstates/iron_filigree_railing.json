@@ -1,0 +1,142 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "solarpunk:block/iron_filigree_railing_straight"
+      },
+      "when": {
+        "north": "true",
+        "post": "false",
+        "transition": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/iron_filigree_railing_straight",
+        "y": 90
+      },
+      "when": {
+        "east": "true",
+        "post": "false",
+        "transition": "none"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/iron_filigree_railing_post"
+      },
+      "when": {
+        "post": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/iron_filigree_railing_slope_start"
+      },
+      "when": {
+        "transition": "start_north"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/iron_filigree_railing_slope_start",
+        "y": 90
+      },
+      "when": {
+        "transition": "start_east"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/iron_filigree_railing_slope_start",
+        "y": 180
+      },
+      "when": {
+        "transition": "start_south"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/iron_filigree_railing_slope_start",
+        "y": 270
+      },
+      "when": {
+        "transition": "start_west"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/iron_filigree_railing_slope_end"
+      },
+      "when": {
+        "transition": "end_north"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/iron_filigree_railing_slope_end",
+        "y": 90
+      },
+      "when": {
+        "transition": "end_east"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/iron_filigree_railing_slope_end",
+        "y": 180
+      },
+      "when": {
+        "transition": "end_south"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/iron_filigree_railing_slope_end",
+        "y": 270
+      },
+      "when": {
+        "transition": "end_west"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/iron_filigree_railing_side"
+      },
+      "when": {
+        "north": "true",
+        "post": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/iron_filigree_railing_side",
+        "y": 90
+      },
+      "when": {
+        "east": "true",
+        "post": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/iron_filigree_railing_side",
+        "y": 180
+      },
+      "when": {
+        "post": "true",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "solarpunk:block/iron_filigree_railing_side",
+        "y": 270
+      },
+      "when": {
+        "post": "true",
+        "west": "true"
+      }
+    }
+  ]
+}

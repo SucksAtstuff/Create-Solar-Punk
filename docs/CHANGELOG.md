@@ -22,6 +22,8 @@
 
 - New **Greenhouse Controller**: place it in the wall of a closed room with a glass roof, facing inside, and plants under the glass grow faster. Bees inside speed them up even more, and with global warming on, a sealed greenhouse is safe from pollution decay. Needs no power, can be turned or picked up with a Wrench, and has a Ponder scene.
 - New **Grow Lamp**: an FE-powered purple grow light. Hang it under a ceiling or from a wall, and crops below it grow faster, at night and underground too. A redstone signal switches it off.
+- **Agrivoltaics**: an Andesite or Brass Solar Panel raised over crops makes 10% more power, cooled by the plants below. The crops still grow at normal speed in its shade.
+- New **Solar Plant Bed**: a raised bed for one plant, for roofs and balconies. Its soil never dries out, so it needs no water, and its little panel charges by day to run a grow light at night that makes the plant grow faster.
 - New **Greenhouse Glass** and **Clear Greenhouse Glass**: copper-framed glass for greenhouses and conservatories, each with a pane. Also comes as frosted **Greenhouse Panels** in two patterns, which still let light through.
 - When pollution turns a chunk into the dead biome, the inside of a sealed greenhouse keeps its original biome, so grass and leaves in there stay green.
 - With Serene Seasons, crops under any greenhouse glass (and Solar Glass) grow in every season.
@@ -58,8 +60,9 @@
 - New **Garden Light**: a small solar light that charges in the sun during the day and glows through the night.
 - New **Streetlamp**: a two-block-tall street light that runs on FE and switches itself on at dusk. Power it with cables or Wire Connectors, or set it on a Brass Solar Panel or Solar Glass.
 - New **Charred Timber**: dark scorched planks, made by applying Biochar to any planks, with stairs and slabs. Unlike planks, it doesn't burn.
+- New **Moss Stairs** and **Moss Slab**, crafted from Moss Blocks, for green roofs. With global warming on, they soak up pollution like leaves do.
 - New **Trellis**: a climbable wooden lattice for walls. Grow Vines on it, then add a flower or Glow Berries. With global warming on, a Trellis with vines soaks up pollution like leaves do.
-- New **Brass**, **Andesite** and **Copper Filigree Railings**: art nouveau railings that connect to their neighbours. Hold Alt to switch the item between flat, slope and steep slope, for ramps, arches and staircases. Gentle slopes blend into flat railings at both ends, steep slopes placed on stairs follow them automatically, and Create-style placement arrows help extend runs and slopes.
+- New **Brass**, **Andesite**, **Copper** and **Iron Filigree Railings**: art nouveau railings that connect to their neighbours. Hold Alt to switch the item between flat, slope and steep slope, for ramps, arches and staircases. Gentle slopes blend into flat railings at both ends, steep slopes placed on stairs follow them automatically, and Create-style placement arrows help extend runs and slopes.
 - New stairs, slabs and walls for the Turbine Casing and Fusion Reactor Casing, so engine rooms can match.
 - Decorative blocks now have their own **Create: Solarpunk Building Blocks** creative tab, and the main tab is now grouped by power type.
 - New **Ash** item: blast Biomass in a Blast Furnace or with Bulk Blasting, and craft 4 into an Ash Block. Ash Blocks now need a shovel and drop Ash, like Snow.

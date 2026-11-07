@@ -134,6 +134,8 @@ public class ModRecipeProvider extends RecipeProvider {
                 Ingredient.of(createItem("andesite_alloy")), has(createItem("andesite_alloy")));
         filigreeRailingRecipe(output, ModBlocks.COPPER_FILIGREE_RAILING.get(),
                 Ingredient.of(ModTags.Items.PLATES_COPPER), has(ModTags.Items.PLATES_COPPER));
+        filigreeRailingRecipe(output, ModBlocks.IRON_FILIGREE_RAILING.get(),
+                Ingredient.of(ModTags.Items.PLATES_IRON), has(ModTags.Items.PLATES_IRON));
 
         // Like stained glass: 8 Glass around one Photovoltaic Cell.
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.SOLAR_GLASS.get(), 8)
@@ -219,6 +221,18 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('G', Tags.Items.GLASS_PANES_COLORLESS)
                 .define('A', Items.AMETHYST_SHARD)
                 .unlockedBy("has_copper_wire", has(ModTags.Items.WIRES_COPPER))
+                .save(output);
+
+        // A panel on a copper frame over a box of dirt, with an amethyst grow light under the panel.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SOLAR_PLANT_BED.get())
+                .pattern(" P ")
+                .pattern("CAC")
+                .pattern("CDC")
+                .define('P', ModItems.PHOTOVOLTAIC_CELL.get())
+                .define('A', Items.AMETHYST_SHARD)
+                .define('C', ModTags.Items.PLATES_COPPER)
+                .define('D', Items.DIRT)
+                .unlockedBy("has_photovoltaic_cell", has(ModItems.PHOTOVOLTAIC_CELL.get()))
                 .save(output);
 
         // A brass insulator on a brass base.
@@ -564,7 +578,7 @@ public class ModRecipeProvider extends RecipeProvider {
     // would save under the minecraft namespace, so these are built by hand.
     private void blockFamilyRecipes(RecipeOutput output, BlockFamily family) {
         generateRecipes(output, family, FeatureFlags.DEFAULT_FLAGS);
-        if (ModBlockFamilies.isWooden(family)) return;
+        if (!ModBlockFamilies.isStonecuttable(family)) return;
 
         Block base = family.getBaseBlock();
         String baseName = BuiltInRegistries.BLOCK.getKey(base).getPath();

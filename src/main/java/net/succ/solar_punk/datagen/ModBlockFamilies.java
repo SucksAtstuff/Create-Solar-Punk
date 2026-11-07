@@ -3,6 +3,7 @@ package net.succ.solar_punk.datagen;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +22,8 @@ import java.util.stream.Stream;
 //
 // Stairs, slabs and walls use the base block's texture (see baseTexture for ones stored
 // elsewhere). Sets are stone-like (every variant pickaxe-mineable and stonecuttable from the
-// base) unless isWooden: then axe-mineable, wooden stair/slab tags, crafting only.
+// base) unless isWooden: then axe-mineable, wooden stair/slab tags, crafting only; or isMoss:
+// hoe-mineable, crafting only.
 // Full-block variants (polished, chiseled, cut...) use textures/block/<variant id>.png on
 // every face, or as the sides only when a <variant id>_top.png exists for the top and bottom.
 //
@@ -103,9 +105,15 @@ public final class ModBlockFamilies {
             .slab(ModBlocks.CHARRED_TIMBER_SLAB.get())
             .getFamily();
 
+    // Built on vanilla's Moss Block: hoe-mineable, crafting only.
+    public static final BlockFamily MOSS = new BlockFamily.Builder(Blocks.MOSS_BLOCK)
+            .stairs(ModBlocks.MOSS_STAIRS.get())
+            .slab(ModBlocks.MOSS_SLAB.get())
+            .getFamily();
+
     public static final List<BlockFamily> ALL = Stream.concat(
             Stream.of(SALT, POLISHED_SALT, SALT_BRICKS, ASH, POLISHED_ASH, ASH_BRICKS, TURBINE_CASING, FUSION_REACTOR_CASING,
-                    CHARRED_TIMBER),
+                    CHARRED_TIMBER, MOSS),
             RAMMED_EARTH.stream()).toList();
 
     // Base blocks whose texture isn't at textures/block/<id>.png.
@@ -133,6 +141,15 @@ public final class ModBlockFamilies {
 
     public static boolean isWooden(BlockFamily family) {
         return family == CHARRED_TIMBER;
+    }
+
+    public static boolean isMoss(BlockFamily family) {
+        return family == MOSS;
+    }
+
+    // Stone-like families get stonecutter recipes; wood and moss don't.
+    public static boolean isStonecuttable(BlockFamily family) {
+        return !isWooden(family) && !isMoss(family);
     }
 
     public static boolean isTinted(BlockFamily family) {

@@ -28,6 +28,7 @@ A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecos
 - **Brass Solar Panel** - generates Forge Energy (FE) from sunlight for FE-powered mods; built in a Mechanical Crafter from Photovoltaic Cells
 - **Solar Glass / Solar Glass Pane** - framed glass that makes a little FE under open sky, for skylights and windows
 - **Solar Shingles / Solar Glass Shingles** - stepped solar roofing that makes a little FE, so your roof can be the solar array; roofs sloping toward the sun make more. Touching shingles and Solar Glass share their power, so you can take a whole roof's output from any one block
+- **Agrivoltaics** - raise Andesite or Brass Solar Panels over your crops: the plants keep growing at normal speed in the shade and cool the panels for 10% more output, so farms and solar can share the same land
 - **Photovoltaic Cell** - made by sequenced assembly: a Glass Pane, then deploy Polished Rose Quartz, deploy a Copper Sheet, and press
 
 ### Wires and Electric Blocks
@@ -35,6 +36,7 @@ A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecos
 - **Iron, Copper and Gold Wire** - cut from metal sheets with a Mechanical Saw, and wound 4 at a time onto an Empty Spool. Click two Wire Connectors with a spool to string a wire between them; longer wires use more of the spool. Gold carries the most power and reaches furthest, then Copper, then Iron. Shears cut a connector's wires and give them back
 - **Streetlamp** - a two-block-tall street light that runs on FE and switches itself on at dusk. A full charge lasts the whole night
 - **Grow Lamp** - an FE-powered purple grow light. Hang it under a ceiling or from a wall, and crops below it grow faster, at night and underground too. A redstone signal switches it off
+- **Solar Plant Bed** - a raised bed for one plant, for roofs and balconies. Its soil never dries out, and its little panel charges by day to run a grow light at night that speeds the plant up
 
 ### Solar Heat Chain
 - **Salt** - a new material found as underground deposits in desert, badlands, and savanna biomes; the core fuel of the solar heat chain. Salt from Northstar and Create: Food works too
@@ -130,7 +132,8 @@ Decorative blocks have their own **Create: Solarpunk Building Blocks** creative 
 - **Salt** and **Ash** sets - stairs, slabs, walls, polished blocks, bricks and chiseled bricks. Ash comes from blasting Biomass, so you don't need global warming to get it
 - **Rammed Earth** in 25 colours, each with bricks, chiseled bricks, stairs, slabs and walls; pack soil, Gravel, Clay and Ash or Biochar together with a Mechanical Press, and the soil picks the colour
 - **Charred Timber** - dark scorched planks made by applying Biochar to any planks, with stairs and slabs. Unlike planks, it doesn't burn
-- **Brass, Andesite and Copper Filigree Railings** - art nouveau railings that connect to their neighbours; hold Alt to switch between flat, slope and steep slope for ramps, arches and staircases
+- **Moss Stairs** and **Moss Slab** - green roofs made from Moss Blocks, which soak up pollution like leaves when global warming is on
+- **Brass, Andesite, Copper and Iron Filigree Railings** - art nouveau railings that connect to their neighbours; hold Alt to switch between flat, slope and steep slope for ramps, arches and staircases
 - **Trellis** - a climbable lattice for walls; grow Vines on it, then add a flower or Glow Berries
 - **Salt Lamp** and **Garden Light** - a warm glowing chunk of salt, and a small solar light that charges by day and glows through the night
 - Stairs, slabs and walls for the **Turbine Casing** and **Fusion Reactor Casing**, so engine rooms can match

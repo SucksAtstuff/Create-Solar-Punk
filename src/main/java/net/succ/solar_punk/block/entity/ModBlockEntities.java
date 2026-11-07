@@ -31,6 +31,7 @@ import net.succ.solar_punk.block.entity.custom.SolarShinglesBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarGlassBlockEntity;
 import net.succ.solar_punk.block.entity.custom.StreetlampBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GrowLampBlockEntity;
+import net.succ.solar_punk.block.entity.custom.SolarPlantBedBlockEntity;
 import net.succ.solar_punk.block.entity.custom.WireConnectorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GreenhouseControllerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
@@ -115,6 +116,11 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GrowLampBlockEntity>> GROW_LAMP =
             BLOCK_ENTITIES.register("grow_lamp", () -> BlockEntityType.Builder
                     .of((pos, state) -> new GrowLampBlockEntity(ModBlockEntities.GROW_LAMP.get(), pos, state), ModBlocks.GROW_LAMP.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SolarPlantBedBlockEntity>> SOLAR_PLANT_BED =
+            BLOCK_ENTITIES.register("solar_plant_bed", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new SolarPlantBedBlockEntity(ModBlockEntities.SOLAR_PLANT_BED.get(), pos, state), ModBlocks.SOLAR_PLANT_BED.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<StreetlampBlockEntity>> STREETLAMP =

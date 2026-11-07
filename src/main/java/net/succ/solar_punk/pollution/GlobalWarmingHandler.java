@@ -282,7 +282,7 @@ public class GlobalWarmingHandler {
         }
     }
 
-    // Pollution absorbed this interval by leaves and planted trellises near the chunk's surface.
+    // Pollution absorbed this interval by leaves, moss roofs and planted trellises near the chunk's surface.
     private static long plantAbsorption(ServerLevel level, ChunkPos chunkPos) {
         LevelChunk chunk = level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
         if (chunk == null) return 0;
@@ -294,12 +294,17 @@ public class GlobalWarmingHandler {
                 int surfaceY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, lx, lz);
                 for (int dy = -2; dy <= 10; dy++) {
                     BlockState state = level.getBlockState(new BlockPos(worldX, surfaceY + dy, worldZ));
-                    if (state.is(BlockTags.LEAVES)) leaves++;
+                    if (state.is(BlockTags.LEAVES) || isMossRoof(state)) leaves++;
                     else if (state.is(ModBlocks.TRELLIS.get()) && state.getValue(TrellisBlock.PLANT).hasVines()) trellises++;
                 }
             }
         }
         return leaves * Config.leafAbsorptionPerInterval + trellises * Config.trellisAbsorptionPerInterval;
+    }
+
+    // Moss stairs and slabs (green roofs) absorb at the leaf rate.
+    private static boolean isMossRoof(BlockState state) {
+        return state.is(ModBlocks.MOSS_STAIRS.get()) || state.is(ModBlocks.MOSS_SLAB.get());
     }
 
     // Picks Config.blocksDecayedPerInterval random columns in the chunk and replaces the

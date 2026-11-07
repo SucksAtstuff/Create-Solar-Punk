@@ -22,6 +22,7 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
 import net.succ.solar_punk.client.sound.BrassPanelSoundInstance;
+import net.succ.solar_punk.util.Agrivoltaics;
 import net.succ.solar_punk.util.EnergyFormat;
 import net.succ.solar_punk.util.SolarHelper;
 import org.jetbrains.annotations.Nullable;
@@ -51,6 +52,8 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
     // Last tick's output, synced for the goggle tooltip. The client can't always work it
     // out itself: in Cosmonautics deep space the sun position is server-only data.
     private int lastGenerated = 0;
+    // A plant below cools the panel (agrivoltaics). Checked once a second.
+    private boolean plantBelow = false;
 
     public BrassSolarPanelBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -59,7 +62,7 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
     private int getGeneratedFE() {
         float base = SolarHelper.byPhase(level, worldPosition, Config.brassMorningFe, Config.brassNoonFe);
         if (base == 0) return 0;
-        return Math.round(base * SolarHelper.outputMultiplier(level, worldPosition));
+        return Math.round(base * SolarHelper.outputMultiplier(level, worldPosition) * Agrivoltaics.multiplier(plantBelow));
     }
 
     public void tick() {
@@ -69,6 +72,7 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
             return;
         }
 
+        if (level.getGameTime() % 20 == 0) plantBelow = Agrivoltaics.hasPlantBelow(level, worldPosition);
         int generated = getGeneratedFE();
         lastGenerated = generated;
         if (generated > 0) {
@@ -126,6 +130,11 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
                         .withStyle(generated > 0 ? ChatFormatting.GREEN : ChatFormatting.RED))
                 .forGoggles(tooltip, 1);
 
+        if (plantBelow)
+            CreateLang.translate("solar_punk.tooltip.agrivoltaics", Math.round(Config.agrivoltaicsBonus * 100))
+                    .style(ChatFormatting.GREEN)
+                    .forGoggles(tooltip, 1);
+
         CreateLang.translate("solar_punk.tooltip.stored")
                 .style(ChatFormatting.GRAY)
                 .add(Component.literal(EnergyFormat.abbreviate(energyStorage.getEnergyStored())
@@ -151,6 +160,7 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
         super.saveAdditional(tag, registries);
         tag.putInt("energy", energyStorage.getEnergyStored());
         tag.putInt("generated", lastGenerated);
+        tag.putBoolean("plant_below", plantBelow);
     }
 
     @Override
@@ -158,5 +168,6 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
         super.loadAdditional(tag, registries);
         energyStorage.setStored(tag.getInt("energy"));
         lastGenerated = tag.getInt("generated");
+        plantBelow = tag.getBoolean("plant_below");
     }
 }

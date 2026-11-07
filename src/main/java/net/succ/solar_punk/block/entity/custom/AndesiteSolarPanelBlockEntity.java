@@ -15,6 +15,10 @@ import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
 
 import java.util.List;
 import net.succ.solar_punk.util.SolarHelper;
+import net.succ.solar_punk.util.Agrivoltaics;
+import com.simibubi.create.foundation.utility.CreateLang;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 
 public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity {
 
@@ -52,18 +56,25 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
         return capacity;
     }
 
+    // Plants below cool the panel (agrivoltaics). Only the SU goes up, so the RPM stays clean.
+    private boolean plantBelow = false;
+
     private float computeCapacity() {
         float capacity = SolarHelper.byPhase(level, worldPosition, Config.andesiteMorningSu, Config.andesiteNoonSu);
-        return capacity == 0 ? 0 : capacity * SolarHelper.outputMultiplier(level, worldPosition);
+        return capacity == 0 ? 0 : capacity * SolarHelper.outputMultiplier(level, worldPosition)
+                * Agrivoltaics.multiplier(plantBelow);
     }
 
     @Override
     public void tick() {
         super.tick();
         if (level != null && !level.isClientSide && level.getGameTime() % 20 == 0) {
+            boolean plant = Agrivoltaics.hasPlantBelow(level, worldPosition);
+            boolean plantChanged = plant != plantBelow;
+            plantBelow = plant;
             updateGeneratedRotation();
             float capacity = computeCapacity();
-            if (capacity != syncedCapacity) {
+            if (capacity != syncedCapacity || plantChanged) {
                 syncedCapacity = capacity;
                 sendData();
             }
@@ -79,11 +90,24 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
     protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.write(tag, registries, clientPacket);
         if (clientPacket) tag.putFloat("SolarCapacity", syncedCapacity);
+        if (clientPacket) tag.putBoolean("PlantBelow", plantBelow);
     }
 
     @Override
     protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.read(tag, registries, clientPacket);
         if (clientPacket) syncedCapacity = tag.getFloat("SolarCapacity");
+        if (clientPacket) plantBelow = tag.getBoolean("PlantBelow");
+    }
+
+    @Override
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        boolean added = super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+        if (!plantBelow) return added;
+        CreateLang.translate("solar_punk.tooltip.agrivoltaics",
+                        Math.round(Config.agrivoltaicsBonus * 100))
+                .style(ChatFormatting.GREEN)
+                .forGoggles(tooltip, 1);
+        return true;
     }
 }

@@ -67,24 +67,8 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
 
 ### Living buildings
 
-- **Green Roof** - a grass or moss slab that absorbs pollution like leaves do. Gives the
-  global warming system a roof-shaped answer besides trees, trellises and the Biofilter.
-  - Could slowly spread flowers on top of itself, and dry out to dead grass in heavy
-    pollution, so it doubles as a visible pollution meter.
 - **Planter Box** - a wooden or brick box that holds dirt so crops and flowers grow on roofs
   and balconies. A Kinetic Sprinkler in range waters it like farmland.
-- **Solar Plant Bed** - a raised bed with a small panel built in, a self-contained garden for
-  roofs and balconies. The panel charges by day and powers a grow light at night, so crops in
-  the bed keep growing after dark. It also keeps its own soil hydrated, so it needs no water
-  nearby.
-  - Small on purpose: one bed, one crop, slower than a proper farm. A way to grow food and
-    Biomass in a city build without a field.
-  - Bigger version of the idea (agrivoltaics, which is real): crops planted under raised
-    solar panels grow at normal speed in the shade, and the panel gets a small output bonus from
-    the plants cooling it. Rewards stacking farms and solar instead of building them side
-    by side.
-  - Open: does the grow light need the panel's own charge only, or can it take FE from the
-    grid so it also works in caves and space stations?
 
 ### Machine-themed decor
 
