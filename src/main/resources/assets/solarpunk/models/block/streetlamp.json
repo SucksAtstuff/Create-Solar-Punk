@@ -1,6 +1,7 @@
 {
 	"format_version": "1.21.6",
 	"credit": "Made by Firstwitch",
+	"ambientocclusion": false,
 	"texture_size": [32, 32],
 	"render_type": "minecraft:cutout",
 	"textures": {
