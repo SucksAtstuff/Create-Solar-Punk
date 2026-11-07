@@ -67,11 +67,12 @@ public class GrowLampBlock extends Block implements EntityBlock {
     }
 
     private static boolean hasCeiling(BlockGetter level, BlockPos pos) {
-        return isSupport(level.getBlockState(pos.above()));
+        return isSupport(level, pos.above(), Direction.DOWN);
     }
 
-    private static boolean isSupport(BlockState state) {
-        return !state.isAir() && !state.canBeReplaced();
+    // Only a full face holds the lamp up, so small blocks like Wire Connectors don't count.
+    private static boolean isSupport(BlockGetter level, BlockPos supportPos, Direction face) {
+        return level.getBlockState(supportPos).isFaceSturdy(level, supportPos, face);
     }
 
     @Override
@@ -80,11 +81,12 @@ public class GrowLampBlock extends Block implements EntityBlock {
         Direction.Axis axis = state.getValue(AXIS);
         for (Direction end : Direction.values()) {
             if (end.getAxis() != axis) continue;
-            BlockState neighbour = level.getBlockState(pos.relative(end));
+            BlockPos neighbourPos = pos.relative(end);
+            BlockState neighbour = level.getBlockState(neighbourPos);
             // Another lamp only holds this one up if it runs the same way, so the rail lines up.
             if (neighbour.getBlock() instanceof GrowLampBlock
                     ? neighbour.getValue(AXIS) == axis
-                    : isSupport(neighbour))
+                    : isSupport(level, neighbourPos, end.getOpposite()))
                 return true;
         }
         return false;
