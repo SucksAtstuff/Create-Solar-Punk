@@ -54,6 +54,9 @@ public final class SolarHelper {
     private record SkyResult(boolean clear, long stamp) {}
     private static final Map<GlobalPos, SkyResult> SKY_CACHE = new ConcurrentHashMap<>();
 
+    // Share of a flat surface's output a surface facing away from the sun still gets
+    private static final double SKY_LIGHT = 0.25;
+
     public enum DayPhase { NIGHT, MORNING, NOON, EVENING }
 
     public static DayPhase getPhase(Level level, BlockPos pos) {
@@ -72,15 +75,15 @@ public final class SolarHelper {
 
         // On a contraption the sun's height is measured from the contraption's own "up", so
         // tilting it toward the sun gives more output. Still night once the sun has set.
-        SableCompat.Placement placement = SableCompat.placement(level, pos);
+        SableCompat.Placement placement = sunAngle() ? SableCompat.placement(level, pos) : null;
         if (placement != null) {
             Vec3 world = vanillaSunDirection(level);
             if (world.y < DAY_SUN_HEIGHT) return DayPhase.NIGHT;
             double height = placement.toLocal(world).y;
             if (height >= NOON_SUN_HEIGHT) return DayPhase.NOON;
-            // The sun rises in the east (+x).
-            if (height >= DAY_SUN_HEIGHT)  return world.x > 0 ? DayPhase.MORNING : DayPhase.EVENING;
-            return DayPhase.NIGHT;
+            // The sun rises in the east (+x). Tilted away from the sun, the panel still gets
+            // light from the rest of the sky, so it drops to dawn output rather than nothing.
+            return world.x > 0 ? DayPhase.MORNING : DayPhase.EVENING;
         }
 
         float progress = dayProgress(level.getTimeOfDay(1.0f));
@@ -201,16 +204,24 @@ public final class SolarHelper {
         return Math.toDegrees(Math.acos(Mth.clamp(local.y, -1, 1)));
     }
 
+    /** Whether output depends on the angle to the sun: only with Sable (Aeronautics) and the config on. */
+    public static boolean sunAngle() {
+        return Config.sunAngle && SableCompat.isLoaded();
+    }
+
     /**
      * How much sun a surface facing {@code normal} (a unit vector in the block's own frame)
      * catches compared to a flat one at {@code pos}: 1 for flat, more when tilted toward the
-     * sun, 0 when facing away. Capped at {@code max}, since the ratio blows up as the sun nears
-     * the horizon. 1 while the sun is down or its direction is unknown.
+     * sun, down to {@link #SKY_LIGHT} when facing away (light from the rest of the sky; none in
+     * space, where there's no sky to scatter it). Capped at {@code max}, since the ratio blows up
+     * as the sun nears the horizon. 1 while the sun is down or its direction is unknown.
      */
     public static double tiltFactor(Level level, BlockPos pos, Vec3 normal, double max) {
+        if (!sunAngle()) return 1;
         Vec3 local = localSunDirection(level, pos);
         if (local == null || local.y <= 0) return 1;
-        return Mth.clamp(normal.dot(local) / local.y, 0, max);
+        double min = CosmonauticsSolar.sunAt(level, pos) != null ? 0 : SKY_LIGHT;
+        return Mth.clamp(normal.dot(local) / local.y, min, max);
     }
 
     /** Unit vector toward the sun in the frame of the block at {@code pos}, or null while it's down (eclipsed in space) or unknown. */

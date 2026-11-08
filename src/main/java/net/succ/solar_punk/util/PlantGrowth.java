@@ -7,6 +7,12 @@ import net.minecraft.world.level.block.BambooStalkBlock;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.CactusBlock;
+import net.minecraft.world.level.block.GrassBlock;
+import net.minecraft.world.level.block.MangroveLeavesBlock;
+import net.minecraft.world.level.block.MossBlock;
+import net.minecraft.world.level.block.NetherrackBlock;
+import net.minecraft.world.level.block.NyliumBlock;
+import net.minecraft.world.level.block.RootedDirtBlock;
 import net.minecraft.world.level.block.SugarCaneBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -15,6 +21,9 @@ public final class PlantGrowth {
 
     public static boolean isPlant(BlockState state) {
         var block = state.getBlock();
+        // Bonemealable ground and leaves (grass spreads flowers, moss spreads moss) aren't plants
+        if (block instanceof GrassBlock || block instanceof NyliumBlock || block instanceof NetherrackBlock || block instanceof MossBlock
+                || block instanceof RootedDirtBlock || block instanceof MangroveLeavesBlock) return false;
         return block instanceof BonemealableBlock || block instanceof BushBlock || block instanceof SugarCaneBlock
                 || block instanceof CactusBlock || block instanceof BambooStalkBlock;
     }

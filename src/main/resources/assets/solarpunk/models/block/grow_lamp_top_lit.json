@@ -1,7 +1,7 @@
 {
 	"format_version": "1.21.6",
 	"credit": "Made by Firstwitch",
-	"render_type": "minecraft:cutout",
+	"render_type": "minecraft:translucent",
 	"textures": {
 		"0": "solarpunk:block/grow_lamp",
 		"particle": "solarpunk:block/grow_lamp"

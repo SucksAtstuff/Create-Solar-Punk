@@ -27,7 +27,7 @@ A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecos
 - **Kinetic Battery** - stores rotational force (SU) for later use, such as running your factory through the night
 - **Brass Solar Panel** - generates Forge Energy (FE) from sunlight for FE-powered mods; built in a Mechanical Crafter from Photovoltaic Cells
 - **Solar Glass / Solar Glass Pane** - framed glass that makes a little FE under open sky, for skylights and windows
-- **Solar Shingles / Solar Glass Shingles** - stepped solar roofing that makes a little FE, so your roof can be the solar array; roofs sloping toward the sun make more. Touching shingles and Solar Glass share their power, so you can take a whole roof's output from any one block
+- **Solar Shingles / Solar Glass Shingles** - stepped solar roofing that makes a little FE, so your roof can be the solar array; with Create Aeronautics installed, roofs sloping toward the sun make more. Touching shingles and Solar Glass share their power, so you can take a whole roof's output from any one block
 - **Agrivoltaics** - raise Andesite or Brass Solar Panels over your crops: the plants keep growing at normal speed in the shade and cool the panels for 10% more output, so farms and solar can share the same land
 - **Photovoltaic Cell** - made by sequenced assembly: a Glass Pane, then deploy Polished Rose Quartz, deploy a Copper Sheet, and press
 

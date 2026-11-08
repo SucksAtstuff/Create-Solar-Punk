@@ -55,7 +55,7 @@
 - New **Salt Bricks** with stairs, slab and wall, plus **Chiseled Salt Bricks**.
 - New **Polished Ash** and **Ash Bricks**, each with stairs, slab and wall, plus **Chiseled Ash Bricks**.
 - New **Solar Glass** and **Solar Glass Pane**: framed glass that makes a little FE under open sky, for skylights and windows.
-- New **Solar Shingles**: stepped solar roofing that makes a little FE, so your roof can be the solar array. Roofs sloping toward the sun make more. Also comes in **Solar Glass Shingles**, a glass version.
+- New **Solar Shingles**: stepped solar roofing that makes a little FE, so your roof can be the solar array. With Create Aeronautics installed, roofs sloping toward the sun make more (can be turned off in the config). Also comes in **Solar Glass Shingles**, a glass version.
 - New **Rammed Earth** in 25 colours, with stairs, slabs and walls: pack soil, Gravel, Clay and Ash or Biochar together with a Mechanical Press. The soil you use (Dirt, Sand, Red Sand, Mud, Clay, Ash, Salt, Ruined Dirt, or any Terracotta) picks the colour. Every colour also comes as **Rammed Earth Bricks**, with stairs, slab and wall, and **Chiseled Rammed Earth Bricks**.
 - New **Garden Light**: a small solar light that charges in the sun during the day and glows through the night.
 - New **Streetlamp**: a two-block-tall street light that runs on FE and switches itself on at dusk. Power it with cables or Wire Connectors, or set it on a Brass Solar Panel or Solar Glass.

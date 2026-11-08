@@ -127,6 +127,7 @@ public class Config {
     private static final ModConfigSpec.DoubleValue CFG_SERENE_SEASONS_SUMMER_MULTIPLIER;
     private static final ModConfigSpec.DoubleValue CFG_SERENE_SEASONS_WINTER_MULTIPLIER;
 
+    private static final ModConfigSpec.BooleanValue CFG_SUN_ANGLE;
     private static final ModConfigSpec.DoubleValue CFG_SPACE_SOLAR_MULTIPLIER;
     private static final ModConfigSpec.BooleanValue CFG_SPACE_REAL_SUN;
 
@@ -366,6 +367,13 @@ public class Config {
                 "them as seasonless.")
                 .defineInRange("winter_multiplier", 0.7, 0.05, 1.0);
         BUILDER.pop();
+
+        CFG_SUN_ANGLE = BUILDER.comment(
+                "Only with Sable installed (Create Aeronautics, Create: Cosmonautics): solar output depends on",
+                "the angle to the sun. Solar Shingles make more on the slope facing the sun and less on the",
+                "one facing away, and panels on a tilted contraption follow its tilt. Set to false to ignore",
+                "angles, so every solar block only follows the time of day.")
+                .define("sun_angle", true);
 
         BUILDER.push("space");
         CFG_SPACE_SOLAR_MULTIPLIER = BUILDER.comment(
@@ -666,6 +674,7 @@ public class Config {
     public static boolean sereneSeasonsEnabled;
     public static double sereneSeasonsSummerMultiplier, sereneSeasonsWinterMultiplier;
 
+    public static boolean sunAngle;
     public static double spaceSolarMultiplier;
     public static boolean spaceRealSun;
 
@@ -779,6 +788,7 @@ public class Config {
         sereneSeasonsSummerMultiplier = CFG_SERENE_SEASONS_SUMMER_MULTIPLIER.get();
         sereneSeasonsWinterMultiplier = CFG_SERENE_SEASONS_WINTER_MULTIPLIER.get();
 
+        sunAngle             = CFG_SUN_ANGLE.get();
         spaceSolarMultiplier = CFG_SPACE_SOLAR_MULTIPLIER.get();
         spaceRealSun         = CFG_SPACE_REAL_SUN.get();
 

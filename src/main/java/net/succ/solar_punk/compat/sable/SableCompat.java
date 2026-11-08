@@ -33,6 +33,10 @@ public final class SableCompat {
 
     private static final boolean LOADED = ModList.get().isLoaded("sable");
 
+    public static boolean isLoaded() {
+        return LOADED;
+    }
+
     /**
      * Where a block on a sub-level (an Aeronautics contraption, a Cosmonautics station) really
      * is. Its {@link BlockPos} is a plot coordinate far from the sub-level itself;
