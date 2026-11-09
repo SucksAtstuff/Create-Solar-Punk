@@ -37,6 +37,7 @@ import net.succ.solar_punk.network.SelectPipeShapePayload;
 import net.succ.solar_punk.network.SelectRailingShapePayload;
 import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
+import net.succ.solar_punk.particle.ModParticles;
 import net.succ.solar_punk.sound.ModSounds;
 import net.succ.solar_punk.worldgen.ModBiomeModifierTypes;
 import net.succ.solar_punk.worldgen.ModFeatures;
@@ -55,6 +56,7 @@ public class SolarPunk {
         ModCreativeModeTabs.register(modEventBus);
         ModRecipeTypes.register(modEventBus);
         ModSounds.register(modEventBus);
+        ModParticles.register(modEventBus);
         ModFeatures.register(modEventBus);
         ModBiomeModifierTypes.register(modEventBus);
         ModTriggers.register(modEventBus);

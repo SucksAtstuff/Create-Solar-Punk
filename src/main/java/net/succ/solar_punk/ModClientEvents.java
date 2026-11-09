@@ -1,5 +1,7 @@
 package net.succ.solar_punk;
 
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.succ.solar_punk.client.particle.TintedSteamParticle;
 import net.succ.solar_punk.client.renderer.AcceleratorParticleRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.succ.solar_punk.item.FiligreeRailingItem;
@@ -52,6 +54,7 @@ import net.succ.solar_punk.client.renderer.SolarMirrorRenderer;
 import net.succ.solar_punk.client.renderer.SolarPowerTowerRenderer;
 import net.succ.solar_punk.client.renderer.TurbineRotorRenderer;
 import net.succ.solar_punk.compat.ponder.SolarPunkPonderPlugin;
+import net.succ.solar_punk.particle.ModParticles;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,6 +64,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import net.succ.solar_punk.util.SeasonalColors;
 
 @EventBusSubscriber(modid = SolarPunk.MODID, value = Dist.CLIENT)
 public class ModClientEvents {
@@ -77,13 +81,16 @@ public class ModClientEvents {
     }
 
     // Trellis tint 0: the grey vines take the biome's foliage colour, like leaves.
-    // Tint 1: the grey flower takes the colour of the flower that was used (FlowerTint).
+    // Tint 1: the grey flower takes the colour of the flower that was used (FlowerTint), or
+    // a holiday colour (SeasonalColors).
     @SubscribeEvent
     public static void onRegisterBlockColors(RegisterColorHandlersEvent.Block event) {
         event.register((state, level, pos, tintIndex) -> {
             if (tintIndex == 1) {
                 Block flower = state.getValue(TrellisBlock.PLANT).flowerBlock();
-                return flower != null ? FlowerTint.of(flower) : -1;
+                if (flower == null) return -1;
+                int seasonal = SeasonalColors.flower(pos);
+                return seasonal != -1 ? seasonal : FlowerTint.of(flower);
             }
             return level != null && pos != null
                     ? BiomeColors.getAverageFoliageColor(level, pos)
@@ -95,6 +102,9 @@ public class ModClientEvents {
             int argb = 0xFF000000 | color.color;
             set.all().forEach(block -> event.register((state, level, pos, tintIndex) -> argb, block.get()));
         });
+
+        // Garden Light: the lit glow (tint 0) takes a holiday colour, else stays white.
+        event.register((state, level, pos, tintIndex) -> SeasonalColors.gardenLight(pos), ModBlocks.GARDEN_LIGHT.get());
     }
 
     @SubscribeEvent
@@ -103,6 +113,7 @@ public class ModClientEvents {
             int argb = 0xFF000000 | color.color;
             set.all().forEach(block -> event.register((stack, tintIndex) -> argb, block.get()));
         });
+        event.register((stack, tintIndex) -> SeasonalColors.gardenLight(null), ModBlocks.GARDEN_LIGHT.get());
     }
 
     @SubscribeEvent
@@ -141,7 +152,12 @@ public class ModClientEvents {
             UnaryOperator<BakedModel> wrapper = wrappers.get(key.id().getPath());
             return wrapper != null ? wrapper.apply(model) : model;
         });
-        SeasonalModels.apply(event.getModels());
+        SeasonalModels.apply(event);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(ModParticles.TINTED_STEAM.get(), TintedSteamParticle.Provider::new);
     }
 
     @SubscribeEvent

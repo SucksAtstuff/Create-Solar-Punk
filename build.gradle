@@ -51,6 +51,9 @@ neoForge {
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            // test_event in gradle.properties forces a seasonal look on
+            def testEvent = project.findProperty('test_event')?.toString()
+            if (testEvent) systemProperty 'solarpunk.event', testEvent
         }
 
         server {

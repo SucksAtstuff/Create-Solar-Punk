@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.particle.SeasonalSteam;
 import net.succ.solar_punk.util.GeneratorHelper;
 import net.succ.solar_punk.util.PonderHelper;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity.RotationDirection;
@@ -100,7 +101,7 @@ public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implement
         if (time % 40 == 0 && hasVent()) {
             ServerLevel serverLevel = (ServerLevel) level;
             double cx = worldPosition.getX() + 0.5, cy = worldPosition.getY() + 1.0, cz = worldPosition.getZ() + 0.5;
-            serverLevel.sendParticles(ParticleTypes.CLOUD,  cx, cy, cz, 6, 0.25, 0.05, 0.25, 0.04);
+            SeasonalSteam.send(serverLevel, cx, cy, cz, 6, 0.25, 0.05, 0.25, 0.04);
             serverLevel.sendParticles(ParticleTypes.SPLASH, cx, cy, cz, 8, 0.2,  0.1,  0.2,  0.1);
         }
     }

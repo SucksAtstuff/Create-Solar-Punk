@@ -1,4 +1,4 @@
-# 2.1.1-1.21.1
+# 2.2.0-1.21.1
 
 ## New
 
@@ -7,6 +7,17 @@
 - A Comparator reads Andesite and Brass Solar Panels: 0 while they aren't generating, otherwise 1-15 by how directly they face the sun. The new **Sun Exposure** Display Link readout shows the same as a percentage.
 - A Comparator reads the Biofilter: 0 in clean air, rising with its chunk's pollution up to 15 at the biome decay threshold. New Display Link readouts: **Chunk Pollution** and **Pollution Level** (as a percentage of the decay threshold).
 - A Comparator reads the Greenhouse Controller: 0 while it isn't sealed, otherwise stronger the faster plants grow (10 by default, 15 with bees inside).
+
+### Holidays
+
+- **Christmas** (December): Streetlamps and Solar Shingles dress up, and wires turn into strings of glowing Christmas lights.
+- **New Year's** (Dec 31 - Jan 1): Solar Shingles get a festive look, Garden Lights glow gold and silver, and geysers throw sparks.
+- **Valentine's Day**: heart-shaped Trellis flowers, pink and red Garden Lights, and pink geyser steam.
+- **St. Patrick's Day**: green solar panels, Garden Lights and geyser steam.
+- **Easter** (Good Friday to Easter Monday): pastel solar panels, Garden Lights, Trellis flowers and geyser steam.
+- **Halloween** (last week of October): orange Garden Lights, orange and purple Trellis flowers, and green and purple geyser steam.
+- **Day of the Dead** (Nov 1-2): marigold-orange Trellis flowers.
+- **Pride Month** (June): rainbow solar panels, Garden Lights, Trellis flowers and geyser steam.
 
 ## Fixes
 

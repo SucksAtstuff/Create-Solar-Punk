@@ -27,6 +27,7 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.damage.ModDamageTypes;
+import net.succ.solar_punk.particle.SeasonalSteam;
 import net.succ.solar_punk.sound.ModSounds;
 import net.succ.solar_punk.util.PonderHelper;
 
@@ -189,7 +190,7 @@ public class GeyserVentBlockEntity extends BlockEntity implements IHaveGoggleInf
                 // Speed scales with the column, so the steam tops out about where it stops hurting
                 double speed = 0.25 + columnHeight() * 0.12;
                 for (int i = 0; i < 12; i++)
-                    level.addParticle(ParticleTypes.CLOUD, cx + (random.nextDouble() - 0.5) * 0.6, cy,
+                    SeasonalSteam.add(level, cx + (random.nextDouble() - 0.5) * 0.6, cy,
                             cz + (random.nextDouble() - 0.5) * 0.6, (random.nextDouble() - 0.5) * 0.1,
                             speed * (0.7 + random.nextDouble() * 0.5), (random.nextDouble() - 0.5) * 0.1);
                 for (int i = 0; i < 8; i++)
