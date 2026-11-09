@@ -2,9 +2,9 @@
 
 A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecosystem: solar panels, solar heat and thermal storage, steam turbines, biofuel, geothermal power, nuclear fusion, a Particle Accelerator, wires for carrying power, greenhouses, solarpunk building blocks, and an optional global warming system.
 
-**New to the mod?** Watch this video for a walkthrough of sorts covering what it adds and how it all fits together:
+**New to the mod?** Watch this video for an overview of what it adds and how it all fits together:
 
-[![Create: Solarpunk walkthrough](https://img.youtube.com/vi/16kInFTkFIs/maxresdefault.jpg)](https://youtu.be/16kInFTkFIs)
+[![Create: Solarpunk 2.1 overview](https://img.youtube.com/vi/wIznaRLFJZE/maxresdefault.jpg)](https://youtu.be/wIznaRLFJZE)
 
 ## Requirements
 
