@@ -49,6 +49,16 @@ public class GreenhouseControllerBlock extends HorizontalDirectionalBlock implem
         return new GreenhouseControllerBlockEntity(ModBlockEntities.GREENHOUSE_CONTROLLER.get(), pos, state);
     }
 
+    @Override
+    protected boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        return level.getBlockEntity(pos) instanceof GreenhouseControllerBlockEntity be ? be.getComparatorSignal() : 0;
+    }
+
     // Server only: scanning and growth are server logic.
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {

@@ -30,6 +30,30 @@ with the strongest / most on-theme ideas near the top of each section.
   that hoists a weighted block on surplus power. (Flywheel storage is largely what the Kinetic
   Battery already does.)
 
+## More uses for FE
+
+Right now FE mostly just powers lights and Grow Lamps, so Brass Panels, Shingles and Solar
+Glass have little to feed. These give it more jobs and make wire networks something to manage.
+
+- **Wire Switch** - a lever-like latch block with two Wire Connector points. Flip it to join or
+  split the two wire groups, so part of a network (a street of lights, a greenhouse) can be cut
+  off without unhooking wires.
+  - **Redstone Wire Relay** - the same thing switched by a redstone signal instead of by hand,
+    so Daylight Sensors, comparators (the new solar panel / Biofilter signals) or Create's
+    redstone links can switch power automatically.
+  - Open: one block with a mode toggle, or two separate blocks?
+  - Open: does a split network keep each side's stored energy, or is it just a gap in the path?
+- **Electric Motor** - turns FE back into SU, so FE can drive Create machines and wires can
+  carry rotational power across a base without long shaft lines.
+  - Balance: a Brass Panel feeding a Motor should give less SU and a lower speed than just
+    placing an Andesite Panel there (16 RPM / 256 SU at noon by default). The Andesite Panel
+    stays the easy, direct option; the Brass Panel + wires + Motor route pays off in scale and
+    flexibility (moving power, gathering it from a whole roof, running it at a distance).
+  - Open: fixed output, or a scroll value for RPM like Create's Creative Motor, with FE use
+    rising with speed and stress?
+  - Open: overlap with Create: New Age's motors when it's installed. Ours could be skipped or
+    tuned to sit alongside it.
+
 ## Solar chain depth
 
 - **Visible output scaling** - goggle readout of current vs peak output, with rain/snow/night

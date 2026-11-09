@@ -93,8 +93,11 @@ public class BiofilterBlockEntity extends KineticBlockEntity implements IHaveGog
         PollutionSavedData data = PollutionSavedData.get(serverLevel);
         long newPollution = data.getPollution(new ChunkPos(worldPosition));
         if (newPollution != chunkPollution) {
+            int oldSignal = getComparatorSignal();
             chunkPollution = newPollution;
             sendData();
+            if (getComparatorSignal() != oldSignal)
+                level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
         }
 
         if (!Config.globalWarmingEnabled || !isPowered()) return;
@@ -126,6 +129,30 @@ public class BiofilterBlockEntity extends KineticBlockEntity implements IHaveGog
         if (added) sendData();
     }
 
+    // --- Comparator and Display Link readouts ---
+
+    public long getChunkPollution() {
+        return chunkPollution;
+    }
+
+    /** This chunk's pollution as a share of the biome decay threshold, 0-1. */
+    public float getPollutionLevel() {
+        return Math.min(1f, chunkPollution / (float) Config.biomeDecayThreshold);
+    }
+
+    /** 0 in clean air, otherwise 1-15, reaching 15 at the biome decay threshold. */
+    public int getComparatorSignal() {
+        if (chunkPollution <= 0) return 0;
+        return Math.max(1, Math.round(getPollutionLevel() * 15));
+    }
+
+    // Matches the goggle tooltip
+    public ChatFormatting getPollutionColor() {
+        return chunkPollution == 0 ? ChatFormatting.GREEN
+                : chunkPollution < Config.biomeDecayThreshold / 2 ? ChatFormatting.YELLOW
+                : ChatFormatting.RED;
+    }
+
     @Override
     public void destroy() {
         super.destroy();
@@ -144,9 +171,7 @@ public class BiofilterBlockEntity extends KineticBlockEntity implements IHaveGog
                         .withStyle(powered ? ChatFormatting.GREEN : ChatFormatting.RED))
                 .forGoggles(tooltip, 1);
 
-        ChatFormatting pollutionColor = chunkPollution == 0 ? ChatFormatting.GREEN
-                : chunkPollution < Config.biomeDecayThreshold / 2 ? ChatFormatting.YELLOW
-                : ChatFormatting.RED;
+        ChatFormatting pollutionColor = getPollutionColor();
         CreateLang.translate("solar_punk.tooltip.biofilter_pollution")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(chunkPollution).style(pollutionColor).component())

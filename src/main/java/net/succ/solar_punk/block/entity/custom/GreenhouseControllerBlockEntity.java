@@ -99,6 +99,7 @@ public class GreenhouseControllerBlockEntity extends BlockEntity implements IHav
         if (status != oldStatus || volume != oldVolume || cropCount != oldCrops || bees != oldBees) {
             setChanged();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+            level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
         }
     }
 
@@ -279,6 +280,17 @@ public class GreenhouseControllerBlockEntity extends BlockEntity implements IHav
             case FRONT_BLOCKED -> Component.translatable("create.solar_punk.tooltip.greenhouse_front_blocked").withStyle(ChatFormatting.RED);
             case OTHER_CONTROLLER -> Component.translatable("create.solar_punk.tooltip.greenhouse_other_controller").withStyle(ChatFormatting.RED);
         };
+    }
+
+    /**
+     * 0 when not sealed, otherwise 1-15 by the growth boost compared to the most it can get
+     * (with bees inside), so by default 10 without bees and 15 with them.
+     */
+    public int getComparatorSignal() {
+        if (status != Status.SEALED) return 0;
+        double max = Config.greenhouseGrowthBoost + Config.greenhousePollinationBonus;
+        if (max <= 0) return 15;
+        return Math.clamp(Math.round(boostMultiplier() / max * 15), 1, 15);
     }
 
     /** Growth speed compared to outside, e.g. "2.5x", or "1x" when not sealed. */

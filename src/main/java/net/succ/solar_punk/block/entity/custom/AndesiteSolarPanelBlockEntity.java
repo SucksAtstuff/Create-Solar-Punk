@@ -83,7 +83,20 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
             if (!(state.getBlock() instanceof AndesiteSolarPanelBlock)) return;
             if (state.getValue(AndesiteSolarPanelBlock.LIT) != active)
                 level.setBlock(worldPosition, state.setValue(AndesiteSolarPanelBlock.LIT, active), 3);
+            int signal = SolarHelper.comparatorSignal(level, worldPosition, active);
+            if (signal != comparatorSignal) {
+                comparatorSignal = signal;
+                level.updateNeighbourForOutputSignal(worldPosition, state.getBlock());
+            }
         }
+    }
+
+    // Recomputed once a second on the server, as the sun moves.
+    private int comparatorSignal = 0;
+
+    /** 0 when not generating, otherwise 1-15 by how directly it faces the sun. Server only. */
+    public int getComparatorSignal() {
+        return comparatorSignal;
     }
 
     @Override

@@ -110,7 +110,20 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
             if (state.getValue(BrassSolarPanelBlock.LIT) != active)
                 level.setBlock(worldPosition, state.setValue(BrassSolarPanelBlock.LIT, active), 3);
             level.sendBlockUpdated(worldPosition, state, level.getBlockState(worldPosition), 2);
+            int signal = SolarHelper.comparatorSignal(level, worldPosition, active);
+            if (signal != comparatorSignal) {
+                comparatorSignal = signal;
+                level.updateNeighbourForOutputSignal(worldPosition, state.getBlock());
+            }
         }
+    }
+
+    // Recomputed once a second on the server, as the sun moves.
+    private int comparatorSignal = 0;
+
+    /** 0 when not generating, otherwise 1-15 by how directly it faces the sun. Server only. */
+    public int getComparatorSignal() {
+        return comparatorSignal;
     }
 
     @OnlyIn(Dist.CLIENT)

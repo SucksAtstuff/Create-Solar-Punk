@@ -42,6 +42,16 @@ public class BiofilterBlock extends KineticBlock implements IBE<BiofilterBlockEn
     }
 
     @Override
+    public boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        return level.getBlockEntity(pos) instanceof BiofilterBlockEntity be ? be.getComparatorSignal() : 0;
+    }
+
+    @Override
     public Class<BiofilterBlockEntity> getBlockEntityClass() {
         return BiofilterBlockEntity.class;
     }

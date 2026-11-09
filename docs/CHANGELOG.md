@@ -28,6 +28,12 @@
 - When pollution turns a chunk into the dead biome, the inside of a sealed greenhouse keeps its original biome, so grass and leaves in there stay green.
 - With Serene Seasons, crops under any greenhouse glass (and Solar Glass) grow in every season.
 - New Display Link readouts on the Greenhouse Controller: **Greenhouse Status**, **Greenhouse Plant Count** and **Greenhouse Growth Speed**.
+- A Comparator reads the Greenhouse Controller: 0 while it isn't sealed, otherwise stronger the faster plants grow (10 by default, 15 with bees inside).
+
+### Comparators and Display Links
+
+- A Comparator reads Andesite and Brass Solar Panels: 0 while they aren't generating, otherwise 1-15 by how directly they face the sun. The new **Sun Exposure** Display Link readout shows the same as a percentage.
+- A Comparator reads the Biofilter: 0 in clean air, rising with its chunk's pollution up to 15 at the biome decay threshold. New Display Link readouts: **Chunk Pollution** and **Pollution Level** (as a percentage of the decay threshold).
 
 ### Wires
 

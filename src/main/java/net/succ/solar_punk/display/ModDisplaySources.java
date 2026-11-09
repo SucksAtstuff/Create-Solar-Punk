@@ -12,7 +12,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.SolarPunk;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.succ.solar_punk.block.entity.custom.AndesiteSolarPanelBlockEntity;
+import net.succ.solar_punk.block.entity.custom.BiofilterBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BrassSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCasingBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
@@ -130,6 +132,22 @@ public class ModDisplaySources {
                 return Component.literal(Math.round(offset) + "°").withStyle(ChatFormatting.YELLOW);
             }));
 
+    // How directly the panel faces the sun, 0% when it isn't generating. Same as its comparator signal.
+    public static final DeferredHolder<DisplaySource, DisplaySource> SOLAR_PANEL_SUN_EXPOSURE = register("solar_panel_sun_exposure",
+            () -> new PercentDisplaySource<>(ModDisplaySources::solarPanel,
+                    panel -> SolarHelper.sunExposure(panel.getLevel(), panel.getBlockPos(),
+                            panel.getBlockState().getOptionalValue(BlockStateProperties.LIT).orElse(false))));
+
+    // --- Biofilter ---
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> BIOFILTER_POLLUTION = register("biofilter_pollution",
+            () -> new NumericLineDisplaySource<>(ModDisplaySources::biofilter,
+                    filter -> Component.literal(String.valueOf(filter.getChunkPollution())).withStyle(filter.getPollutionColor())));
+
+    // Pollution as a share of the biome decay threshold. Same as its comparator signal.
+    public static final DeferredHolder<DisplaySource, DisplaySource> BIOFILTER_POLLUTION_LEVEL = register("biofilter_pollution_level",
+            () -> new PercentDisplaySource<>(ModDisplaySources::biofilter, BiofilterBlockEntity::getPollutionLevel));
+
     // --- Greenhouse Controller ---
 
     public static final DeferredHolder<DisplaySource, DisplaySource> GREENHOUSE_STATUS = register("greenhouse_status",
@@ -170,6 +188,11 @@ public class ModDisplaySources {
     private static BlockEntity solarPanel(DisplayLinkContext context) {
         BlockEntity be = context.getSourceBlockEntity();
         return be instanceof AndesiteSolarPanelBlockEntity || be instanceof BrassSolarPanelBlockEntity ? be : null;
+    }
+
+    @Nullable
+    private static BiofilterBlockEntity biofilter(DisplayLinkContext context) {
+        return context.getSourceBlockEntity() instanceof BiofilterBlockEntity be ? be : null;
     }
 
     @Nullable

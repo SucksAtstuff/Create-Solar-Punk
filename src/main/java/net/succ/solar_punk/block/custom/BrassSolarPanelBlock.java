@@ -60,6 +60,16 @@ public class BrassSolarPanelBlock extends BaseEntityBlock implements IWrenchable
     }
 
     @Override
+    public boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        return level.getBlockEntity(pos) instanceof BrassSolarPanelBlockEntity be ? be.getComparatorSignal() : 0;
+    }
+
+    @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return createTickerHelper(type, ModBlockEntities.BRASS_SOLAR_PANEL.get(), (l, p, s, be) -> be.tick());
     }

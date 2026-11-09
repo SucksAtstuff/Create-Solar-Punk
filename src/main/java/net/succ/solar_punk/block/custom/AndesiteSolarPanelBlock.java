@@ -53,6 +53,16 @@ public class AndesiteSolarPanelBlock extends KineticBlock implements IBE<Andesit
     }
 
     @Override
+    public boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        return level.getBlockEntity(pos) instanceof AndesiteSolarPanelBlockEntity be ? be.getComparatorSignal() : 0;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (type == ModBlockEntities.ANDESITE_SOLAR_PANEL.get())

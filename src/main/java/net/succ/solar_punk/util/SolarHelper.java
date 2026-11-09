@@ -204,6 +204,24 @@ public final class SolarHelper {
         return Math.toDegrees(Math.acos(Mth.clamp(local.y, -1, 1)));
     }
 
+    /**
+     * How directly an {@code active} solar block at {@code pos} faces the sun, 0-1: the cosine
+     * of {@link #sunOffset}, so 1 head on and 0 edge-on. 1 where it's generating but there's no
+     * sun direction to read (always-sunny dimensions), 0 when it isn't generating.
+     */
+    public static float sunExposure(Level level, BlockPos pos, boolean active) {
+        if (!active) return 0;
+        Vec3 local = localSunDirection(level, pos);
+        if (local == null) return 1;
+        return (float) Mth.clamp(local.y, 0, 1);
+    }
+
+    /** Comparator signal for a solar block: 0 when inactive, otherwise 1-15 by {@link #sunExposure}. */
+    public static int comparatorSignal(Level level, BlockPos pos, boolean active) {
+        if (!active) return 0;
+        return Math.max(1, Math.round(sunExposure(level, pos, true) * 15));
+    }
+
     /** Whether output depends on the angle to the sun: only with Sable (Aeronautics) and the config on. */
     public static boolean sunAngle() {
         return Config.sunAngle && SableCompat.isLoaded();
