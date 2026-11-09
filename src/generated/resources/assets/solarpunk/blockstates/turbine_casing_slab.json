@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "solarpunk:block/turbine_casing_slab"
+    },
+    "type=double": {
+      "model": "solarpunk:block/turbine_casing"
+    },
+    "type=top": {
+      "model": "solarpunk:block/turbine_casing_slab_top"
+    }
+  }
+}

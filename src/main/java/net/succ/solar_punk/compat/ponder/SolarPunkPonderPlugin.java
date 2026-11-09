@@ -22,6 +22,9 @@ public class SolarPunkPonderPlugin implements PonderPlugin {
                 .addStoryBoard("fermentation_vat/usage",   FermentationVatScenes::usage,   SolarPunkPonderTags.BIO_MACHINES)
                 .addStoryBoard("fermentation_vat/scaling", FermentationVatScenes::scaling, SolarPunkPonderTags.BIO_MACHINES);
 
+        helper.addStoryBoard(ModBlocks.GREENHOUSE_CONTROLLER.getId(), "greenhouse/usage",
+                GreenhouseScenes::usage, SolarPunkPonderTags.BIO_MACHINES);
+
         helper.forComponents(ModBlocks.SOLAR_HEATER.getId())
                 .addStoryBoard("solar_heater/usage", SolarHeaterScenes::usage, SolarPunkPonderTags.SOLAR_MACHINES)
                 .addStoryBoard("solar_heater/evaporation", SolarHeaterScenes::evaporation, SolarPunkPonderTags.SOLAR_MACHINES);

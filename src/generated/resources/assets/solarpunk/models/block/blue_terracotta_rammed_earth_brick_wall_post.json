@@ -1,0 +1,7 @@
+{
+  "parent": "solarpunk:block/tinted/wall_post",
+  "textures": {
+    "top": "solarpunk:block/rammed_earth_bricks",
+    "wall": "solarpunk:block/rammed_earth_bricks"
+  }
+}

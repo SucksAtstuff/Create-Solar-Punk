@@ -8,6 +8,7 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.advancement.SolarpunkAdvancement;
 import net.succ.solar_punk.advancement.SolarpunkAdvancement.TaskType;
@@ -105,6 +106,87 @@ public class AllSolarpunkAdvancements implements DataProvider {
             .special(TaskType.CHALLENGE)
     );
 
+    public static final SolarpunkAdvancement TRITIUM_BRED = SolarpunkAdvancement.create("tritium_bred", b -> b
+            .icon(ModBlocks.LITHIUM_BREEDER_MODULE.get())
+            .title("Self-Sustaining")
+            .description("Let a Fusion Reactor's Breeder Modules fill an Empty Fuel Capsule with Tritium.")
+            .withCustomTrigger(ModTriggers.TRITIUM_BRED)
+            .after(FUSION_REACTOR)
+    );
+
+    // -------------------------------------------------------------------------
+    // Particle Accelerator branch
+    // -------------------------------------------------------------------------
+
+    public static final SolarpunkAdvancement ELECTROMAGNET_COIL = SolarpunkAdvancement.create("electromagnet_coil", b -> b
+            .icon(ModItems.ELECTROMAGNET_COIL.get())
+            .title("Magnetic Personality")
+            .description("Assemble an Electromagnet Coil, the heart of every Particle Accelerator Pipe.")
+            .whenIconCollected()
+            .after(STEAM_TURBINE)
+    );
+
+    public static final SolarpunkAdvancement SUPERCONDUCTING_COIL = SolarpunkAdvancement.create("superconducting_coil", b -> b
+            .icon(ModItems.SUPERCONDUCTING_COIL.get())
+            .title("Zero Resistance")
+            .description("Assemble a Superconducting Coil without it falling apart.")
+            .whenIconCollected()
+            .after(ELECTROMAGNET_COIL)
+    );
+
+    public static final SolarpunkAdvancement PARTICLE_ACCELERATOR = SolarpunkAdvancement.create("particle_accelerator", b -> b
+            .icon(ModBlocks.PARTICLE_ACCELERATOR_INPUT.get())
+            .title("Going in Circles")
+            .description("Close a Particle Accelerator ring around its Input.")
+            .withCustomTrigger(ModTriggers.ACCELERATOR_BUILT)
+            .after(SUPERCONDUCTING_COIL)
+            .special(TaskType.EXPERT)
+    );
+
+    public static final SolarpunkAdvancement PARTICLE_COLLISION = SolarpunkAdvancement.create("particle_collision", b -> b
+            .icon(ModBlocks.PARTICLE_ACCELERATOR_PIPE.get())
+            .title("Smashing Success")
+            .description("Watch the beams collide as a Particle Accelerator finishes its first recipe.")
+            .withCustomTrigger(ModTriggers.ACCELERATOR_COLLISION)
+            .after(PARTICLE_ACCELERATOR)
+    );
+
+    public static final SolarpunkAdvancement TRITIUM_CAPSULE = SolarpunkAdvancement.create("tritium_capsule", b -> b
+            .icon(ModItems.TRITIUM_CAPSULE.get())
+            .title("Bottled Starfuel")
+            .description("Get a Tritium Capsule, a shortcut fuel for the Fusion Reactor.")
+            .whenIconCollected()
+            .after(PARTICLE_COLLISION)
+    );
+
+    public static final SolarpunkAdvancement BIG_RING = SolarpunkAdvancement.create("accelerator_big_ring", b -> b
+            .icon(Items.NETHERITE_SCRAP)
+            .title("Large Hadron Collider")
+            .description("Finish a recipe in a Particle Accelerator ring at least 21 blocks across.")
+            .withCustomTrigger(ModTriggers.ACCELERATOR_BIG_RING)
+            .after(PARTICLE_COLLISION)
+            .special(TaskType.EXPERT)
+    );
+
+    // Hidden: a Dispenser puts a Wire Connector or Grow Lamp on your head (HeadwearDispenseBehavior).
+    public static final SolarpunkAdvancement DISPENSED_WIRE_CONNECTOR = SolarpunkAdvancement.create("dispensed_wire_connector", b -> b
+            .icon(ModBlocks.WIRE_CONNECTOR.get())
+            .title("Fashionably Wired")
+            .description("Have a Dispenser put a Wire Connector on your head.")
+            .withCustomTrigger(ModTriggers.DISPENSED_WIRE_CONNECTOR)
+            .after(ROOT)
+            .special(TaskType.SECRET)
+    );
+
+    public static final SolarpunkAdvancement DISPENSED_GROW_LAMP = SolarpunkAdvancement.create("dispensed_grow_lamp", b -> b
+            .icon(ModBlocks.GROW_LAMP.get())
+            .title("TO ME, MY X-MEN!")
+            .description("Have a Dispenser put a Grow Lamp on your head.")
+            .withCustomTrigger(ModTriggers.DISPENSED_GROW_LAMP)
+            .after(ROOT)
+            .special(TaskType.SECRET)
+    );
+
     // -------------------------------------------------------------------------
     // Geothermal branch
     // -------------------------------------------------------------------------
@@ -117,6 +199,15 @@ public class AllSolarpunkAdvancements implements DataProvider {
             .after(ROOT)
     );
 
+    public static final SolarpunkAdvancement GEYSER_SCALDED = SolarpunkAdvancement.create("geyser_scalded", b -> b
+            .icon(ModBlocks.GEYSER_VENT.get())
+            .title("Blowing Off Steam")
+            .description("Get launched by an erupting Geyser Vent. Maybe cap it next time.")
+            .withCustomTrigger(ModTriggers.GEYSER_SCALDED)
+            .after(ROOT)
+            .special(TaskType.SECRET)
+    );
+
     // -------------------------------------------------------------------------
     // Biofuel chain
     // -------------------------------------------------------------------------
@@ -127,6 +218,14 @@ public class AllSolarpunkAdvancements implements DataProvider {
             .description("Gather Biomass to start the biofuel production chain.")
             .whenIconCollected()
             .after(ROOT)
+    );
+
+    public static final SolarpunkAdvancement GREENHOUSE = SolarpunkAdvancement.create("greenhouse", b -> b
+            .icon(ModBlocks.GREENHOUSE_CONTROLLER.get())
+            .title("Glasshouse Gardener")
+            .description("Seal a greenhouse with a Greenhouse Controller.")
+            .withCustomTrigger(ModTriggers.GREENHOUSE_SEALED)
+            .after(BIOMASS)
     );
 
     public static final SolarpunkAdvancement GASIFIER = SolarpunkAdvancement.create("gasifier", b -> b

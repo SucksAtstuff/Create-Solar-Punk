@@ -20,10 +20,14 @@ public class ModTriggers {
             TRIGGERS.register("heat_stored", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> GEYSER_ACTIVE =
             TRIGGERS.register("geyser_active", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> GEYSER_SCALDED =
+            TRIGGERS.register("geyser_scalded", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> GASIFIER_RUNNING =
             TRIGGERS.register("gasifier_running", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> BIOFUEL_ENGINE_ON =
             TRIGGERS.register("biofuel_engine_on", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> GREENHOUSE_SEALED =
+            TRIGGERS.register("greenhouse_sealed", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> FERMENTATION_DONE =
             TRIGGERS.register("fermentation_done", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> TOWER_BUILT =
@@ -34,6 +38,19 @@ public class ModTriggers {
             TRIGGERS.register("turbine_flooded", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> REACTOR_BUILT =
             TRIGGERS.register("reactor_built", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> TRITIUM_BRED =
+            TRIGGERS.register("tritium_bred", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> ACCELERATOR_BUILT =
+            TRIGGERS.register("accelerator_built", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> ACCELERATOR_COLLISION =
+            TRIGGERS.register("accelerator_collision", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> ACCELERATOR_BIG_RING =
+            TRIGGERS.register("accelerator_big_ring", SolarpunkTrigger::new);
+
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> DISPENSED_WIRE_CONNECTOR =
+            TRIGGERS.register("dispensed_wire_connector", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> DISPENSED_GROW_LAMP =
+            TRIGGERS.register("dispensed_grow_lamp", SolarpunkTrigger::new);
 
     public static void register(IEventBus bus) {
         TRIGGERS.register(bus);
@@ -41,9 +58,14 @@ public class ModTriggers {
 
     public static void fireNearby(Level level, BlockPos pos,
             DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> trigger) {
+        fireNearby(level, pos, trigger, 16);
+    }
+
+    public static void fireNearby(Level level, BlockPos pos,
+            DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> trigger, double radius) {
         if (level.isClientSide()) return;
         Vec3 center = Vec3.atCenterOf(pos);
-        ((ServerLevel) level).getPlayers(p -> p.distanceToSqr(center) < 256.0)
+        ((ServerLevel) level).getPlayers(p -> p.distanceToSqr(center) < radius * radius)
                 .forEach(p -> trigger.get().trigger(p));
     }
 }

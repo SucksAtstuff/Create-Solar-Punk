@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "solarpunk:cyan_terracotta_rammed_earth"
+  },
+  "result": {
+    "count": 2,
+    "id": "solarpunk:cyan_terracotta_rammed_earth_slab"
+  }
+}

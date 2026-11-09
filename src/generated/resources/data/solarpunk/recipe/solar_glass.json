@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "G": {
+      "tag": "c:glass_blocks/colorless"
+    },
+    "P": {
+      "item": "solarpunk:photovoltaic_cell"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "GPG",
+    "GGG"
+  ],
+  "result": {
+    "count": 8,
+    "id": "solarpunk:solar_glass"
+  }
+}

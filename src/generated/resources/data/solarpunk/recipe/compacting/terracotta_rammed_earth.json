@@ -1,0 +1,28 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "item": "minecraft:terracotta"
+    },
+    {
+      "item": "minecraft:gravel"
+    },
+    {
+      "item": "minecraft:clay_ball"
+    },
+    [
+      {
+        "item": "solarpunk:ash"
+      },
+      {
+        "item": "solarpunk:biochar"
+      }
+    ]
+  ],
+  "results": [
+    {
+      "count": 2,
+      "id": "solarpunk:terracotta_rammed_earth"
+    }
+  ]
+}

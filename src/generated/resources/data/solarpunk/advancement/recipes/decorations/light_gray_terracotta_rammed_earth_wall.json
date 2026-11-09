@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_light_gray_terracotta_rammed_earth": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:light_gray_terracotta_rammed_earth"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "solarpunk:light_gray_terracotta_rammed_earth_wall"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_light_gray_terracotta_rammed_earth"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "solarpunk:light_gray_terracotta_rammed_earth_wall"
+    ]
+  }
+}

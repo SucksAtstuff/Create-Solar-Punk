@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "N": {
+      "item": "create:brass_nugget"
+    },
+    "S": {
+      "tag": "c:plates/brass"
+    }
+  },
+  "pattern": [
+    "N",
+    "S"
+  ],
+  "result": {
+    "count": 4,
+    "id": "solarpunk:wire_connector"
+  }
+}

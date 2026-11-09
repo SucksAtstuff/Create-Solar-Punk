@@ -1,17 +1,26 @@
 package net.succ.solar_punk.datagen;
 
 import java.util.List;
+import java.util.stream.Stream;
 import net.succ.solar_punk.recipe.ParticleAcceleratorRecipe;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -55,6 +64,20 @@ public class ModRecipeProvider extends RecipeProvider {
         particleAccelerator(output, "leather",
                 List.of(new SizedIngredient(Ingredient.of(Items.ROTTEN_FLESH), 16)),
                 new ItemStack(Items.LEATHER), 5, 4096, 64, 200);
+        // Spare Biomass packed into slime, which is hard to farm early on.
+        particleAccelerator(output, "slime_ball",
+                List.of(new SizedIngredient(Ingredient.of(ModItems.BIOMASS.get()), 16)),
+                new ItemStack(Items.SLIME_BALL), 5, 4096, 64, 200);
+        // Protons on Lithium-7 make Beryllium-7, a real reaction: a Beryllium route that
+        // doesn't depend on the crushing byproduct.
+        particleAccelerator(output, "beryllium_dust",
+                List.of(new SizedIngredient(Ingredient.of(ModTags.Items.DUSTS_LITHIUM), 8)),
+                new ItemStack(ModItems.BERYLLIUM_DUST.get()), 9, 16384, 128, 400);
+        // "Charged up" Redstone, for players without easy Nether access.
+        particleAccelerator(output, "glowstone_dust",
+                List.of(new SizedIngredient(Ingredient.of(Tags.Items.DUSTS_REDSTONE), 4),
+                        new SizedIngredient(Ingredient.of(ModTags.Items.DUSTS_LITHIUM), 1)),
+                new ItemStack(Items.GLOWSTONE_DUST, 2), 9, 16384, 128, 400);
         // Tritium bred from Lithium, with Beryllium as the neutron source, caught in an Empty
         // Fuel Capsule. The capsule is worth 4x the Lithium that goes in (reactor_tritium_capsule_mb),
         // so one ring at 256 RPM keeps a pure-Lithium-blanket reactor running.
@@ -96,10 +119,191 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_salt", has(ModTags.Items.DUSTS_SALT))
                 .save(output);
 
+        bricksRecipes(output, ModBlocks.SALT_BRICKS.get(), ModBlocks.POLISHED_SALT.get(), ModBlocks.SALT_BLOCK.get());
+        bricksRecipes(output, ModBlocks.ASH_BRICKS.get(), ModBlocks.POLISHED_ASH.get(), ModBlocks.ASH_BLOCK.get());
+        // Rammed Earth has no polished step: its bricks come straight from the block.
+        ModBlocks.RAMMED_EARTH.values().forEach(set ->
+                bricksRecipes(output, set.bricks().get(), set.block().get(), set.block().get()));
+
+        ModBlockFamilies.ALL.forEach(family -> blockFamilyRecipes(output, family));
+
+        // 6 of the material in two rows make 8 railings. One item places every shape.
+        filigreeRailingRecipe(output, ModBlocks.BRASS_FILIGREE_RAILING.get(),
+                Ingredient.of(ModTags.Items.PLATES_BRASS), has(ModTags.Items.PLATES_BRASS));
+        filigreeRailingRecipe(output, ModBlocks.ANDESITE_FILIGREE_RAILING.get(),
+                Ingredient.of(createItem("andesite_alloy")), has(createItem("andesite_alloy")));
+        filigreeRailingRecipe(output, ModBlocks.COPPER_FILIGREE_RAILING.get(),
+                Ingredient.of(ModTags.Items.PLATES_COPPER), has(ModTags.Items.PLATES_COPPER));
+        filigreeRailingRecipe(output, ModBlocks.IRON_FILIGREE_RAILING.get(),
+                Ingredient.of(ModTags.Items.PLATES_IRON), has(ModTags.Items.PLATES_IRON));
+
+        // Like stained glass: 8 Glass around one Photovoltaic Cell.
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.SOLAR_GLASS.get(), 8)
+                .pattern("GGG")
+                .pattern("GPG")
+                .pattern("GGG")
+                .define('G', Tags.Items.GLASS_BLOCKS_COLORLESS)
+                .define('P', ModItems.PHOTOVOLTAIC_CELL.get())
+                .unlockedBy("has_photovoltaic_cell", has(ModItems.PHOTOVOLTAIC_CELL.get()))
+                .save(output);
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.SOLAR_GLASS_PANE.get(), 16)
+                .pattern("GGG")
+                .pattern("GGG")
+                .define('G', ModBlocks.SOLAR_GLASS.get())
+                .unlockedBy("has_solar_glass", has(ModBlocks.SOLAR_GLASS.get()))
+                .save(output);
+
+        // Greenhouse glass: copper framed, like the copper-tier greenhouse it's meant for.
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.GREENHOUSE_GLASS.get(), 8)
+                .pattern("GGG")
+                .pattern("GCG")
+                .pattern("GGG")
+                .define('G', Tags.Items.GLASS_BLOCKS_COLORLESS)
+                .define('C', Tags.Items.INGOTS_COPPER)
+                .unlockedBy("has_copper_ingot", has(Tags.Items.INGOTS_COPPER))
+                .save(output);
+        // Copper tier, like the greenhouse glass: a Copper Casing with a glass top.
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModBlocks.GREENHOUSE_CONTROLLER.get())
+                .pattern(" G ")
+                .pattern("SCS")
+                .pattern(" R ")
+                .define('G', ModBlocks.GREENHOUSE_GLASS.get())
+                .define('S', ModTags.Items.PLATES_COPPER)
+                .define('C', createItem("copper_casing"))
+                .define('R', Items.COMPARATOR)
+                .unlockedBy("has_greenhouse_glass", has(ModBlocks.GREENHOUSE_GLASS.get()))
+                .save(output);
+        // Frosted with sand.
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.GREENHOUSE_PANEL.get(), 8)
+                .pattern("GGG")
+                .pattern("GSG")
+                .pattern("GGG")
+                .define('G', ModBlocks.GREENHOUSE_GLASS.get())
+                .define('S', Tags.Items.SANDS)
+                .unlockedBy("has_greenhouse_glass", has(ModBlocks.GREENHOUSE_GLASS.get()))
+                .save(output);
+        for (var pane : List.of(List.of(ModBlocks.GREENHOUSE_GLASS, ModBlocks.GREENHOUSE_GLASS_PANE),
+                List.of(ModBlocks.CLEAR_GREENHOUSE_GLASS, ModBlocks.CLEAR_GREENHOUSE_GLASS_PANE))) {
+            ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, pane.get(1).get(), 16)
+                    .pattern("GGG")
+                    .pattern("GGG")
+                    .define('G', pane.get(0).get())
+                    .unlockedBy(getHasName(pane.get(0).get()), has(pane.get(0).get()))
+                    .save(output);
+        }
+        // The plain and clear glass, and the two panel patterns, stonecut into each other.
+        stonecutBothWays(output, ModBlocks.GREENHOUSE_GLASS.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS.get());
+        stonecutBothWays(output, ModBlocks.GREENHOUSE_PANEL.get(), ModBlocks.LARGE_GREENHOUSE_PANEL.get());
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, ModBlocks.SALT_LAMP.get())
+                .requires(ModTags.Items.STORAGE_BLOCKS_SALT)
+                .requires(Items.TORCH)
+                .unlockedBy("has_salt_block", has(ModTags.Items.STORAGE_BLOCKS_SALT))
+                .save(output);
+
+        // A Photovoltaic Cell over a glowing bulb on an Andesite Alloy stake.
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.GARDEN_LIGHT.get(), 2)
+                .pattern("P")
+                .pattern("G")
+                .pattern("A")
+                .define('P', ModItems.PHOTOVOLTAIC_CELL.get())
+                .define('G', Items.GLOWSTONE_DUST)
+                .define('A', createItem("andesite_alloy"))
+                .unlockedBy("has_photovoltaic_cell", has(ModItems.PHOTOVOLTAIC_CELL.get()))
+                .save(output);
+
+        // An amethyst-tinted glass tube under an iron rail, wired up with copper.
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModBlocks.GROW_LAMP.get(), 2)
+                .pattern("SWS")
+                .pattern("GAG")
+                .define('S', ModTags.Items.PLATES_IRON)
+                .define('W', ModTags.Items.WIRES_COPPER)
+                .define('G', Tags.Items.GLASS_PANES_COLORLESS)
+                .define('A', Items.AMETHYST_SHARD)
+                .unlockedBy("has_copper_wire", has(ModTags.Items.WIRES_COPPER))
+                .save(output);
+
+        // A panel on a copper frame over a box of dirt, with an amethyst grow light under the panel.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SOLAR_PLANT_BED.get())
+                .pattern(" P ")
+                .pattern("CAC")
+                .pattern("CDC")
+                .define('P', ModItems.PHOTOVOLTAIC_CELL.get())
+                .define('A', Items.AMETHYST_SHARD)
+                .define('C', ModTags.Items.PLATES_COPPER)
+                .define('D', Items.DIRT)
+                .unlockedBy("has_photovoltaic_cell", has(ModItems.PHOTOVOLTAIC_CELL.get()))
+                .save(output);
+
+        // A brass insulator on a brass base.
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModBlocks.WIRE_CONNECTOR.get(), 4)
+                .pattern("N")
+                .pattern("S")
+                .define('N', createItem("brass_nugget"))
+                .define('S', ModTags.Items.PLATES_BRASS)
+                .unlockedBy("has_wire", has(ModTags.Items.WIRES))
+                .save(output);
+
+        // A shaded glowstone bulb, wired down an iron post.
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.STREETLAMP.get())
+                .pattern("SGS")
+                .pattern(" W ")
+                .pattern(" I ")
+                .define('S', ModTags.Items.PLATES_IRON)
+                .define('G', Items.GLOWSTONE_DUST)
+                .define('W', ModTags.Items.WIRES_COPPER)
+                .define('I', Tags.Items.INGOTS_IRON)
+                .unlockedBy("has_copper_wire", has(ModTags.Items.WIRES_COPPER))
+                .save(output);
+
+        // Solar Glass Panes on an Andesite Alloy backing, laid like stairs.
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.SOLAR_SHINGLES.get(), 6)
+                .pattern("P  ")
+                .pattern("AP ")
+                .pattern("AAP")
+                .define('P', ModBlocks.SOLAR_GLASS_PANE.get())
+                .define('A', createItem("andesite_alloy"))
+                .unlockedBy("has_solar_glass_pane", has(ModBlocks.SOLAR_GLASS_PANE.get()))
+                .save(output);
+
+        // Solar Glass laid like stairs.
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.SOLAR_GLASS_SHINGLES.get(), 6)
+                .pattern("G  ")
+                .pattern("GG ")
+                .pattern("GGG")
+                .define('G', ModBlocks.SOLAR_GLASS.get())
+                .unlockedBy("has_solar_glass", has(ModBlocks.SOLAR_GLASS.get()))
+                .save(output);
+
+        // Sticks in a lattice, like a Ladder.
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.TRELLIS.get(), 4)
+                .pattern("S S")
+                .pattern(" S ")
+                .pattern("S S")
+                .define('S', Items.STICK)
+                .unlockedBy("has_stick", has(Items.STICK))
+                .save(output);
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SALT.get(), 9)
                 .requires(ModTags.Items.STORAGE_BLOCKS_SALT)
                 .unlockedBy("has_salt_block", has(ModTags.Items.STORAGE_BLOCKS_SALT))
                 .save(output, id("salt_from_salt_block"));
+
+        // Ash: blasting only, so it comes from a Blast Furnace or Create's Bulk Blasting,
+        // not a plain Furnace. Packs into the Ash Block that wasteland decay also leaves.
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(ModItems.BIOMASS.get()), RecipeCategory.MISC, ModItems.ASH.get(), 0.1f, 100)
+                .unlockedBy("has_biomass", has(ModItems.BIOMASS.get()))
+                .save(output, id("ash_from_blasting_biomass"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.ASH_BLOCK.get())
+                .pattern("AA")
+                .pattern("AA")
+                .define('A', ModItems.ASH.get())
+                .unlockedBy("has_ash", has(ModItems.ASH.get()))
+                .save(output);
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.ASH.get(), 4)
+                .requires(ModBlocks.ASH_BLOCK.get())
+                .unlockedBy("has_ash_block", has(ModBlocks.ASH_BLOCK.get()))
+                .save(output, id("ash_from_ash_block"));
 
         // Lithium ore chain: Raw Lithium and Lithium Dust both smelt to the same ingot.
         // Not using vanilla's oreSmelting/oreBlasting helpers, which save under the
@@ -149,6 +353,20 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('G', Tags.Items.GLASS_PANES_COLORLESS)
                 .unlockedBy("has_iron_sheet", has(ModTags.Items.PLATES_IRON))
                 .save(output);
+
+        // Empty Spool: a stick axle between two plank flanges.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.EMPTY_SPOOL.get(), 2)
+                .pattern("P")
+                .pattern("S")
+                .pattern("P")
+                .define('P', ItemTags.PLANKS)
+                .define('S', Tags.Items.RODS_WOODEN)
+                .unlockedBy("has_wire", has(ModTags.Items.WIRES))
+                .save(output);
+
+        wireSpool(output, ModTags.Items.WIRES_COPPER, ModItems.COPPER_SPOOL.get());
+        wireSpool(output, ModTags.Items.WIRES_IRON, ModItems.IRON_SPOOL.get());
+        wireSpool(output, ModTags.Items.WIRES_GOLD, ModItems.GOLD_SPOOL.get());
 
         // Brass-tier, since the Crystallizer is the Solar Heater's faster, pricier counterpart.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CRYSTALLIZER.get())
@@ -264,6 +482,18 @@ public class ModRecipeProvider extends RecipeProvider {
         );
     }
 
+    // An Empty Spool wound with 4 wires.
+    private static void wireSpool(RecipeOutput output, TagKey<Item> wire, Item spool) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, spool)
+                .pattern(" W ")
+                .pattern("WSW")
+                .pattern(" W ")
+                .define('W', wire)
+                .define('S', ModItems.EMPTY_SPOOL.get())
+                .unlockedBy("has_wire", has(wire))
+                .save(output);
+    }
+
     // Smelting and blasting recipes turning `input` into a metal ingot.
     private static void ingotSmelting(RecipeOutput output, TagKey<Item> input, String inputName, Item ingot, String metal) {
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.MISC, ingot, 0.7f, 200)
@@ -304,6 +534,62 @@ public class ModRecipeProvider extends RecipeProvider {
                 .requires(blockTag)
                 .unlockedBy("has_" + metal + "_block", has(blockTag))
                 .save(output, id(metal + "_ingot_from_block"));
+    }
+
+    private void filigreeRailingRecipe(RecipeOutput output, Block railing, Ingredient material,
+                                       Criterion<InventoryChangeTrigger.TriggerInstance> unlock) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, railing, 8)
+                .pattern("SSS")
+                .pattern("SSS")
+                .define('S', material)
+                .unlockedBy("has_material", unlock)
+                .save(output);
+    }
+
+    // Bricks: 2x2 of the polished block (itself 2x2 of the raw block), like Deepslate's
+    // polished -> bricks chain, or straight from either one in a stonecutter.
+    private void stonecutBothWays(RecipeOutput output, Block a, Block b) {
+        for (Block[] pair : new Block[][] {{a, b}, {b, a}}) {
+            String to = BuiltInRegistries.BLOCK.getKey(pair[1]).getPath();
+            String from = BuiltInRegistries.BLOCK.getKey(pair[0]).getPath();
+            SingleItemRecipeBuilder.stonecutting(Ingredient.of(pair[0]), RecipeCategory.BUILDING_BLOCKS, pair[1])
+                    .unlockedBy(getHasName(pair[0]), has(pair[0]))
+                    .save(output, id(to + "_from_" + from + "_stonecutting"));
+        }
+    }
+
+    private void bricksRecipes(RecipeOutput output, Block bricks, Block polished, Block raw) {
+        String bricksName = BuiltInRegistries.BLOCK.getKey(bricks).getPath();
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, bricks, 4)
+                .pattern("SS")
+                .pattern("SS")
+                .define('S', polished)
+                .unlockedBy(getHasName(polished), has(polished))
+                .save(output);
+        for (Block from : Stream.of(polished, raw).distinct().toList()) {
+            SingleItemRecipeBuilder.stonecutting(Ingredient.of(from), RecipeCategory.BUILDING_BLOCKS, bricks)
+                    .unlockedBy(getHasName(from), has(from))
+                    .save(output, id(bricksName + "_from_" + BuiltInRegistries.BLOCK.getKey(from).getPath() + "_stonecutting"));
+        }
+    }
+
+    // Vanilla's crafting recipes for every variant (stairs, slab, wall, polished, chiseled...),
+    // plus stonecutting each one straight from the base block. Vanilla's own stonecutter helper
+    // would save under the minecraft namespace, so these are built by hand.
+    private void blockFamilyRecipes(RecipeOutput output, BlockFamily family) {
+        generateRecipes(output, family, FeatureFlags.DEFAULT_FLAGS);
+        if (!ModBlockFamilies.isStonecuttable(family)) return;
+
+        Block base = family.getBaseBlock();
+        String baseName = BuiltInRegistries.BLOCK.getKey(base).getPath();
+        ModBlockFamilies.variants(family).forEach((variant, block) -> {
+            if (variant == BlockFamily.Variant.CRACKED) return; // smelted, not cut
+            int count = variant == BlockFamily.Variant.SLAB ? 2 : 1;
+            String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
+            SingleItemRecipeBuilder.stonecutting(Ingredient.of(base), RecipeCategory.BUILDING_BLOCKS, block, count)
+                    .unlockedBy(getHasName(base), has(base))
+                    .save(output, id(name + "_from_" + baseName + "_stonecutting"));
+        });
     }
 
     private static ResourceLocation id(String path) {

@@ -1,0 +1,16 @@
+{
+  "type": "create:item_application",
+  "ingredients": [
+    {
+      "tag": "minecraft:planks"
+    },
+    {
+      "item": "solarpunk:biochar"
+    }
+  ],
+  "results": [
+    {
+      "id": "solarpunk:charred_timber"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+	"parent": "solarpunk:block/salt_lamp",
+	"textures": {
+		"0": "solarpunk:block/salt_lamp_on",
+		"particle": "solarpunk:block/salt_lamp_on"
+	}
+}

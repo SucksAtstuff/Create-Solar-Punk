@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "solarpunk:ashen_rammed_earth_bricks"
+  },
+  "result": {
+    "count": 1,
+    "id": "solarpunk:ashen_rammed_earth_brick_stairs"
+  }
+}

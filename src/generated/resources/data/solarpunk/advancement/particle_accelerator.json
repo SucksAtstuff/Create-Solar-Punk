@@ -1,0 +1,27 @@
+{
+  "parent": "solarpunk:superconducting_coil",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:accelerator_built"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.solarpunk.particle_accelerator.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:particle_accelerator_input"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.particle_accelerator"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

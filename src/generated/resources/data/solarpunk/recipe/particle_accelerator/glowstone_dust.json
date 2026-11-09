@@ -1,0 +1,21 @@
+{
+  "type": "solarpunk:particle_accelerator",
+  "ingredients": [
+    {
+      "count": 4,
+      "tag": "c:dusts/redstone"
+    },
+    {
+      "count": 1,
+      "tag": "c:dusts/lithium"
+    }
+  ],
+  "min_diameter": 9,
+  "min_speed": 128,
+  "processing_time": 400,
+  "result": {
+    "count": 2,
+    "id": "minecraft:glowstone_dust"
+  },
+  "stress": 16384.0
+}

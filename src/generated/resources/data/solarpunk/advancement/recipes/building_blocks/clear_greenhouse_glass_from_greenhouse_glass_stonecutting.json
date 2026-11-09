@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_greenhouse_glass": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:greenhouse_glass"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "solarpunk:clear_greenhouse_glass_from_greenhouse_glass_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_greenhouse_glass"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "solarpunk:clear_greenhouse_glass_from_greenhouse_glass_stonecutting"
+    ]
+  }
+}

@@ -56,6 +56,17 @@ public class GeyserVentBlock extends Block implements IBE<GeyserVentBlockEntity>
         }
     }
 
+    // Comparators read how close the next eruption is (see GeyserVentBlockEntity)
+    @Override
+    protected boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        return level.getBlockEntity(pos) instanceof GeyserVentBlockEntity vent ? vent.getComparatorSignal() : 0;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {

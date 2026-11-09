@@ -26,6 +26,12 @@ public class ModTags {
                 ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "pollution_sources")
         );
 
+        // Greenhouse walls that let light in: plants under them grow faster (GreenhouseControllerBlockEntity).
+        public static final TagKey<Block> GREENHOUSE_GLASS = TagKey.create(
+                Registries.BLOCK,
+                ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "greenhouse_glass")
+        );
+
         public static final TagKey<Block> REACTOR_CASING = TagKey.create(
                 Registries.BLOCK,
                 ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "reactor_casing")
@@ -43,6 +49,10 @@ public class ModTags {
     // Common c: tags for our materials, so other mods' versions work in our recipes and
     // machines (and ours in theirs), plus Create's sheets and zinc that our recipes use.
     public static class Items {
+        // Mob and farm waste the Fermentation Vat turns into Rich Fertilizer instead of Biofuel.
+        public static final TagKey<Item> FERMENTATION_WASTE = TagKey.create(
+                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "fermentation_waste"));
+
         // Salt: other mods disagree on the tag (Northstar uses c:dusts/salt, Create: Food
         // uses c:salt), so ours is in all three and recipes accept any of them.
         public static final TagKey<Item> GEMS_SALT = common("gems/salt");
@@ -65,6 +75,14 @@ public class ModTags {
         public static final TagKey<Item> PLATES_IRON = common("plates/iron");
         public static final TagKey<Item> PLATES_COPPER = common("plates/copper");
         public static final TagKey<Item> PLATES_BRASS = common("plates/brass");
+        public static final TagKey<Item> PLATES_GOLD = common("plates/gold");
+
+        // Same tags as Succ's Essentials Extended, so wires from either mod work in both.
+        public static final TagKey<Item> WIRES = common("wires");
+        public static final TagKey<Item> WIRES_METAL = common("wires/all_metal");
+        public static final TagKey<Item> WIRES_COPPER = common("wires/copper");
+        public static final TagKey<Item> WIRES_IRON = common("wires/iron");
+        public static final TagKey<Item> WIRES_GOLD = common("wires/gold");
         public static final TagKey<Item> INGOTS_ZINC = common("ingots/zinc");
 
         private static TagKey<Item> common(String path) {

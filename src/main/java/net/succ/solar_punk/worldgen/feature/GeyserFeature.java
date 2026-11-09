@@ -43,6 +43,18 @@ public class GeyserFeature extends Feature<NoneFeatureConfiguration> {
 
         int r = 3 + random.nextInt(2); // dome radius: 3 or 4
 
+        // Never generate on or in water (or any other fluid). WORLD_SURFACE_WG counts water
+        // as surface, so the surface block itself is water on oceans/lakes/rivers. Also scan
+        // the dome footprint so geysers don't spill into adjacent shorelines or ponds.
+        for (int x = -r; x <= r; x++) {
+            for (int z = -r; z <= r; z++) {
+                if (x * x + z * z > r * r) continue;
+                for (int y = -1; y <= 1; y++) {
+                    if (!level.getFluidState(surface.offset(x, y, z)).isEmpty()) return false;
+                }
+            }
+        }
+
         for (int x = -r; x <= r; x++) {
             for (int y = -1; y <= r; y++) {
                 for (int z = -r; z <= r; z++) {

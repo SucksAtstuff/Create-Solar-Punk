@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "solarpunk:block/large_greenhouse_panel"
+    }
+  }
+}

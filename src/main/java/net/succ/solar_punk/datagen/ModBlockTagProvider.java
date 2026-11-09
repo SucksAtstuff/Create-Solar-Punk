@@ -1,6 +1,8 @@
 package net.succ.solar_punk.datagen;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -16,6 +18,7 @@ import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static net.succ.solar_punk.datagen.DatagenUtil.blockTag;
@@ -34,6 +37,29 @@ public class ModBlockTagProvider extends BlockTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
+        // Casing stairs, slabs and walls come off with a Wrench, like the casings themselves.
+        for (BlockFamily family : List.of(ModBlockFamilies.TURBINE_CASING, ModBlockFamilies.FUSION_REACTOR_CASING))
+            ModBlockFamilies.variants(family).values().forEach(block -> tag(blockTag("create", "wrench_pickup")).add(block));
+
+        // Building block families: shape tags, and every variant is pickaxe-mineable (axe
+        // for wooden ones, whose wooden_stairs/wooden_slabs tags are already in stairs/slabs,
+        // and hoe for moss).
+        ModBlockFamilies.ALL.forEach(family -> {
+            boolean wooden = ModBlockFamilies.isWooden(family);
+            TagKey<Block> tool = wooden ? BlockTags.MINEABLE_WITH_AXE
+                    : ModBlockFamilies.isMoss(family) ? BlockTags.MINEABLE_WITH_HOE
+                    : BlockTags.MINEABLE_WITH_PICKAXE;
+            ModBlockFamilies.variants(family).forEach((variant, block) -> {
+                switch (variant) {
+                    case STAIRS -> tag(wooden ? BlockTags.WOODEN_STAIRS : BlockTags.STAIRS).add(block);
+                    case SLAB -> tag(wooden ? BlockTags.WOODEN_SLABS : BlockTags.SLABS).add(block);
+                    case WALL -> tag(BlockTags.WALLS).add(block);
+                    default -> {}
+                }
+                tag(tool).add(block);
+            });
+        });
+
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(ModBlocks.ANDESITE_SOLAR_PANEL.get())
                 .add(ModBlocks.BRASS_SOLAR_PANEL.get())
@@ -41,6 +67,28 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.CRYSTALLIZER.get())
                 .add(ModBlocks.FIREBOX_BOILER.get())
                 .add(ModBlocks.SALT_BLOCK.get())
+                .add(ModBlocks.SALT_BRICKS.get())
+                .add(ModBlocks.ASH_BRICKS.get())
+                .add(ModBlocks.BRASS_FILIGREE_RAILING.get())
+                .add(ModBlocks.BRASS_FILIGREE_RAILING_SLOPE.get())
+                .add(ModBlocks.ANDESITE_FILIGREE_RAILING.get())
+                .add(ModBlocks.ANDESITE_FILIGREE_RAILING_SLOPE.get())
+                .add(ModBlocks.BRASS_FILIGREE_RAILING_STEEP_SLOPE.get())
+                .add(ModBlocks.ANDESITE_FILIGREE_RAILING_STEEP_SLOPE.get())
+                .add(ModBlocks.COPPER_FILIGREE_RAILING.get())
+                .add(ModBlocks.COPPER_FILIGREE_RAILING_SLOPE.get())
+                .add(ModBlocks.COPPER_FILIGREE_RAILING_STEEP_SLOPE.get())
+                .add(ModBlocks.IRON_FILIGREE_RAILING.get())
+                .add(ModBlocks.IRON_FILIGREE_RAILING_SLOPE.get())
+                .add(ModBlocks.IRON_FILIGREE_RAILING_STEEP_SLOPE.get())
+                .add(ModBlocks.SALT_LAMP.get())
+                .add(ModBlocks.GARDEN_LIGHT.get())
+                .add(ModBlocks.STREETLAMP.get())
+                .add(ModBlocks.WIRE_CONNECTOR.get())
+                .add(ModBlocks.GROW_LAMP.get())
+                .add(ModBlocks.SOLAR_PLANT_BED.get())
+                .add(ModBlocks.SOLAR_SHINGLES.get())
+                .add(ModBlocks.GREENHOUSE_CONTROLLER.get())
                 .add(ModBlocks.LITHIUM_ORE.get())
                 .add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get())
                 .add(ModBlocks.LITHIUM_BLOCK.get())
@@ -76,6 +124,28 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.ASH_BLOCK.get())
                 .add(ModBlocks.DEAD_GRASS_BLOCK.get())
                 .add(ModBlocks.RUINED_DIRT.get());
+
+        tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.TRELLIS.get(), ModBlocks.CHARRED_TIMBER.get());
+        tag(BlockTags.PLANKS).add(ModBlocks.CHARRED_TIMBER.get());
+        tag(BlockTags.CLIMBABLE).add(ModBlocks.TRELLIS.get());
+
+        tag(Tags.Blocks.GLASS_BLOCKS).add(ModBlocks.SOLAR_GLASS.get());
+        tag(BlockTags.IMPERMEABLE).add(ModBlocks.SOLAR_GLASS.get());
+        tag(Tags.Blocks.GLASS_PANES).add(ModBlocks.SOLAR_GLASS_PANE.get());
+        tag(Tags.Blocks.GLASS_BLOCKS).add(ModBlocks.GREENHOUSE_GLASS.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS.get(),
+                ModBlocks.GREENHOUSE_PANEL.get(), ModBlocks.LARGE_GREENHOUSE_PANEL.get());
+        tag(BlockTags.IMPERMEABLE).add(ModBlocks.GREENHOUSE_GLASS.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS.get(),
+                ModBlocks.GREENHOUSE_PANEL.get(), ModBlocks.LARGE_GREENHOUSE_PANEL.get());
+        tag(Tags.Blocks.GLASS_PANES).add(ModBlocks.GREENHOUSE_GLASS_PANE.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS_PANE.get());
+        // Roofs a greenhouse's plants grow faster under: every greenhouse glass block, and Solar Glass.
+        tag(ModTags.Blocks.GREENHOUSE_GLASS).add(ModBlocks.GREENHOUSE_GLASS.get(), ModBlocks.GREENHOUSE_GLASS_PANE.get(),
+                ModBlocks.CLEAR_GREENHOUSE_GLASS.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS_PANE.get(),
+                ModBlocks.GREENHOUSE_PANEL.get(), ModBlocks.LARGE_GREENHOUSE_PANEL.get(),
+                ModBlocks.SOLAR_GLASS.get(), ModBlocks.SOLAR_GLASS_PANE.get(), ModBlocks.SOLAR_GLASS_SHINGLES.get());
+        // Serene Seasons: crops under greenhouse glass grow whatever the season. Harmless
+        // without Serene Seasons installed, the tag is just never read.
+        tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("sereneseasons", "greenhouse_glass")))
+                .addTag(ModTags.Blocks.GREENHOUSE_GLASS);
 
         tag(Tags.Blocks.STORAGE_BLOCKS).add(ModBlocks.SALT_BLOCK.get())
                 .add(ModBlocks.LITHIUM_BLOCK.get())

@@ -1,0 +1,32 @@
+{
+  "variants": {
+    "axis=x,ceiling=false,lit=false": {
+      "model": "solarpunk:block/grow_lamp_side",
+      "y": 90
+    },
+    "axis=x,ceiling=false,lit=true": {
+      "model": "solarpunk:block/grow_lamp_side_lit",
+      "y": 90
+    },
+    "axis=x,ceiling=true,lit=false": {
+      "model": "solarpunk:block/grow_lamp_top",
+      "y": 90
+    },
+    "axis=x,ceiling=true,lit=true": {
+      "model": "solarpunk:block/grow_lamp_top_lit",
+      "y": 90
+    },
+    "axis=z,ceiling=false,lit=false": {
+      "model": "solarpunk:block/grow_lamp_side"
+    },
+    "axis=z,ceiling=false,lit=true": {
+      "model": "solarpunk:block/grow_lamp_side_lit"
+    },
+    "axis=z,ceiling=true,lit=false": {
+      "model": "solarpunk:block/grow_lamp_top"
+    },
+    "axis=z,ceiling=true,lit=true": {
+      "model": "solarpunk:block/grow_lamp_top_lit"
+    }
+  }
+}

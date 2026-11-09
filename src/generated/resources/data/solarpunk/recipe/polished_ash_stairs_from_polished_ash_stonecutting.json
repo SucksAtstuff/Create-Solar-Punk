@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "solarpunk:polished_ash"
+  },
+  "result": {
+    "count": 1,
+    "id": "solarpunk:polished_ash_stairs"
+  }
+}

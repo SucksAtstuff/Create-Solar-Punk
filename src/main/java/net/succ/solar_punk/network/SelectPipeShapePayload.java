@@ -11,7 +11,7 @@ import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.custom.PipeShape;
 import net.succ.solar_punk.item.ParticleAcceleratorPipeItem;
 
-// Client -> server: the player picked a shape in PipeShapeMenu for the pipe in their main hand.
+// Client -> server: the player picked a shape in RadialShapeMenu for the pipe in their main hand.
 public record SelectPipeShapePayload(PipeShape shape) implements CustomPacketPayload {
 
     public static final Type<SelectPipeShapePayload> TYPE =

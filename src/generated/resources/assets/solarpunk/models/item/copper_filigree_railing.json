@@ -1,0 +1,17 @@
+{
+  "parent": "solarpunk:block/copper_filigree_railing_inventory",
+  "overrides": [
+    {
+      "model": "solarpunk:item/copper_filigree_railing_slope",
+      "predicate": {
+        "solarpunk:railing_shape": 1.0
+      }
+    },
+    {
+      "model": "solarpunk:item/copper_filigree_railing_steep_slope",
+      "predicate": {
+        "solarpunk:railing_shape": 2.0
+      }
+    }
+  ]
+}

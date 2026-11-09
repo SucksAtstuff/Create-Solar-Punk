@@ -12,7 +12,7 @@ public class ModSounds {
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
             DeferredRegister.create(Registries.SOUND_EVENT, SolarPunk.MODID);
 
-    public static final DeferredHolder<SoundEvent, SoundEvent> ALTERNATOR = register("alternator");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BRASS_SOLAR_PANEL_HUM = register("brass_solar_panel_hum");
     public static final DeferredHolder<SoundEvent, SoundEvent> GEYSER_PUFF = register("geyser_puff");
     public static final DeferredHolder<SoundEvent, SoundEvent> BIOFUEL_ENGINE_LOOP = register("biofuel_engine_loop");
     public static final DeferredHolder<SoundEvent, SoundEvent> BIOFILTER_LOOP = register("biofilter_loop");

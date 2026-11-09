@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "solarpunk:block/polished_ash",
+    "side": "solarpunk:block/polished_ash",
+    "top": "solarpunk:block/polished_ash"
+  }
+}

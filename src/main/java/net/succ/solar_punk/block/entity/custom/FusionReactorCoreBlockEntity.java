@@ -364,6 +364,7 @@ public class FusionReactorCoreBlockEntity extends BlockEntity implements IHaveGo
         inventory.extractItem(SLOT_EMPTY_CAPSULES, 1, false);
         inventory.insertItem(SLOT_BRED_TRITIUM, capsule, false);
         bredTritiumMb -= capsuleMb;
+        ModTriggers.fireNearby(level, worldPosition, ModTriggers.TRITIUM_BRED);
     }
 
     // Zeroes the goggle stats whenever the loop can't run, so a stalled reactor reads as

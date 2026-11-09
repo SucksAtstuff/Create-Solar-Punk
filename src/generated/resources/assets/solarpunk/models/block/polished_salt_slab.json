@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "solarpunk:block/polished_salt",
+    "side": "solarpunk:block/polished_salt",
+    "top": "solarpunk:block/polished_salt"
+  }
+}

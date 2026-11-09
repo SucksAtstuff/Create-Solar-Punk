@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 // LIT state is true. Subclasses only pick the sound and volume, and can override
 // isRunning() for machines that don't use LIT.
 //
-// Volumes are tuned against the Brass Solar Panel's electric_motor_buzz.ogg at 0.75,
+// Volumes are tuned against the Brass Solar Panel's brass_solar_panel_hum.ogg at 0.75,
 // measured with ffmpeg volumedetect, so every machine sounds about equally loud.
 @OnlyIn(Dist.CLIENT)
 public class MachineSoundInstance extends AbstractTickableSoundInstance {

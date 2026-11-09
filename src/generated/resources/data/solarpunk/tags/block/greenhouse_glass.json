@@ -1,0 +1,13 @@
+{
+  "values": [
+    "solarpunk:greenhouse_glass",
+    "solarpunk:greenhouse_glass_pane",
+    "solarpunk:clear_greenhouse_glass",
+    "solarpunk:clear_greenhouse_glass_pane",
+    "solarpunk:greenhouse_panel",
+    "solarpunk:large_greenhouse_panel",
+    "solarpunk:solar_glass",
+    "solarpunk:solar_glass_pane",
+    "solarpunk:solar_glass_shingles"
+  ]
+}

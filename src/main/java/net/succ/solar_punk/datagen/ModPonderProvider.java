@@ -58,6 +58,8 @@ public class ModPonderProvider implements DataProvider {
         SCHEMATICS.put("solar_heater/usage", solarHeaterScene);
         SCHEMATICS.put("solar_heater/evaporation", solarHeaterScene);
 
+        SCHEMATICS.put("greenhouse/usage", addGreenhouse(new SceneStructure().withBasePlate()));
+
         SCHEMATICS.put("crystallizer/usage", new SceneStructure()
                 .withBasePlate()
                 .addBlock(2, 1, 2, "solarpunk:crystallizer", "facing", "north", "lit", "false"));
@@ -185,6 +187,27 @@ public class ModPonderProvider implements DataProvider {
     @Override
     public String getName() {
         return "Ponder Schematics: " + SolarPunk.MODID;
+    }
+
+    // A 3x3 wheat field on farmland, Greenhouse Glass walls (y 1-3) with the controller in the
+    // north wall facing in, and a Greenhouse Glass roof (y 4). See GreenhouseScenes.
+    private static SceneStructure addGreenhouse(SceneStructure s) {
+        for (int x = 0; x < 5; x++) {
+            for (int z = 0; z < 5; z++) {
+                boolean edge = x == 0 || x == 4 || z == 0 || z == 4;
+                if (edge) {
+                    for (int y = 1; y <= 3; y++) {
+                        if (x == 2 && y == 2 && z == 0) s.addBlock(x, y, z, "solarpunk:greenhouse_controller", "facing", "south");
+                        else s.addBlock(x, y, z, "solarpunk:greenhouse_glass");
+                    }
+                } else {
+                    s.addBlock(x, 1, z, "minecraft:farmland", "moisture", "7");
+                    s.addBlock(x, 2, z, "minecraft:wheat", "age", "1");
+                }
+                s.addBlock(x, 4, z, "solarpunk:greenhouse_glass");
+            }
+        }
+        return s;
     }
 
     private static SceneStructure addVatLayers(SceneStructure s, int width, int height) {

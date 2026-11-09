@@ -1,0 +1,11 @@
+{
+	"parent": "minecraft:block/block",
+	"loader": "neoforge:obj",
+	"model": "solarpunk:models/block/solar_shingles_bottom_slope_outer_corner.obj",
+	"flip_v": true,
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"texture": "solarpunk:block/solar_glass_shingles",
+		"particle": "solarpunk:block/solar_glass_shingles"
+	}
+}

@@ -1,0 +1,28 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "item": "solarpunk:ash_block"
+    },
+    {
+      "item": "minecraft:gravel"
+    },
+    {
+      "item": "minecraft:clay_ball"
+    },
+    [
+      {
+        "item": "solarpunk:ash"
+      },
+      {
+        "item": "solarpunk:biochar"
+      }
+    ]
+  ],
+  "results": [
+    {
+      "count": 2,
+      "id": "solarpunk:ashen_rammed_earth"
+    }
+  ]
+}

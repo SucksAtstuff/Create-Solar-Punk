@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "solarpunk:block/wire_connector",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "solarpunk:block/wire_connector",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "solarpunk:block/wire_connector",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "solarpunk:block/wire_connector",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "solarpunk:block/wire_connector"
+    },
+    "facing=west": {
+      "model": "solarpunk:block/wire_connector",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

@@ -2,6 +2,7 @@ package net.succ.solar_punk;
 
 import net.succ.solar_punk.client.renderer.AcceleratorParticleRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.succ.solar_punk.item.FiligreeRailingItem;
 import net.succ.solar_punk.item.ParticleAcceleratorPipeItem;
 import net.minecraft.client.renderer.item.ItemProperties;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
@@ -22,6 +23,9 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.minecraft.client.renderer.BiomeColors;
+import net.minecraft.world.level.FoliageColor;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.succ.solar_punk.block.ModBlocks;
@@ -29,6 +33,8 @@ import net.succ.solar_punk.block.custom.FusionReactorCasingBlock;
 import net.succ.solar_punk.block.custom.FusionReactorCasingGlassBlock;
 import net.succ.solar_punk.block.custom.KineticSprinklerItem;
 import net.succ.solar_punk.block.custom.TurbineCasingBlock;
+import net.succ.solar_punk.block.custom.TrellisBlock;
+import net.succ.solar_punk.client.FlowerTint;
 import net.succ.solar_punk.block.custom.TurbineCasingGlassBlock;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.client.model.CasingModel;
@@ -36,6 +42,8 @@ import net.succ.solar_punk.client.model.ModSpriteShifts;
 import net.succ.solar_punk.client.model.TankModel;
 import net.succ.solar_punk.client.renderer.FermentationVatRenderer;
 import net.succ.solar_punk.client.renderer.FusionReactorCoreRenderer;
+import net.succ.solar_punk.client.renderer.WireConnectorRenderer;
+import net.succ.solar_punk.client.SeasonalModels;
 import net.succ.solar_punk.client.renderer.GeyserCapRenderer;
 import net.succ.solar_punk.client.renderer.HalfShaftRenderer;
 import net.succ.solar_punk.client.renderer.KineticBatteryRenderer;
@@ -45,8 +53,11 @@ import net.succ.solar_punk.client.renderer.SolarPowerTowerRenderer;
 import net.succ.solar_punk.client.renderer.TurbineRotorRenderer;
 import net.succ.solar_punk.compat.ponder.SolarPunkPonderPlugin;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -59,10 +70,39 @@ public class ModClientEvents {
         KineticSprinklerItem item = (KineticSprinklerItem) ModBlocks.KINETIC_SPRINKLER.get().asItem();
         event.registerItem(new IClientItemExtensions() {
             @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return GeoRenderProvider.of(item).getGeoItemRenderer();
+            public @NotNull BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return Objects.requireNonNull(GeoRenderProvider.of(item).getGeoItemRenderer());
             }
         }, item);
+    }
+
+    // Trellis tint 0: the grey vines take the biome's foliage colour, like leaves.
+    // Tint 1: the grey flower takes the colour of the flower that was used (FlowerTint).
+    @SubscribeEvent
+    public static void onRegisterBlockColors(RegisterColorHandlersEvent.Block event) {
+        event.register((state, level, pos, tintIndex) -> {
+            if (tintIndex == 1) {
+                Block flower = state.getValue(TrellisBlock.PLANT).flowerBlock();
+                return flower != null ? FlowerTint.of(flower) : -1;
+            }
+            return level != null && pos != null
+                    ? BiomeColors.getAverageFoliageColor(level, pos)
+                    : FoliageColor.getDefaultColor();
+        }, ModBlocks.TRELLIS.get());
+
+        // Rammed Earth: every colour's grey model is tinted with its RammedEarthColor.
+        ModBlocks.RAMMED_EARTH.forEach((color, set) -> {
+            int argb = 0xFF000000 | color.color;
+            set.all().forEach(block -> event.register((state, level, pos, tintIndex) -> argb, block.get()));
+        });
+    }
+
+    @SubscribeEvent
+    public static void onRegisterItemColors(RegisterColorHandlersEvent.Item event) {
+        ModBlocks.RAMMED_EARTH.forEach((color, set) -> {
+            int argb = 0xFF000000 | color.color;
+            set.all().forEach(block -> event.register((stack, tintIndex) -> argb, block.get()));
+        });
     }
 
     @SubscribeEvent
@@ -76,6 +116,7 @@ public class ModClientEvents {
         event.register(ModelResourceLocation.standalone(SolarPowerTowerRenderer.GAUGE_DIAL.modelLocation()));
         event.register(ModelResourceLocation.standalone(SolarMirrorRenderer.POST.modelLocation()));
         event.register(ModelResourceLocation.standalone(SolarMirrorRenderer.PLATE.modelLocation()));
+        SeasonalModels.registerAdditional(event);
     }
 
     @SubscribeEvent
@@ -100,6 +141,7 @@ public class ModClientEvents {
             UnaryOperator<BakedModel> wrapper = wrappers.get(key.id().getPath());
             return wrapper != null ? wrapper.apply(model) : model;
         });
+        SeasonalModels.apply(event.getModels());
     }
 
     @SubscribeEvent
@@ -119,6 +161,7 @@ public class ModClientEvents {
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_MIRROR.get(), SolarMirrorRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.KINETIC_SPRINKLER.get(), KineticSprinklerRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.FUSION_REACTOR_CORE.get(), FusionReactorCoreRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.WIRE_CONNECTOR.get(), WireConnectorRenderer::new);
     }
 
     @SubscribeEvent
@@ -132,6 +175,12 @@ public class ModClientEvents {
             ItemProperties.register(ModBlocks.PARTICLE_ACCELERATOR_PIPE.get().asItem(),
                     ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "shape"),
                     (stack, level, entity, seed) -> ParticleAcceleratorPipeItem.getShape(stack).ordinal());
+            // Same for the filigree railing items (flat, slope, steep slope)
+            for (var railing : List.of(ModBlocks.BRASS_FILIGREE_RAILING, ModBlocks.ANDESITE_FILIGREE_RAILING, ModBlocks.COPPER_FILIGREE_RAILING,
+                    ModBlocks.IRON_FILIGREE_RAILING))
+                ItemProperties.register(railing.get().asItem(),
+                        ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "railing_shape"),
+                        (stack, level, entity, seed) -> FiligreeRailingItem.getShape(stack).ordinal());
 
             // Only the Turbine Rotor gets a Flywheel visualizer, since it really is a full
             // shaft. Half-shaft machines use HalfShaftRenderer instead.
@@ -143,27 +192,45 @@ public class ModClientEvents {
     }
 
     private static void registerTooltips() {
-        tip(ModBlocks.SOLAR_HEATER::get);
-        tip(ModBlocks.FIREBOX_BOILER::get);
-        tip(ModBlocks.ANDESITE_SOLAR_PANEL::get);
-        tip(ModBlocks.BRASS_SOLAR_PANEL::get);
-        tip(ModBlocks.HEAT_BATTERY::get);
-        tip(ModBlocks.KINETIC_BATTERY::get);
-        tip(ModBlocks.FERMENTATION_VAT::get);
-        tip(ModBlocks.BIOMASS_GASIFIER::get);
-        tip(ModBlocks.BIOFUEL_ENGINE::get);
-        tip(ModBlocks.GEYSER_CAP::get);
-        tip(ModBlocks.SOLAR_POWER_TOWER::get);
-        tip(ModBlocks.SOLAR_MIRROR::get);
-        tip(ModBlocks.BIOFILTER::get);
-        tip(ModBlocks.KINETIC_SPRINKLER::get);
-        tip(ModBlocks.TURBINE_ROTOR::get);
-        tip(ModBlocks.CRYSTALLIZER::get);
-        tip(ModBlocks.FUSION_REACTOR_CORE::get);
-        tip(ModBlocks.LITHIUM_BREEDER_MODULE::get);
-        tip(ModBlocks.BERYLLIUM_REFLECTOR_MODULE::get);
-        tip(ModBlocks.PARTICLE_ACCELERATOR_PIPE::get);
-        tip(ModBlocks.PARTICLE_ACCELERATOR_INPUT::get);
+        tip(ModBlocks.SOLAR_HEATER);
+        tip(ModBlocks.FIREBOX_BOILER);
+        tip(ModBlocks.ANDESITE_SOLAR_PANEL);
+        tip(ModBlocks.BRASS_SOLAR_PANEL);
+        tip(ModBlocks.HEAT_BATTERY);
+        tip(ModBlocks.KINETIC_BATTERY);
+        tip(ModBlocks.FERMENTATION_VAT);
+        tip(ModBlocks.BIOMASS_GASIFIER);
+        tip(ModBlocks.BIOFUEL_ENGINE);
+        tip(ModBlocks.GEYSER_CAP);
+        tip(ModBlocks.GEYSER_VENT);
+        tip(ModBlocks.SOLAR_POWER_TOWER);
+        tip(ModBlocks.SOLAR_MIRROR);
+        tip(ModBlocks.BIOFILTER);
+        tip(ModBlocks.KINETIC_SPRINKLER);
+        tip(ModBlocks.TURBINE_ROTOR);
+        tip(ModBlocks.CRYSTALLIZER);
+        tip(ModBlocks.FUSION_REACTOR_CORE);
+        tip(ModBlocks.LITHIUM_BREEDER_MODULE);
+        tip(ModBlocks.BERYLLIUM_REFLECTOR_MODULE);
+        tip(ModBlocks.PARTICLE_ACCELERATOR_PIPE);
+        tip(ModBlocks.BRASS_FILIGREE_RAILING);
+        tip(ModBlocks.ANDESITE_FILIGREE_RAILING);
+        tip(ModBlocks.COPPER_FILIGREE_RAILING);
+        tip(ModBlocks.IRON_FILIGREE_RAILING);
+        tip(ModBlocks.PARTICLE_ACCELERATOR_INPUT);
+        tip(ModBlocks.SALT_LAMP);
+        tip(ModBlocks.GARDEN_LIGHT);
+        tip(ModBlocks.STREETLAMP);
+        tip(ModBlocks.WIRE_CONNECTOR);
+        tip(ModBlocks.GROW_LAMP);
+        tip(ModBlocks.SOLAR_PLANT_BED);
+        tip(ModBlocks.CHARRED_TIMBER);
+        tip(ModBlocks.TRELLIS);
+        tip(ModBlocks.GREENHOUSE_CONTROLLER);
+        tip(ModBlocks.SOLAR_SHINGLES);
+        tip(ModBlocks.SOLAR_GLASS_SHINGLES);
+        tip(ModBlocks.SOLAR_GLASS);
+        tip(ModBlocks.SOLAR_GLASS_PANE);
     }
 
     private static void tip(Supplier<? extends Block> block) {

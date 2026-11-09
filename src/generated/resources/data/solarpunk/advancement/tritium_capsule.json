@@ -1,0 +1,34 @@
+{
+  "parent": "solarpunk:particle_collision",
+  "criteria": {
+    "0": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:tritium_capsule"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancement.solarpunk.tritium_capsule.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:tritium_capsule"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.tritium_capsule"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

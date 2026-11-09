@@ -1,6 +1,12 @@
 package net.succ.solar_punk;
 
 import net.succ.solar_punk.block.custom.AcceleratorRing;
+import net.succ.solar_punk.item.HeadwearDispenseBehavior;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.succ.solar_punk.block.custom.StreetlampBlock;
+import net.succ.solar_punk.block.entity.custom.StreetlampBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import com.simibubi.create.api.behaviour.display.DisplaySource;
 import com.simibubi.create.api.boiler.BoilerHeater;
 import com.simibubi.create.api.stress.BlockStressValues;
@@ -28,6 +34,7 @@ import net.succ.solar_punk.item.ModCreativeModeTabs;
 import net.succ.solar_punk.item.ModDataComponents;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.network.SelectPipeShapePayload;
+import net.succ.solar_punk.network.SelectRailingShapePayload;
 import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
 import net.succ.solar_punk.sound.ModSounds;
@@ -58,6 +65,7 @@ public class SolarPunk {
         modEventBus.addListener(SolarPunk::registerCapabilities);
         modEventBus.addListener(SolarPunk::commonSetup);
         modEventBus.addListener(SelectPipeShapePayload::register);
+        modEventBus.addListener(SelectRailingShapePayload::register);
 
         NeoForge.EVENT_BUS.addListener(GlobalWarmingHandler::onLevelTick);
 
@@ -92,6 +100,37 @@ public class SolarPunk {
                 Capabilities.EnergyStorage.BLOCK,
                 ModBlockEntities.BRASS_SOLAR_PANEL.get(),
                 (be, side) -> be.energyStorage
+        );
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                ModBlockEntities.SOLAR_SHINGLES.get(),
+                (be, side) -> be.energyStorage
+        );
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                ModBlockEntities.SOLAR_GLASS.get(),
+                (be, side) -> be.energyStorage
+        );
+        // Either half of a Streetlamp takes FE into the lower half's buffer, so a Wire
+        // Connector works on the lamp head too.
+        event.registerBlock(
+                Capabilities.EnergyStorage.BLOCK,
+                (level, pos, state, be, side) -> {
+                    BlockPos lower = state.getValue(StreetlampBlock.HALF) == DoubleBlockHalf.UPPER ? pos.below() : pos;
+                    return level.getBlockEntity(lower) instanceof StreetlampBlockEntity lamp ? lamp.energyStorage : null;
+                },
+                ModBlocks.STREETLAMP.get()
+        );
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                ModBlockEntities.GROW_LAMP.get(),
+                (be, side) -> be.energyStorage
+        );
+        // Only on the face touching the block it's on.
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                ModBlockEntities.WIRE_CONNECTOR.get(),
+                (be, side) -> side == null || side == be.back() ? be.energyStorage : null
         );
         // No sky check here (unlike the Solar Heater), so every face is open.
         event.registerBlockEntity(
@@ -135,6 +174,11 @@ public class SolarPunk {
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 ModBlockEntities.BIOMASS_GASIFIER.get(),
+                (be, side) -> be.automationHandler
+        );
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,
+                ModBlockEntities.BIOFILTER.get(),
                 (be, side) -> be.automationHandler
         );
         event.registerBlockEntity(
@@ -194,6 +238,9 @@ public class SolarPunk {
 
     private static void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
+            HeadwearDispenseBehavior headwear = new HeadwearDispenseBehavior();
+            DispenserBlock.registerBehavior(ModBlocks.WIRE_CONNECTOR.get(), headwear);
+            DispenserBlock.registerBehavior(ModBlocks.GROW_LAMP.get(), headwear);
             BoilerHeater.REGISTRY.register(ModBlocks.HEAT_BATTERY.get(), (level, pos, state) -> {
                 if (!(level.getBlockEntity(pos) instanceof HeatBatteryBlockEntity be))
                     return BoilerHeater.NO_HEAT;
@@ -221,9 +268,18 @@ public class SolarPunk {
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_DEUTERIUM.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.FUSION_REACTOR_CASING.get(), ModDisplaySources.FUSION_REACTOR_STEAM_TANK.get());
 
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.ANDESITE_SOLAR_PANEL.get(), ModDisplaySources.SOLAR_PANEL_SUN_ANGLE.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.ANDESITE_SOLAR_PANEL.get(), ModDisplaySources.SOLAR_PANEL_SUN_OFFSET.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.BRASS_SOLAR_PANEL.get(), ModDisplaySources.SOLAR_PANEL_SUN_ANGLE.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.BRASS_SOLAR_PANEL.get(), ModDisplaySources.SOLAR_PANEL_SUN_OFFSET.get());
+
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), ModDisplaySources.PARTICLE_ACCELERATOR_STATUS.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), ModDisplaySources.PARTICLE_ACCELERATOR_RECIPE.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.PARTICLE_ACCELERATOR_INPUT.get(), ModDisplaySources.PARTICLE_ACCELERATOR_PROGRESS.get());
+
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.GREENHOUSE_CONTROLLER.get(), ModDisplaySources.GREENHOUSE_STATUS.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.GREENHOUSE_CONTROLLER.get(), ModDisplaySources.GREENHOUSE_PLANT_COUNT.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.GREENHOUSE_CONTROLLER.get(), ModDisplaySources.GREENHOUSE_GROWTH.get());
 
             // Generators: capacity and generated RPM for stress tooltips
             BlockStressValues.CAPACITIES.register(ModBlocks.ANDESITE_SOLAR_PANEL.get(),

@@ -8,15 +8,18 @@ import net.minecraft.world.phys.Vec3;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.compat.cosmonautics.CosmonauticsSolar;
+import net.succ.solar_punk.compat.sable.SableCompat;
 import net.succ.solar_punk.compat.sereneseasons.SeasonalSolar;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BooleanSupplier;
 
 /**
  * Shared sunlight checks for every solar block. All of them go through here so space
- * dimensions (see {@link ModTags.DimensionTypes} and {@link CosmonauticsSolar}) behave the
- * same everywhere.
+ * dimensions (see {@link ModTags.DimensionTypes} and {@link CosmonauticsSolar}) and blocks on
+ * Sable sub-levels (see {@link SableCompat#placement}) behave the same everywhere.
  */
 public final class SolarHelper {
     private SolarHelper() {}
@@ -43,13 +46,16 @@ public final class SolarHelper {
     // further than this from a panel, and it bounds the cost.
     private static final int SKY_SCAN_LIMIT = 64;
 
-    // Space sky checks walk up to SKY_SCAN_LIMIT blocks and Brass Panels ask every tick,
+    // Space and sub-level sky checks walk up to SKY_SCAN_LIMIT blocks and Brass Panels ask every tick,
     // so results are reused for a second. Concurrent since in singleplayer the client
     // thread (goggles) and the server thread both check.
     private static final int SKY_CACHE_TICKS = 20;
     private static final int SKY_CACHE_MAX = 4096;
     private record SkyResult(boolean clear, long stamp) {}
     private static final Map<GlobalPos, SkyResult> SKY_CACHE = new ConcurrentHashMap<>();
+
+    // Share of a flat surface's output a surface facing away from the sun still gets
+    private static final double SKY_LIGHT = 0.25;
 
     public enum DayPhase { NIGHT, MORNING, NOON, EVENING }
 
@@ -66,6 +72,20 @@ public final class SolarHelper {
         }
 
         if (isAlwaysSunny(level)) return DayPhase.NOON;
+
+        // On a contraption the sun's height is measured from the contraption's own "up", so
+        // tilting it toward the sun gives more output. Still night once the sun has set.
+        SableCompat.Placement placement = sunAngle() ? SableCompat.placement(level, pos) : null;
+        if (placement != null) {
+            Vec3 world = vanillaSunDirection(level);
+            if (world.y < DAY_SUN_HEIGHT) return DayPhase.NIGHT;
+            double height = placement.toLocal(world).y;
+            if (height >= NOON_SUN_HEIGHT) return DayPhase.NOON;
+            // The sun rises in the east (+x). Tilted away from the sun, the panel still gets
+            // light from the rest of the sky, so it drops to dawn output rather than nothing.
+            return world.x > 0 ? DayPhase.MORNING : DayPhase.EVENING;
+        }
+
         float progress = dayProgress(level.getTimeOfDay(1.0f));
         if (progress < NOON_PROGRESS)    return DayPhase.MORNING;
         if (progress < EVENING_PROGRESS) return DayPhase.NOON;
@@ -103,6 +123,11 @@ public final class SolarHelper {
      * panels; while the sun is down it checks straight up, like the Overworld does at night.
      * Other always-sunny dimensions also accept a clear column straight up, since stations
      * live on Sable sub-levels where vanilla skylight isn't reliable.
+     *
+     * <p>Elsewhere a block on a sub-level (e.g. an Aeronautics contraption) needs a clear line
+     * toward the sun through its own contraption, and the sky has to be open above where the
+     * contraption really is in the world, so flying it indoors or underground shades it.
+     * Any block, on a contraption or not, is also shaded by another contraption above it.
      */
     public static boolean canSeeSky(Level level, BlockPos pos) {
         if (level == null) return false;
@@ -110,12 +135,113 @@ public final class SolarHelper {
         CosmonauticsSolar.Sun sun = CosmonauticsSolar.sunAt(level, pos);
         if (sun != null) {
             Vec3 toward = sun.visible() && sun.direction().y > 0 ? sun.direction() : new Vec3(0, 1, 0);
-            return cachedRayClear(level, pos, toward);
+            return cached(level, pos, () -> rayClear(level, pos, toward));
+        }
+
+        if (!isAlwaysSunny(level)) {
+            SableCompat.Placement placement = SableCompat.placement(level, pos);
+            if (placement != null) return cached(level, pos, () -> subLevelSkyClear(level, pos, placement));
+        }
+
+        if (!isAlwaysSunny(level)) {
+            return level.canSeeSky(pos)
+                    && cached(level, pos, () -> !shadedBySubLevels(level, Vec3.atCenterOf(pos), null));
         }
 
         if (level.canSeeSky(pos)) return true;
-        if (!isAlwaysSunny(level)) return false;
-        return cachedRayClear(level, pos, new Vec3(0, 1, 0));
+        return cached(level, pos, () -> rayClear(level, pos, new Vec3(0, 1, 0)));
+    }
+
+    private static boolean subLevelSkyClear(Level level, BlockPos pos, SableCompat.Placement placement) {
+        // Through the contraption itself, in its own frame: toward the sun while it's up,
+        // otherwise along the contraption's "up".
+        Vec3 sun = placement.toLocal(vanillaSunDirection(level));
+        Vec3 toward = sun.y > 0 ? sun : new Vec3(0, 1, 0);
+        if (!rayClear(level, pos, toward)) return false;
+
+        // Then the real world above it. An unloaded chunk can't shade it.
+        BlockPos worldPos = placement.worldPos();
+        if (level.isLoaded(worldPos) && !level.canSeeSky(worldPos)) return false;
+        return !shadedBySubLevels(level, placement.worldCenter(), placement.subLevel());
+    }
+
+    /**
+     * True if a sub-level other than {@code exclude} has a skylight-blocking block in the
+     * column straight up from {@code start} (world space). Straight up, like the vanilla sky
+     * check, so parking under a ship shades a block whatever the time of day.
+     */
+    private static boolean shadedBySubLevels(Level level, Vec3 start, Object exclude) {
+        Vec3 end = start.add(0, SKY_SCAN_LIMIT, 0);
+        for (SableCompat.PlotRay ray : SableCompat.raysThroughSubLevels(level, start, end, exclude)) {
+            Vec3 along = ray.end().subtract(ray.start());
+            if (!rayClear(level, ray.start(), along.normalize(), along.length())) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Where the sun is in the world's sky, in degrees from straight up: negative toward the
+     * east (morning), positive toward the west (evening), past 90 either way once it's below
+     * the horizon. The sun only moves east to west, so this is the angle to turn a bearing on
+     * the north-south axis by to face it. {@code null} where there's no day cycle to read.
+     */
+    @Nullable
+    public static Double sunAngle(Level level) {
+        if (level == null || isAlwaysSunny(level)) return null;
+        Vec3 sun = vanillaSunDirection(level);
+        return Math.toDegrees(Math.atan2(-sun.x, sun.y));
+    }
+
+    /**
+     * Degrees between the "up" of the block at {@code pos} and the sun: 0 when it faces the
+     * sun head on, 90 when the sun is edge-on. Follows the block's contraption or station
+     * as it turns. {@code null} while the sun is down (or eclipsed) or unknown.
+     */
+    @Nullable
+    public static Double sunOffset(Level level, BlockPos pos) {
+        Vec3 local = localSunDirection(level, pos);
+        if (local == null) return null;
+        return Math.toDegrees(Math.acos(Mth.clamp(local.y, -1, 1)));
+    }
+
+    /** Whether output depends on the angle to the sun: only with Sable (Aeronautics) and the config on. */
+    public static boolean sunAngle() {
+        return Config.sunAngle && SableCompat.isLoaded();
+    }
+
+    /**
+     * How much sun a surface facing {@code normal} (a unit vector in the block's own frame)
+     * catches compared to a flat one at {@code pos}: 1 for flat, more when tilted toward the
+     * sun, down to {@link #SKY_LIGHT} when facing away (light from the rest of the sky; none in
+     * space, where there's no sky to scatter it). Capped at {@code max}, since the ratio blows up
+     * as the sun nears the horizon. 1 while the sun is down or its direction is unknown.
+     */
+    public static double tiltFactor(Level level, BlockPos pos, Vec3 normal, double max) {
+        if (!sunAngle()) return 1;
+        Vec3 local = localSunDirection(level, pos);
+        if (local == null || local.y <= 0) return 1;
+        double min = CosmonauticsSolar.sunAt(level, pos) != null ? 0 : SKY_LIGHT;
+        return Mth.clamp(normal.dot(local) / local.y, min, max);
+    }
+
+    /** Unit vector toward the sun in the frame of the block at {@code pos}, or null while it's down (eclipsed in space) or unknown. */
+    @Nullable
+    private static Vec3 localSunDirection(Level level, BlockPos pos) {
+        if (level == null) return null;
+
+        Vec3 local;
+        CosmonauticsSolar.Sun sun = CosmonauticsSolar.sunAt(level, pos);
+        if (sun != null) {
+            if (!sun.visible()) return null;
+            local = sun.direction();
+        } else {
+            if (isAlwaysSunny(level)) return null;
+            Vec3 world = vanillaSunDirection(level);
+            if (world.y <= 0) return null;
+            SableCompat.Placement placement = SableCompat.placement(level, pos);
+            local = placement != null ? placement.toLocal(world) : world;
+        }
+        return local.normalize();
     }
 
     public static boolean isRaining(Level level) {
@@ -128,7 +254,9 @@ public final class SolarHelper {
 
     /** Seasonal and space output multipliers combined. */
     public static float outputMultiplier(Level level, BlockPos pos) {
-        float multiplier = SeasonalSolar.outputMultiplier(level, pos);
+        // Seasons depend on the biome, so use where a contraption really is.
+        SableCompat.Placement placement = SableCompat.placement(level, pos);
+        float multiplier = SeasonalSolar.outputMultiplier(level, placement != null ? placement.worldPos() : pos);
         if (isAlwaysSunny(level)) multiplier *= (float) Config.spaceSolarMultiplier;
         return multiplier;
     }
@@ -142,34 +270,41 @@ public final class SolarHelper {
                 || level.dimensionTypeRegistration().is(ModTags.DimensionTypes.NO_WEATHER));
     }
 
-    private static boolean cachedRayClear(Level level, BlockPos start, Vec3 dir) {
+    private static boolean cached(Level level, BlockPos pos, BooleanSupplier check) {
         long now = level.getGameTime();
-        GlobalPos key = GlobalPos.of(level.dimension(), start.immutable());
+        GlobalPos key = GlobalPos.of(level.dimension(), pos.immutable());
         SkyResult cached = SKY_CACHE.get(key);
         // now < stamp: a different world was loaded since (singleplayer), so it's stale.
         if (cached != null && now >= cached.stamp() && now - cached.stamp() < SKY_CACHE_TICKS) return cached.clear();
 
         if (SKY_CACHE.size() >= SKY_CACHE_MAX) SKY_CACHE.clear();
-        boolean clear = rayClear(level, start, dir);
+        boolean clear = check.getAsBoolean();
         SKY_CACHE.put(key, new SkyResult(clear, now));
         return clear;
     }
 
-    /**
-     * Walks every cell a ray from the centre of {@code start} passes through (start
-     * included) and fails on the first one skylight can't pass straight down through -
-     * the same rule vanilla's sky check uses, so glass is fine but solid blocks aren't.
-     */
     private static boolean rayClear(Level level, BlockPos start, Vec3 dir) {
-        BlockPos.MutableBlockPos cursor = start.mutable();
+        return rayClear(level, Vec3.atCenterOf(start), dir.normalize(), SKY_SCAN_LIMIT);
+    }
+
+    /**
+     * Walks every cell a ray from {@code origin} passes through (its own cell included) for
+     * {@code length} blocks along the unit vector {@code dir}, and fails on the first one
+     * skylight can't pass straight down through - the same rule vanilla's sky check uses,
+     * so glass is fine but solid blocks aren't.
+     */
+    private static boolean rayClear(Level level, Vec3 origin, Vec3 dir, double length) {
+        BlockPos.MutableBlockPos cursor = BlockPos.containing(origin).mutable();
         if (!level.getBlockState(cursor).propagatesSkylightDown(level, cursor)) return false;
 
         int stepX = (int) Math.signum(dir.x), stepY = (int) Math.signum(dir.y), stepZ = (int) Math.signum(dir.z);
         double deltaX = stepX == 0 ? Double.POSITIVE_INFINITY : 1.0 / Math.abs(dir.x);
         double deltaY = stepY == 0 ? Double.POSITIVE_INFINITY : 1.0 / Math.abs(dir.y);
         double deltaZ = stepZ == 0 ? Double.POSITIVE_INFINITY : 1.0 / Math.abs(dir.z);
-        // Starting from the cell centre, every boundary is half a cell away.
-        double maxX = deltaX / 2, maxY = deltaY / 2, maxZ = deltaZ / 2;
+        // Distance along the ray to the first boundary on each axis.
+        double maxX = boundary(origin.x, stepX, deltaX);
+        double maxY = boundary(origin.y, stepY, deltaY);
+        double maxZ = boundary(origin.z, stepZ, deltaZ);
 
         while (true) {
             double t;
@@ -186,9 +321,25 @@ public final class SolarHelper {
                 maxZ += deltaZ;
                 cursor.move(0, 0, stepZ);
             }
-            if (t > SKY_SCAN_LIMIT || level.isOutsideBuildHeight(cursor.getY())) return true;
+            if (t > length || level.isOutsideBuildHeight(cursor.getY())) return true;
             if (!level.getBlockState(cursor).propagatesSkylightDown(level, cursor)) return false;
         }
+    }
+
+    /** Distance along the ray until it crosses a cell boundary on one axis. */
+    private static double boundary(double coord, int step, double delta) {
+        if (step == 0) return Double.POSITIVE_INFINITY;
+        double frac = coord - Math.floor(coord);
+        return (step > 0 ? 1 - frac : frac) * delta;
+    }
+
+    /**
+     * Unit vector toward the vanilla sun in world space. It rises in the east (+x), passes
+     * overhead at noon and sets in the west, the same path the sky renderer draws it on.
+     */
+    private static Vec3 vanillaSunDirection(Level level) {
+        double angle = level.getTimeOfDay(1.0f) * Mth.TWO_PI;
+        return new Vec3(-Math.sin(angle), Math.cos(angle), 0);
     }
 
     /**

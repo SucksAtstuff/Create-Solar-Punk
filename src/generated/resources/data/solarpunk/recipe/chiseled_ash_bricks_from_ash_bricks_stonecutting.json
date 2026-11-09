@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "solarpunk:ash_bricks"
+  },
+  "result": {
+    "count": 1,
+    "id": "solarpunk:chiseled_ash_bricks"
+  }
+}

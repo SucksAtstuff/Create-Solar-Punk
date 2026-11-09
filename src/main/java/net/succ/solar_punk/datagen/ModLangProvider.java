@@ -20,6 +20,7 @@ public class ModLangProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         add("itemGroup.solar_punk", "Create: Solarpunk");
+        add("itemGroup.solar_punk.building_blocks", "Create: Solarpunk Building Blocks");
         add("jei.solarpunk.category.solar_heating", "Solar Heating");
         add("jei.solarpunk.category.solar_power_tower", "Solar Power Tower");
         add("jei.solarpunk.category.fermentation_vat", "Fermentation Vat");
@@ -31,7 +32,7 @@ public class ModLangProvider extends LanguageProvider {
 
         // Sound subtitles - format: subtitles.solarpunk.<sound event path>, referenced by
         // sounds.json. One entry per SoundEvent registered in ModSounds.
-        add("subtitles.solarpunk.alternator", "Solar panel hums");
+        add("subtitles.solarpunk.brass_solar_panel_hum", "Solar panel hums");
         add("subtitles.solarpunk.geyser_puff", "Geyser puffs");
         add("subtitles.solarpunk.particle_accelerator_hum", "Particle Accelerator hums");
         add("subtitles.solarpunk.particle_collision", "Particles collide");
@@ -56,6 +57,16 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.biofilter_status", "Status: ");
         add("create.solar_punk.tooltip.biofilter_pollution", "Chunk Pollution: ");
         add("create.solar_punk.tooltip.biofilter_removing", "Removing: ");
+        add("create.solar_punk.tooltip.biofilter_carbon", "Carbon Dust: ");
+
+        add("create.solar_punk.tooltip.geyser_vent_header", "Geyser Vent");
+        add("create.solar_punk.tooltip.geyser_vent_next", "Next eruption: ");
+        add("create.solar_punk.tooltip.geyser_vent_warning", "Any second now!");
+        add("create.solar_punk.tooltip.geyser_vent_erupting", "Erupting!");
+        add("create.solar_punk.tooltip.geyser_vent_quiet", "None");
+
+        add("death.attack.solarpunk.scalding", "%1$s was scalded by a geyser");
+        add("death.attack.solarpunk.scalding.player", "%1$s was scalded by a geyser while fighting %2$s");
 
         add("create.solar_punk.tooltip.accelerator_header", "Particle Accelerator");
         add("create.solar_punk.tooltip.accelerator_ring", "Ring: ");
@@ -66,11 +77,40 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.accelerator_too_slow", "Too slow: needs %1$s RPM");
         add("create.solar_punk.tooltip.accelerator_overstressed", "Overstressed");
 
+        add("create.solar_punk.tooltip.greenhouse_header", "Greenhouse");
+        add("create.solar_punk.tooltip.streetlamp_header", "Streetlamp");
+        add("create.solar_punk.tooltip.wire_connector_header", "Wire Connector");
+        add("create.solar_punk.tooltip.wires", "Wires: ");
+        add("create.solar_punk.tooltip.grow_lamp_header", "Grow Lamp");
+        add("create.solar_punk.tooltip.grow_lamp_plants", "Plants: ");
+        add("create.solar_punk.tooltip.solar_plant_bed_header", "Solar Plant Bed");
+        add("create.solar_punk.tooltip.throughput", "Throughput: ");
+
+        add("message.solarpunk.wire.started", "Wire started. Click another Wire Connector to finish it");
+        add("message.solarpunk.wire.cancelled", "Wire cancelled");
+        add("message.solarpunk.wire.start_missing", "The connector this wire started from is gone");
+        add("message.solarpunk.wire.already_connected", "These connectors are already wired together");
+        add("message.solarpunk.wire.full", "That connector can't hold any more wires");
+        add("message.solarpunk.wire.too_long", "Too long: this wire reaches at most %s blocks");
+        add("message.solarpunk.wire.not_enough", "Not enough wire on the spool: needs %s");
+        add("item.solarpunk.spool.wires_left", "%s wires left (%s blocks)");
+        add("item.solarpunk.spool.stats", "Carries %s, up to %s blocks long");
+        add("item.solarpunk.spool.started", "Wire started at %s, %s, %s");
+        add("create.solar_punk.tooltip.greenhouse_status", "Status: ");
+        add("create.solar_punk.tooltip.greenhouse_sealed", "Sealed");
+        add("create.solar_punk.tooltip.greenhouse_not_sealed", "Not sealed, or too big");
+        add("create.solar_punk.tooltip.greenhouse_front_blocked", "Front is blocked");
+        add("create.solar_punk.tooltip.greenhouse_other_controller", "Another controller runs this greenhouse");
+        add("create.solar_punk.tooltip.greenhouse_volume", "Space: ");
+        add("create.solar_punk.tooltip.greenhouse_crops", "Plants under glass: ");
+        add("create.solar_punk.tooltip.greenhouse_boost", "Growth speed: ");
+        add("create.solar_punk.tooltip.greenhouse_bees", "Bees pollinating: ");
         add("create.solar_punk.tooltip.sprinkler_header", "Sprinkler");
         add("create.solar_punk.tooltip.sprinkler_status", "Status: ");
 
         add("create.solar_punk.tooltip.fe_header", "Generator Stats");
         add("create.solar_punk.tooltip.generating", "Generating: ");
+        add("create.solar_punk.tooltip.agrivoltaics", "Cooled by plants below: +%s%%");
         add("create.solar_punk.tooltip.stored", "Stored: ");
 
         add("create.solar_punk.tooltip.kinetic_battery_header", "Kinetic Battery");
@@ -100,9 +140,14 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.display_source.fusion_reactor_deuterium", "Fusion Reactor Deuterium");
         add("solarpunk.display_source.fusion_reactor_steam_tank", "Fusion Reactor Steam Tank");
         add("solarpunk.display_source.fusion_reactor_tritium_supply", "Fusion Reactor Tritium Supply");
+        add("solarpunk.display_source.solar_panel_sun_angle", "Sun Angle");
+        add("solarpunk.display_source.solar_panel_sun_offset", "Sun Offset");
         add("solarpunk.display_source.particle_accelerator_status", "Particle Accelerator Status");
         add("solarpunk.display_source.particle_accelerator_recipe", "Particle Accelerator Recipe");
         add("solarpunk.display_source.particle_accelerator_progress", "Particle Accelerator Progress");
+        add("solarpunk.display_source.greenhouse_status", "Greenhouse Status");
+        add("solarpunk.display_source.greenhouse_plant_count", "Greenhouse Plant Count");
+        add("solarpunk.display_source.greenhouse_growth", "Greenhouse Growth Speed");
 
         add("create.solar_punk.tooltip.fermentation_vat_header", "Fermentation Vat");
         add("create.solar_punk.tooltip.vat_too_small", "Needs at least 2x2 footprint");
@@ -147,6 +192,7 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.progress", "Progress: ");
         add("create.solar_punk.tooltip.water", "Water: ");
         add("create.solar_punk.tooltip.fertilizer", "Fertilizer: ");
+        add("create.solar_punk.tooltip.rich_fertilizer", "Rich Fertilizer: ");
         add("create.solar_punk.tooltip.evaporation", "Evaporation: ");
         add("create.solar_punk.tooltip.output_fluid", "Output: ");
         add("create.solar_punk.tooltip.salt_output", "Salt: ");
@@ -174,10 +220,14 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.andesite_solar_panel.tooltip.summary", "Generates _Rotational Force_ from sunlight. Output scales with sun angle and weather.");
         add("block.solarpunk.andesite_solar_panel.tooltip.condition1", "During the day with a clear sky");
         add("block.solarpunk.andesite_solar_panel.tooltip.behaviour1", "8 RPM with 1024 SU at dawn and dusk, 16 RPM with 4096 SU at noon. _Rain_ drops it to the dawn rate and it stops at _night_.");
+        add("block.solarpunk.andesite_solar_panel.tooltip.condition2", "Raised over plants");
+        add("block.solarpunk.andesite_solar_panel.tooltip.behaviour2", "Crops, flowers or saplings up to _4 blocks_ below cool the panel for _10%_ more output, and still grow at normal speed in its shade.");
 
         add("block.solarpunk.brass_solar_panel.tooltip.summary", "Generates _Forge Energy_ from sunlight. Output scales with sun angle and weather.");
         add("block.solarpunk.brass_solar_panel.tooltip.condition1", "During the day with a clear sky");
         add("block.solarpunk.brass_solar_panel.tooltip.behaviour1", "40 FE/t at dawn and dusk, 80 FE/t at noon. _Rain_ drops it to the dawn rate and it stops at _night_.");
+        add("block.solarpunk.brass_solar_panel.tooltip.condition2", "Raised over plants");
+        add("block.solarpunk.brass_solar_panel.tooltip.behaviour2", "Crops, flowers or saplings up to _4 blocks_ below cool the panel for _10%_ more output, and still grow at normal speed in its shade.");
 
         add("block.solarpunk.heat_battery.tooltip.summary", "Stores thermal energy as _Molten Salt_ and supplies heat to a _Boiler_ placed above it.");
         add("block.solarpunk.heat_battery.tooltip.condition1", "When filled with Molten Salt");
@@ -191,7 +241,7 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.kinetic_battery.tooltip.condition2", "When a Redstone signal is applied");
         add("block.solarpunk.kinetic_battery.tooltip.behaviour2", "Discharges at 16 RPM with 256 SU of stress capacity until empty.");
 
-        add("block.solarpunk.fermentation_vat.tooltip.summary", "Ferments _Biomass_ and water into _Biofuel_. Requires at least a _2x2 footprint_ and _4 blocks tall_ to operate.");
+        add("block.solarpunk.fermentation_vat.tooltip.summary", "Ferments _Biomass_ and water into _Biofuel_, or mob and farm _waste_ into _Rich Fertilizer_. Requires at least a _2x2 footprint_ and _4 blocks tall_ to operate.");
         add("block.solarpunk.fermentation_vat.tooltip.condition1", "Larger footprint");
         add("block.solarpunk.fermentation_vat.tooltip.behaviour1", "Increases batch size and output. A 3x3 footprint processes 9 Biomass per batch. Taller vats produce super-linearly more Biofuel per batch.");
 
@@ -207,6 +257,12 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.geyser_cap.tooltip.condition1", "When placed on a Geyser Vent");
         add("block.solarpunk.geyser_cap.tooltip.behaviour1", "Generates 32 RPM with 16384 SU of stress capacity. Works day and night in all weather.");
 
+        add("block.solarpunk.geyser_vent.tooltip.summary", "A rare natural vent. Left uncapped, it _erupts_ every few minutes, scalding and launching anything standing over it.");
+        add("block.solarpunk.geyser_vent.tooltip.condition1", "Before an eruption");
+        add("block.solarpunk.geyser_vent.tooltip.behaviour1", "Rumbles for a few seconds first. _Goggles_ show the countdown, and a _Comparator_ signal rises as it gets close.");
+        add("block.solarpunk.geyser_vent.tooltip.condition2", "When capped");
+        add("block.solarpunk.geyser_vent.tooltip.behaviour2", "A _Geyser Cap_ stops the eruptions and turns the vent into steady _Rotational Force_.");
+
         add("block.solarpunk.solar_power_tower.tooltip.summary", "Multiblock tower that concentrates reflected sunlight to produce _Molten Salt_ or _Steam_ from water. Right-click with a Wrench to switch modes.");
         add("block.solarpunk.solar_power_tower.tooltip.condition1", "At least 3x3 and 3 tall, in clear daylight");
         add("block.solarpunk.solar_power_tower.tooltip.behaviour1", "Output grows with tower height and its _Solar Mirror_ field. Efficiency peaks at an optimal mirror count that grows with height, and falls off past it.");
@@ -214,14 +270,58 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.solar_mirror.tooltip.summary", "Place on the ground near a _Solar Power Tower_. Links automatically when it has open sky and a clear line of sight to the tower, then tracks the sun. Too many mirrors lowers the tower's efficiency, down to zero at twice the optimal count.");
 
         add("block.solarpunk.biofilter.tooltip.summary", "Draws _Rotational Force_ to absorb _pollution_ from nearby chunks, gradually healing blocks and restoring biomes. Cleans faster at higher speed.");
+        add("block.solarpunk.biofilter.tooltip.condition1", "While cleaning pollution");
+        add("block.solarpunk.biofilter.tooltip.behaviour1", "Collects _Carbon Dust_ from what it removes. Take it out by hand or with a funnel, and _compact_ it into _Biochar_.");
+
+        add("block.solarpunk.salt_lamp.tooltip.summary", "A warm, glowing chunk of _Salt_. Right-click to switch it _on_ or _off_.");
+        add("block.solarpunk.garden_light.tooltip.summary", "A small solar light for paths and gardens. Charges while it can _see the sky_ during the day, then glows through the _night_. Place it in the shade and it stays dark.");
+        add("block.solarpunk.streetlamp.tooltip.summary", "A tall street light that runs on _FE_. Switches itself _on at dusk_ and off at dawn, as long as it has power stored.");
+        add("block.solarpunk.streetlamp.tooltip.condition1", "When powered");
+        add("block.solarpunk.streetlamp.tooltip.behaviour1", "Takes _FE_ from cables or from a _Brass Solar Panel_ or _Solar Glass_ touching its base. A full charge lasts a whole night.");
+        add("block.solarpunk.grow_lamp.tooltip.summary", "A purple grow light that runs on _FE_. Hang it under a ceiling, or from a wall or another Grow Lamp at either end.");
+        add("block.solarpunk.grow_lamp.tooltip.condition1", "When powered");
+        add("block.solarpunk.grow_lamp.tooltip.behaviour1", "Lights up so crops grow at _night_ and _underground_, and makes plants in a _3x3_ area below it grow _faster_. A _redstone_ signal switches it off.");
+        add("block.solarpunk.solar_plant_bed.tooltip.summary", "A raised bed for _one plant_, for roofs and balconies. Its soil never dries out, so it needs _no water_ nearby.");
+        add("block.solarpunk.solar_plant_bed.tooltip.condition1", "During the day");
+        add("block.solarpunk.solar_plant_bed.tooltip.behaviour1", "The panel on top charges from _sunlight_. Needs open sky above the panel.");
+        add("block.solarpunk.solar_plant_bed.tooltip.condition2", "At night");
+        add("block.solarpunk.solar_plant_bed.tooltip.behaviour2", "The grow light runs on the stored charge and makes the plant grow _faster_. A _redstone_ signal switches it off.");
+        add("block.solarpunk.wire_connector.tooltip.summary", "Place on any block, then click two connectors with a _Spool_ to string a wire between them. Carries _FE_ from block to block.");
+        add("block.solarpunk.wire_connector.tooltip.condition1", "When wired");
+        add("block.solarpunk.wire_connector.tooltip.behaviour1", "Power going into a connector comes out into the blocks under the _other connectors_ it's wired to. Generators that don't push power out are drained. _Gold_ wire carries the most and reaches furthest, then _Copper_, then _Iron_.");
+        add("block.solarpunk.wire_connector.tooltip.condition2", "Right-click with Shears");
+        add("block.solarpunk.wire_connector.tooltip.behaviour2", "Cuts every wire on it and drops the wires.");
+        add("block.solarpunk.charred_timber.tooltip.summary", "Planks scorched black with _Biochar_. Charred wood _doesn't burn_.");
+        add("block.solarpunk.solar_glass.tooltip.summary", "Glass with solar cells in it that makes a little _FE_. Works as a _skylight_, or a window with _open sky_ above it.");
+        add("block.solarpunk.solar_glass.tooltip.condition1", "In sunlight");
+        add("block.solarpunk.solar_glass.tooltip.behaviour1", "Each block stores what it makes. Take power from _any_ glass block and the touching glass sends its energy along to it. Connects with _Solar Shingles_ the same way.");
+        add("block.solarpunk.solar_glass_pane.tooltip.summary", "A thin pane of _Solar Glass_. Makes less _FE_ than the full block, and needs _open sky_ above it.");
+        add("block.solarpunk.solar_glass_pane.tooltip.condition1", "In sunlight");
+        add("block.solarpunk.solar_glass_pane.tooltip.behaviour1", "Each pane stores what it makes. Take power from _any_ pane and the touching glass sends its energy along to it. Connects with _Solar Shingles_ the same way.");
+        add("block.solarpunk.solar_shingles.tooltip.summary", "Stepped solar roofing that makes a little _FE_. Bends into _corners_ like stairs, and each row placed up a roof switches between a _low_ and a _high_ piece by itself.");
+        add("block.solarpunk.solar_shingles.tooltip.condition1", "In sunlight");
+        add("block.solarpunk.solar_shingles.tooltip.behaviour1", "Each shingle stores what it makes. Take power from _any_ shingle and the rest of the roof sends its energy along to it. Roofs sloping _toward the sun_ make more, so east-facing roofs do best in the morning and west-facing ones in the evening.");
+        add("block.solarpunk.solar_glass_shingles.tooltip.summary", "_Solar Shingles_ made of _Solar Glass_. Make as much _FE_ as a Solar Glass block, and step and bend into corners like normal shingles.");
+        add("block.solarpunk.solar_glass_shingles.tooltip.condition1", "In sunlight");
+        add("block.solarpunk.solar_glass_shingles.tooltip.behaviour1", "Each shingle stores what it makes and passes it along the roof, like normal shingles. Roofs sloping _toward the sun_ make more.");
+        add("block.solarpunk.greenhouse_controller.tooltip.summary", "Turns a closed room with a _glass roof_ into a greenhouse. Place it in a wall facing _inside_. Needs no power.");
+        add("block.solarpunk.greenhouse_controller.tooltip.condition1", "When the greenhouse is sealed");
+        add("block.solarpunk.greenhouse_controller.tooltip.behaviour1", "Plants under _Greenhouse Glass_ or _Solar Glass_ grow faster, and faster still with _bees_ inside. A sealed greenhouse is also safe from _pollution_ decay. Walls can be glass or any solid block, and an _open door_ breaks the seal.");
+        add("block.solarpunk.trellis.tooltip.summary", "A wooden lattice that hangs on walls and can be _climbed_ like a ladder. Right-click with _Vines_ to grow vines on it, then add a _small flower_ or _Glow Berries_ to the vines. _Shears_ trim off the top layer. Vines slowly _climb_ onto bare trellises above and beside them, and soak up _pollution_ like leaves do.");
 
         add("block.solarpunk.kinetic_sprinkler.tooltip.summary", "Pipe in _water_ to hydrate _farmland_ and speed up _crop growth_ in a 5x5 area below it.");
         add("block.solarpunk.kinetic_sprinkler.tooltip.condition1", "When supplied with Fertilizer instead of water");
-        add("block.solarpunk.kinetic_sprinkler.tooltip.behaviour1", "_Bone meals_ every crop in range each second.");
+        add("block.solarpunk.kinetic_sprinkler.tooltip.behaviour1", "_Bone meals_ every crop in range each second. _Rich Fertilizer_ reaches a block further and lasts twice as long.");
 
         add("block.solarpunk.turbine_rotor.tooltip.summary", "The core of the _Steam Turbine_ multiblock. Pipe _Steam_ into the casing walls and collect _Rotational Force_ from the cap rotor. Can be built standing up or on its side.");
         add("block.solarpunk.turbine_rotor.tooltip.condition1", "Valid 7x7 structure with Turbine Blades");
         add("block.solarpunk.turbine_rotor.tooltip.behaviour1", "Output grows with height and blade quality. Condensed water must be piped out of any casing face, or the turbine stops when it fills up.");
+
+        for (String railing : new String[]{"brass_filigree_railing", "andesite_filigree_railing", "copper_filigree_railing", "iron_filigree_railing"}) {
+            add("block.solarpunk." + railing + ".tooltip.summary", "A decorative railing that _connects_ to its neighbours. One item places every shape: _flat_, _slope_ and _steep slope_.");
+            add("block.solarpunk." + railing + ".tooltip.condition1", "Hold the Toolbelt key (Alt)");
+            add("block.solarpunk." + railing + ".tooltip.behaviour1", "Opens a menu to pick the _shape_ it places. Steep slopes placed on _stairs_ follow them.");
+        }
 
         add("block.solarpunk.particle_accelerator_pipe.tooltip.summary", "Builds the ring of a _Particle Accelerator_. One pipe places every shape: _straight_, _bends_ and _diagonals_.");
         add("block.solarpunk.particle_accelerator_pipe.tooltip.condition1", "Hold the Toolbelt key (Alt)");

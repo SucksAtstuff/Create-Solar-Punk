@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "solarpunk:block/fusion_reactor_casing_slab"
+    },
+    "type=double": {
+      "model": "solarpunk:block/fusion_reactor_casing"
+    },
+    "type=top": {
+      "model": "solarpunk:block/fusion_reactor_casing_slab_top"
+    }
+  }
+}

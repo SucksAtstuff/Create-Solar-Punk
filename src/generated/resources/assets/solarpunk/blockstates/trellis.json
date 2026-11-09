@@ -1,0 +1,259 @@
+{
+  "variants": {
+    "facing=east,plant=allium": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 90
+    },
+    "facing=east,plant=azure_bluet": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 90
+    },
+    "facing=east,plant=blue_orchid": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 90
+    },
+    "facing=east,plant=cornflower": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 90
+    },
+    "facing=east,plant=dandelion": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 90
+    },
+    "facing=east,plant=glow_berries": {
+      "model": "solarpunk:block/trellis_glow",
+      "y": 90
+    },
+    "facing=east,plant=lily_of_the_valley": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 90
+    },
+    "facing=east,plant=none": {
+      "model": "solarpunk:block/trellis_no_vines",
+      "y": 90
+    },
+    "facing=east,plant=orange_tulip": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 90
+    },
+    "facing=east,plant=oxeye_daisy": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 90
+    },
+    "facing=east,plant=pink_tulip": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 90
+    },
+    "facing=east,plant=poppy": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 90
+    },
+    "facing=east,plant=red_tulip": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 90
+    },
+    "facing=east,plant=torchflower": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 90
+    },
+    "facing=east,plant=vines": {
+      "model": "solarpunk:block/trellis",
+      "y": 90
+    },
+    "facing=east,plant=white_tulip": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 90
+    },
+    "facing=east,plant=wither_rose": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 90
+    },
+    "facing=north,plant=allium": {
+      "model": "solarpunk:block/trellis_flowers"
+    },
+    "facing=north,plant=azure_bluet": {
+      "model": "solarpunk:block/trellis_flowers"
+    },
+    "facing=north,plant=blue_orchid": {
+      "model": "solarpunk:block/trellis_flowers"
+    },
+    "facing=north,plant=cornflower": {
+      "model": "solarpunk:block/trellis_flowers"
+    },
+    "facing=north,plant=dandelion": {
+      "model": "solarpunk:block/trellis_flowers"
+    },
+    "facing=north,plant=glow_berries": {
+      "model": "solarpunk:block/trellis_glow"
+    },
+    "facing=north,plant=lily_of_the_valley": {
+      "model": "solarpunk:block/trellis_flowers"
+    },
+    "facing=north,plant=none": {
+      "model": "solarpunk:block/trellis_no_vines"
+    },
+    "facing=north,plant=orange_tulip": {
+      "model": "solarpunk:block/trellis_flowers"
+    },
+    "facing=north,plant=oxeye_daisy": {
+      "model": "solarpunk:block/trellis_flowers"
+    },
+    "facing=north,plant=pink_tulip": {
+      "model": "solarpunk:block/trellis_flowers"
+    },
+    "facing=north,plant=poppy": {
+      "model": "solarpunk:block/trellis_flowers"
+    },
+    "facing=north,plant=red_tulip": {
+      "model": "solarpunk:block/trellis_flowers"
+    },
+    "facing=north,plant=torchflower": {
+      "model": "solarpunk:block/trellis_flowers"
+    },
+    "facing=north,plant=vines": {
+      "model": "solarpunk:block/trellis"
+    },
+    "facing=north,plant=white_tulip": {
+      "model": "solarpunk:block/trellis_flowers"
+    },
+    "facing=north,plant=wither_rose": {
+      "model": "solarpunk:block/trellis_flowers"
+    },
+    "facing=south,plant=allium": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 180
+    },
+    "facing=south,plant=azure_bluet": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 180
+    },
+    "facing=south,plant=blue_orchid": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 180
+    },
+    "facing=south,plant=cornflower": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 180
+    },
+    "facing=south,plant=dandelion": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 180
+    },
+    "facing=south,plant=glow_berries": {
+      "model": "solarpunk:block/trellis_glow",
+      "y": 180
+    },
+    "facing=south,plant=lily_of_the_valley": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 180
+    },
+    "facing=south,plant=none": {
+      "model": "solarpunk:block/trellis_no_vines",
+      "y": 180
+    },
+    "facing=south,plant=orange_tulip": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 180
+    },
+    "facing=south,plant=oxeye_daisy": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 180
+    },
+    "facing=south,plant=pink_tulip": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 180
+    },
+    "facing=south,plant=poppy": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 180
+    },
+    "facing=south,plant=red_tulip": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 180
+    },
+    "facing=south,plant=torchflower": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 180
+    },
+    "facing=south,plant=vines": {
+      "model": "solarpunk:block/trellis",
+      "y": 180
+    },
+    "facing=south,plant=white_tulip": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 180
+    },
+    "facing=south,plant=wither_rose": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 180
+    },
+    "facing=west,plant=allium": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 270
+    },
+    "facing=west,plant=azure_bluet": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 270
+    },
+    "facing=west,plant=blue_orchid": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 270
+    },
+    "facing=west,plant=cornflower": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 270
+    },
+    "facing=west,plant=dandelion": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 270
+    },
+    "facing=west,plant=glow_berries": {
+      "model": "solarpunk:block/trellis_glow",
+      "y": 270
+    },
+    "facing=west,plant=lily_of_the_valley": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 270
+    },
+    "facing=west,plant=none": {
+      "model": "solarpunk:block/trellis_no_vines",
+      "y": 270
+    },
+    "facing=west,plant=orange_tulip": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 270
+    },
+    "facing=west,plant=oxeye_daisy": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 270
+    },
+    "facing=west,plant=pink_tulip": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 270
+    },
+    "facing=west,plant=poppy": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 270
+    },
+    "facing=west,plant=red_tulip": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 270
+    },
+    "facing=west,plant=torchflower": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 270
+    },
+    "facing=west,plant=vines": {
+      "model": "solarpunk:block/trellis",
+      "y": 270
+    },
+    "facing=west,plant=white_tulip": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 270
+    },
+    "facing=west,plant=wither_rose": {
+      "model": "solarpunk:block/trellis_flowers",
+      "y": 270
+    }
+  }
+}

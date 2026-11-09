@@ -1,0 +1,49 @@
+{
+  "variants": {
+    "facing=east,part=full": {
+      "model": "solarpunk:block/brass_filigree_railing_slope_full",
+      "y": 90
+    },
+    "facing=east,part=lower": {
+      "model": "solarpunk:block/brass_filigree_railing_slope_up",
+      "y": 90
+    },
+    "facing=east,part=upper": {
+      "model": "solarpunk:block/brass_filigree_railing_slope_down",
+      "y": 90
+    },
+    "facing=north,part=full": {
+      "model": "solarpunk:block/brass_filigree_railing_slope_full"
+    },
+    "facing=north,part=lower": {
+      "model": "solarpunk:block/brass_filigree_railing_slope_up"
+    },
+    "facing=north,part=upper": {
+      "model": "solarpunk:block/brass_filigree_railing_slope_down"
+    },
+    "facing=south,part=full": {
+      "model": "solarpunk:block/brass_filigree_railing_slope_full",
+      "y": 180
+    },
+    "facing=south,part=lower": {
+      "model": "solarpunk:block/brass_filigree_railing_slope_up",
+      "y": 180
+    },
+    "facing=south,part=upper": {
+      "model": "solarpunk:block/brass_filigree_railing_slope_down",
+      "y": 180
+    },
+    "facing=west,part=full": {
+      "model": "solarpunk:block/brass_filigree_railing_slope_full",
+      "y": 270
+    },
+    "facing=west,part=lower": {
+      "model": "solarpunk:block/brass_filigree_railing_slope_up",
+      "y": 270
+    },
+    "facing=west,part=upper": {
+      "model": "solarpunk:block/brass_filigree_railing_slope_down",
+      "y": 270
+    }
+  }
+}

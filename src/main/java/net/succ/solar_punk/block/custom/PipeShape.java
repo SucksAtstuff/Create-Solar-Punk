@@ -11,7 +11,7 @@ import net.succ.solar_punk.block.ModBlocks;
 import java.util.function.Supplier;
 
 // The shapes a Particle Accelerator Pipe item can place. There's one pipe item, and the
-// player picks the shape from a radial menu (see PipeShapeMenu); the choice is stored on
+// player picks the shape from a radial menu (see RadialShapeMenu); the choice is stored on
 // the item stack.
 public enum PipeShape implements StringRepresentable {
     STRAIGHT("straight", ModBlocks.PARTICLE_ACCELERATOR_PIPE::get),

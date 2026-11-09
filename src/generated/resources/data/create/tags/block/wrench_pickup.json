@@ -1,0 +1,10 @@
+{
+  "values": [
+    "solarpunk:turbine_casing_slab",
+    "solarpunk:turbine_casing_stairs",
+    "solarpunk:turbine_casing_wall",
+    "solarpunk:fusion_reactor_casing_slab",
+    "solarpunk:fusion_reactor_casing_stairs",
+    "solarpunk:fusion_reactor_casing_wall"
+  ]
+}

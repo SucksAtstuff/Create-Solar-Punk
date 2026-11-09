@@ -1,12 +1,10 @@
 # Create: Solarpunk
 
-A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecosystem: solar panels, solar heat and thermal storage, steam turbines, biofuel, geothermal power, nuclear fusion, a Particle Accelerator, and an optional global warming system.
+A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecosystem: solar panels, solar heat and thermal storage, steam turbines, biofuel, geothermal power, nuclear fusion, a Particle Accelerator, wires for carrying power, greenhouses, solarpunk building blocks, and an optional global warming system.
 
-**New to the mod?** Watch this video for a walkthrough of sorts covering what it adds and how it all fits together:
+**New to the mod?** Watch this video for an overview of what it adds and how it all fits together:
 
-[![Create: Solarpunk walkthrough](https://img.youtube.com/vi/OxV7FP923lA/maxresdefault.jpg)](https://youtu.be/OxV7FP923lA)
-
-> **Note:** some of the recipes shown in the video are outdated as of the 2.0 release. Check JEI for the current recipes.
+[![Create: Solarpunk 2.1 overview](https://img.youtube.com/vi/wIznaRLFJZE/maxresdefault.jpg)](https://youtu.be/wIznaRLFJZE)
 
 ## Requirements
 
@@ -27,8 +25,18 @@ A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecos
 ### Solar Panels and Storage
 - **Andesite Solar Panel** - generates Create rotational force (SU) from sunlight
 - **Kinetic Battery** - stores rotational force (SU) for later use, such as running your factory through the night
-- **Brass Solar Panel** - the mod's only electric block: generates Forge Energy (FE) from sunlight for FE-powered mods; built in a Mechanical Crafter from Photovoltaic Cells
+- **Brass Solar Panel** - generates Forge Energy (FE) from sunlight for FE-powered mods; built in a Mechanical Crafter from Photovoltaic Cells
+- **Solar Glass / Solar Glass Pane** - framed glass that makes a little FE under open sky, for skylights and windows
+- **Solar Shingles / Solar Glass Shingles** - stepped solar roofing that makes a little FE, so your roof can be the solar array; with Create Aeronautics installed, roofs sloping toward the sun make more. Touching shingles and Solar Glass share their power, so you can take a whole roof's output from any one block
+- **Agrivoltaics** - raise Andesite or Brass Solar Panels over your crops: the plants keep growing at normal speed in the shade and cool the panels for 10% more output, so farms and solar can share the same land
 - **Photovoltaic Cell** - made by sequenced assembly: a Glass Pane, then deploy Polished Rose Quartz, deploy a Copper Sheet, and press
+
+### Wires and Electric Blocks
+- **Wire Connector** - a small brass insulator that goes on any face of any block. Power going into one connector comes out into the blocks under every connector it's wired to, so one solar roof can power a whole street. Generators that don't push power out on their own get drained
+- **Iron, Copper and Gold Wire** - cut from metal sheets with a Mechanical Saw, and wound 4 at a time onto an Empty Spool. Click two Wire Connectors with a spool to string a wire between them; longer wires use more of the spool. Gold carries the most power and reaches furthest, then Copper, then Iron. Shears cut a connector's wires and give them back
+- **Streetlamp** - a two-block-tall street light that runs on FE and switches itself on at dusk. A full charge lasts the whole night
+- **Grow Lamp** - an FE-powered purple grow light. Hang it under a ceiling or from a wall, and crops below it grow faster, at night and underground too. A redstone signal switches it off
+- **Solar Plant Bed** - a raised bed for one plant, for roofs and balconies. Its soil never dries out, and its little panel charges by day to run a grow light at night that speeds the plant up
 
 ### Solar Heat Chain
 - **Salt** - a new material found as underground deposits in desert, badlands, and savanna biomes; the core fuel of the solar heat chain. Salt from Northstar and Create: Food works too
@@ -52,21 +60,27 @@ A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecos
 - **Biomass Gasifier** - burns raw biomass or pellets to generate rotational force (SU); produces Biochar as a byproduct
 - **Fermentation Vat** - multiblock structure (minimum 2×2 footprint and 4 blocks tall, up to 3×3 and 16 tall) that converts biomass into liquid biofuel using water; larger and taller vats process more per cycle
 - **Biofuel Engine** - burns biofuel to generate rotational force (SU)
-- **Biochar** - byproduct of the Gasifier; acts as a bonemeal substitute or mixes with water to make Fertilizer
+- **Biochar** - byproduct of the Gasifier; acts as a bonemeal substitute or mixes with water to make Fertilizer. Mix it (or Carbon Dust) with Salt for Gunpowder
 - **Fertilizer** - liquid made from Biochar and water; used in the Kinetic Sprinkler for forced instant crop growth
+- **Rich Fertilizer** - brewed in the Fermentation Vat from mob and farm waste (Rotten Flesh, Spider Eyes, Poisonous Potatoes, Bones, Pufferfish) and water; in a Kinetic Sprinkler it reaches a block further and lasts twice as long
 - **Kinetic Sprinkler** - hydrates farmland and accelerates crop growth in a 5×5 area; pipe in water to boost growth or Fertilizer for instant growth every cycle
 
 The **Biomass Gasifier** and **Biofuel Engine** support rotation direction control, just like the Andesite Solar Panel - scroll on the side of the block, away from the shaft faces, to toggle clockwise/counter-clockwise output.
 
+### Greenhouses
+- **Greenhouse Controller** - place it in the wall of a closed room with a glass roof, facing inside, and plants under the glass grow faster. Bees inside speed them up even more, and with global warming on, a sealed greenhouse is safe from pollution decay and keeps its original biome. Needs no power
+- **Greenhouse Glass / Clear Greenhouse Glass** - copper-framed glass for greenhouses and conservatories, each with a pane, plus frosted **Greenhouse Panels** in two patterns that still let light through
+- With Serene Seasons, crops under greenhouse glass (and Solar Glass) grow in every season
+
 ### Geothermal
-- **Geyser Vent** - spawns naturally in desert, badlands, and savanna biomes (configurable)
-- **Geyser Cap** - harnesses geothermal energy from a Geyser Vent and converts it into rotational force; passive, works day and night in any weather; also supports rotation direction control via scroll
+- **Geyser Vent** - spawns naturally in desert, badlands, and savanna biomes (configurable). Uncapped vents erupt every few minutes, rumbling first and then blasting a column of steam that scalds and launches anything standing over them. Goggles show a countdown, and a Comparator signal rises as an eruption gets close
+- **Geyser Cap** - stops the eruptions and harnesses the vent's geothermal energy as rotational force; passive, works day and night in any weather; also supports rotation direction control via scroll
 
 ### Fusion Reactor
 - **Fusion Reactor Core** - the mod's endgame capstone; produces a huge amount of Steam from Deuterium plus Lithium Dust or Tritium Capsules, far more than any single Steam Turbine can use on its own - meant to feed a whole bank of them. A redstone signal anywhere on the shell throttles it up or down
 - **Fusion Reactor Casing / Casing Glass** - the Netherite-and-Copper shell built around the Core. The shell is a standard hollow sphere, so you can build it straight from WorldEdit's `//hsphere` or an online sphere generator
 - **Lithium Breeder Module / Beryllium Reflector Module** - Blanket modules that ring the Core in whatever mix you like; more Lithium breeds Tritium more efficiently for a lower, steadier output, while more Beryllium burns fuel faster for more raw Steam output. Breeder Modules also slowly refill Empty Fuel Capsules into Tritium Capsules
-- **Lithium & Beryllium** - Lithium is a new ore found underground worldwide rather than in any specific biome; mine it for Raw Lithium and smelt that into Lithium Ingots, or crush it for Lithium Dust (which also smelts into ingots) with a small chance of bonus Beryllium Dust. Beryllium Dust smelts into Beryllium Ingots too, and both metals store compactly as a Block of Lithium or Block of Beryllium
+- **Lithium & Beryllium** - Lithium is a new ore found underground worldwide rather than in any specific biome, in stone and deepslate; mine it for Raw Lithium and smelt that into Lithium Ingots, or crush it for Lithium Dust (which also smelts into ingots) with a small chance of bonus Beryllium Dust. Beryllium Dust smelts into Beryllium Ingots too, and both metals store compactly as a Block of Lithium or Block of Beryllium
 - **Deuterium** - made by Mixing Water with an overheated Copper Ingot; Lithium Dust can also be made by Mixing Water with Salt over superheat (with a small chance of bonus Beryllium Dust). Both show up in JEI automatically
 
 Building the reactor and getting it running is rewarded with its own dedicated advancement, "A Star in a Bottle."
@@ -83,6 +97,9 @@ Bigger rings and faster rotation unlock rarer results:
 | Result | Ingredients | Min. ring diameter | Min. speed |
 |--------|-------------|--------------------|------------|
 | Leather | 16 Rotten Flesh | 5 | 64 RPM |
+| Slime Ball | 16 Biomass | 5 | 64 RPM |
+| Beryllium Dust | 8 Lithium Dust | 9 | 128 RPM |
+| 2 Glowstone Dust | 4 Redstone, 1 Lithium Dust | 9 | 128 RPM |
 | Tritium Capsule | 32 Lithium Dust, 4 Beryllium Ingots, 1 Empty Fuel Capsule | 9 | 128 RPM |
 | Diamond | 64 Biochar | 15 | 128 RPM |
 | Echo Shard | 8 Sculk, 4 Amethyst Shards | 15 | 128 RPM |
@@ -95,18 +112,31 @@ An opt-in pollution system, disabled by default and toggled in the config.
 
 - **Pollution sources** - campfires, furnaces, blast furnaces, smokers, blaze burners, steam engines, biofuel engines, and biomass gasifiers emit smoke and accumulate pollution in nearby chunks
 - **Block decay** - polluted chunks decay progressively: grass withers to Dead Grass, dirt crumbles to Ruined Dirt, then Ash; plants and leaves are cleared; biomes convert to a dead wasteland at high pollution levels. Leaves absorb some pollution on their own
-- **Biofilter** - a brass-tier machine that draws rotational power and scrubs pollution from surrounding chunks, reversing the decay over time; goggles show the current pollution level and filter rate
+- **Biofilter** - a brass-tier machine that draws rotational power and scrubs pollution from surrounding chunks, reversing the decay over time; goggles show the current pollution level and filter rate. It collects **Carbon Dust** from what it removes, which compacts into Biochar
+- **Trellis** with vines soaks up pollution like leaves do, and a sealed greenhouse is safe from decay
 - A pollution blacklist config option lets you exclude specific blocks from ever counting as pollution sources
 - All pollution rates, thresholds, decay speeds, blacklisted blocks, and the target dead biome are configurable; see the [wiki](https://github.com/SucksAtstuff/Create-Solar-Punk/wiki) for full details
 
 ### Create Integration
 - **Ponder** scenes for every machine and multiblock, walking through each one step by step
-- **Display Link** sources for the Heat Battery, Kinetic Battery, Solar Power Tower, Fusion Reactor, and Particle Accelerator, so their live stats can go on a Display Board or Nixie Tube
+- **Display Link** sources for the Heat Battery, Kinetic Battery, Solar Power Tower, Fusion Reactor, Particle Accelerator, and Greenhouse Controller, so their live stats can go on a Display Board or Nixie Tube. Solar Panels also show the **Sun Angle** and **Sun Offset**, handy for lining up sun-tracking arrays
 - **Goggle** readouts on every machine
 - Progression follows Create's own: cheap to get started, then sheets, sequenced assembly, Mechanical Crafters, and Precision Mechanisms for the higher-tier machines
 
 ### Achievements
-A dedicated **Create: Solarpunk** advancement tab guides you through the mod, from collecting your first Salt all the way to running a Steam Turbine and, eventually, a Fusion Reactor, with branches for the geothermal and biofuel chains along the way.
+A dedicated **Create: Solarpunk** advancement tab guides you through the mod, from collecting your first Salt all the way to running a Steam Turbine and, eventually, a Fusion Reactor, with branches for the geothermal, biofuel, greenhouse and Particle Accelerator chains along the way.
+
+### Building Blocks
+Decorative blocks have their own **Create: Solarpunk Building Blocks** creative tab:
+
+- **Salt** and **Ash** sets - stairs, slabs, walls, polished blocks, bricks and chiseled bricks. Ash comes from blasting Biomass, so you don't need global warming to get it
+- **Rammed Earth** in 25 colours, each with bricks, chiseled bricks, stairs, slabs and walls; pack soil, Gravel, Clay and Ash or Biochar together with a Mechanical Press, and the soil picks the colour
+- **Charred Timber** - dark scorched planks made by applying Biochar to any planks, with stairs and slabs. Unlike planks, it doesn't burn
+- **Moss Stairs** and **Moss Slab** - green roofs made from Moss Blocks, which soak up pollution like leaves when global warming is on
+- **Brass, Andesite, Copper and Iron Filigree Railings** - art nouveau railings that connect to their neighbours; hold Alt to switch between flat, slope and steep slope for ramps, arches and staircases
+- **Trellis** - a climbable lattice for walls; grow Vines on it, then add a flower or Glow Berries
+- **Salt Lamp** and **Garden Light** - a warm glowing chunk of salt, and a small solar light that charges by day and glows through the night
+- Stairs, slabs and walls for the **Turbine Casing** and **Fusion Reactor Casing**, so engine rooms can match
 
 ### Compatibility
 - **Create: Cosmonautics** - Solar Panels, the Solar Heater, and the Solar Power Tower work in space. In deep space they track where the sun actually is: turn your station away from it and they go dark, fly into a planet's shadow and it's night, and your station's own hull can shade them. On the Moon they follow the Moon's own day and night. There's no weather in space. Config options under `generators.space` boost deep space output or make it always sunny instead
@@ -158,6 +188,8 @@ Blade type determines efficiency: Andesite Blades are cheaper but waste more ste
 No Solar Power Tower yet? A **Firebox Boiler** (iron, a furnace, and a bucket, fed with any furnace fuel) makes Steam early on to get a Turbine running before you've scaled up solar production.
 
 ## Thanks
+
+Thanks to [Firstwitch](https://modrinth.com/user/Firstwitch) for textures and models.
 
 Thanks to the following people for their ideas:
 

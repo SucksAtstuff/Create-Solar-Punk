@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "C": {
+      "tag": "c:plates/copper"
+    },
+    "D": {
+      "item": "minecraft:dirt"
+    },
+    "P": {
+      "item": "solarpunk:photovoltaic_cell"
+    }
+  },
+  "pattern": [
+    " P ",
+    "CAC",
+    "CDC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "solarpunk:solar_plant_bed"
+  }
+}

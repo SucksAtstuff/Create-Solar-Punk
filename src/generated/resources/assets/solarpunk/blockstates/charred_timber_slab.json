@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "solarpunk:block/charred_timber_slab"
+    },
+    "type=double": {
+      "model": "solarpunk:block/charred_timber"
+    },
+    "type=top": {
+      "model": "solarpunk:block/charred_timber_slab_top"
+    }
+  }
+}

@@ -19,6 +19,8 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.BIOMASS.get());
         basicItem(ModItems.BIOMASS_PELLET.get());
         basicItem(ModItems.BIOCHAR.get());
+        basicItem(ModItems.CARBON_DUST.get());
+        basicItem(ModItems.ASH.get());
         basicItem(ModItems.RAW_LITHIUM.get());
         basicItem(ModItems.LITHIUM_INGOT.get());
         basicItem(ModItems.LITHIUM_NUGGET.get());
@@ -37,9 +39,17 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.INCOMPLETE_SUPERCONDUCTING_COIL.get());
         basicItem(ModItems.EMPTY_FUEL_CAPSULE.get());
         basicItem(ModItems.TRITIUM_CAPSULE.get());
+        basicItem(ModItems.COPPER_WIRE.get());
+        basicItem(ModItems.IRON_WIRE.get());
+        basicItem(ModItems.GOLD_WIRE.get());
+        basicItem(ModItems.EMPTY_SPOOL.get());
+        basicItem(ModItems.COPPER_SPOOL.get());
+        basicItem(ModItems.IRON_SPOOL.get());
+        basicItem(ModItems.GOLD_SPOOL.get());
         basicItem(ModFluids.MOLTEN_SALT_BUCKET.get());
         basicItem(ModFluids.BIOFUEL_BUCKET.get());
         basicItem(ModFluids.FERTILIZER_BUCKET.get());
+        basicItem(ModFluids.RICH_FERTILIZER_BUCKET.get());
         basicItem(ModFluids.STEAM_BUCKET.get());
         basicItem(ModFluids.DEUTERIUM_BUCKET.get());
     }

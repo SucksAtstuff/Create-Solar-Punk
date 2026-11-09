@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_wall_side_tall",
+  "textures": {
+    "wall": "solarpunk:block/industrial_iron_casing/industrial_iron_casing"
+  }
+}

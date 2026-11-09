@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "solarpunk:rammed_earth"
+  },
+  "result": {
+    "count": 1,
+    "id": "solarpunk:rammed_earth_bricks"
+  }
+}

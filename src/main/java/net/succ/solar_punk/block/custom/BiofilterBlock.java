@@ -4,14 +4,18 @@ import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.BiofilterBlockEntity;
+import net.succ.solar_punk.util.MachineInteractions;
 
 public class BiofilterBlock extends KineticBlock implements IBE<BiofilterBlockEntity> {
 
@@ -27,6 +31,14 @@ public class BiofilterBlock extends KineticBlock implements IBE<BiofilterBlockEn
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
         return face == Direction.DOWN;
+    }
+
+    // An empty hand takes the Carbon Dust out
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
+                                               Player player, BlockHitResult hit) {
+        if (!(level.getBlockEntity(pos) instanceof BiofilterBlockEntity be)) return InteractionResult.PASS;
+        return MachineInteractions.takeOut(level, player, be, be.inventory, 0);
     }
 
     @Override

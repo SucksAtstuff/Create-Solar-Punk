@@ -1,0 +1,27 @@
+{
+  "parent": "solarpunk:particle_collision",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:accelerator_big_ring"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.solarpunk.accelerator_big_ring.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "minecraft:netherite_scrap"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.accelerator_big_ring"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,28 @@
+{
+  "parent": "solarpunk:root",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:dispensed_grow_lamp"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.solarpunk.dispensed_grow_lamp.desc"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:grow_lamp"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.dispensed_grow_lamp"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

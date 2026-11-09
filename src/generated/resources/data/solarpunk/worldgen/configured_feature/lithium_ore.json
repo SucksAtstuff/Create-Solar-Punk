@@ -15,7 +15,7 @@
       },
       {
         "state": {
-          "Name": "solarpunk:lithium_ore"
+          "Name": "solarpunk:deepslate_lithium_ore"
         },
         "target": {
           "predicate_type": "minecraft:tag_match",

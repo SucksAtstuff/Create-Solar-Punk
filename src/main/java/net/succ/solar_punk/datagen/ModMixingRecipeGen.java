@@ -6,6 +6,7 @@ import net.minecraft.core.HolderLookup;
 import net.neoforged.neoforge.common.Tags;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluids;
 import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.SolarPunk;
@@ -43,6 +44,15 @@ public class ModMixingRecipeGen extends MixingRecipeGen {
         .output(ModItems.LITHIUM_DUST.get(), 1)
         .output(0.05f, ModItems.BERYLLIUM_DUST.get(), 1)
         .requiresHeat(HeatCondition.SUPERHEATED));
+
+    // Gunpowder the old way: charcoal and a salt (saltpetre). Carbon Dust needs global
+    // warming, so Biochar works too.
+    GeneratedRecipe GUNPOWDER = create("gunpowder", b -> b
+        .require(Ingredient.of(ModItems.CARBON_DUST.get(), ModItems.BIOCHAR.get()))
+        .require(Ingredient.of(ModItems.CARBON_DUST.get(), ModItems.BIOCHAR.get()))
+        .require(anySalt())
+        .require(anySalt())
+        .output(Items.GUNPOWDER, 1));
 
     public ModMixingRecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, SolarPunk.MODID);

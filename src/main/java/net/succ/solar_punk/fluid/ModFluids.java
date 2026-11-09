@@ -87,6 +87,26 @@ public class ModFluids {
             .block(FERTILIZER_BLOCK)
             .bucket(FERTILIZER_BUCKET);
 
+    public static final Supplier<FlowingFluid> RICH_FERTILIZER_SOURCE = FLUIDS.register("rich_fertilizer",
+            () -> new BaseFlowingFluid.Source(ModFluids.RICH_FERTILIZER_PROPERTIES));
+    public static final Supplier<FlowingFluid> RICH_FERTILIZER_FLOWING = FLUIDS.register("rich_fertilizer_flowing",
+            () -> new BaseFlowingFluid.Flowing(ModFluids.RICH_FERTILIZER_PROPERTIES));
+
+    public static final DeferredBlock<LiquidBlock> RICH_FERTILIZER_BLOCK = ModBlocks.BLOCKS.register("rich_fertilizer",
+            () -> new LiquidBlock(RICH_FERTILIZER_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)
+                    .mapColor(MapColor.COLOR_GREEN)));
+
+    public static final DeferredItem<BucketItem> RICH_FERTILIZER_BUCKET = ModItems.ITEMS.registerItem("rich_fertilizer_bucket",
+            properties -> new BucketItem(RICH_FERTILIZER_SOURCE.get(), properties.stacksTo(1).craftRemainder(Items.BUCKET)));
+
+    public static final BaseFlowingFluid.Properties RICH_FERTILIZER_PROPERTIES = new BaseFlowingFluid.Properties(
+            ModFluidTypes.RICH_FERTILIZER_TYPE, RICH_FERTILIZER_SOURCE, RICH_FERTILIZER_FLOWING)
+            .tickRate(15)
+            .slopeFindDistance(3)
+            .levelDecreasePerBlock(1)
+            .block(RICH_FERTILIZER_BLOCK)
+            .bucket(RICH_FERTILIZER_BUCKET);
+
     public static final Supplier<FlowingFluid> STEAM_SOURCE = FLUIDS.register("steam",
             () -> new BaseFlowingFluid.Source(ModFluids.STEAM_PROPERTIES));
     public static final Supplier<FlowingFluid> STEAM_FLOWING = FLUIDS.register("steam_flowing",

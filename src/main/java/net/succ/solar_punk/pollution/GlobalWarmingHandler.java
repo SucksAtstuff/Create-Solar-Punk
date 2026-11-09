@@ -28,6 +28,7 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.block.custom.TrellisBlock;
 import net.succ.solar_punk.compat.sable.SableCompat;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,9 +43,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 // Global warming: every second, active pollution sources near players add pollution to
-// the chunks around them. Pollution slowly decays, leaves absorb some, and past
-// Config.biomeDecayThreshold a chunk's surface decays and its biome turns into the dead
-// biome. Once it drops back below, the chunk heals and its biome is restored.
+// the chunks around them. Pollution slowly decays, leaves and planted trellises absorb
+// some, and past Config.biomeDecayThreshold a chunk's surface decays and its biome turns
+// into the dead biome. Once it drops back below, the chunk heals and its biome is restored.
 public class GlobalWarmingHandler {
 
     // Blocks matched by Config.autoDetectKeywords, built lazily and reset on config reload.
@@ -177,9 +178,9 @@ public class GlobalWarmingHandler {
         return totals;
     }
 
-    private static void handlePollutedChunks(ServerLevel level, PollutionSavedData data) {
-        long threshold = Config.biomeDecayThreshold;
-
+    // The dead biome everywhere except the biome cells inside sealed greenhouses, which keep
+    // their original biome. Null if dead_biome doesn't name a real biome.
+    private static BiomeResolver deadResolver(ServerLevel level) {
         // tryParse: dead_biome isn't validated, and a typo shouldn't throw every interval
         ResourceLocation deadBiomeId = ResourceLocation.tryParse(Config.deadBiome);
         Optional<Holder.Reference<Biome>> deadBiomeHolder = deadBiomeId == null ? Optional.empty()
@@ -188,7 +189,41 @@ public class GlobalWarmingHandler {
                 .flatMap(reg -> reg.getHolder(ResourceKey.create(Registries.BIOME, deadBiomeId)));
 
         Holder<Biome> deadBiome = deadBiomeHolder.orElse(null);
-        BiomeResolver allDead = deadBiome != null ? (x, y, z, sampler) -> deadBiome : null;
+        if (deadBiome == null) return null;
+        BiomeResolver original = level.getChunkSource().getGenerator().getBiomeSource()::getNoiseBiome;
+        return (x, y, z, sampler) -> GreenhouseProtection.isProtectedQuart(level, x, y, z)
+                ? original.getNoiseBiome(x, y, z, sampler) : deadBiome;
+    }
+
+    /**
+     * Redoes the biomes of these chunks if they're currently converted, so a greenhouse that
+     * just sealed or unsealed shows its living-biome patch right away instead of at the next
+     * decay interval.
+     */
+    public static void refreshGreenhouseBiomes(ServerLevel level, Set<ChunkPos> chunks) {
+        if (!Config.globalWarmingEnabled || chunks.isEmpty()) return;
+        PollutionSavedData data = PollutionSavedData.get(level);
+        BiomeResolver dead = null;
+        List<ChunkAccess> biomesToResend = new ArrayList<>();
+        for (ChunkPos chunkPos : chunks) {
+            if (!data.getConvertedChunks().contains(chunkPos)) continue;
+            ChunkAccess chunk = level.getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL, false);
+            if (chunk == null) continue;
+            if (dead == null) dead = deadResolver(level);
+            if (dead == null) return;
+            chunk.fillBiomesFromNoise(dead, level.getChunkSource().randomState().sampler());
+            chunk.setUnsaved(true);
+            biomesToResend.add(chunk);
+        }
+        if (!biomesToResend.isEmpty()) {
+            level.getChunkSource().chunkMap.resendBiomesForChunks(biomesToResend);
+        }
+    }
+
+    private static void handlePollutedChunks(ServerLevel level, PollutionSavedData data) {
+        long threshold = Config.biomeDecayThreshold;
+
+        BiomeResolver allDead = deadResolver(level);
         BiomeResolver original = level.getChunkSource().getGenerator().getBiomeSource()::getNoiseBiome;
 
         List<ChunkAccess> biomesToResend = new ArrayList<>();
@@ -200,15 +235,15 @@ public class GlobalWarmingHandler {
             ChunkPos chunkPos = entry.getKey();
             if (!level.isLoaded(chunkPos.getMiddleBlockPosition(64))) continue;
 
-            // Leaf absorption: trees slow the spread before they die off
-            if (Config.leafAbsorptionPerInterval > 0) {
-                long absorbed = countLeaves(level, chunkPos) * Config.leafAbsorptionPerInterval;
+            // Leaf and trellis absorption: plants slow the spread before they die off
+            if (Config.leafAbsorptionPerInterval > 0 || Config.trellisAbsorptionPerInterval > 0) {
+                long absorbed = plantAbsorption(level, chunkPos);
                 if (absorbed > 0) data.reducePollution(chunkPos, absorbed);
             }
 
             if (pollution >= threshold) {
                 // High pollution: decay blocks and convert biome
-                replaceSurfaceBlocks(level, chunkPos, GlobalWarmingHandler::getDecayReplacement);
+                replaceSurfaceBlocks(level, chunkPos, GlobalWarmingHandler::getDecayReplacement, true);
                 if (allDead != null) {
                     ChunkAccess chunk = level.getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL, false);
                     if (chunk != null) {
@@ -220,7 +255,7 @@ public class GlobalWarmingHandler {
                 }
             } else {
                 // Below threshold: heal blocks gradually
-                replaceSurfaceBlocks(level, chunkPos, GlobalWarmingHandler::getHealReplacement);
+                replaceSurfaceBlocks(level, chunkPos, GlobalWarmingHandler::getHealReplacement, false);
             }
         }
 
@@ -239,7 +274,7 @@ public class GlobalWarmingHandler {
 
             // Keep healing blocks even after biome is restored, until pollution is gone
             if (data.getPollution(chunkPos) > 0)
-                replaceSurfaceBlocks(level, chunkPos, GlobalWarmingHandler::getHealReplacement);
+                replaceSurfaceBlocks(level, chunkPos, GlobalWarmingHandler::getHealReplacement, false);
         }
 
         if (!biomesToResend.isEmpty()) {
@@ -247,27 +282,36 @@ public class GlobalWarmingHandler {
         }
     }
 
-    private static long countLeaves(ServerLevel level, ChunkPos chunkPos) {
+    // Pollution absorbed this interval by leaves, moss roofs and planted trellises near the chunk's surface.
+    private static long plantAbsorption(ServerLevel level, ChunkPos chunkPos) {
         LevelChunk chunk = level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
         if (chunk == null) return 0;
-        long count = 0;
+        long leaves = 0, trellises = 0;
         for (int lx = 0; lx < 16; lx++) {
             for (int lz = 0; lz < 16; lz++) {
                 int worldX = chunkPos.getMinBlockX() + lx;
                 int worldZ = chunkPos.getMinBlockZ() + lz;
                 int surfaceY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, lx, lz);
                 for (int dy = -2; dy <= 10; dy++) {
-                    if (level.getBlockState(new BlockPos(worldX, surfaceY + dy, worldZ)).is(BlockTags.LEAVES)) count++;
+                    BlockState state = level.getBlockState(new BlockPos(worldX, surfaceY + dy, worldZ));
+                    if (state.is(BlockTags.LEAVES) || isMossRoof(state)) leaves++;
+                    else if (state.is(ModBlocks.TRELLIS.get()) && state.getValue(TrellisBlock.PLANT).hasVines()) trellises++;
                 }
             }
         }
-        return count;
+        return leaves * Config.leafAbsorptionPerInterval + trellises * Config.trellisAbsorptionPerInterval;
+    }
+
+    // Moss stairs and slabs (green roofs) absorb at the leaf rate.
+    private static boolean isMossRoof(BlockState state) {
+        return state.is(ModBlocks.MOSS_STAIRS.get()) || state.is(ModBlocks.MOSS_SLAB.get());
     }
 
     // Picks Config.blocksDecayedPerInterval random columns in the chunk and replaces the
-    // first block near the surface that `replacement` has a replacement for.
+    // first block near the surface that `replacement` has a replacement for. When decaying,
+    // a column that reaches a sealed greenhouse is left alone (GreenhouseProtection).
     private static void replaceSurfaceBlocks(ServerLevel level, ChunkPos chunkPos,
-                                             Function<BlockState, BlockState> replacement) {
+                                             Function<BlockState, BlockState> replacement, boolean decaying) {
         if (Config.blocksDecayedPerInterval <= 0) return;
         LevelChunk chunk = level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
         if (chunk == null) return;
@@ -282,6 +326,7 @@ public class GlobalWarmingHandler {
 
             for (int dy = 0; dy >= -4; dy--) {
                 BlockPos pos = new BlockPos(worldX, surfaceY + dy, worldZ);
+                if (decaying && GreenhouseProtection.isProtected(level, pos)) break;
                 BlockState state = level.getBlockState(pos);
                 BlockState replaced = replacement.apply(state);
                 if (replaced == null) continue;

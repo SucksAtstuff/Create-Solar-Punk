@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "solarpunk:block/polished_ash_slab"
+    },
+    "type=double": {
+      "model": "solarpunk:block/polished_ash"
+    },
+    "type=top": {
+      "model": "solarpunk:block/polished_ash_slab_top"
+    }
+  }
+}

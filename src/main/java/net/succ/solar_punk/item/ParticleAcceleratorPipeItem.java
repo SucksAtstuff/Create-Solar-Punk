@@ -11,7 +11,7 @@ import net.succ.solar_punk.block.custom.PipeShape;
 import java.util.Map;
 
 // The one item for every Particle Accelerator Pipe shape. It places whichever shape is
-// stored on the stack (picked in PipeShapeMenu), and is named after that shape.
+// stored on the stack (picked in RadialShapeMenu), and is named after that shape.
 public class ParticleAcceleratorPipeItem extends BlockItem {
 
     public ParticleAcceleratorPipeItem(Block block, Properties properties) {
