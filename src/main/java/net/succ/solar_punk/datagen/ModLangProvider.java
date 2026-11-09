@@ -240,7 +240,7 @@ public class ModLangProvider extends LanguageProvider {
 
         add("block.solarpunk.kinetic_battery.tooltip.summary", "Stores _Rotational Force_ for later use. Useful for buffering intermittent generators like solar panels.");
         add("block.solarpunk.kinetic_battery.tooltip.condition1", "When connected to a spinning network");
-        add("block.solarpunk.kinetic_battery.tooltip.behaviour1", "Charges up while _no Redstone_ signal is applied.");
+        add("block.solarpunk.kinetic_battery.tooltip.behaviour1", "Charges up while _no Redstone_ signal is applied, using _Stress_ like a machine. Faster networks charge it faster.");
         add("block.solarpunk.kinetic_battery.tooltip.condition2", "When a Redstone signal is applied");
         add("block.solarpunk.kinetic_battery.tooltip.behaviour2", "Discharges at 16 RPM with 256 SU of stress capacity until empty.");
 

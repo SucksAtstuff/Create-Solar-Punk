@@ -44,6 +44,26 @@ public class KineticBatteryBlockEntity extends GeneratingKineticBlockEntity {
         return capacity;
     }
 
+    // Charging draws the same SU per RPM the battery gives back while discharging, and
+    // gains charge in proportion to the network's speed, so a full charge costs exactly
+    // the SU it returns. Batteries charging each other can't make power from nothing.
+    // Reads the raw speed rather than getSpeed() so an overstressed network doesn't drop
+    // the load, clear the overstress, and flicker.
+    private boolean isCharging() {
+        if (level == null) return false;
+        BlockState state = getBlockState();
+        return state.hasProperty(KineticBatteryBlock.LIT) && !state.getValue(KineticBatteryBlock.LIT)
+                && !level.hasNeighborSignal(worldPosition)
+                && speed != 0 && chargeLevel < Config.kineticBatteryMaxCharge;
+    }
+
+    @Override
+    public float calculateStressApplied() {
+        float impact = isCharging() ? Config.kineticBatterySu : 0f;
+        this.lastStressApplied = impact;
+        return impact;
+    }
+
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
@@ -89,7 +109,8 @@ public class KineticBatteryBlockEntity extends GeneratingKineticBlockEntity {
             if (chargeLevel < 0) chargeLevel = 0;
             changed = true;
         } else if (!powered && Math.abs(getSpeed()) > 0 && chargeLevel < Config.kineticBatteryMaxCharge) {
-            chargeLevel = Math.min(Config.kineticBatteryMaxCharge, chargeLevel + (float) Config.kineticBatteryChargeRate);
+            float gain = (float) Config.kineticBatteryDischargeRate * Math.abs(getSpeed()) / Config.kineticBatteryRpm;
+            chargeLevel = Math.min(Config.kineticBatteryMaxCharge, chargeLevel + gain);
             changed = true;
         }
 
@@ -97,6 +118,12 @@ public class KineticBatteryBlockEntity extends GeneratingKineticBlockEntity {
         if (currentlyLit != shouldBeLit) {
             level.setBlock(worldPosition, state.setValue(KineticBatteryBlock.LIT, shouldBeLit), 3);
             updateGeneratedRotation();
+        }
+
+        float impact = isCharging() ? Config.kineticBatterySu : 0f;
+        if (impact != lastStressApplied && hasNetwork()) {
+            lastStressApplied = impact;
+            getOrCreateNetwork().updateStressFor(this, impact);
         }
 
         if (changed) {

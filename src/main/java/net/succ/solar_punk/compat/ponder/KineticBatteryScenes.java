@@ -44,7 +44,7 @@ public class KineticBatteryScenes {
         scene.idle(10);
         scene.world().setKineticSpeed(util.select().fromTo(CHARGE_SHAFT, CRANK), 16f);
         scene.overlay().showText(70)
-                .text("Connected to a spinning network, it charges up")
+                .text("Connected to a spinning network, it charges up, drawing 256 SU at 16 RPM. Faster networks charge it faster")
                 .pointAt(util.vector().centerOf(CHARGE_SHAFT))
                 .placeNearTarget()
                 .attachKeyFrame();
@@ -77,7 +77,7 @@ public class KineticBatteryScenes {
 
         scene.overlay().showOutline(PonderPalette.GREEN, "press", util.select().fromTo(DISCHARGE_SHAFT, PRESS), 70);
         scene.overlay().showText(70)
-                .text("It runs at a steady 16 RPM with 256 SU, for up to twice as long as it charged")
+                .text("It runs at a steady 16 RPM with 256 SU, giving back the power it took in")
                 .pointAt(util.vector().topOf(PRESS))
                 .placeNearTarget();
         scene.idle(80);

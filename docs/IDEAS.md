@@ -89,15 +89,6 @@ Pure decoration drifts from the mod's power focus, so the best ideas here also d
 small: make power, absorb pollution, give light, or use up a byproduct. Blocks that are only
 decorative should at least come from the mod's own materials (Salt, Biochar, Ash, Lithium).
 
-### Living buildings
-
-- **Planter Box** - a wooden or brick box that holds dirt so crops and flowers grow on roofs
-  and balconies. A Kinetic Sprinkler in range waters it like farmland.
-
-### Machine-themed decor
-
-- **More filigree railing materials** (iron) - only a texture and a few lines each.
-
 ## Seasonal events
 
 Purely cosmetic texture swaps for part of the year. Easter, Halloween, Christmas and Pride are

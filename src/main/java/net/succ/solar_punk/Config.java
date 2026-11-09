@@ -105,7 +105,6 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_KINETIC_BATTERY_RPM;
     private static final ModConfigSpec.IntValue CFG_KINETIC_BATTERY_SU;
     private static final ModConfigSpec.IntValue CFG_KINETIC_BATTERY_MAX_CHARGE;
-    private static final ModConfigSpec.DoubleValue CFG_KINETIC_BATTERY_CHARGE_RATE;
     private static final ModConfigSpec.DoubleValue CFG_KINETIC_BATTERY_DISCHARGE_RATE;
 
     private static final ModConfigSpec.IntValue CFG_GASIFIER_RPM;
@@ -312,8 +311,7 @@ public class Config {
         CFG_KINETIC_BATTERY_RPM            = BUILDER.comment("RPM output while discharging").defineInRange("rpm", 16, 1, 256);
         CFG_KINETIC_BATTERY_SU             = BUILDER.comment("Stress capacity while discharging").defineInRange("su", 16, 1, 1_000_000);
         CFG_KINETIC_BATTERY_MAX_CHARGE     = BUILDER.comment("Maximum stored charge").defineInRange("max_charge", 1200, 100, 1_000_000);
-        CFG_KINETIC_BATTERY_CHARGE_RATE    = BUILDER.comment("Charge gained per tick while a spinning network is connected").defineInRange("charge_rate", 1.0, 0.01, 100.0);
-        CFG_KINETIC_BATTERY_DISCHARGE_RATE = BUILDER.comment("Charge lost per tick while discharging").defineInRange("discharge_rate", 0.5, 0.01, 100.0);
+        CFG_KINETIC_BATTERY_DISCHARGE_RATE = BUILDER.comment("Charge lost per tick while discharging. Charging at the battery's own RPM gains the same amount, faster networks proportionally more").defineInRange("discharge_rate", 0.5, 0.01, 100.0);
         BUILDER.pop();
 
         BUILDER.push("biomass_gasifier");
@@ -664,7 +662,7 @@ public class Config {
     public static int geyserMinIntervalTicks, geyserMaxIntervalTicks, geyserWarningTicks, geyserEruptionTicks, geyserHeight;
     public static float geyserDamage;
     public static int kineticBatteryRpm, kineticBatterySu, kineticBatteryMaxCharge;
-    public static double kineticBatteryChargeRate, kineticBatteryDischargeRate;
+    public static double kineticBatteryDischargeRate;
     public static int gasifierRpm, gasifierSu;
     public static int biofuelEngineRpm, biofuelEngineSu;
     public static int turbineMaxRpm, turbineRpmPerLayer, turbineSuPerLayer, turbineSteamPerLayerPerTick, turbineCondensateRatio;
@@ -766,7 +764,6 @@ public class Config {
         kineticBatteryRpm          = CFG_KINETIC_BATTERY_RPM.get();
         kineticBatterySu           = CFG_KINETIC_BATTERY_SU.get();
         kineticBatteryMaxCharge    = CFG_KINETIC_BATTERY_MAX_CHARGE.get();
-        kineticBatteryChargeRate   = CFG_KINETIC_BATTERY_CHARGE_RATE.get();
         kineticBatteryDischargeRate = CFG_KINETIC_BATTERY_DISCHARGE_RATE.get();
 
         gasifierRpm          = CFG_GASIFIER_RPM.get();
