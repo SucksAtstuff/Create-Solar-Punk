@@ -61,7 +61,7 @@
 - New **Streetlamp**: a two-block-tall street light that runs on FE and switches itself on at dusk. Power it with cables or Wire Connectors, or set it on a Brass Solar Panel or Solar Glass.
 - New **Charred Timber**: dark scorched planks, made by applying Biochar to any planks, with stairs and slabs. Unlike planks, it doesn't burn.
 - New **Moss Stairs** and **Moss Slab**, crafted from Moss Blocks, for green roofs. With global warming on, they soak up pollution like leaves do.
-- New **Trellis**: a climbable wooden lattice for walls. Grow Vines on it, then add a flower or Glow Berries. With global warming on, a Trellis with vines soaks up pollution like leaves do.
+- New **Trellis**: a climbable wooden lattice for walls. Grow Vines on it, then add a flower or Glow Berries. Vines slowly spread to bare trellises next to them. With global warming on, a Trellis with vines soaks up pollution like leaves do.
 - New **Brass**, **Andesite**, **Copper** and **Iron Filigree Railings**: art nouveau railings that connect to their neighbours. Hold Alt to switch the item between flat, slope and steep slope, for ramps, arches and staircases. Gentle slopes blend into flat railings at both ends, steep slopes placed on stairs follow them automatically, and Create-style placement arrows help extend runs and slopes.
 - New stairs, slabs and walls for the Turbine Casing and Fusion Reactor Casing, so engine rooms can match.
 - Decorative blocks now have their own **Create: Solarpunk Building Blocks** creative tab, and the main tab is now grouped by power type.
@@ -85,6 +85,7 @@
 - Solar blocks on contraptions now follow the real sun angle: tilt the contraption toward the sun for full output, or away from it for less. Sun-tracking solar arrays are now possible. https://github.com/SucksAtstuff/Create-Solar-Punk/issues/52
 - Contraptions now cast shade: parking one over solar blocks, on the ground or on another contraption, blocks their sunlight.
 - Solar blocks on Create: Cosmonautics stations now properly react to which way the station is facing.
+- The Brass Solar Panel has a new hum sound.
 
 # 2.0.0-1.21.1
 
