@@ -5,113 +5,16 @@ with the strongest / most on-theme ideas near the top of each section.
 
 ## Next up: 2.2
 
-In order. Build the Switch first, since the Relay is the same block with redstone. 2.1 added
-wires, Shingles, Solar Glass and Grow Lamps, but FE still only runs lights; these give it
-jobs. The Relay pairs with the new solar panel and Biofilter comparator signals.
-
-How wires work today, since the first three build on it: wire networks hold no energy. A Wire
-Connector passes FE straight from the block it sits on to the blocks under every other
-connector it can reach (`WireConnectorBlockEntity.route()`), round-robin, capped per wire by
-its tier (Iron 256, Copper 1024, Gold 4096 FE/t). Reachability is a BFS cached per connector
-until the global `WireNetwork.topologyVersion()` changes, which happens on any wire change.
-
-Reference numbers (defaults): Brass Panel 40/80 FE/t (dawn/noon), Solar Shingle 4/8 FE/t,
-Solar Glass 2/4 FE/t; Streetlamp uses 2 FE/t, Grow Lamp 8 FE/t. Andesite Panel 128/256 SU at
-16 RPM.
-
-### 1. Wire Switch
-
-A lever-like block wires attach to. Flip it to cut everything on one side off from the other:
-a street of lights, a greenhouse, a whole wing of the base.
-
-- **Shape:** one block with one wire point (like a Wire Connector with no block behind it),
-  not two points. Every wire on it joins when it's closed; when it's open, nothing passes
-  through it, so each wire becomes its own island. That covers "split this network in two"
-  without asking players which side is which, and wires stay hooked up either way.
-- **Behaviour:** right-click toggles, like a Lever, with a click sound and a visible lever arm
-  or blade. The state shows in goggles ("Closed" / "Open") and the model.
-- **What happens when it opens:** there's no stored energy in a network to split, so it's just
-  a gap in the path. Sources on the cut-off side stop sending to the far side on the next
-  tick; anything with a buffer (Streetlamps, Grow Lamps) runs on what it has.
-- **Code:** a `WireSwitchBlockEntity` that holds `Connection`s like a connector but has no
-  attached block. `WireNetwork.findEndpoints()` walks through it only while it's closed, and
-  never lists it as an endpoint. Toggling calls `WireNetwork.changed()`.
-- **Recipe:** Lever + Wire Connector + Andesite Casing (shapeless or Create item
-  application).
-
-### 2. Redstone Wire Relay
-
-The same thing switched by redstone, so Daylight Sensors, the new solar panel and Biofilter
-comparator signals, or Create's Redstone Links can switch power automatically. Examples:
-streetlights that turn on at dusk; Grow Lamps that only run while panels are strong; cutting
-a far wing off when a tank is full.
-
-- **Separate block, not a mode on the Switch.** A manual switch that redstone can also flip
-  makes "why is this open?" hard to answer. The Relay is closed while powered; a Wrench
-  inverts it (open while powered), shown on the model like Create's Redstone Link
-  transmit/receive toggle.
-- **Redstone clocks:** a toggle bumps the global topology version, so every connector in the
-  world searches its network again. A relay on a fast clock would do that every few ticks.
-  Either rate-limit the relay (it follows the signal at most every 4-10 ticks), or give
-  networks their own version so a toggle only invalidates the connectors it can reach. The
-  rate limit is far less work and nobody needs FE switched faster than that.
-- **Comparator output:** reads 15 while closed, 0 while open, so Relays can drive each other or
-  a Display Link can show state.
-- **Recipe:** Wire Switch + Redstone Torch, or Wire Switch + Electron Tube to match Create's
-  redstone parts.
-
-### 3. Electric Motor
-
-Turns FE back into SU, so solar FE can drive Create machines, and wires can carry rotational
-power across a base without long shaft lines.
-
-- **Balance target:** a Brass Panel feeding a Motor gives half what an Andesite Panel placed
-  there would. The Andesite Panel stays the cheap, direct choice; the Brass Panel + wires +
-  Motor route pays off in scale (a whole roof of Shingles into one Motor) and reach (power
-  generated on a roof, used in a basement).
-- **Proposed numbers** (all config):
-  - Speed set with a scroll value like Create's Creative Motor, 1 to 64 RPM, either direction.
-  - Stress capacity 8 SU per RPM, so 128 SU at 16 RPM and 512 SU at 64 RPM.
-  - FE use = SU / 2: 64 FE/t at 16 RPM (128 SU), 256 FE/t at 64 RPM (512 SU).
-  - Check: one Brass Panel at noon (80 FE/t) runs a Motor at 16 RPM for 128 SU, half an
-    Andesite Panel's 256 SU. About 32 Solar Shingles at noon (8 FE/t each, more on a
-    sun-facing roof) run one at full speed. Iron wire (256 FE/t)
-    carries exactly one full-speed Motor; Gold carries 16.
-- **FE use follows speed, not load.** Create doesn't tell a generator how much of its capacity
-  is actually being used, and charging for the full capacity keeps it predictable and
-  impossible to exploit. A slower setting is how players save FE. (Could later scale by the
-  network's stress / capacity ratio, but that's harder to read in goggles.)
-- **Running out of FE:** a buffer of about one second of use (20 x the FE/t). It runs while the
-  buffer has a tick's worth, stops when it runs dry, and only restarts once the buffer is back
-  to half. Without that gap a Motor on a weak supply would start and stop every tick, which
-  re-solves the whole Create network each time. Stopping clears `LIT`, like the other
-  generators.
-- **Night:** with no FE storage yet, Motors on solar stop at sunset, the same as the Andesite
-  Panel. That's fine for 2.2 and is exactly what the Hydrogen chain and FE storage fix later.
-  A Kinetic Battery behind the Motor already bridges the night.
-- **Code:** extends `GeneratingKineticBlockEntity` like the other generators (set
-  `lastCapacityProvided` in `calculateAddedStressCapacity()`), with a receive-only FE
-  capability on its back face so a Wire Connector or a Brass Panel can feed it directly.
-  `BlockStressValues` entries for tooltips, goggle lines (FE/t in, buffer, SU out), a Display
-  Link source (FE/t), a looping hum through `MachineSoundInstance`, and a Ponder scene
-  (Brass Panel -> connector -> wire -> connector -> Motor -> machine).
-- **Recipe:** Brass Casing + Shaft + Electron Tube + Copper Wire (Create mechanical crafting,
-  or sequenced assembly to make it feel mid-game).
-- **Overlap with Create: New Age and Create Crafts & Additions:** both have their own electric
-  motors. Keep ours anyway: it's tuned to solar FE, matches the mod's look, and players with
-  those mods can use whichever they like. Their FE works with our Motor and vice versa, since
-  it's all NeoForge FE. Just don't make ours the strongest option.
-
-### 4. Christmas art, if 2.2 ships in December
+### 1. Christmas art, if 2.2 ships in December
 
 The code side is done (Streetlamp, Shingles, Garden Light, wire lights). Still needs art:
 
-- String lights wound around the Trellis and railings.
+- String lights wound around the Trellis.
 - Snow caps on the solar panels.
 - A little Santa hat on the Geyser Cap.
 
 Saved for after 2.2: the Hydrogen chain and FE storage. They're the biggest gaps but a much
-bigger job, and work best once the Electric Motor gives stored FE somewhere to go.
+bigger job, and now that the Electric Motor gives stored FE somewhere to go they're next.
 
 ## Biggest gaps in the renewable lineup
 
@@ -128,7 +31,8 @@ bigger job, and work best once the Electric Motor gives stored FE somewhere to g
   - The Fuel Cell's only waste is Water, which could be piped back into the Electrolyzer.
   - Open: Fuel Cell output FE, SU, or switchable like the Solar Power Tower's modes?
   - Open: its own Hydrogen fluid, or reuse Northstar's when installed (like `NorthstarCompat`)?
-  - Open: is Oxygen a byproduct, and does anything use it, or is it just vented?
+  - Oxygen as a byproduct, shared with the Bioreactor (see Biofuel and farming): the Fuel
+    Cell could run on Hydrogen alone but give a bonus with Oxygen, the real clean-fuel pair.
   - Open: could the Electrolyzer give a little Deuterium as a rare byproduct for the Fusion
     Reactor?
 - **FE storage** - FE only exists in the small buffers of the Brass Panel, Solar Shingles and
@@ -143,8 +47,7 @@ bigger job, and work best once the Electric Motor gives stored FE somewhere to g
 ## More uses for FE
 
 Right now FE mostly just powers lights and Grow Lamps, so Brass Panels, Shingles and Solar
-Glass have little to feed. The Wire Switch, Redstone Wire Relay and Electric Motor are planned
-for 2.2 (see "Next up"); these come after.
+Glass have little to feed. The Electric Motor (2.2) gives FE a big job; these come after.
 
 - **Wire throughput readout** - connectors already count FE/s moved; a Display Link source on
   connectors would turn wires into power meters.
@@ -161,6 +64,34 @@ for 2.2 (see "Next up"); these come after.
   Overlaps both, so low priority.
 - **Stirling dish concentrator** - direct SU/FE from a focused dish, no molten salt loop.
   Overlaps the Solar Heater and tower, so low priority.
+
+## Biofuel and farming
+
+- **Bioreactor** - a glass tank of green Algae Culture that turns Water and sunlight into
+  Biomass and Oxygen. Biomass from sunlight instead of crushing plants, and the Oxygen gives
+  the mod's first gas byproduct somewhere to go.
+  - Built like the Vat and Tower (`MultiBlockFluidBE`, `TankModel` connected textures), with
+    glass casing so Create's fluid rendering shows the culture inside, and bubble particles
+    rising while it's `LIT`. Sits on a **Bioreactor Base** block (aerator, item output for
+    hoppers and funnels), so the bottom layer doesn't need special rules.
+  - Needs open sky at the top layer (through `SolarHelper`, so space, seasons and Sable keep
+    working). Output scales with top surface area, so wide beats tall. A Grow Lamp beside it
+    could stand in for the sun at night.
+  - Fertilizer or Rich Fertilizer as optional nutrients for a speed boost, closing the loop:
+    biochar -> fertilizer -> algae -> biomass -> biochar.
+  - Absorbs pollution in its chunk like the Biofilter (real photobioreactors are built
+    around eating CO2).
+  - Open: a fixed 1x1x2 small version as well, or only the multiblock?
+- **Oxygen uses** - from the Bioreactor, and later the Electrolyzer.
+  - Aerobic treatment in the Fermentation Vat: speeds up Rich Fertilizer only. That's
+    composting, which really is aerobic; biofuel (ethanol) fermentation is anaerobic and
+    Oxygen would hurt it, so the Vat gets a real choice of which mode to run.
+  - Oxy-fuel burning: pipe Oxygen into the Firebox Boiler, Biomass Gasifier or Biofuel
+    Engine for more SU or Steam per unit of fuel. Oxygen isn't a fuel itself, it boosts one.
+  - Space compat: if Northstar or Cosmonautics has an Oxygen fluid for life support, let
+    ours count as it, for algae-powered space stations (cheap, like `NorthstarCompat`).
+  - Skipped for now: Liquid Oxygen (needs a cooling machine and a second fluid for the same
+    gas) and thrusters (Aeronautics and the space mods' job, not a power mod's).
 
 ## Geothermal
 

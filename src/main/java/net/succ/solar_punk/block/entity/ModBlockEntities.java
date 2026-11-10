@@ -33,6 +33,8 @@ import net.succ.solar_punk.block.entity.custom.StreetlampBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GrowLampBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarPlantBedBlockEntity;
 import net.succ.solar_punk.block.entity.custom.WireConnectorBlockEntity;
+import net.succ.solar_punk.block.entity.custom.WireSwitchBlockEntity;
+import net.succ.solar_punk.block.entity.custom.ElectricMotorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GreenhouseControllerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCasingBlockEntity;
@@ -111,6 +113,17 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WireConnectorBlockEntity>> WIRE_CONNECTOR =
             BLOCK_ENTITIES.register("wire_connector", () -> BlockEntityType.Builder
                     .of((pos, state) -> new WireConnectorBlockEntity(ModBlockEntities.WIRE_CONNECTOR.get(), pos, state), ModBlocks.WIRE_CONNECTOR.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElectricMotorBlockEntity>> ELECTRIC_MOTOR =
+            BLOCK_ENTITIES.register("electric_motor", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new ElectricMotorBlockEntity(ModBlockEntities.ELECTRIC_MOTOR.get(), pos, state), ModBlocks.ELECTRIC_MOTOR.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WireSwitchBlockEntity>> WIRE_SWITCH =
+            BLOCK_ENTITIES.register("wire_switch", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new WireSwitchBlockEntity(ModBlockEntities.WIRE_SWITCH.get(), pos, state),
+                            ModBlocks.WIRE_SWITCH.get(), ModBlocks.REDSTONE_WIRE_RELAY.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GrowLampBlockEntity>> GROW_LAMP =

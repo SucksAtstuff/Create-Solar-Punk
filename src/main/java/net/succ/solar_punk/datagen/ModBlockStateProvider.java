@@ -39,6 +39,9 @@ import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.StreetlampBlock;
 import net.succ.solar_punk.block.custom.WireConnectorBlock;
+import net.succ.solar_punk.block.custom.RedstoneWireRelayBlock;
+import net.succ.solar_punk.block.custom.WireSwitchBlock;
+import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.succ.solar_punk.block.custom.GrowLampBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
 import net.succ.solar_punk.block.custom.TrellisBlock;
@@ -78,6 +81,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
         litFacingCustomModelBlock(ModBlocks.FIREBOX_BOILER, true);
         litFacingCustomModelBlock(ModBlocks.BIOMASS_GASIFIER, true);
         litFacingCustomModelBlock(ModBlocks.BIOFUEL_ENGINE, true);
+        // The block model has no shaft (ElectricMotorRenderer spins one); the item keeps the modelled one.
+        facingCustomModelBlock(ModBlocks.ELECTRIC_MOTOR, false);
+        itemModels().getBuilder(ModBlocks.ELECTRIC_MOTOR.getId().getPath())
+                .parent(new UncheckedModelFile(modLoc("block/electric_motor_item")));
         fermentationVatBlock();
         blockWithItem(ModBlocks.SALT_BLOCK);
         blockWithItem(ModBlocks.SALT_BRICKS);
@@ -117,6 +124,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockItem(ModBlocks.GARDEN_LIGHT.get(), new UncheckedModelFile(modLoc("block/garden_light_lit")));
         streetlampBlock();
         wireConnectorBlock();
+        wireSwitchBlock(ModBlocks.WIRE_SWITCH.get(), "wire_switch");
+        wireSwitchBlock(ModBlocks.REDSTONE_WIRE_RELAY.get(), "redstone_wire_switch");
         growLampBlock();
         litCustomModelBlock(ModBlocks.SOLAR_PLANT_BED, false);
         simpleBlockItem(ModBlocks.SOLAR_PLANT_BED.get(), new UncheckedModelFile(modLoc("block/solar_plant_bed_lit")));
@@ -655,6 +664,23 @@ public class ModBlockStateProvider extends BlockStateProvider {
             return ConfiguredModel.builder().modelFile(model).rotationX(x).rotationY(y % 360).build();
         });
         simpleBlockItem(ModBlocks.WIRE_CONNECTOR.get(), model);
+    }
+
+    // Face-attached like a Lever, with the same rotations (WireSwitchBlock.xRot/yRot, which also
+    // turn its shape and wire posts). The models are hand-made: <model> closed, <model>_open open.
+    private void wireSwitchBlock(Block block, String model) {
+        ModelFile closed = new UncheckedModelFile(modLoc("block/" + model));
+        ModelFile open = new UncheckedModelFile(modLoc("block/" + model + "_open"));
+        getVariantBuilder(block).forAllStatesExcept(state -> {
+            AttachFace face = state.getValue(WireSwitchBlock.FACE);
+            return ConfiguredModel.builder()
+                    .modelFile(state.getValue(WireSwitchBlock.CLOSED) ? closed : open)
+                    .rotationX(WireSwitchBlock.xRot(face))
+                    .rotationY(WireSwitchBlock.yRot(face, state.getValue(WireSwitchBlock.FACING)))
+                    .build();
+        }, RedstoneWireRelayBlock.INVERTED);
+        // The hand-made model's own display transforms are used.
+        itemModels().getBuilder(BuiltInRegistries.BLOCK.getKey(block).getPath()).parent(closed);
     }
 
     // Hung under a ceiling (grow_lamp_top) or from a wall or another lamp at an end, which shows

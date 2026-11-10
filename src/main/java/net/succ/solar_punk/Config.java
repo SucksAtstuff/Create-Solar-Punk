@@ -112,6 +112,7 @@ public class Config {
 
     private static final ModConfigSpec.IntValue CFG_BIOFUEL_ENGINE_RPM;
     private static final ModConfigSpec.IntValue CFG_BIOFUEL_ENGINE_SU;
+    private static final ModConfigSpec.IntValue CFG_MOTOR_MAX_RPM, CFG_MOTOR_SU, CFG_MOTOR_FE_PER_RPM;
 
     private static final ModConfigSpec.IntValue CFG_TURBINE_MAX_RPM;
     private static final ModConfigSpec.IntValue CFG_TURBINE_RPM_PER_LAYER;
@@ -322,6 +323,12 @@ public class Config {
         BUILDER.push("biofuel_engine");
         CFG_BIOFUEL_ENGINE_RPM = BUILDER.comment("RPM output while running").defineInRange("rpm", 16, 1, 256);
         CFG_BIOFUEL_ENGINE_SU  = BUILDER.comment("Stress capacity while running").defineInRange("su", 512, 1, 1_000_000);
+        BUILDER.pop();
+
+        BUILDER.push("electric_motor");
+        CFG_MOTOR_MAX_RPM    = BUILDER.comment("Highest speed the Electric Motor can be set to").defineInRange("max_rpm", 64, 1, 256);
+        CFG_MOTOR_SU         = BUILDER.comment("Stress capacity while running (per RPM, like the other generators: Create multiplies it by the set speed)").defineInRange("su", 128, 1, 1_000_000);
+        CFG_MOTOR_FE_PER_RPM = BUILDER.comment("FE per tick used per RPM of the set speed, whatever the load").defineInRange("fe_per_rpm", 4, 1, 1_000_000);
         BUILDER.pop();
 
         BUILDER.push("steam_turbine");
@@ -665,6 +672,7 @@ public class Config {
     public static double kineticBatteryDischargeRate;
     public static int gasifierRpm, gasifierSu;
     public static int biofuelEngineRpm, biofuelEngineSu;
+    public static int motorMaxRpm, motorSu, motorFePerRpm;
     public static int turbineMaxRpm, turbineRpmPerLayer, turbineSuPerLayer, turbineSteamPerLayerPerTick, turbineCondensateRatio;
     public static int turbineSteamTank, turbineCondensateTank;
     public static double solarPowerTowerSaltMultiplier, solarPowerTowerSteamMultiplier;
@@ -771,6 +779,9 @@ public class Config {
 
         biofuelEngineRpm     = CFG_BIOFUEL_ENGINE_RPM.get();
         biofuelEngineSu      = CFG_BIOFUEL_ENGINE_SU.get();
+        motorMaxRpm          = CFG_MOTOR_MAX_RPM.get();
+        motorSu              = CFG_MOTOR_SU.get();
+        motorFePerRpm        = CFG_MOTOR_FE_PER_RPM.get();
 
         turbineMaxRpm               = CFG_TURBINE_MAX_RPM.get();
         turbineRpmPerLayer          = CFG_TURBINE_RPM_PER_LAYER.get();

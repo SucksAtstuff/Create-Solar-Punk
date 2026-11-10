@@ -45,6 +45,7 @@ import net.succ.solar_punk.client.model.TankModel;
 import net.succ.solar_punk.client.renderer.FermentationVatRenderer;
 import net.succ.solar_punk.client.renderer.FusionReactorCoreRenderer;
 import net.succ.solar_punk.client.renderer.WireConnectorRenderer;
+import net.succ.solar_punk.client.renderer.ElectricMotorRenderer;
 import net.succ.solar_punk.client.SeasonalModels;
 import net.succ.solar_punk.client.renderer.GeyserCapRenderer;
 import net.succ.solar_punk.client.renderer.HalfShaftRenderer;
@@ -178,6 +179,8 @@ public class ModClientEvents {
         event.registerBlockEntityRenderer(ModBlockEntities.KINETIC_SPRINKLER.get(), KineticSprinklerRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.FUSION_REACTOR_CORE.get(), FusionReactorCoreRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.WIRE_CONNECTOR.get(), WireConnectorRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.WIRE_SWITCH.get(), WireConnectorRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.ELECTRIC_MOTOR.get(), ElectricMotorRenderer::new);
     }
 
     @SubscribeEvent
@@ -238,6 +241,9 @@ public class ModClientEvents {
         tip(ModBlocks.GARDEN_LIGHT);
         tip(ModBlocks.STREETLAMP);
         tip(ModBlocks.WIRE_CONNECTOR);
+        tip(ModBlocks.WIRE_SWITCH);
+        tip(ModBlocks.REDSTONE_WIRE_RELAY);
+        tip(ModBlocks.ELECTRIC_MOTOR);
         tip(ModBlocks.GROW_LAMP);
         tip(ModBlocks.SOLAR_PLANT_BED);
         tip(ModBlocks.CHARRED_TIMBER);

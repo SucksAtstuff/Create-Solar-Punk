@@ -21,6 +21,8 @@ import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GreenhouseControllerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticBatteryBlockEntity;
+import net.succ.solar_punk.block.entity.custom.ElectricMotorBlockEntity;
+import net.succ.solar_punk.util.EnergyFormat;
 import net.succ.solar_punk.block.entity.custom.SolarPowerTowerBlockEntity;
 import net.succ.solar_punk.util.SolarHelper;
 import org.jetbrains.annotations.Nullable;
@@ -49,6 +51,13 @@ public class ModDisplaySources {
                     be -> be.getChargeLevel() / (float) Config.kineticBatteryMaxCharge));
 
     // --- Solar Power Tower ---
+
+    // --- Electric Motor ---
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> ELECTRIC_MOTOR_CONSUMPTION = register("electric_motor_consumption",
+            () -> new NumericLineDisplaySource<>(ModDisplaySources::electricMotor,
+                    motor -> Component.literal(EnergyFormat.feRate(motor.isRunning() ? motor.feUse() : 0))
+                            .withStyle(motor.isRunning() ? ChatFormatting.YELLOW : ChatFormatting.GRAY)));
 
     public static final DeferredHolder<DisplaySource, DisplaySource> SOLAR_POWER_TOWER_EFFICIENCY = register("solar_power_tower_efficiency",
             () -> new PercentDisplaySource<>(ModDisplaySources::towerController, SolarPowerTowerBlockEntity::getEfficiency));
@@ -175,6 +184,10 @@ public class ModDisplaySources {
     }
 
     @Nullable
+    private static ElectricMotorBlockEntity electricMotor(DisplayLinkContext context) {
+        return context.getSourceBlockEntity() instanceof ElectricMotorBlockEntity motor ? motor : null;
+    }
+
     private static KineticBatteryBlockEntity kineticBattery(DisplayLinkContext context) {
         return context.getSourceBlockEntity() instanceof KineticBatteryBlockEntity be ? be : null;
     }

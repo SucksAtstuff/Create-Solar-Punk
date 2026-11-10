@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "item": "create:andesite_casing"
+    },
+    {
+      "item": "minecraft:lever"
+    },
+    {
+      "item": "solarpunk:wire_connector"
+    },
+    {
+      "item": "solarpunk:wire_connector"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "solarpunk:wire_switch"
+  }
+}

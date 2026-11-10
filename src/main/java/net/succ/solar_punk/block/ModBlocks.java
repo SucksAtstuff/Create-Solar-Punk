@@ -30,6 +30,9 @@ import net.succ.solar_punk.block.custom.StreetlampBlock;
 import net.succ.solar_punk.block.custom.GrowLampBlock;
 import net.succ.solar_punk.block.custom.SolarPlantBedBlock;
 import net.succ.solar_punk.block.custom.WireConnectorBlock;
+import net.succ.solar_punk.block.custom.WireSwitchBlock;
+import net.succ.solar_punk.block.custom.ElectricMotorBlock;
+import net.succ.solar_punk.block.custom.RedstoneWireRelayBlock;
 import net.succ.solar_punk.block.custom.GreenhouseControllerBlock;
 import net.succ.solar_punk.block.custom.TrellisBlock;
 import net.succ.solar_punk.block.custom.TrellisPlant;
@@ -107,6 +110,32 @@ public class ModBlocks {
                     .sound(SoundType.COPPER)
                     .noOcclusion()
                     .pushReaction(PushReaction.DESTROY)));
+
+    // Cuts a wire network in two at its posts; the relay is thrown by redstone. See WireSwitchBlockEntity.
+    public static final DeferredBlock<WireSwitchBlock> WIRE_SWITCH = registerBlock("wire_switch",
+            () -> new WireSwitchBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .strength(0.5f)
+                    .sound(SoundType.COPPER)
+                    .noOcclusion()
+                    .pushReaction(PushReaction.DESTROY)));
+
+    public static final DeferredBlock<RedstoneWireRelayBlock> REDSTONE_WIRE_RELAY = registerBlock("redstone_wire_relay",
+            () -> new RedstoneWireRelayBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .strength(0.5f)
+                    .sound(SoundType.COPPER)
+                    .noOcclusion()
+                    .pushReaction(PushReaction.DESTROY)));
+
+    // FE back into rotation; see ElectricMotorBlockEntity.
+    public static final DeferredBlock<ElectricMotorBlock> ELECTRIC_MOTOR = registerBlock("electric_motor",
+            () -> new ElectricMotorBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_ORANGE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)
+                    .sound(SoundType.COPPER)
+                    .noOcclusion()));
 
     public static final DeferredBlock<KineticBatteryBlock> KINETIC_BATTERY = registerBlock("kinetic_battery",
             () -> new KineticBatteryBlock(BlockBehaviour.Properties.of()

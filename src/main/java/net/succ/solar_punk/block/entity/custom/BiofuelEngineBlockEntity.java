@@ -69,13 +69,19 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
 
     @Override
     public float getGeneratedSpeed() {
-        if (biofuelTank.getFluidAmount() <= 0) return 0;
+        if (!hasFuel()) return 0;
         return GeneratorHelper.directed(Config.biofuelEngineRpm, rotationDirection);
+    }
+
+    // Runs only while the tank can pay for the next burn, so a leftover below
+    // one burn's worth can't keep it spinning without ever being drained
+    private boolean hasFuel() {
+        return biofuelTank.getFluidAmount() >= Config.biofuelConsumeMb;
     }
 
     @Override
     public float calculateAddedStressCapacity() {
-        float capacity = biofuelTank.getFluidAmount() > 0 ? Config.biofuelEngineSu : 0;
+        float capacity = hasFuel() ? Config.biofuelEngineSu : 0;
         this.lastCapacityProvided = capacity;
         return capacity;
     }
@@ -89,12 +95,12 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
             return;
         }
 
-        if (level.getGameTime() % Config.biofuelConsumePeriod == 0 && biofuelTank.getFluidAmount() >= Config.biofuelConsumeMb)
+        if (level.getGameTime() % Config.biofuelConsumePeriod == 0 && hasFuel())
             biofuelTank.drain(Config.biofuelConsumeMb, IFluidHandler.FluidAction.EXECUTE);
 
         if (level.getGameTime() % 20 == 0) {
             updateGeneratedRotation();
-            boolean active = biofuelTank.getFluidAmount() > 0;
+            boolean active = hasFuel();
             BlockState state = level.getBlockState(worldPosition);
             if (!(state.getBlock() instanceof BiofuelEngineBlock)) return;
             if (state.getValue(BiofuelEngineBlock.LIT) != active) {

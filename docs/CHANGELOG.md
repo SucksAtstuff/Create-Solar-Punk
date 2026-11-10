@@ -2,11 +2,22 @@
 
 ## New
 
+### Wire Switches
+
+- **Wire Switch** - a knife switch with two posts. Wire one side of a network to each post, then flip it to cut power to a street of lights, a greenhouse or a whole wing of your base.
+- **Redstone Wire Relay** - a Wire Switch thrown by redstone: closed while powered, or open while powered once you hit it with a Wrench. Pair it with a Daylight Sensor or a solar panel's Comparator signal.
+
+### Electric Motor
+
+- **Electric Motor** - turns FE back into rotation, so a roof of solar panels can drive Create machines anywhere your wires reach. Set its speed up to 64 RPM; faster uses more FE, and the speed picker shows the cost of each speed. If your supply can't keep up, Goggles show the fastest speed it can hold.
+
 ### Comparators and Display Links
 
 - A Comparator reads Andesite and Brass Solar Panels: 0 while they aren't generating, otherwise 1-15 by how directly they face the sun. The new **Sun Exposure** Display Link readout shows the same as a percentage.
 - A Comparator reads the Biofilter: 0 in clean air, rising with its chunk's pollution up to 15 at the biome decay threshold. New Display Link readouts: **Chunk Pollution** and **Pollution Level** (as a percentage of the decay threshold).
 - A Comparator reads the Greenhouse Controller: 0 while it isn't sealed, otherwise stronger the faster plants grow (10 by default, 15 with bees inside).
+- A Comparator reads 15 from a closed Wire Switch or Redstone Wire Relay, and 0 while it's open.
+- New Display Link readout: **Electric Motor FE Use**.
 
 ### Holidays
 
@@ -22,6 +33,7 @@
 ## Fixes
 
 - Fixed Kinetic Batteries making free power. Charging now puts stress on the network, the same SU it gives back when discharging, so batteries can no longer charge each other in a loop forever. Faster networks charge them faster.
+- Fixed the Biofuel Engine running forever on a small amount of leftover fuel. It now stops once it doesn't have enough Biofuel for the next burn.
 
 # 2.1.0-1.21.1
 

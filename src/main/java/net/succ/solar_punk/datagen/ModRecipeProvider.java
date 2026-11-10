@@ -244,6 +244,21 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_wire", has(ModTags.Items.WIRES))
                 .save(output);
 
+        // A lever on a casing, between two connector posts.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, ModBlocks.WIRE_SWITCH.get())
+                .requires(createItem("andesite_casing"))
+                .requires(Items.LEVER)
+                .requires(ModBlocks.WIRE_CONNECTOR.get(), 2)
+                .unlockedBy("has_wire_connector", has(ModBlocks.WIRE_CONNECTOR.get()))
+                .save(output);
+
+        // A switch thrown by an Electron Tube, like Create's redstone parts.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, ModBlocks.REDSTONE_WIRE_RELAY.get())
+                .requires(ModBlocks.WIRE_SWITCH.get())
+                .requires(createItem("electron_tube"))
+                .unlockedBy("has_wire_switch", has(ModBlocks.WIRE_SWITCH.get()))
+                .save(output);
+
         // A shaded glowstone bulb, wired down an iron post.
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.STREETLAMP.get())
                 .pattern("SGS")

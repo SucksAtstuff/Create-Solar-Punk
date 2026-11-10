@@ -128,6 +128,12 @@ public class SolarPunk {
                 ModBlockEntities.GROW_LAMP.get(),
                 (be, side) -> be.energyStorage
         );
+        // Takes FE from every side.
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                ModBlockEntities.ELECTRIC_MOTOR.get(),
+                (be, side) -> be.energyStorage
+        );
         // Only on the face touching the block it's on.
         event.registerBlockEntity(
                 Capabilities.EnergyStorage.BLOCK,
@@ -252,6 +258,7 @@ public class SolarPunk {
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.HEAT_BATTERY.get(), ModDisplaySources.HEAT_BATTERY_CHARGE.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.HEAT_BATTERY.get(), ModDisplaySources.HEAT_BATTERY_STATUS.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.KINETIC_BATTERY.get(), ModDisplaySources.KINETIC_BATTERY_CHARGE.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.ELECTRIC_MOTOR.get(), ModDisplaySources.ELECTRIC_MOTOR_CONSUMPTION.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.SOLAR_POWER_TOWER.get(), ModDisplaySources.SOLAR_POWER_TOWER_EFFICIENCY.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.SOLAR_POWER_TOWER.get(), ModDisplaySources.SOLAR_POWER_TOWER_MIRROR_COUNT.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.SOLAR_POWER_TOWER.get(), ModDisplaySources.SOLAR_POWER_TOWER_GENERATION_RATE.get());
@@ -303,6 +310,11 @@ public class SolarPunk {
                 () -> (double) Config.biofuelEngineSu);
             BlockStressValues.RPM.register(ModBlocks.BIOFUEL_ENGINE.get(),
                 new GeneratedRpm(Config.biofuelEngineRpm, false));
+
+            BlockStressValues.CAPACITIES.register(ModBlocks.ELECTRIC_MOTOR.get(),
+                () -> (double) Config.motorSu);
+            BlockStressValues.RPM.register(ModBlocks.ELECTRIC_MOTOR.get(),
+                new GeneratedRpm(Config.motorMaxRpm, true));
 
             BlockStressValues.CAPACITIES.register(ModBlocks.GEYSER_CAP.get(),
                 () -> (double) Config.geyserCapSu);

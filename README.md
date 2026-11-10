@@ -34,6 +34,9 @@ A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecos
 ### Wires and Electric Blocks
 - **Wire Connector** - a small brass insulator that goes on any face of any block. Power going into one connector comes out into the blocks under every connector it's wired to, so one solar roof can power a whole street. Generators that don't push power out on their own get drained
 - **Iron, Copper and Gold Wire** - cut from metal sheets with a Mechanical Saw, and wound 4 at a time onto an Empty Spool. Click two Wire Connectors with a spool to string a wire between them; longer wires use more of the spool. Gold carries the most power and reaches furthest, then Copper, then Iron. Shears cut a connector's wires and give them back
+- **Wire Switch** - a knife switch with two wire posts. While it's closed, power passes from the wires on one post to the wires on the other; flip it open to cut the network in two
+- **Redstone Wire Relay** - a Wire Switch thrown by redstone, closed while powered (a Wrench inverts it). Comparators read 15 from either while it's closed
+- **Electric Motor** - turns FE back into rotational force at a speed you set, up to 64 RPM. Faster uses more FE, whatever the load. One Brass Solar Panel at noon runs it at 16 RPM for half an Andesite Solar Panel's stress capacity
 - **Streetlamp** - a two-block-tall street light that runs on FE and switches itself on at dusk. A full charge lasts the whole night
 - **Grow Lamp** - an FE-powered purple grow light. Hang it under a ceiling or from a wall, and crops below it grow faster, at night and underground too. A redstone signal switches it off
 - **Solar Plant Bed** - a raised bed for one plant, for roofs and balconies. Its soil never dries out, and its little panel charges by day to run a grow light at night that speeds the plant up

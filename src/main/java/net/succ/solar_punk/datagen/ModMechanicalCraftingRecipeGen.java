@@ -93,6 +93,22 @@ public class ModMechanicalCraftingRecipeGen extends MechanicalCraftingRecipeGen 
                     .key('S', createItem("shaft"))
                     .key('F', createItem("flywheel")));
 
+    // Electric Motor - copper windings around a shaft, switched by an Electron Tube
+    //     W
+    //   W C W
+    //   S E S
+    //     W
+    GeneratedRecipe ELECTRIC_MOTOR = create(() -> ModBlocks.ELECTRIC_MOTOR.get())
+            .recipe(b -> b
+                    .patternLine(" W ")
+                    .patternLine("WCW")
+                    .patternLine("SES")
+                    .patternLine(" W ")
+                    .key('W', ModTags.Items.WIRES_COPPER)
+                    .key('C', createItem("brass_casing"))
+                    .key('S', createItem("shaft"))
+                    .key('E', createItem("electron_tube")));
+
     // Solar Power Tower - the tower block itself is the "intelligent" part that aims
     // the mirror field, so it takes a Precision Mechanism. Outputs 2 because a full
     // 3x3x20 tower is 180 blocks.

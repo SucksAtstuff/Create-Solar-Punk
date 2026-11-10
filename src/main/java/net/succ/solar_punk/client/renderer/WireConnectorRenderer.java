@@ -10,24 +10,22 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.succ.solar_punk.SolarPunk;
-import net.succ.solar_punk.block.custom.WireConnectorBlock;
-import net.succ.solar_punk.block.entity.custom.WireConnectorBlockEntity;
+import net.succ.solar_punk.block.entity.custom.WireNodeBlockEntity;
+import net.succ.solar_punk.wire.WireNodeBlock;
 import net.succ.solar_punk.util.SeasonalEvent;
 
 /**
- * Draws the wires hanging from a Wire Connector as sagging round tubes, wrapped in their
+ * Draws the wires hanging from a Wire Connector or Wire Switch as sagging round tubes, wrapped in their
  * metal's twisted-strand texture (textures/entity/wire/). Each wire is drawn by only one of its two ends (the one with the
  * lower position), so it isn't drawn twice. At Christmas every wire is green cable hung with
  * glowing coloured bulbs.
  */
-public class WireConnectorRenderer implements BlockEntityRenderer<WireConnectorBlockEntity> {
+public class WireConnectorRenderer<T extends WireNodeBlockEntity> implements BlockEntityRenderer<T> {
     private static final int SEGMENTS = 24;
     private static final int SIDES = 8;
     private static final double RADIUS = 0.015;
@@ -50,17 +48,17 @@ public class WireConnectorRenderer implements BlockEntityRenderer<WireConnectorB
     public WireConnectorRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(WireConnectorBlockEntity be, float partialTick, PoseStack poseStack, MultiBufferSource buffers,
+    public void render(T be, float partialTick, PoseStack poseStack, MultiBufferSource buffers,
                        int packedLight, int packedOverlay) {
         Level level = be.getLevel();
         if (level == null) return;
         BlockPos pos = be.getBlockPos();
         Vec3 origin = Vec3.atLowerCornerOf(pos);
-        Vec3 from = WireConnectorBlock.attachPoint(pos, facing(be.getBlockState()));
 
-        for (WireConnectorBlockEntity.Connection wire : be.connections()) {
+        for (WireNodeBlockEntity.Connection wire : be.connections()) {
             if (wire.other().compareTo(pos) < 0) continue;
-            Vec3 to = WireConnectorBlock.attachPoint(wire.other(), facing(level.getBlockState(wire.other())));
+            Vec3 from = WireNodeBlock.attachPoint(level, pos, wire.terminal());
+            Vec3 to = WireNodeBlock.attachPoint(level, wire.other(), wire.otherTerminal());
             ResourceLocation texture = christmas ? CHRISTMAS_CABLE : wire.tier().texture();
             VertexConsumer consumer = buffers.getBuffer(RenderType.entityCutoutNoCull(texture));
             drawWire(level, poseStack, consumer, from.subtract(origin), to.subtract(origin), origin);
@@ -68,10 +66,6 @@ public class WireConnectorRenderer implements BlockEntityRenderer<WireConnectorB
                 drawBulbs(poseStack, buffers.getBuffer(RenderType.entityCutoutNoCull(CHRISTMAS_BULB)),
                         from.subtract(origin), to.subtract(origin));
         }
-    }
-
-    private static Direction facing(BlockState state) {
-        return state.hasProperty(WireConnectorBlock.FACING) ? state.getValue(WireConnectorBlock.FACING) : Direction.UP;
     }
 
     private static void drawWire(Level level, PoseStack poseStack, VertexConsumer consumer, Vec3 from, Vec3 to, Vec3 origin) {
@@ -184,15 +178,15 @@ public class WireConnectorRenderer implements BlockEntityRenderer<WireConnectorB
 
     // Wires reach well outside the block, so keep drawing while any part could be on screen.
     @Override
-    public AABB getRenderBoundingBox(WireConnectorBlockEntity be) {
+    public AABB getRenderBoundingBox(T be) {
         AABB box = new AABB(be.getBlockPos());
-        for (WireConnectorBlockEntity.Connection wire : be.connections())
+        for (WireNodeBlockEntity.Connection wire : be.connections())
             box = box.minmax(new AABB(wire.other()));
         return box.inflate(0, 2, 0);
     }
 
     @Override
-    public boolean shouldRenderOffScreen(WireConnectorBlockEntity be) {
+    public boolean shouldRenderOffScreen(T be) {
         return true;
     }
 

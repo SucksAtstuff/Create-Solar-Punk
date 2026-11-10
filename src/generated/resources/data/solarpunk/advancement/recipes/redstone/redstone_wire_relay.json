@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "solarpunk:redstone_wire_relay"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_wire_switch": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:wire_switch"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_wire_switch"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "solarpunk:redstone_wire_relay"
+    ]
+  }
+}
