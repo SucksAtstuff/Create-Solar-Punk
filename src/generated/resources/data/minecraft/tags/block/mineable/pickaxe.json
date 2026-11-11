@@ -226,6 +226,7 @@
     "solarpunk:wire_switch",
     "solarpunk:redstone_wire_relay",
     "solarpunk:electric_motor",
+    "solarpunk:electrolyzer",
     "solarpunk:grow_lamp",
     "solarpunk:solar_plant_bed",
     "solarpunk:solar_shingles",

@@ -42,6 +42,7 @@ import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.client.model.CasingModel;
 import net.succ.solar_punk.client.model.ModSpriteShifts;
 import net.succ.solar_punk.client.model.TankModel;
+import net.succ.solar_punk.client.renderer.ElectrolyzerRenderer;
 import net.succ.solar_punk.client.renderer.FermentationVatRenderer;
 import net.succ.solar_punk.client.renderer.FusionReactorCoreRenderer;
 import net.succ.solar_punk.client.renderer.WireConnectorRenderer;
@@ -181,6 +182,7 @@ public class ModClientEvents {
         event.registerBlockEntityRenderer(ModBlockEntities.WIRE_CONNECTOR.get(), WireConnectorRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.WIRE_SWITCH.get(), WireConnectorRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.ELECTRIC_MOTOR.get(), ElectricMotorRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.ELECTROLYZER.get(), ElectrolyzerRenderer::new);
     }
 
     @SubscribeEvent
@@ -244,6 +246,7 @@ public class ModClientEvents {
         tip(ModBlocks.WIRE_SWITCH);
         tip(ModBlocks.REDSTONE_WIRE_RELAY);
         tip(ModBlocks.ELECTRIC_MOTOR);
+        tip(ModBlocks.ELECTROLYZER);
         tip(ModBlocks.GROW_LAMP);
         tip(ModBlocks.SOLAR_PLANT_BED);
         tip(ModBlocks.CHARRED_TIMBER);

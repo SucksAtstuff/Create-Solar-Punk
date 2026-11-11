@@ -52,5 +52,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModFluids.RICH_FERTILIZER_BUCKET.get());
         basicItem(ModFluids.STEAM_BUCKET.get());
         basicItem(ModFluids.DEUTERIUM_BUCKET.get());
+        basicItem(ModFluids.HYDROGEN_BUCKET.get());
+        basicItem(ModFluids.OXYGEN_BUCKET.get());
     }
 }

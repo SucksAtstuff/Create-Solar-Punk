@@ -134,6 +134,18 @@ public class SolarPunk {
                 ModBlockEntities.ELECTRIC_MOTOR.get(),
                 (be, side) -> be.energyStorage
         );
+        // FE in from every side. Fluids depend on the side: each flange gives out its own gas,
+        // every other face takes Water.
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                ModBlockEntities.ELECTROLYZER.get(),
+                (be, side) -> be.energyStorage
+        );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.ELECTROLYZER.get(),
+                (be, side) -> be.fluidHandler(side)
+        );
         // Only on the face touching the block it's on.
         event.registerBlockEntity(
                 Capabilities.EnergyStorage.BLOCK,

@@ -86,6 +86,9 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.fe_input", "Input: ");
         add("create.solar_punk.tooltip.electric_motor_sustains", "Not enough FE: holds up to %1$s RPM");
         add("solarpunk.display_source.electric_motor_consumption", "Electric Motor FE Use");
+        add("create.solar_punk.tooltip.electrolyzer_header", "Electrolyzer");
+        add("create.solar_punk.tooltip.hydrogen", "Hydrogen: ");
+        add("create.solar_punk.tooltip.oxygen", "Oxygen: ");
         add("create.solar_punk.tooltip.redstone_wire_relay_header", "Redstone Wire Relay");
         add("create.solar_punk.tooltip.switch_state", "State: ");
         add("create.solar_punk.tooltip.switch_closed", "Closed");
@@ -316,6 +319,11 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.electric_motor.tooltip.behaviour1", "Spins at the speed you set on it, up to _64 RPM_ either way. It uses FE for that speed whatever the load, so set it _slower_ to save power.");
         add("block.solarpunk.electric_motor.tooltip.condition2", "Out of FE");
         add("block.solarpunk.electric_motor.tooltip.behaviour2", "Stops, and starts again once it has half a second of FE stored. If it keeps stopping, _Goggles_ show the fastest speed your supply can hold.");
+        add("block.solarpunk.electrolyzer.tooltip.summary", "Splits _Water_ into _Hydrogen_ and _Oxygen_ with _FE_, making twice as much Hydrogen as Oxygen. A way to store solar power made at noon.");
+        add("block.solarpunk.electrolyzer.tooltip.condition1", "When powered");
+        add("block.solarpunk.electrolyzer.tooltip.behaviour1", "Pipe _Water_ into the top, front, back or bottom. Each gas comes out of the _copper flange_ beside its tube: _Hydrogen_ on the left, _Oxygen_ on the right, seen from the front.");
+        add("block.solarpunk.electrolyzer.tooltip.condition2", "When a gas tank is full");
+        add("block.solarpunk.electrolyzer.tooltip.behaviour2", "Stops until that gas is piped away, so pipe out _both_ gases.");
         add("block.solarpunk.redstone_wire_relay.tooltip.summary", "A _Wire Switch_ thrown by _redstone_, for lights that turn on at dusk or machines that only run while the panels are strong.");
         add("block.solarpunk.redstone_wire_relay.tooltip.condition1", "When powered");
         add("block.solarpunk.redstone_wire_relay.tooltip.behaviour1", "Closes, joining the wires on its two posts. A _Comparator_ reads 15 while it's closed.");

@@ -18,6 +18,7 @@ import net.succ.solar_punk.block.entity.custom.GeyserVentBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BrassSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.CrystallizerBlockEntity;
+import net.succ.solar_punk.block.entity.custom.ElectrolyzerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarHeaterBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarMirrorBlockEntity;
@@ -124,6 +125,11 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("wire_switch", () -> BlockEntityType.Builder
                     .of((pos, state) -> new WireSwitchBlockEntity(ModBlockEntities.WIRE_SWITCH.get(), pos, state),
                             ModBlocks.WIRE_SWITCH.get(), ModBlocks.REDSTONE_WIRE_RELAY.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElectrolyzerBlockEntity>> ELECTROLYZER =
+            BLOCK_ENTITIES.register("electrolyzer", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new ElectrolyzerBlockEntity(ModBlockEntities.ELECTROLYZER.get(), pos, state), ModBlocks.ELECTROLYZER.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GrowLampBlockEntity>> GROW_LAMP =

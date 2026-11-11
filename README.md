@@ -17,6 +17,7 @@ A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecos
 - JEI (adds recipe categories for the Solar Heater, Fermentation Vat, Solar Power Tower, Crystallizer, and Particle Accelerator)
 - Serene Seasons (solar output scales with the season - up in summer, down in winter; can be turned off in the config)
 - Create: Northstar Redux (the Steam Turbine can burn its Liquid Hydrogen as an alternative fuel to Steam)
+- Create: CROWNS (the Steam Turbine can burn its steam)
 - Create: Cosmonautics (solar blocks work in space and follow the real sun; stations are built with Create Aeronautics)
 - Create: New Age (the Heat Battery trades heat with New Age's heat pipes and machines)
 
@@ -37,6 +38,7 @@ A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecos
 - **Wire Switch** - a knife switch with two wire posts. While it's closed, power passes from the wires on one post to the wires on the other; flip it open to cut the network in two
 - **Redstone Wire Relay** - a Wire Switch thrown by redstone, closed while powered (a Wrench inverts it). Comparators read 15 from either while it's closed
 - **Electric Motor** - turns FE back into rotational force at a speed you set, up to 64 RPM. Faster uses more FE, whatever the load. One Brass Solar Panel at noon runs it at 16 RPM for half an Andesite Solar Panel's stress capacity
+- **Electrolyzer** - splits Water into Hydrogen and Oxygen with FE, making twice as much Hydrogen as Oxygen. Water goes in the top; each gas comes out of the copper flange beside its glass tube, and you can watch the gas push the water down as it collects
 - **Streetlamp** - a two-block-tall street light that runs on FE and switches itself on at dusk. A full charge lasts the whole night
 - **Grow Lamp** - an FE-powered purple grow light. Hang it under a ceiling or from a wall, and crops below it grow faster, at night and underground too. A redstone signal switches it off
 - **Solar Plant Bed** - a raised bed for one plant, for roofs and balconies. Its soil never dries out, and its little panel charges by day to run a grow light at night that speeds the plant up
@@ -146,6 +148,7 @@ Decorative blocks have their own **Create: Solarpunk Building Blocks** creative 
 - **Other space mods** - modpacks can add dimensions to the `solarpunk:always_sunny` (constant sunshine, no weather) or `solarpunk:no_weather` (normal day and night, no weather) dimension type tags with a datapack
 - **Create: New Age** - the Heat Battery trades heat with New Age's heat pipes and machines: a charged battery heats them, and an emptier one soaks up their heat. The Generator Coil is excluded from pollution
 - **Create: Northstar Redux** - the Steam Turbine can burn its Liquid Hydrogen as an alternative fuel to Steam, at the same rate; pipe it in the same way you would Steam, just not both at once - the tank has to fully drain before switching fuels. Northstar's Salt works in Solarpunk recipes and the other way around
+- **Create: CROWNS** - the Steam Turbine can burn steam from CROWNS reactors and heat exchangers, as long as it's fully boiled (wet steam is refused). Pipe it in like Steam. It can't go the other way: CROWNS machines only take water, so Solarpunk Steam won't run their turbines. Toggle it and set how dry the steam must be under `generators.steam_turbine` in the config
 - **Create: Food** - its Salt works in Solarpunk recipes and the other way around
 - **Create: Diesel Generators** - diesel engines count as pollution sources when Global Warming is enabled
 - **Create: Aeronautics** - engines on airships correctly accumulate pollution in the real-world chunk beneath the airship, even though they run in a simulated sublevel

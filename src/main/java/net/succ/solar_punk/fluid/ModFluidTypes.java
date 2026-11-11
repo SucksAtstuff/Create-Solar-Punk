@@ -86,8 +86,10 @@ public class ModFluidTypes {
                     WATER_OVERLAY,
                     0xFFDDEEFF,
                     new Vector3f(221f / 255f, 238f / 255f, 255f / 255f),
+                    // Negative density: lighter than air, so Create's tanks draw it hanging
+                    // from the top like Hydrogen and Oxygen.
                     FluidType.Properties.create()
-                            .density(5)
+                            .density(-5)
                             .viscosity(10)
                             .temperature(373)
             ));
@@ -105,6 +107,36 @@ public class ModFluidTypes {
                     FluidType.Properties.create()
                             .density(150)
                             .viscosity(300)
+                            .temperature(295)
+            ));
+
+    // Electrolyzer outputs. Gases: see-through tints on the water sprite. Hydrogen is lighter
+    // than air (negative density, so Create draws it hanging from the top of a tank) and
+    // pale pink, after the glow of a hydrogen discharge tube; Oxygen is pale blue, like
+    // liquid oxygen, and bluer than Steam.
+    public static final Supplier<FluidType> HYDROGEN_TYPE = FLUID_TYPES.register("hydrogen",
+            () -> new BaseFluidType(
+                    WATER_STILL,
+                    WATER_FLOW,
+                    WATER_OVERLAY,
+                    0xB0FFD8EC,
+                    new Vector3f(255f / 255f, 216f / 255f, 236f / 255f),
+                    FluidType.Properties.create()
+                            .density(-100)
+                            .viscosity(10)
+                            .temperature(295)
+            ));
+
+    public static final Supplier<FluidType> OXYGEN_TYPE = FLUID_TYPES.register("oxygen",
+            () -> new BaseFluidType(
+                    WATER_STILL,
+                    WATER_FLOW,
+                    WATER_OVERLAY,
+                    0xB0A8CCFF,
+                    new Vector3f(168f / 255f, 204f / 255f, 255f / 255f),
+                    FluidType.Properties.create()
+                            .density(-10)
+                            .viscosity(10)
                             .temperature(295)
             ));
 

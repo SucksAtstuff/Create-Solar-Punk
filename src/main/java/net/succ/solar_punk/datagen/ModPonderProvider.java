@@ -64,6 +64,11 @@ public class ModPonderProvider implements DataProvider {
                 .withBasePlate()
                 .addBlock(2, 1, 2, "solarpunk:crystallizer", "facing", "north", "lit", "false"));
 
+        SCHEMATICS.put("electrolyzer/usage", new SceneStructure()
+                .withBasePlate()
+                .addBlock(2, 1, 2, "solarpunk:electrolyzer", "facing", "north", "lit", "false")
+                .addBlock(2, 1, 3, "solarpunk:brass_solar_panel", "lit", "false"));
+
         SCHEMATICS.put("solar_panel/andesite", new SceneStructure()
                 .withBasePlate()
                 .addBlock(2, 1, 2, "create:shaft", "axis", "y")

@@ -44,6 +44,7 @@ import net.succ.solar_punk.block.custom.BiofuelEngineBlock;
 import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
 import net.succ.solar_punk.block.custom.CrystallizerBlock;
+import net.succ.solar_punk.block.custom.ElectrolyzerBlock;
 import net.succ.solar_punk.block.custom.DeadGrassBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.FermentationVatItem;
@@ -131,6 +132,15 @@ public class ModBlocks {
     // FE back into rotation; see ElectricMotorBlockEntity.
     public static final DeferredBlock<ElectricMotorBlock> ELECTRIC_MOTOR = registerBlock("electric_motor",
             () -> new ElectricMotorBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_ORANGE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)
+                    .sound(SoundType.COPPER)
+                    .noOcclusion()));
+
+    // Water into Hydrogen and Oxygen with FE; see ElectrolyzerBlockEntity.
+    public static final DeferredBlock<ElectrolyzerBlock> ELECTROLYZER = registerBlock("electrolyzer",
+            () -> new ElectrolyzerBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_ORANGE)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)

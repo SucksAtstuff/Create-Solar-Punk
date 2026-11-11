@@ -32,6 +32,9 @@ public class SolarPunkPonderPlugin implements PonderPlugin {
         helper.addStoryBoard(ModBlocks.CRYSTALLIZER.getId(), "crystallizer/usage",
                 CrystallizerScenes::usage, SolarPunkPonderTags.SOLAR_MACHINES);
 
+        helper.addStoryBoard(ModBlocks.ELECTROLYZER.getId(), "electrolyzer/usage",
+                ElectrolyzerScenes::usage, SolarPunkPonderTags.SOLAR_MACHINES);
+
         helper.addStoryBoard(ModBlocks.ANDESITE_SOLAR_PANEL.getId(), "solar_panel/andesite",
                 SolarPanelScenes::andesiteUsage, SolarPunkPonderTags.SOLAR_MACHINES);
 

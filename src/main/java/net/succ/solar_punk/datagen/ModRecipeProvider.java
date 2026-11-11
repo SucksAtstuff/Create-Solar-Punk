@@ -395,6 +395,20 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_brass_casing", has(createItem("brass_casing")))
                 .save(output);
 
+        // Copper-tier, with an Electron Tube to drive the current: glass tubes, copper electrodes.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ELECTROLYZER.get())
+                .pattern("GPG")
+                .pattern("WEW")
+                .pattern("CBC")
+                .define('G', Tags.Items.GLASS_PANES_COLORLESS)
+                .define('P', createItem("fluid_pipe"))
+                .define('W', ModTags.Items.WIRES_COPPER)
+                .define('E', createItem("electron_tube"))
+                .define('C', ModTags.Items.PLATES_COPPER)
+                .define('B', createItem("copper_casing"))
+                .unlockedBy("has_electron_tube", has(createItem("electron_tube")))
+                .save(output);
+
         // Vanilla-tier on purpose (iron, furnace, bucket) so it's the first machine you can make.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.FIREBOX_BOILER.get())
                 .pattern("III")

@@ -83,6 +83,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         litFacingCustomModelBlock(ModBlocks.BIOFUEL_ENGINE, true);
         // The block model has no shaft (ElectricMotorRenderer spins one); the item keeps the modelled one.
         facingCustomModelBlock(ModBlocks.ELECTRIC_MOTOR, false);
+        facingCustomModelBlock(ModBlocks.ELECTROLYZER, true);
         itemModels().getBuilder(ModBlocks.ELECTRIC_MOTOR.getId().getPath())
                 .parent(new UncheckedModelFile(modLoc("block/electric_motor_item")));
         fermentationVatBlock();
@@ -157,6 +158,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         fluidBlock(ModFluids.RICH_FERTILIZER_BLOCK, mcLoc("block/water_still"));
         fluidBlock(ModFluids.STEAM_BLOCK,       mcLoc("block/water_still"));
         fluidBlock(ModFluids.DEUTERIUM_BLOCK,   mcLoc("block/water_still"));
+        fluidBlock(ModFluids.HYDROGEN_BLOCK,    mcLoc("block/water_still"));
+        fluidBlock(ModFluids.OXYGEN_BLOCK,      mcLoc("block/water_still"));
 
         ResourceLocation casingTex = modLoc("block/industrial_iron_casing/industrial_iron_casing");
         ResourceLocation glassCasingTex = modLoc("block/industrial_iron_casing/industrial_iron_glass_casing");

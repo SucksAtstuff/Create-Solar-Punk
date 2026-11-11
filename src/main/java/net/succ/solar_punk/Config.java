@@ -119,6 +119,8 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_TURBINE_SU_PER_LAYER;
     private static final ModConfigSpec.IntValue CFG_TURBINE_STEAM_PER_LAYER_PER_TICK;
     private static final ModConfigSpec.IntValue CFG_TURBINE_CONDENSATE_RATIO;
+    private static final ModConfigSpec.BooleanValue CFG_TURBINE_CROWNS_STEAM;
+    private static final ModConfigSpec.DoubleValue CFG_TURBINE_CROWNS_MIN_VAPOR_QUALITY;
 
     private static final ModConfigSpec.DoubleValue CFG_SOLAR_POWER_TOWER_SALT_MULTIPLIER;
     private static final ModConfigSpec.DoubleValue CFG_SOLAR_POWER_TOWER_STEAM_MULTIPLIER;
@@ -185,6 +187,7 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_SOLAR_HEATER_TANK;
     private static final ModConfigSpec.IntValue CFG_FIREBOX_BOILER_TANK;
     private static final ModConfigSpec.IntValue CFG_CRYSTALLIZER_TANK;
+    private static final ModConfigSpec.IntValue CFG_ELECTROLYZER_TANK;
     private static final ModConfigSpec.IntValue CFG_FUSION_REACTOR_STEAM_TANK;
     private static final ModConfigSpec.IntValue CFG_FUSION_REACTOR_DEUTERIUM_TANK;
 
@@ -234,6 +237,7 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_STREETLAMP_MAX_RECEIVE;
     private static final ModConfigSpec.IntValue CFG_GROW_LAMP_FE_PER_TICK, CFG_GROW_LAMP_BUFFER, CFG_GROW_LAMP_MAX_RECEIVE, CFG_GROW_LAMP_RANGE;
     private static final ModConfigSpec.DoubleValue CFG_GROW_LAMP_GROWTH_BOOST;
+    private static final ModConfigSpec.IntValue CFG_ELECTROLYZER_FE_PER_TICK, CFG_ELECTROLYZER_WATER_PER_TICK, CFG_ELECTROLYZER_BUFFER, CFG_ELECTROLYZER_MAX_RECEIVE;
     private static final ModConfigSpec.IntValue CFG_SOLAR_PLANT_BED_MORNING_FE, CFG_SOLAR_PLANT_BED_NOON_FE, CFG_SOLAR_PLANT_BED_FE_PER_TICK, CFG_SOLAR_PLANT_BED_BUFFER;
     private static final ModConfigSpec.DoubleValue CFG_SOLAR_PLANT_BED_GROWTH_BOOST;
     private static final ModConfigSpec.DoubleValue CFG_AGRIVOLTAICS_BONUS;
@@ -337,6 +341,14 @@ public class Config {
         CFG_TURBINE_SU_PER_LAYER         = BUILDER.comment("SU capacity per rotor layer at full blade efficiency (1 brass blade per arm). Default 256 gives 344 064 SU at max height + full brass, beating the Create superheated steam engine (294 912 SU).").defineInRange("su_per_layer", 256, 1, 1_000_000);
         CFG_TURBINE_STEAM_PER_LAYER_PER_TICK = BUILDER.comment("mB of steam consumed per rotor layer per tick at full blade efficiency (less-efficient blades waste more steam). Default 1 means a max-height turbine consumes 21 mB/t, matching one max-size Solar Power Tower in steam mode at noon.").defineInRange("steam_per_layer_per_tick", 1, 1, 10_000);
         CFG_TURBINE_CONDENSATE_RATIO = BUILDER.comment("mB of steam required to produce 1 mB of condensate water. Higher values mean less water produced per steam consumed. Default 10 means 10 mB steam -> 1 mB water.").defineInRange("condensate_ratio", 10, 1, 10_000);
+        CFG_TURBINE_CROWNS_STEAM = BUILDER.comment(
+                "With Create: CROWNS installed, also burn its steam (water heated past boiling, carrying",
+                "CROWNS' gas state), 1 mB of it giving 1 mB of Steam. Has no effect if CROWNS is absent.")
+                .define("crowns_steam", true);
+        CFG_TURBINE_CROWNS_MIN_VAPOR_QUALITY = BUILDER.comment(
+                "Lowest CROWNS vapor quality accepted: 0 = liquid water, 1 = fully boiled (dry or superheated)",
+                "steam. Wetter steam is refused.")
+                .defineInRange("crowns_min_vapor_quality", 0.9, 0.01, 1.0);
         BUILDER.pop();
 
         BUILDER.push("solar_power_tower");
@@ -478,6 +490,13 @@ public class Config {
         CFG_GROW_LAMP_GROWTH_BOOST  = BUILDER.comment("Extra growth for plants under a lit Grow Lamp (1.0 = twice as fast). Stacks with greenhouses and other lamps").defineInRange("growth_boost", 1.0, 0.0, 100.0);
         BUILDER.pop();
 
+        BUILDER.push("electrolyzer");
+        CFG_ELECTROLYZER_FE_PER_TICK    = BUILDER.comment("FE/t an Electrolyzer uses while running").defineInRange("fe_per_tick", 40, 1, 1_000_000);
+        CFG_ELECTROLYZER_WATER_PER_TICK = BUILDER.comment("mB of Water split per tick while running. Makes the same amount of Hydrogen and half as much Oxygen").defineInRange("water_per_tick", 2, 1, 10_000);
+        CFG_ELECTROLYZER_BUFFER         = BUILDER.comment("FE an Electrolyzer stores").defineInRange("buffer_capacity", 10_000, 100, 10_000_000);
+        CFG_ELECTROLYZER_MAX_RECEIVE    = BUILDER.comment("Max FE per tick an Electrolyzer accepts").defineInRange("max_receive", 400, 1, 1_000_000);
+        BUILDER.pop();
+
         BUILDER.push("solar_plant_bed");
         CFG_SOLAR_PLANT_BED_MORNING_FE   = BUILDER.comment("FE/t a Solar Plant Bed's panel makes at dawn and dusk").defineInRange("morning_fe_per_tick", 2, 0, 100_000);
         CFG_SOLAR_PLANT_BED_NOON_FE      = BUILDER.comment("FE/t a Solar Plant Bed's panel makes at noon (clear weather)").defineInRange("noon_fe_per_tick", 4, 0, 100_000);
@@ -546,6 +565,7 @@ public class Config {
         CFG_SOLAR_HEATER_TANK               = BUILDER.comment("Solar Heater: output fluid tank capacity (mB)").defineInRange("solar_heater_mb", 8000, 100, 1_000_000);
         CFG_FIREBOX_BOILER_TANK             = BUILDER.comment("Firebox Boiler: water and steam tank capacity (mB, each tank)").defineInRange("firebox_boiler_mb", 4000, 100, 1_000_000);
         CFG_CRYSTALLIZER_TANK                = BUILDER.comment("Crystallizer: input A, input B, and byproduct output tank capacity (mB, each tank)").defineInRange("crystallizer_mb", 4000, 100, 1_000_000);
+        CFG_ELECTROLYZER_TANK                = BUILDER.comment("Electrolyzer: Water, Hydrogen and Oxygen tank capacity (mB, each tank)").defineInRange("electrolyzer_mb", 4000, 100, 1_000_000);
         CFG_FUSION_REACTOR_STEAM_TANK        = BUILDER.comment("Fusion Reactor: steam output tank capacity (mB)").defineInRange("fusion_reactor_steam_mb", 16000, 100, 1_000_000);
         CFG_FUSION_REACTOR_DEUTERIUM_TANK    = BUILDER.comment("Fusion Reactor: Deuterium input tank capacity (mB)").defineInRange("fusion_reactor_deuterium_mb", 8000, 100, 1_000_000);
         BUILDER.pop();
@@ -674,6 +694,8 @@ public class Config {
     public static int biofuelEngineRpm, biofuelEngineSu;
     public static int motorMaxRpm, motorSu, motorFePerRpm;
     public static int turbineMaxRpm, turbineRpmPerLayer, turbineSuPerLayer, turbineSteamPerLayerPerTick, turbineCondensateRatio;
+    public static boolean turbineCrownsSteam;
+    public static float turbineCrownsMinVaporQuality;
     public static int turbineSteamTank, turbineCondensateTank;
     public static double solarPowerTowerSaltMultiplier, solarPowerTowerSteamMultiplier;
 
@@ -723,6 +745,7 @@ public class Config {
     public static int streetlampFePerTick, streetlampBuffer, streetlampMaxReceive;
     public static int growLampFePerTick, growLampBuffer, growLampMaxReceive, growLampRange;
     public static double growLampGrowthBoost;
+    public static int electrolyzerFePerTick, electrolyzerWaterPerTick, electrolyzerBuffer, electrolyzerMaxReceive, electrolyzerTank;
     public static int solarPlantBedMorningFe, solarPlantBedNoonFe, solarPlantBedFePerTick, solarPlantBedBuffer;
     public static double solarPlantBedGrowthBoost;
     public static int wireIronRate, wireIronLength, wireCopperRate, wireCopperLength, wireGoldRate, wireGoldLength;
@@ -788,6 +811,8 @@ public class Config {
         turbineSuPerLayer           = CFG_TURBINE_SU_PER_LAYER.get();
         turbineSteamPerLayerPerTick = CFG_TURBINE_STEAM_PER_LAYER_PER_TICK.get();
         turbineCondensateRatio      = CFG_TURBINE_CONDENSATE_RATIO.get();
+        turbineCrownsSteam          = CFG_TURBINE_CROWNS_STEAM.get();
+        turbineCrownsMinVaporQuality = CFG_TURBINE_CROWNS_MIN_VAPOR_QUALITY.get().floatValue();
 
         solarPowerTowerSaltMultiplier  = CFG_SOLAR_POWER_TOWER_SALT_MULTIPLIER.get();
         solarPowerTowerSteamMultiplier = CFG_SOLAR_POWER_TOWER_STEAM_MULTIPLIER.get();
@@ -877,6 +902,11 @@ public class Config {
         growLampMaxReceive              = CFG_GROW_LAMP_MAX_RECEIVE.get();
         growLampRange                   = CFG_GROW_LAMP_RANGE.get();
         growLampGrowthBoost             = CFG_GROW_LAMP_GROWTH_BOOST.get();
+        electrolyzerFePerTick           = CFG_ELECTROLYZER_FE_PER_TICK.get();
+        electrolyzerWaterPerTick        = CFG_ELECTROLYZER_WATER_PER_TICK.get();
+        electrolyzerBuffer              = CFG_ELECTROLYZER_BUFFER.get();
+        electrolyzerMaxReceive          = CFG_ELECTROLYZER_MAX_RECEIVE.get();
+        electrolyzerTank                = CFG_ELECTROLYZER_TANK.get();
         solarPlantBedMorningFe               = CFG_SOLAR_PLANT_BED_MORNING_FE.get();
         solarPlantBedNoonFe                  = CFG_SOLAR_PLANT_BED_NOON_FE.get();
         solarPlantBedFePerTick               = CFG_SOLAR_PLANT_BED_FE_PER_TICK.get();

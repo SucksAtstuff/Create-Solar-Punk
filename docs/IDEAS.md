@@ -18,9 +18,16 @@ bigger job, and now that the Electric Motor gives stored FE somewhere to go they
 
 ## Biggest gaps in the renewable lineup
 
-- **Hydrogen chain** - an Electrolyzer splits Water into Hydrogen using FE from Brass Panels,
-  and a Fuel Cell turns it back into SU or FE. Gives solar FE a storage use, and ties into
-  Northstar's Liquid Hydrogen, which the Steam Turbine already burns.
+- **Fuel Cell Stack** - turns the Electrolyzer's Hydrogen back into SU or FE. Gives solar FE
+  a storage use. Northstar's Liquid Hydrogen (which the Steam Turbine already burns) is a
+  separate fluid; a cooler could turn our Hydrogen into it.
+  - Built like a real one: a stack of **Fuel Cell** blocks in a row or column, joined like the
+    Fermentation Vat or Create's tanks (`MultiBlockFluidBE` / `ConnectivityHandler`). Each
+    cell adds output and fuel use, so a stack grows with the base instead of needing tiers.
+  - **End Plates** clamp the stack at both ends and are where it connects: Hydrogen and
+    Oxygen pipe in, Water and FE come out through them. A stack only runs with an End Plate
+    on each end. Cells have no connections of their own, so the plates are what you pipe to.
+  - Open: a max stack length, or let it run as long as you like?
   - The problem it solves: solar FE has nowhere to go beyond each block's small buffer, and
     solar stops at night. Hydrogen made at noon can run the base after dark.
   - Better than a plain battery: storage is only limited by tank space, and Hydrogen can be
@@ -30,8 +37,7 @@ bigger job, and now that the Electric Motor gives stored FE somewhere to go they
     using solar directly stays worth it.
   - The Fuel Cell's only waste is Water, which could be piped back into the Electrolyzer.
   - Open: Fuel Cell output FE, SU, or switchable like the Solar Power Tower's modes?
-  - Open: its own Hydrogen fluid, or reuse Northstar's when installed (like `NorthstarCompat`)?
-  - Oxygen as a byproduct, shared with the Bioreactor (see Biofuel and farming): the Fuel
+  - Oxygen, shared with the Bioreactor (see Biofuel and farming): the Fuel
     Cell could run on Hydrogen alone but give a bonus with Oxygen, the real clean-fuel pair.
   - Open: could the Electrolyzer give a little Deuterium as a rare byproduct for the Fusion
     Reactor?
@@ -82,7 +88,7 @@ Glass have little to feed. The Electric Motor (2.2) gives FE a big job; these co
   - Absorbs pollution in its chunk like the Biofilter (real photobioreactors are built
     around eating CO2).
   - Open: a fixed 1x1x2 small version as well, or only the multiblock?
-- **Oxygen uses** - from the Bioreactor, and later the Electrolyzer.
+- **Oxygen uses** - from the Electrolyzer, and later the Bioreactor.
   - Aerobic treatment in the Fermentation Vat: speeds up Rich Fertilizer only. That's
     composting, which really is aerobic; biofuel (ethanol) fermentation is anaerobic and
     Oxygen would hurt it, so the Vat gets a real choice of which mode to run.

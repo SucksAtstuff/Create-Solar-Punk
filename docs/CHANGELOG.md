@@ -11,6 +11,10 @@
 
 - **Electric Motor** - turns FE back into rotation, so a roof of solar panels can drive Create machines anywhere your wires reach. Set its speed up to 64 RPM; faster uses more FE, and the speed picker shows the cost of each speed. If your supply can't keep up, Goggles show the fastest speed it can hold.
 
+### Electrolyzer
+
+- **Electrolyzer** - splits Water into **Hydrogen** and **Oxygen** with FE, making twice as much Hydrogen as Oxygen. Pipe Water into the top, and each gas out of the copper flange beside its glass tube, where you can watch it collect.
+
 ### Comparators and Display Links
 
 - A Comparator reads Andesite and Brass Solar Panels: 0 while they aren't generating, otherwise 1-15 by how directly they face the sun. The new **Sun Exposure** Display Link readout shows the same as a percentage.
@@ -18,6 +22,10 @@
 - A Comparator reads the Greenhouse Controller: 0 while it isn't sealed, otherwise stronger the faster plants grow (10 by default, 15 with bees inside).
 - A Comparator reads 15 from a closed Wire Switch or Redstone Wire Relay, and 0 while it's open.
 - New Display Link readout: **Electric Motor FE Use**.
+
+### Compatibility
+
+- **Create: CROWNS** - the Steam Turbine can burn steam from CROWNS reactors.
 
 ### Holidays
 
@@ -29,6 +37,10 @@
 - **Halloween** (last week of October): orange Garden Lights, orange and purple Trellis flowers, and green and purple geyser steam.
 - **Day of the Dead** (Nov 1-2): marigold-orange Trellis flowers.
 - **Pride Month** (June): rainbow solar panels, Garden Lights, Trellis flowers and geyser steam.
+
+## Changes
+
+- Steam is now a gas: in a Create Fluid Tank it fills from the top down instead of pooling at the bottom.
 
 ## Fixes
 

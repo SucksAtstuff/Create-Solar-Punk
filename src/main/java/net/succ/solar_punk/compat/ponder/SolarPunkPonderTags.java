@@ -40,7 +40,8 @@ public class SolarPunkPonderTags {
                 .add(ModBlocks.HEAT_BATTERY.getId())
                 .add(ModBlocks.KINETIC_BATTERY.getId())
                 .add(ModBlocks.GEYSER_CAP.getId())
-                .add(ModBlocks.CRYSTALLIZER.getId());
+                .add(ModBlocks.CRYSTALLIZER.getId())
+                .add(ModBlocks.ELECTROLYZER.getId());
 
         helper.registerTag(BIO_MACHINES)
                 .addToIndex()
