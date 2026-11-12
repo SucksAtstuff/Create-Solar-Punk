@@ -56,7 +56,7 @@ public class ElectrolyzerRenderer extends SafeBlockEntityRenderer<ElectrolyzerBl
             box(WATER, BULB_XZ0, BULB_Y0, BULB_XZ0,
                     BULB_XZ1, BULB_Y0 + (BULB_Y1 - BULB_Y0) * water, BULB_XZ1, true, buffer, ms, light);
 
-        tube(be.hydrogenTank.getFluid().isEmpty() ? null : new FluidStack(ModFluids.HYDROGEN_SOURCE.get(), 1000),
+        tube(be.hydrogenTank.getFluid().isEmpty() ? null : be.hydrogenTank.getFluid().copyWithAmount(1000),
                 hydrogen, water > 0, HYDROGEN_X0, HYDROGEN_X1, buffer, ms, light);
         tube(be.oxygenTank.getFluid().isEmpty() ? null : new FluidStack(ModFluids.OXYGEN_SOURCE.get(), 1000),
                 oxygen, water > 0, OXYGEN_X0, OXYGEN_X1, buffer, ms, light);

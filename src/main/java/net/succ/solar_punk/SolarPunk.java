@@ -22,6 +22,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.block.custom.FuelCellBlock;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.FermentationVatBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
@@ -127,6 +128,24 @@ public class SolarPunk {
                 Capabilities.EnergyStorage.BLOCK,
                 ModBlockEntities.GROW_LAMP.get(),
                 (be, side) -> be.energyStorage
+        );
+        // Either End Plate of a Fuel Cell stack: FE out of any face, gas into one port, Water out
+        // of the other (EndPlateBlock.gasSide/waterSide), all on the controlling plate's tanks.
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                ModBlockEntities.END_PLATE.get(),
+                (be, side) -> be.energyStorage
+        );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.END_PLATE.get(),
+                (be, side) -> be.fluidHandler(side)
+        );
+        // Fuel Cells give the stack's FE out of any face, so a Wire Connector can go on a cell.
+        event.registerBlock(
+                Capabilities.EnergyStorage.BLOCK,
+                (level, pos, state, be, side) -> new FuelCellBlock.Energy(level, pos),
+                ModBlocks.FUEL_CELL.get()
         );
         // Takes FE from every side.
         event.registerBlockEntity(

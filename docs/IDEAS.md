@@ -13,37 +13,17 @@ The code side is done (Streetlamp, Shingles, Garden Light, wire lights). Still n
 - Snow caps on the solar panels.
 - A little Santa hat on the Geyser Cap.
 
-Saved for after 2.2: the Hydrogen chain and FE storage. They're the biggest gaps but a much
-bigger job, and now that the Electric Motor gives stored FE somewhere to go they're next.
+Saved for after 2.2: a simple FE battery, the last big gap now that the Hydrogen chain
+gives long-term FE storage.
 
 ## Biggest gaps in the renewable lineup
 
-- **Fuel Cell Stack** - turns the Electrolyzer's Hydrogen back into SU or FE. Gives solar FE
-  a storage use. Northstar's Liquid Hydrogen (which the Steam Turbine already burns) is a
-  separate fluid; a cooler could turn our Hydrogen into it.
-  - Built like a real one: a stack of **Fuel Cell** blocks in a row or column, joined like the
-    Fermentation Vat or Create's tanks (`MultiBlockFluidBE` / `ConnectivityHandler`). Each
-    cell adds output and fuel use, so a stack grows with the base instead of needing tiers.
-  - **End Plates** clamp the stack at both ends and are where it connects: Hydrogen and
-    Oxygen pipe in, Water and FE come out through them. A stack only runs with an End Plate
-    on each end. Cells have no connections of their own, so the plates are what you pipe to.
-  - Open: a max stack length, or let it run as long as you like?
-  - The problem it solves: solar FE has nowhere to go beyond each block's small buffer, and
-    solar stops at night. Hydrogen made at noon can run the base after dark.
-  - Better than a plain battery: storage is only limited by tank space, and Hydrogen can be
-    piped across the base or carried on trains and contraptions, so a desert solar field can
-    ship fuel home.
-  - Lossy on purpose: getting back maybe 60-70% of the FE put in makes it a trade-off, so
-    using solar directly stays worth it.
-  - The Fuel Cell's only waste is Water, which could be piped back into the Electrolyzer.
-  - Open: Fuel Cell output FE, SU, or switchable like the Solar Power Tower's modes?
-  - Oxygen, shared with the Bioreactor (see Biofuel and farming): the Fuel
-    Cell could run on Hydrogen alone but give a bonus with Oxygen, the real clean-fuel pair.
-  - Open: could the Electrolyzer give a little Deuterium as a rare byproduct for the Fusion
-    Reactor?
-- **FE storage** - FE only exists in the small buffers of the Brass Panel, Solar Shingles and
-  Solar Glass right now. A Thermal Generator (Molten Salt heat to FE) or a large battery
-  multiblock.
+- **Hydrogen extras** (the Electrolyzer and Fuel Cell stack are built): Oxygen, shared with
+  the Bioreactor (see Biofuel and farming).
+- **FE battery** - the Electrolyzer and Fuel Cell stack store FE as gas, but lose about a
+  third and need plumbing. A plain battery to fill and drain directly with no loss would be the
+  cheap early-game store, with hydrogen as the big long-term one. Maybe a large multiblock
+  later. A Thermal Generator (Molten Salt heat to FE) is another way in.
 - **Tidal / wave power** - SU from ocean water levels, changing with the time of day, so it's
   different from Create's water wheel.
 - **Dedicated grid-scale storage** beyond Heat Battery / Kinetic Battery - a gravity battery
@@ -87,7 +67,7 @@ Glass have little to feed. The Electric Motor (2.2) gives FE a big job; these co
     biochar -> fertilizer -> algae -> biomass -> biochar.
   - Absorbs pollution in its chunk like the Biofilter (real photobioreactors are built
     around eating CO2).
-  - Open: a fixed 1x1x2 small version as well, or only the multiblock?
+  - Multiblock only, max 3 wide and 8 tall, seeded with Kelp (see docs/BIOREACTOR.md).
 - **Oxygen uses** - from the Electrolyzer, and later the Bioreactor.
   - Aerobic treatment in the Fermentation Vat: speeds up Rich Fertilizer only. That's
     composting, which really is aerobic; biofuel (ethanol) fermentation is anaerobic and

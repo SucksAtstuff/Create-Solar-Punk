@@ -41,6 +41,7 @@ import net.succ.solar_punk.block.custom.StreetlampBlock;
 import net.succ.solar_punk.block.custom.WireConnectorBlock;
 import net.succ.solar_punk.block.custom.RedstoneWireRelayBlock;
 import net.succ.solar_punk.block.custom.WireSwitchBlock;
+import net.succ.solar_punk.block.custom.EndPlateBlock;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.succ.solar_punk.block.custom.GrowLampBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
@@ -84,6 +85,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
         // The block model has no shaft (ElectricMotorRenderer spins one); the item keeps the modelled one.
         facingCustomModelBlock(ModBlocks.ELECTRIC_MOTOR, false);
         facingCustomModelBlock(ModBlocks.ELECTROLYZER, true);
+        axisBlock(ModBlocks.FUEL_CELL.get(), modLoc("block/fuel_cell_side"), modLoc("block/fuel_cell_front"));
+        simpleBlockItem(ModBlocks.FUEL_CELL.get(), new UncheckedModelFile(modLoc("block/fuel_cell")));
+        endPlateBlock();
         itemModels().getBuilder(ModBlocks.ELECTRIC_MOTOR.getId().getPath())
                 .parent(new UncheckedModelFile(modLoc("block/electric_motor_item")));
         fermentationVatBlock();
@@ -667,6 +671,18 @@ public class ModBlockStateProvider extends BlockStateProvider {
             return ConfiguredModel.builder().modelFile(model).rotationX(x).rotationY(y % 360).build();
         });
         simpleBlockItem(ModBlocks.WIRE_CONNECTOR.get(), model);
+    }
+
+    // The hand-made model faces north (ports and rod ends out); any of the six directions.
+    private void endPlateBlock() {
+        ModelFile model = new UncheckedModelFile(modLoc("block/end_plate"));
+        getVariantBuilder(ModBlocks.END_PLATE.get()).forAllStates(state -> {
+            Direction facing = state.getValue(EndPlateBlock.FACING);
+            int x = facing == Direction.DOWN ? 90 : facing == Direction.UP ? 270 : 0;
+            int y = facing.getAxis().isHorizontal() ? horizontalYRot(facing) : 0;
+            return ConfiguredModel.builder().modelFile(model).rotationX(x).rotationY(y).build();
+        });
+        simpleBlockItem(ModBlocks.END_PLATE.get(), model);
     }
 
     // Face-attached like a Lever, with the same rotations (WireSwitchBlock.xRot/yRot, which also

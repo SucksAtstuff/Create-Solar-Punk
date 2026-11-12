@@ -227,6 +227,8 @@
     "solarpunk:redstone_wire_relay",
     "solarpunk:electric_motor",
     "solarpunk:electrolyzer",
+    "solarpunk:fuel_cell",
+    "solarpunk:end_plate",
     "solarpunk:grow_lamp",
     "solarpunk:solar_plant_bed",
     "solarpunk:solar_shingles",

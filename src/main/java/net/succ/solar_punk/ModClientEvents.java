@@ -247,6 +247,8 @@ public class ModClientEvents {
         tip(ModBlocks.REDSTONE_WIRE_RELAY);
         tip(ModBlocks.ELECTRIC_MOTOR);
         tip(ModBlocks.ELECTROLYZER);
+        tip(ModBlocks.FUEL_CELL);
+        tip(ModBlocks.END_PLATE);
         tip(ModBlocks.GROW_LAMP);
         tip(ModBlocks.SOLAR_PLANT_BED);
         tip(ModBlocks.CHARRED_TIMBER);

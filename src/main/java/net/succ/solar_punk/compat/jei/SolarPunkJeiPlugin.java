@@ -33,7 +33,9 @@ public class SolarPunkJeiPlugin implements IModPlugin {
                 new SolarPowerTowerCategory(guiHelper),
                 new FermentationVatCategory(guiHelper),
                 new CrystallizerCategory(guiHelper),
-                new ParticleAcceleratorCategory(guiHelper)
+                new ParticleAcceleratorCategory(guiHelper),
+                new ElectrolyzerCategory(guiHelper),
+                new FuelCellCategory(guiHelper)
         );
     }
 
@@ -67,6 +69,9 @@ public class SolarPunkJeiPlugin implements IModPlugin {
                 .stream()
                 .map(RecipeHolder::value)
                 .toList());
+
+        registration.addRecipes(ElectrolyzerCategory.RECIPE_TYPE, List.of(ElectrolyzerCategory.INSTANCE));
+        registration.addRecipes(FuelCellCategory.RECIPE_TYPE, List.of(FuelCellCategory.INSTANCE));
     }
 
     @Override
@@ -76,5 +81,8 @@ public class SolarPunkJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.FERMENTATION_VAT.get()), FermentationVatCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.CRYSTALLIZER.get()), CrystallizerCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.PARTICLE_ACCELERATOR_INPUT.get()), ParticleAcceleratorCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.ELECTROLYZER.get()), ElectrolyzerCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.FUEL_CELL.get()), FuelCellCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.END_PLATE.get()), FuelCellCategory.RECIPE_TYPE);
     }
 }

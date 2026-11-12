@@ -36,6 +36,7 @@ import net.succ.solar_punk.block.entity.custom.SolarPlantBedBlockEntity;
 import net.succ.solar_punk.block.entity.custom.WireConnectorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.WireSwitchBlockEntity;
 import net.succ.solar_punk.block.entity.custom.ElectricMotorBlockEntity;
+import net.succ.solar_punk.block.entity.custom.EndPlateBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GreenhouseControllerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCasingBlockEntity;
@@ -114,6 +115,11 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WireConnectorBlockEntity>> WIRE_CONNECTOR =
             BLOCK_ENTITIES.register("wire_connector", () -> BlockEntityType.Builder
                     .of((pos, state) -> new WireConnectorBlockEntity(ModBlockEntities.WIRE_CONNECTOR.get(), pos, state), ModBlocks.WIRE_CONNECTOR.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EndPlateBlockEntity>> END_PLATE =
+            BLOCK_ENTITIES.register("end_plate", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new EndPlateBlockEntity(ModBlockEntities.END_PLATE.get(), pos, state), ModBlocks.END_PLATE.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElectricMotorBlockEntity>> ELECTRIC_MOTOR =

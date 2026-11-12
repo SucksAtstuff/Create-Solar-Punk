@@ -89,6 +89,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.REDSTONE_WIRE_RELAY.get())
                 .add(ModBlocks.ELECTRIC_MOTOR.get())
                 .add(ModBlocks.ELECTROLYZER.get())
+                .add(ModBlocks.FUEL_CELL.get())
+                .add(ModBlocks.END_PLATE.get())
                 .add(ModBlocks.GROW_LAMP.get())
                 .add(ModBlocks.SOLAR_PLANT_BED.get())
                 .add(ModBlocks.SOLAR_SHINGLES.get())

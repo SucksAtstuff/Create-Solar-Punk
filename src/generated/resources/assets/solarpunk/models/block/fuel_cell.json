@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "solarpunk:block/fuel_cell_front",
+    "side": "solarpunk:block/fuel_cell_side"
+  }
+}

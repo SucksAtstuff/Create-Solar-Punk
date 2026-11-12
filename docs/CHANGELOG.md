@@ -11,9 +11,10 @@
 
 - **Electric Motor** - turns FE back into rotation, so a roof of solar panels can drive Create machines anywhere your wires reach. Set its speed up to 64 RPM; faster uses more FE, and the speed picker shows the cost of each speed. If your supply can't keep up, Goggles show the fastest speed it can hold.
 
-### Electrolyzer
+### Hydrogen
 
 - **Electrolyzer** - splits Water into **Hydrogen** and **Oxygen** with FE, making twice as much Hydrogen as Oxygen. Pipe Water into the top, and each gas out of the copper flange beside its glass tube, where you can watch it collect.
+- **Fuel Cell** and **End Plate** - burn Hydrogen and Oxygen back into FE, so noon sunshine can run your base at night. Line up Fuel Cells with an End Plate at each end, and pipe Hydrogen into one plate and Oxygen into the other: every cell adds output, up to 16. Its only waste is Water, ready to pipe back into the Electrolyzer.
 
 ### Comparators and Display Links
 

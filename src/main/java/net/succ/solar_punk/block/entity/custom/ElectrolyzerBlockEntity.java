@@ -25,6 +25,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.ElectrolyzerBlock;
+import net.succ.solar_punk.compat.northstar.NorthstarCompat;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.util.EnergyFormat;
 import net.succ.solar_punk.util.FluidTankNBTHelper;
@@ -46,7 +47,7 @@ import java.util.List;
 public class ElectrolyzerBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 
     public final FluidTank waterTank = tank(Config.electrolyzerTank, stack -> stack.getFluid().isSame(Fluids.WATER));
-    public final FluidTank hydrogenTank = tank(Config.electrolyzerTank, stack -> stack.getFluid().isSame(ModFluids.HYDROGEN_SOURCE.get()));
+    public final FluidTank hydrogenTank = tank(Config.electrolyzerTank, stack -> NorthstarCompat.isHydrogen(stack.getFluid()));
     public final FluidTank oxygenTank = tank(Config.electrolyzerTank, stack -> stack.getFluid().isSame(ModFluids.OXYGEN_SOURCE.get()));
 
     // Water in only, for the top, front, back and bottom.
@@ -112,7 +113,7 @@ public class ElectrolyzerBlockEntity extends BlockEntity implements IHaveGoggleI
         if (canRun) {
             energy -= Config.electrolyzerFePerTick;
             waterTank.drain(water, IFluidHandler.FluidAction.EXECUTE);
-            hydrogenTank.fill(new FluidStack(ModFluids.HYDROGEN_SOURCE.get(), water), IFluidHandler.FluidAction.EXECUTE);
+            hydrogenTank.fill(new FluidStack(NorthstarCompat.electrolyzerHydrogen(), water), IFluidHandler.FluidAction.EXECUTE);
             if (oxygen > 0)
                 oxygenTank.fill(new FluidStack(ModFluids.OXYGEN_SOURCE.get(), oxygen), IFluidHandler.FluidAction.EXECUTE);
             oxygenRemainder = (oxygenRemainder + water) % 2;

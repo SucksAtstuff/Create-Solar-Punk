@@ -32,6 +32,8 @@ import net.succ.solar_punk.block.custom.SolarPlantBedBlock;
 import net.succ.solar_punk.block.custom.WireConnectorBlock;
 import net.succ.solar_punk.block.custom.WireSwitchBlock;
 import net.succ.solar_punk.block.custom.ElectricMotorBlock;
+import net.succ.solar_punk.block.custom.EndPlateBlock;
+import net.succ.solar_punk.block.custom.FuelCellBlock;
 import net.succ.solar_punk.block.custom.RedstoneWireRelayBlock;
 import net.succ.solar_punk.block.custom.GreenhouseControllerBlock;
 import net.succ.solar_punk.block.custom.TrellisBlock;
@@ -145,6 +147,23 @@ public class ModBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .sound(SoundType.COPPER)
+                    .noOcclusion()));
+
+    // Hydrogen and Oxygen back into FE: a row of Fuel Cells clamped between two End Plates.
+    // The plates run the stack (see EndPlateBlockEntity); cells pass goggles and FE to them.
+    public static final DeferredBlock<FuelCellBlock> FUEL_CELL = registerBlock("fuel_cell",
+            () -> new FuelCellBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_GRAY)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)
+                    .sound(SoundType.NETHERITE_BLOCK)));
+
+    public static final DeferredBlock<EndPlateBlock> END_PLATE = registerBlock("end_plate",
+            () -> new EndPlateBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_GRAY)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)
+                    .sound(SoundType.NETHERITE_BLOCK)
                     .noOcclusion()));
 
     public static final DeferredBlock<KineticBatteryBlock> KINETIC_BATTERY = registerBlock("kinetic_battery",

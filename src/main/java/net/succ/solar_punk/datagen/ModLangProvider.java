@@ -26,6 +26,10 @@ public class ModLangProvider extends LanguageProvider {
         add("jei.solarpunk.category.fermentation_vat", "Fermentation Vat");
         add("jei.solarpunk.category.crystallizing", "Crystallizer");
         add("jei.solarpunk.category.particle_accelerator", "Particle Accelerator");
+        add("jei.solarpunk.category.electrolysis", "Electrolysis");
+        add("jei.solarpunk.category.fuel_cell", "Fuel Cell");
+        add("jei.solarpunk.energy_used", "Uses %s");
+        add("jei.solarpunk.energy_made", "Makes %s");
         add("jei.solarpunk.particle_accelerator.diameter", "Ring diameter: %s+");
         add("jei.solarpunk.particle_accelerator.stress", "Stress: %s SU (at min diameter)");
         add("jei.solarpunk.particle_accelerator.speed", "Min speed: %s RPM");
@@ -89,6 +93,12 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.electrolyzer_header", "Electrolyzer");
         add("create.solar_punk.tooltip.hydrogen", "Hydrogen: ");
         add("create.solar_punk.tooltip.oxygen", "Oxygen: ");
+        add("create.solar_punk.tooltip.fuel_cell_header", "Fuel Cell Stack");
+        add("create.solar_punk.tooltip.fuel_cell_cells", "Cells: ");
+        add("create.solar_punk.tooltip.output", "Output: ");
+        add("create.solar_punk.tooltip.fuel_cell_no_cells", "No Fuel Cells behind this End Plate");
+        add("create.solar_punk.tooltip.fuel_cell_no_plate", "Needs an End Plate at the other end");
+        add("create.solar_punk.tooltip.fuel_cell_too_long", "Too long: at most %1$s Fuel Cells");
         add("create.solar_punk.tooltip.redstone_wire_relay_header", "Redstone Wire Relay");
         add("create.solar_punk.tooltip.switch_state", "State: ");
         add("create.solar_punk.tooltip.switch_closed", "Closed");
@@ -314,6 +324,14 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.wire_switch.tooltip.behaviour1", "Opens or closes the switch. A _Comparator_ reads 15 while it's closed.");
         add("block.solarpunk.wire_switch.tooltip.condition2", "Right-click with Shears");
         add("block.solarpunk.wire_switch.tooltip.behaviour2", "Cuts every wire on it and drops the wires.");
+        add("block.solarpunk.fuel_cell.tooltip.summary", "Burns _Hydrogen_ and _Oxygen_ back into _FE_. Line them up in a row or column with an _End Plate_ at each end to make a stack.");
+        add("block.solarpunk.fuel_cell.tooltip.condition1", "In a stack");
+        add("block.solarpunk.fuel_cell.tooltip.behaviour1", "Each cell adds output and fuel use, up to _16_ cells. Its only waste is _Water_. Take _FE_ from any cell with a _Wire Connector_.");
+        add("block.solarpunk.end_plate.tooltip.summary", "Clamps the end of a _Fuel Cell_ stack. Place one facing out at each end.");
+        add("block.solarpunk.end_plate.tooltip.condition1", "Pipes");
+        add("block.solarpunk.end_plate.tooltip.behaviour1", "The port with arrows pointing in takes _Hydrogen_ or _Oxygen_: pipe one gas into each End Plate. The other port gives out _Water_. Take _FE_ from any side, with a _Wire Connector_ or a machine touching it.");
+        add("block.solarpunk.end_plate.tooltip.condition2", "When powered");
+        add("block.solarpunk.end_plate.tooltip.behaviour2", "A _Redstone_ signal on either plate pauses the stack, saving fuel.");
         add("block.solarpunk.electric_motor.tooltip.summary", "Turns _FE_ into _rotational force_. Feed it from a _Brass Solar Panel_ or a _Wire Connector_ on any side.");
         add("block.solarpunk.electric_motor.tooltip.condition1", "When powered");
         add("block.solarpunk.electric_motor.tooltip.behaviour1", "Spins at the speed you set on it, up to _64 RPM_ either way. It uses FE for that speed whatever the load, so set it _slower_ to save power.");

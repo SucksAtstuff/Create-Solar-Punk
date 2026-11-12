@@ -120,6 +120,7 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_TURBINE_STEAM_PER_LAYER_PER_TICK;
     private static final ModConfigSpec.IntValue CFG_TURBINE_CONDENSATE_RATIO;
     private static final ModConfigSpec.BooleanValue CFG_TURBINE_CROWNS_STEAM;
+    private static final ModConfigSpec.BooleanValue CFG_ELECTROLYZER_NORTHSTAR_HYDROGEN;
     private static final ModConfigSpec.DoubleValue CFG_TURBINE_CROWNS_MIN_VAPOR_QUALITY;
 
     private static final ModConfigSpec.DoubleValue CFG_SOLAR_POWER_TOWER_SALT_MULTIPLIER;
@@ -237,6 +238,7 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_STREETLAMP_MAX_RECEIVE;
     private static final ModConfigSpec.IntValue CFG_GROW_LAMP_FE_PER_TICK, CFG_GROW_LAMP_BUFFER, CFG_GROW_LAMP_MAX_RECEIVE, CFG_GROW_LAMP_RANGE;
     private static final ModConfigSpec.DoubleValue CFG_GROW_LAMP_GROWTH_BOOST;
+    private static final ModConfigSpec.IntValue CFG_FUEL_CELL_HYDROGEN_PER_TICK, CFG_FUEL_CELL_FE_PER_TICK, CFG_FUEL_CELL_MAX_LENGTH, CFG_FUEL_CELL_TANK;
     private static final ModConfigSpec.IntValue CFG_ELECTROLYZER_FE_PER_TICK, CFG_ELECTROLYZER_WATER_PER_TICK, CFG_ELECTROLYZER_BUFFER, CFG_ELECTROLYZER_MAX_RECEIVE;
     private static final ModConfigSpec.IntValue CFG_SOLAR_PLANT_BED_MORNING_FE, CFG_SOLAR_PLANT_BED_NOON_FE, CFG_SOLAR_PLANT_BED_FE_PER_TICK, CFG_SOLAR_PLANT_BED_BUFFER;
     private static final ModConfigSpec.DoubleValue CFG_SOLAR_PLANT_BED_GROWTH_BOOST;
@@ -495,6 +497,14 @@ public class Config {
         CFG_ELECTROLYZER_WATER_PER_TICK = BUILDER.comment("mB of Water split per tick while running. Makes the same amount of Hydrogen and half as much Oxygen").defineInRange("water_per_tick", 2, 1, 10_000);
         CFG_ELECTROLYZER_BUFFER         = BUILDER.comment("FE an Electrolyzer stores").defineInRange("buffer_capacity", 10_000, 100, 10_000_000);
         CFG_ELECTROLYZER_MAX_RECEIVE    = BUILDER.comment("Max FE per tick an Electrolyzer accepts").defineInRange("max_receive", 400, 1, 1_000_000);
+        CFG_ELECTROLYZER_NORTHSTAR_HYDROGEN = BUILDER.comment("With Northstar installed, make Northstar's Liquid Hydrogen instead of Solarpunk Hydrogen. Fuel Cells and the Steam Turbine burn either. Does nothing without Northstar").define("northstar_hydrogen", false);
+        BUILDER.pop();
+
+        BUILDER.push("fuel_cell");
+        CFG_FUEL_CELL_HYDROGEN_PER_TICK = BUILDER.comment("mB of Hydrogen each Fuel Cell in a stack burns per tick, with half as much Oxygen. Makes the same amount of Water").defineInRange("hydrogen_per_tick", 1, 1, 10_000);
+        CFG_FUEL_CELL_FE_PER_TICK       = BUILDER.comment("FE/t each Fuel Cell in a stack makes. The default gives back 65% of what the Electrolyzer used").defineInRange("fe_per_tick", 13, 1, 1_000_000);
+        CFG_FUEL_CELL_MAX_LENGTH        = BUILDER.comment("Most Fuel Cells between two End Plates").defineInRange("max_length", 16, 1, 64);
+        CFG_FUEL_CELL_TANK              = BUILDER.comment("mB in each of a stack's Hydrogen, Oxygen and Water tanks").defineInRange("tank_mb", 4000, 100, 1_000_000);
         BUILDER.pop();
 
         BUILDER.push("solar_plant_bed");
@@ -745,6 +755,8 @@ public class Config {
     public static int streetlampFePerTick, streetlampBuffer, streetlampMaxReceive;
     public static int growLampFePerTick, growLampBuffer, growLampMaxReceive, growLampRange;
     public static double growLampGrowthBoost;
+    public static int fuelCellHydrogenPerTick, fuelCellFePerTick, fuelCellMaxLength, fuelCellTank;
+    public static boolean electrolyzerNorthstarHydrogen;
     public static int electrolyzerFePerTick, electrolyzerWaterPerTick, electrolyzerBuffer, electrolyzerMaxReceive, electrolyzerTank;
     public static int solarPlantBedMorningFe, solarPlantBedNoonFe, solarPlantBedFePerTick, solarPlantBedBuffer;
     public static double solarPlantBedGrowthBoost;
@@ -903,9 +915,14 @@ public class Config {
         growLampRange                   = CFG_GROW_LAMP_RANGE.get();
         growLampGrowthBoost             = CFG_GROW_LAMP_GROWTH_BOOST.get();
         electrolyzerFePerTick           = CFG_ELECTROLYZER_FE_PER_TICK.get();
+        fuelCellHydrogenPerTick         = CFG_FUEL_CELL_HYDROGEN_PER_TICK.get();
+        fuelCellFePerTick               = CFG_FUEL_CELL_FE_PER_TICK.get();
+        fuelCellMaxLength               = CFG_FUEL_CELL_MAX_LENGTH.get();
+        fuelCellTank                    = CFG_FUEL_CELL_TANK.get();
         electrolyzerWaterPerTick        = CFG_ELECTROLYZER_WATER_PER_TICK.get();
         electrolyzerBuffer              = CFG_ELECTROLYZER_BUFFER.get();
         electrolyzerMaxReceive          = CFG_ELECTROLYZER_MAX_RECEIVE.get();
+        electrolyzerNorthstarHydrogen   = CFG_ELECTROLYZER_NORTHSTAR_HYDROGEN.get();
         electrolyzerTank                = CFG_ELECTROLYZER_TANK.get();
         solarPlantBedMorningFe               = CFG_SOLAR_PLANT_BED_MORNING_FE.get();
         solarPlantBedNoonFe                  = CFG_SOLAR_PLANT_BED_NOON_FE.get();

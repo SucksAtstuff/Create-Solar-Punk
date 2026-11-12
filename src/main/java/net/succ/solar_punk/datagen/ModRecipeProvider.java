@@ -409,6 +409,28 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_electron_tube", has(createItem("electron_tube")))
                 .save(output);
 
+        // Carbon plates around a gold catalyst, sheathed in iron.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.FUEL_CELL.get(), 2)
+                .pattern("ICI")
+                .pattern("CGC")
+                .pattern("ICI")
+                .define('I', ModTags.Items.PLATES_IRON)
+                .define('C', ItemTags.COALS)
+                .define('G', Tags.Items.NUGGETS_GOLD)
+                .unlockedBy("has_electrolyzer", has(ModBlocks.ELECTROLYZER.get()))
+                .save(output);
+
+        // An iron clamp plate with two copper ports.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.END_PLATE.get())
+                .pattern("NIN")
+                .pattern("PIP")
+                .pattern("NIN")
+                .define('N', createItem("copper_nugget"))
+                .define('I', ModTags.Items.PLATES_IRON)
+                .define('P', createItem("fluid_pipe"))
+                .unlockedBy("has_electrolyzer", has(ModBlocks.ELECTROLYZER.get()))
+                .save(output);
+
         // Vanilla-tier on purpose (iron, furnace, bucket) so it's the first machine you can make.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.FIREBOX_BOILER.get())
                 .pattern("III")
