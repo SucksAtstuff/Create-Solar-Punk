@@ -25,6 +25,9 @@ public class SolarPunkPonderTags {
     public static final ResourceLocation PARTICLE_ACCELERATOR =
             ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "particle_accelerator");
 
+    public static final ResourceLocation ELECTRICITY =
+            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "electricity");
+
     public static void register(PonderTagRegistrationHelper<ResourceLocation> helper) {
         helper.registerTag(SOLAR_MACHINES)
                 .addToIndex()
@@ -54,7 +57,27 @@ public class SolarPunkPonderTags {
                 .add(ModBlocks.BIOMASS_GASIFIER.getId())
                 .add(ModBlocks.BIOFUEL_ENGINE.getId())
                 .add(ModBlocks.FERMENTATION_VAT.getId())
-                .add(ModBlocks.GREENHOUSE_CONTROLLER.getId());
+                .add(ModBlocks.GREENHOUSE_CONTROLLER.getId())
+                .add(ModBlocks.GROW_LAMP.getId())
+                .add(ModBlocks.KINETIC_SPRINKLER.getId())
+                .add(ModBlocks.BIOFILTER.getId());
+
+        helper.registerTag(ELECTRICITY)
+                .addToIndex()
+                .item(ModBlocks.WIRE_CONNECTOR.get(), true, false)
+                .title("Electricity")
+                .description("Moving FE around with wires, and turning it into rotation or back into fuel")
+                .register();
+
+        helper.addToTag(ELECTRICITY)
+                .add(ModBlocks.WIRE_CONNECTOR.getId())
+                .add(ModBlocks.WIRE_SWITCH.getId())
+                .add(ModBlocks.REDSTONE_WIRE_RELAY.getId())
+                .add(ModBlocks.ELECTRIC_MOTOR.getId())
+                .add(ModBlocks.BRASS_SOLAR_PANEL.getId())
+                .add(ModBlocks.ELECTROLYZER.getId())
+                .add(ModBlocks.FUEL_CELL.getId())
+                .add(ModBlocks.END_PLATE.getId());
 
         helper.registerTag(SOLAR_TOWER)
                 .addToIndex()
@@ -76,6 +99,7 @@ public class SolarPunkPonderTags {
 
         helper.addToTag(STEAM_TURBINE)
                 .add(ModBlocks.TURBINE_ROTOR.getId())
+                .add(ModBlocks.FIREBOX_BOILER.getId())
                 .add(ModBlocks.TURBINE_CASING.getId())
                 .add(ModBlocks.TURBINE_CASING_GLASS.getId())
                 .add(ModBlocks.ANDESITE_TURBINE_BLADE.getId())

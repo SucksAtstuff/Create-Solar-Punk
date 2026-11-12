@@ -13,6 +13,7 @@ import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
+import net.succ.solar_punk.block.custom.SolarHeaterBlock;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.fluid.ModFluids;
 
@@ -20,57 +21,67 @@ public class HeatBatteryScenes {
 
     private static final BlockPos BATTERY = new BlockPos(2, 1, 2);
 
+    // Schematic "heat_battery/filling" is the Solar Heater's line: a Chest on a Hopper feeding a
+    // Solar Heater, piped into the battery at (3,1,2). See SolarHeaterScenes.
     public static void filling(SceneBuilder builder, SceneBuildingUtil util) {
         CreateSceneBuilder scene = new CreateSceneBuilder(builder);
         scene.title("heat_battery_filling", "Filling the Heat Battery");
         scene.configureBasePlate(0, 0, 5);
 
+        BlockPos battery = SolarHeaterScenes.LINE_BATTERY;
+        BlockPos heater = SolarHeaterScenes.LINE_HEATER;
+        BlockPos pipe = SolarHeaterScenes.LINE_PIPE;
+
         scene.world().showSection(util.select().layer(0), Direction.UP);
         scene.idle(10);
-        scene.world().showSection(util.select().position(BATTERY), Direction.DOWN);
+        scene.world().showSection(util.select().position(battery), Direction.DOWN);
         scene.idle(20);
 
         scene.overlay().showText(70)
                 .text("The Heat Battery stores heat from Molten Salt")
-                .pointAt(util.vector().topOf(BATTERY))
+                .pointAt(util.vector().topOf(battery))
                 .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
-        scene.overlay().showControls(util.vector().blockSurface(BATTERY, Direction.WEST), Pointing.LEFT, 70)
-                .withItem(new ItemStack(ModFluids.MOLTEN_SALT_BUCKET.get()));
+        scene.world().showSection(util.select().fromTo(0, 1, 2, 1, 2, 2), Direction.DOWN);
+        scene.idle(10);
+        scene.world().showSection(util.select().position(pipe), Direction.DOWN);
+        scene.idle(15);
+        scene.world().modifyBlock(heater, s -> s.setValue(SolarHeaterBlock.LIT, true), false);
         scene.overlay().showText(70)
-                .text("Pipe Molten Salt into any side, or right-click with a bucket")
-                .pointAt(util.vector().blockSurface(BATTERY, Direction.WEST))
+                .text("Pipe Molten Salt into any side, here straight from a Solar Heater, or right-click with a bucket")
+                .pointAt(util.vector().centerOf(pipe))
                 .placeNearTarget()
                 .attachKeyFrame();
-        scene.world().modifyBlockEntity(BATTERY, HeatBatteryBlockEntity.class, be ->
+        scene.world().modifyBlockEntity(battery, HeatBatteryBlockEntity.class, be ->
                 be.fluidTank.fill(new FluidStack(ModFluids.MOLTEN_SALT_SOURCE.get(), 8000),
                         IFluidHandler.FluidAction.EXECUTE));
         scene.idle(80);
 
-        scene.world().modifyBlock(BATTERY, s -> s.setValue(HeatBatteryBlock.HEAT, 1), false);
+        scene.world().modifyBlock(battery, s -> s.setValue(HeatBatteryBlock.HEAT, 1), false);
         scene.overlay().showText(70)
                 .text("It slowly turns the salt into stored heat, and starts glowing")
-                .pointAt(util.vector().centerOf(BATTERY))
+                .pointAt(util.vector().centerOf(battery))
                 .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
-        scene.world().modifyBlock(BATTERY, s -> s.setValue(HeatBatteryBlock.HEAT, 2), false);
-        scene.effects().indicateSuccess(BATTERY);
+        scene.world().modifyBlock(battery, s -> s.setValue(HeatBatteryBlock.HEAT, 2), false);
+        scene.effects().indicateSuccess(battery);
         scene.overlay().showText(70)
                 .text("Once its heat store is a quarter full, it's Superheated and glows brighter")
-                .pointAt(util.vector().centerOf(BATTERY))
+                .pointAt(util.vector().centerOf(battery))
                 .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
 
-        scene.overlay().showControls(util.vector().topOf(BATTERY), Pointing.DOWN, 70)
+        scene.overlay().showControls(util.vector().topOf(battery), Pointing.DOWN, 30)
                 .withItem(new ItemStack(Items.COMPARATOR));
+        scene.idle(35);
         scene.overlay().showText(70)
                 .text("Goggles show the stored heat, and Comparators read it as a signal")
-                .pointAt(util.vector().topOf(BATTERY))
+                .pointAt(util.vector().topOf(battery))
                 .placeNearTarget();
         scene.idle(80);
 

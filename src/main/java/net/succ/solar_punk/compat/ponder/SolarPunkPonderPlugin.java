@@ -6,6 +6,7 @@ import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.item.ModItems;
 
 public class SolarPunkPonderPlugin implements PonderPlugin {
 
@@ -73,6 +74,32 @@ public class SolarPunkPonderPlugin implements PonderPlugin {
         helper.forComponents(ModBlocks.PARTICLE_ACCELERATOR_INPUT.getId(), ModBlocks.PARTICLE_ACCELERATOR_PIPE.getId())
                 .addStoryBoard("particle_accelerator/ring", ParticleAcceleratorScenes::ring, SolarPunkPonderTags.PARTICLE_ACCELERATOR)
                 .addStoryBoard("particle_accelerator/crafting", ParticleAcceleratorScenes::crafting, SolarPunkPonderTags.PARTICLE_ACCELERATOR);
+
+        helper.addStoryBoard(ModBlocks.GROW_LAMP.getId(), "grow_lamp/usage",
+                GrowLampScenes::usage, SolarPunkPonderTags.BIO_MACHINES);
+
+        helper.addStoryBoard(ModBlocks.KINETIC_SPRINKLER.getId(), "kinetic_sprinkler/usage",
+                KineticSprinklerScenes::usage, SolarPunkPonderTags.BIO_MACHINES);
+
+        helper.addStoryBoard(ModBlocks.BIOFILTER.getId(), "biofilter/usage",
+                BiofilterScenes::usage, SolarPunkPonderTags.BIO_MACHINES);
+
+        helper.addStoryBoard(ModBlocks.FIREBOX_BOILER.getId(), "firebox_boiler/usage",
+                FireboxBoilerScenes::usage, SolarPunkPonderTags.STEAM_TURBINE);
+
+        helper.addStoryBoard(ModBlocks.ELECTRIC_MOTOR.getId(), "electric_motor/usage",
+                ElectricMotorScenes::usage, SolarPunkPonderTags.ELECTRICITY);
+
+        helper.forComponents(ModBlocks.FUEL_CELL.getId(), ModBlocks.END_PLATE.getId())
+                .addStoryBoard("fuel_cell/usage", FuelCellScenes::usage, SolarPunkPonderTags.ELECTRICITY);
+
+        helper.forComponents(ModBlocks.WIRE_CONNECTOR.getId(), ModItems.IRON_SPOOL.getId(),
+                        ModItems.COPPER_SPOOL.getId(), ModItems.GOLD_SPOOL.getId())
+                .addStoryBoard("wire_connector/usage", WireScenes::connector, SolarPunkPonderTags.ELECTRICITY);
+
+        helper.forComponents(ModBlocks.WIRE_SWITCH.getId(), ModBlocks.REDSTONE_WIRE_RELAY.getId())
+                .addStoryBoard("wire_switch/usage", WireScenes::wireSwitch, SolarPunkPonderTags.ELECTRICITY)
+                .addStoryBoard("wire_switch/relay", WireScenes::relay, SolarPunkPonderTags.ELECTRICITY);
     }
 
     @Override

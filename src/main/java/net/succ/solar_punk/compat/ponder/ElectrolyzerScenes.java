@@ -48,15 +48,19 @@ public class ElectrolyzerScenes {
                 .attachKeyFrame();
         scene.idle(80);
 
-        scene.overlay().showControls(util.vector().topOf(MACHINE), Pointing.DOWN, 70)
+        scene.world().showSection(util.select().fromTo(2, 2, 2, 2, 3, 2), Direction.DOWN);
+        scene.idle(10);
+        scene.overlay().showControls(util.vector().topOf(2, 3, 2), Pointing.DOWN, 30)
                 .withItem(new ItemStack(Items.WATER_BUCKET));
-        scene.overlay().showText(70)
-                .text("Pipe Water into the top, or any face without a flange")
-                .pointAt(util.vector().topOf(MACHINE))
-                .placeNearTarget()
-                .attachKeyFrame();
+        scene.idle(10);
         scene.world().modifyBlockEntity(MACHINE, ElectrolyzerBlockEntity.class, be ->
                 be.waterTank.fill(new FluidStack(Fluids.WATER, 4000), IFluidHandler.FluidAction.EXECUTE));
+        scene.idle(25);
+        scene.overlay().showText(70)
+                .text("Pipe Water into the top, or any face without a flange")
+                .pointAt(util.vector().blockSurface(MACHINE, Direction.NORTH))
+                .placeNearTarget()
+                .attachKeyFrame();
         scene.idle(80);
 
         scene.world().modifyBlock(MACHINE, s -> s.setValue(ElectrolyzerBlock.LIT, true), false);
@@ -74,19 +78,31 @@ public class ElectrolyzerScenes {
 
         // Facing north, Hydrogen comes out of the east flange and Oxygen out of the west one
         // (the left and right as seen from the front).
-        scene.overlay().showControls(util.vector().blockSurface(MACHINE, Direction.EAST), Pointing.RIGHT, 70)
+        scene.world().showSection(util.select().fromTo(3, 1, 2, 4, 1, 2), Direction.WEST);
+        scene.idle(10);
+        scene.overlay().showControls(util.vector().topOf(3, 1, 2), Pointing.DOWN, 30)
                 .withItem(new ItemStack(ModFluids.HYDROGEN_BUCKET.get()));
-        scene.overlay().showControls(util.vector().blockSurface(MACHINE, Direction.WEST), Pointing.LEFT, 70)
-                .withItem(new ItemStack(ModFluids.OXYGEN_BUCKET.get()));
-        scene.overlay().showText(70)
-                .text("Each gas leaves through the copper flange beside its tube")
-                .pointAt(util.vector().blockSurface(MACHINE, Direction.EAST))
+        scene.idle(35);
+        scene.overlay().showText(60)
+                .text("Hydrogen leaves through the copper flange beside its tube...")
+                .pointAt(util.vector().centerOf(3, 1, 2))
                 .placeNearTarget()
                 .attachKeyFrame();
-        scene.idle(80);
+        scene.idle(70);
+
+        scene.world().showSection(util.select().fromTo(0, 1, 2, 1, 1, 2), Direction.EAST);
+        scene.idle(10);
+        scene.overlay().showControls(util.vector().topOf(1, 1, 2), Pointing.DOWN, 30)
+                .withItem(new ItemStack(ModFluids.OXYGEN_BUCKET.get()));
+        scene.idle(35);
+        scene.overlay().showText(60)
+                .text("...and Oxygen through the one on the other side")
+                .pointAt(util.vector().centerOf(1, 1, 2))
+                .placeNearTarget();
+        scene.idle(70);
 
         scene.overlay().showText(70)
-                .text("If either gas tank fills up it stops, so pipe both gases away")
+                .text("If either gas tank fills up it stops, so pipe both gases away: to a Fuel Cell stack, or a Steam Turbine for the Hydrogen")
                 .pointAt(util.vector().centerOf(MACHINE))
                 .placeNearTarget();
         scene.idle(80);

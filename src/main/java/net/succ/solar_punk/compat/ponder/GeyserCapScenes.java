@@ -1,5 +1,10 @@
 package net.succ.solar_punk.compat.ponder;
 
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ItemStack;
+import com.simibubi.create.content.kinetics.press.PressingBehaviour;
+import com.simibubi.create.content.kinetics.press.MechanicalPressBlockEntity;
+import com.simibubi.create.AllItems;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
@@ -14,13 +19,18 @@ public class GeyserCapScenes {
     private static final BlockPos CAP = new BlockPos(2, 2, 2);
     private static final BlockPos SHAFT_WEST = new BlockPos(1, 2, 2);
     private static final BlockPos SHAFT_EAST = new BlockPos(3, 2, 2);
+    // A Mechanical Press over a Depot set into the floor, and an Encased Fan
+    private static final BlockPos PRESS = new BlockPos(4, 2, 2);
+    private static final BlockPos DEPOT = new BlockPos(4, 0, 2);
+    private static final BlockPos FAN = new BlockPos(0, 2, 2);
 
     public static void usage(SceneBuilder builder, SceneBuildingUtil util) {
         CreateSceneBuilder scene = new CreateSceneBuilder(builder);
         scene.title("geyser_cap_usage", "Geyser Cap");
         scene.configureBasePlate(0, 0, 5);
 
-        scene.world().showSection(util.select().layer(0), Direction.UP);
+        scene.world().showSection(util.select().layer(0).substract(util.select().position(DEPOT)), Direction.UP);
+        scene.world().showSection(util.select().position(DEPOT), Direction.UP);
         scene.idle(10);
         scene.world().showSection(util.select().position(VENT), Direction.UP);
         scene.idle(20);
@@ -63,6 +73,28 @@ public class GeyserCapScenes {
                 .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
+
+        scene.world().showSection(util.select().position(PRESS), Direction.WEST);
+        scene.world().showSection(util.select().position(FAN), Direction.EAST);
+        scene.idle(10);
+        scene.world().setKineticSpeed(util.select().position(PRESS).add(util.select().position(FAN)), 32f);
+        scene.overlay().showText(70)
+                .text("Run machines off either side: here a Mechanical Press and an Encased Fan")
+                .pointAt(util.vector().topOf(PRESS))
+                .placeNearTarget()
+                .attachKeyFrame();
+        for (int i = 0; i < 2; i++) {
+            scene.world().createItemOnBeltLike(DEPOT, Direction.UP, new ItemStack(Items.IRON_INGOT));
+            scene.idle(15);
+            scene.world().modifyBlockEntity(PRESS, MechanicalPressBlockEntity.class,
+                    be -> be.getPressingBehaviour().start(PressingBehaviour.Mode.BELT));
+            scene.idle(15);
+            scene.world().removeItemsFromBelt(DEPOT);
+            scene.world().createItemOnBeltLike(DEPOT, Direction.UP, AllItems.IRON_SHEET.asStack());
+            scene.idle(25);
+            scene.world().removeItemsFromBelt(DEPOT);
+        }
+        scene.idle(10);
 
         scene.markAsFinished();
     }

@@ -40,72 +40,127 @@ public class ModPonderProvider implements DataProvider {
     private static final Map<String, SceneStructure> SCHEMATICS = new LinkedHashMap<>();
 
     static {
-        SCHEMATICS.put("biomass_gasifier/usage", new SceneStructure()
-                .withBasePlate()
-                .addBlock(2, 1, 2, "create:shaft", "axis", "y")
-                .addBlock(2, 2, 2, "solarpunk:biomass_gasifier", "facing", "north", "lit", "false"));
+        // Like Create's own mixer scene: a Basin, a one-block gap, then the Mechanical Mixer, turned
+        // by a cogwheel beside it (a mixer has no shaft input). The gasifier sits on that cogwheel
+        // on an Andesite Casing pillar, fed by a Hopper (with a Chest on it) on a pillar to its
+        // west. See BiomassGasifierScenes.
+        SceneStructure gasifier = new SceneStructure(5, 6, 5).withBasePlate()
+                .addBlock(2, 1, 2, "create:basin", "facing", "down")
+                .addBlock(2, 3, 2, "create:mechanical_mixer")
+                .addBlock(1, 1, 2, "create:andesite_casing")
+                .addBlock(1, 2, 2, "create:andesite_casing")
+                .addBlock(1, 3, 2, "create:cogwheel", "axis", "y")
+                .addBlock(1, 4, 2, "solarpunk:biomass_gasifier", "facing", "north", "lit", "false")
+                .addBlock(0, 1, 2, "create:andesite_casing")
+                .addBlock(0, 2, 2, "create:andesite_casing")
+                .addBlock(0, 3, 2, "create:andesite_casing")
+                .addBlock(0, 4, 2, "minecraft:hopper", "facing", "east", "enabled", "true")
+                .addBlock(0, 5, 2, "minecraft:chest", "facing", "north", "type", "single");
+        SCHEMATICS.put("biomass_gasifier/usage", gasifier);
 
-        SCHEMATICS.put("biofuel_engine/usage", new SceneStructure()
-                .withBasePlate()
-                .addBlock(2, 1, 2, "create:shaft", "axis", "y")
-                .addBlock(2, 2, 2, "solarpunk:biofuel_engine", "facing", "north", "lit", "false"));
+        // Engine on a Gearbox, a shaft east into a Mechanical Drill facing a block of Andesite,
+        // and a fuel pipe into the engine's west side. See BiofuelEngineScenes.
+        SceneStructure engine = new SceneStructure().withBasePlate()
+                .addBlock(1, 1, 2, "create:gearbox", "axis", "z")
+                .addBlock(1, 2, 2, "solarpunk:biofuel_engine", "facing", "north", "lit", "false")
+                .addBlock(2, 1, 2, "create:shaft", "axis", "x")
+                .addBlock(3, 1, 2, "create:mechanical_drill", "facing", "east")
+                .addBlock(4, 1, 2, "minecraft:andesite");
+        addPipe(engine, 0, 2, 2, "east", "west");
+        SCHEMATICS.put("biofuel_engine/usage", engine);
 
-        SceneStructure solarHeaterScene = new SceneStructure()
-                .withBasePlate()
-                .addBlock(2, 1, 2, "solarpunk:solar_heater",
-                        "facing", "north", "lit", "false");
+        // Chest -> Hopper -> Solar Heater -> pipe -> Heat Battery, along x at z=2. Shared with
+        // the Heat Battery's filling scene. See SolarHeaterScenes / HeatBatteryScenes.
+        SceneStructure saltLine = new SceneStructure().withBasePlate()
+                .addBlock(0, 1, 2, "minecraft:hopper", "facing", "east", "enabled", "true")
+                .addBlock(0, 2, 2, "minecraft:chest", "facing", "north", "type", "single")
+                .addBlock(1, 1, 2, "solarpunk:solar_heater", "facing", "north", "lit", "false")
+                .addBlock(3, 1, 2, "solarpunk:heat_battery", "heat", "0");
+        addPipe(saltLine, 2, 1, 2, "east", "west");
+        SCHEMATICS.put("solar_heater/usage", saltLine);
 
-        SCHEMATICS.put("solar_heater/usage", solarHeaterScene);
-        SCHEMATICS.put("solar_heater/evaporation", solarHeaterScene);
+        // A water pipe into a Solar Heater standing on a Hopper that empties into a Chest
+        SceneStructure evaporation = new SceneStructure().withBasePlate()
+                .addBlock(2, 1, 2, "minecraft:hopper", "facing", "south", "enabled", "true")
+                .addBlock(2, 1, 3, "minecraft:chest", "facing", "north", "type", "single")
+                .addBlock(2, 2, 2, "solarpunk:solar_heater", "facing", "north", "lit", "false");
+        addPipe(evaporation, 0, 2, 2, "east", "west");
+        addPipe(evaporation, 1, 2, 2, "east", "west");
+        SCHEMATICS.put("solar_heater/evaporation", evaporation);
 
         SCHEMATICS.put("greenhouse/usage", addGreenhouse(new SceneStructure().withBasePlate()));
 
-        SCHEMATICS.put("crystallizer/usage", new SceneStructure()
-                .withBasePlate()
-                .addBlock(2, 1, 2, "solarpunk:crystallizer", "facing", "north", "lit", "false"));
+        // Crystallizer on a Hopper emptying into a Chest, with Molten Salt piped in from the west,
+        // Water from the north and Steam out to the east. See CrystallizerScenes.
+        SceneStructure crystallizer = new SceneStructure().withBasePlate()
+                .addBlock(2, 1, 2, "minecraft:hopper", "facing", "south", "enabled", "true")
+                .addBlock(2, 1, 3, "minecraft:chest", "facing", "north", "type", "single")
+                .addBlock(2, 2, 2, "solarpunk:crystallizer", "facing", "north", "lit", "false");
+        for (int x : new int[]{0, 1}) addPipe(crystallizer, x, 2, 2, "east", "west");
+        for (int z : new int[]{0, 1}) addPipe(crystallizer, 2, 2, z, "north", "south");
+        for (int x : new int[]{3, 4}) addPipe(crystallizer, x, 2, 2, "east", "west");
+        SCHEMATICS.put("crystallizer/usage", crystallizer);
 
-        SCHEMATICS.put("electrolyzer/usage", new SceneStructure()
-                .withBasePlate()
+        // Electrolyzer (facing north) with its Brass Solar Panel behind it, a pipe out of each
+        // flange (Hydrogen east, Oxygen west) and a Water pipe coming down into its top.
+        SceneStructure electrolyzer = new SceneStructure().withBasePlate()
                 .addBlock(2, 1, 2, "solarpunk:electrolyzer", "facing", "north", "lit", "false")
-                .addBlock(2, 1, 3, "solarpunk:brass_solar_panel", "lit", "false"));
+                .addBlock(2, 1, 3, "solarpunk:brass_solar_panel", "lit", "false");
+        for (int x : new int[]{0, 1, 3, 4}) addPipe(electrolyzer, x, 1, 2, "east", "west");
+        for (int y : new int[]{2, 3}) addPipe(electrolyzer, 2, y, 2, "up", "down");
+        SCHEMATICS.put("electrolyzer/usage", electrolyzer);
 
-        SCHEMATICS.put("solar_panel/andesite", new SceneStructure()
-                .withBasePlate()
-                .addBlock(2, 1, 2, "create:shaft", "axis", "y")
-                .addBlock(2, 2, 2, "solarpunk:andesite_solar_panel", "lit", "false"));
+        // Three Andesite Solar Panels on a row of meshing cogwheels driving a Millstone
+        SceneStructure andesitePanels = new SceneStructure().withBasePlate();
+        for (int x = 0; x <= 2; x++) {
+            andesitePanels.addBlock(x, 1, 2, "create:cogwheel", "axis", "y");
+            andesitePanels.addBlock(x, 2, 2, "solarpunk:andesite_solar_panel", "lit", "false");
+        }
+        andesitePanels.addBlock(3, 1, 2, "create:millstone");
+        SCHEMATICS.put("solar_panel/andesite", andesitePanels);
 
-        SCHEMATICS.put("solar_panel/brass", new SceneStructure()
-                .withBasePlate()
-                .addBlock(2, 1, 2, "solarpunk:brass_solar_panel", "lit", "false"));
+        // Three Brass Solar Panels (z=1): an Electric Motor touching the east one drives a shaft
+        // into an Encased Fan, and a Wire Connector on the middle one's south side is wired to one
+        // on the back of an Electrolyzer (its top and flange sides are pipe ports). See SolarPanelScenes.
+        SceneStructure brassPanels = new SceneStructure().withBasePlate();
+        for (int x = 0; x <= 2; x++) brassPanels.addBlock(x, 1, 1, "solarpunk:brass_solar_panel", "lit", "false");
+        brassPanels.addBlock(3, 1, 1, "solarpunk:electric_motor", "facing", "south", "lit", "false")
+                .addBlock(3, 1, 2, "create:shaft", "axis", "z")
+                .addBlock(3, 1, 3, "create:shaft", "axis", "z")
+                .addBlock(3, 1, 4, "create:encased_fan", "facing", "south")
+                .addBlock(1, 1, 2, "solarpunk:wire_connector", "facing", "south")
+                .addBlock(0, 1, 3, "solarpunk:electrolyzer", "facing", "north", "lit", "false")
+                .addBlock(0, 1, 4, "solarpunk:wire_connector", "facing", "south");
+        SCHEMATICS.put("solar_panel/brass", brassPanels);
 
-        SCHEMATICS.put("heat_battery/filling", new SceneStructure()
-                .withBasePlate()
-                .addBlock(2, 1, 2, "solarpunk:heat_battery", "heat", "0"));
+        SCHEMATICS.put("heat_battery/filling", saltLine);
 
         SCHEMATICS.put("heat_battery/usage", new SceneStructure()
                 .withBasePlate()
                 .addBlock(2, 1, 2, "solarpunk:heat_battery", "heat", "2"));
 
+        // Battery along Z. Charging side (south): a Gearbox (axis x, so it joins north and up)
+        // under an Andesite Solar Panel. Discharge side (north): a shaft into an Encased Fan.
         SCHEMATICS.put("kinetic_battery/usage", new SceneStructure()
                 .withBasePlate()
-                // battery on the Z axis so shaft connections are north/south
                 .addBlock(2, 1, 2, "solarpunk:kinetic_battery", "axis", "z", "lit", "false")
-                // charging side (south, z+): shaft then hand-crank facing south
-                // facing=south -> crank handle points away, shaft connects toward battery
-                .addBlock(2, 1, 3, "create:shaft", "axis", "z")
-                .addBlock(2, 1, 4, "create:hand_crank", "facing", "south")
-                // discharge side (north, z-): shaft then mechanical press facing=north
-                // facing=north -> press shaft connects on south face toward battery
+                .addBlock(2, 1, 3, "create:gearbox", "axis", "x")
+                .addBlock(2, 2, 3, "solarpunk:andesite_solar_panel", "lit", "false")
                 .addBlock(2, 1, 1, "create:shaft", "axis", "z")
-                .addBlock(2, 1, 0, "create:mechanical_press", "facing", "north"));
+                .addBlock(2, 1, 0, "create:encased_fan", "facing", "north"));
 
         // cap facing=north -> rotation axis=X -> shafts connect on east/west (x axis)
+        // East: a Mechanical Press over a Depot set into the floor (the gap a press needs).
+        // West: an Encased Fan.
         SCHEMATICS.put("geyser_cap/usage", new SceneStructure()
-                .withBasePlate()
+                .withBasePlateExcept(4, 2)
+                .addBlock(4, 0, 2, "create:depot")
                 .addBlock(2, 1, 2, "solarpunk:geyser_vent")
                 .addBlock(2, 2, 2, "solarpunk:geyser_cap", "facing", "north", "lit", "false")
                 .addBlock(1, 2, 2, "create:shaft", "axis", "x")
-                .addBlock(3, 2, 2, "create:shaft", "axis", "x"));
+                .addBlock(3, 2, 2, "create:shaft", "axis", "x")
+                .addBlock(4, 2, 2, "create:mechanical_press", "facing", "east")
+                .addBlock(0, 2, 2, "create:encased_fan", "facing", "west"));
 
         // 2x2x4, the smallest vat that ferments, and a 3x3x6 one to show scaling.
         // Sizes live in FermentationVatScenes so the scene and schematic can't drift apart.
@@ -151,6 +206,16 @@ public class ModPonderProvider implements DataProvider {
         // the same shape rules as FusionReactorCoreBlockEntity's structure scan.
         SCHEMATICS.put("fusion_reactor/structure",
                 addReactorShell(new SceneStructure(9, 10, 9).withBasePlate()));
+
+        SCHEMATICS.put("grow_lamp/usage", addGrowLampRoom(new SceneStructure(5, 7, 5).withBasePlate()));
+        SCHEMATICS.put("kinetic_sprinkler/usage", addSprinklerField(new SceneStructure(7, 5, 7)));
+        SCHEMATICS.put("firebox_boiler/usage", addFireboxRow(new SceneStructure(5, 4, 5).withBasePlate()));
+        SCHEMATICS.put("electric_motor/usage", addMotorPress(new SceneStructure(5, 5, 5).withBasePlate()));
+        SCHEMATICS.put("biofilter/usage", addBiofilterWasteland(new SceneStructure(5, 4, 5)));
+        SCHEMATICS.put("fuel_cell/usage", addFuelCellStack(new SceneStructure(7, 5, 5).withBasePlate()));
+        SCHEMATICS.put("wire_connector/usage", addWireNetwork(new SceneStructure(7, 4, 5).withBasePlate()));
+        SCHEMATICS.put("wire_switch/usage", addSwitchLine(new SceneStructure(7, 4, 5).withBasePlate(), false));
+        SCHEMATICS.put("wire_switch/relay", addSwitchLine(new SceneStructure(7, 4, 5).withBasePlate(), true));
     }
 
     // -------------------------------------------------------------------------
@@ -207,7 +272,7 @@ public class ModPonderProvider implements DataProvider {
                     }
                 } else {
                     s.addBlock(x, 1, z, "minecraft:farmland", "moisture", "7");
-                    s.addBlock(x, 2, z, "minecraft:wheat", "age", "1");
+                    s.addBlock(x, 2, z, "minecraft:wheat", "age", "1"); // planted again by GreenhouseScenes
                 }
                 s.addBlock(x, 4, z, "solarpunk:greenhouse_glass");
             }
@@ -348,6 +413,162 @@ public class ModPonderProvider implements DataProvider {
                     }
                 }
         s.addBlock(4, 5, 4, "solarpunk:fusion_reactor_core");
+        return s;
+    }
+
+    // A Create fluid pipe with the given sides connected.
+    private static SceneStructure addPipe(SceneStructure s, int x, int y, int z, String... sides) {
+        java.util.Set<String> open = java.util.Set.of(sides);
+        String[] props = new String[12];
+        String[] all = {"north", "south", "east", "west", "up", "down"};
+        for (int i = 0; i < all.length; i++) {
+            props[i * 2] = all[i];
+            props[i * 2 + 1] = String.valueOf(open.contains(all[i]));
+        }
+        return s.addBlock(x, y, z, "create:fluid_pipe", props);
+    }
+
+    // A 3x3 carrot bed between two log posts, three Grow Lamps hung post to post above it, and a
+    // Brass Solar Panel on each post wired to a Wire Connector on every lamp. See GrowLampScenes.
+    private static SceneStructure addGrowLampRoom(SceneStructure s) {
+        for (int x = 1; x <= 3; x++)
+            for (int z = 1; z <= 3; z++) {
+                // The scene plants these again on start (GrowLampScenes.plant()), like Create's
+                // harvester scene does: crops can drop out while Ponder loads the schematic
+                s.addBlock(x, 1, z, "minecraft:farmland", "moisture", "7");
+                s.addBlock(x, 2, z, "minecraft:carrots", "age", "0");
+            }
+        for (int x : new int[]{0, 4}) {
+            for (int y = 1; y <= 4; y++) s.addBlock(x, y, 2, "minecraft:stripped_spruce_log", "axis", "y");
+            s.addBlock(x, 5, 2, "solarpunk:brass_solar_panel", "lit", "false");
+            // On the panel's side, so it doesn't shade it
+            s.addBlock(x, 5, 1, "solarpunk:wire_connector", "facing", "north");
+        }
+        for (int x = 1; x <= 3; x++) {
+            s.addBlock(x, 4, 2, "solarpunk:grow_lamp", "axis", "x", "ceiling", "false", "lit", "false");
+            s.addBlock(x, 5, 2, "solarpunk:wire_connector", "facing", "up");
+        }
+        return s;
+    }
+
+    // A 7x7 wheat field on dry farmland, with the sprinkler on a pipe rising out of the floor
+    // in the middle. See KineticSprinklerScenes.
+    private static SceneStructure addSprinklerField(SceneStructure s) {
+        s.withBasePlateExcept(3, 3);
+        for (int y = 0; y <= 2; y++) addPipe(s, 3, y, 3, "up", "down");
+        s.addBlock(3, 3, 3, "solarpunk:kinetic_sprinkler");
+        for (int x = 0; x < 7; x++)
+            for (int z = 0; z < 7; z++) {
+                if (x == 3 && z == 3) continue;
+                s.addBlock(x, 1, z, "minecraft:farmland", "moisture", "0");
+                s.addBlock(x, 2, z, "minecraft:wheat", "age", "0"); // planted again by the scene
+            }
+        return s;
+    }
+
+    // Three Firebox Boilers in a row, a water line along the back and a steam line along the top.
+    private static SceneStructure addFireboxRow(SceneStructure s) {
+        for (int x = 1; x <= 3; x++) {
+            s.addBlock(x, 1, 2, "solarpunk:firebox_boiler", "facing", "north", "lit", "false");
+            if (x == 1) {
+                addPipe(s, x, 1, 3, "north", "east");
+                addPipe(s, x, 2, 2, "down", "east");
+            } else {
+                addPipe(s, x, 1, 3, "north", "east", "west");
+                addPipe(s, x, 2, 2, "down", "east", "west");
+            }
+        }
+        addPipe(s, 4, 1, 3, "east", "west");
+        addPipe(s, 4, 2, 2, "east", "west");
+        return s;
+    }
+
+    // A Brass Solar Panel and an Electric Motor on two-high Andesite Casing pillars, the motor
+    // turning a Mechanical Press with the one-block gap it needs above a Depot.
+    private static SceneStructure addMotorPress(SceneStructure s) {
+        for (int y = 1; y <= 2; y++) {
+            s.addBlock(0, y, 2, "create:andesite_casing");
+            s.addBlock(1, y, 2, "create:andesite_casing");
+        }
+        s.addBlock(0, 3, 2, "solarpunk:brass_solar_panel", "lit", "false");
+        s.addBlock(1, 3, 2, "solarpunk:electric_motor", "facing", "east", "lit", "false");
+        s.addBlock(2, 3, 2, "create:shaft", "axis", "x");
+        s.addBlock(3, 3, 2, "create:mechanical_press", "facing", "east");
+        s.addBlock(3, 1, 2, "create:depot");
+        return s;
+    }
+
+    // Polluted ground (Dead Grass Blocks, Ruined Dirt, Dead Grass) with a lit Firebox Boiler in
+    // the back corner, the Biofilter on a shaft coming up through the floor, and a Comparator
+    // reading it into a Redstone Lamp. See BiofilterScenes.
+    private static SceneStructure addBiofilterWasteland(SceneStructure s) {
+        int floor = 0;
+        for (int x = 0; x < 5; x++)
+            for (int z = 0; z < 5; z++) {
+                if (x == 2 && z == 2) continue;
+                String block = (x * 3 + z * 7) % 5 == 0 ? "solarpunk:ruined_dirt" : "solarpunk:dead_grass_block";
+                s.addBlock(x, floor, z, block);
+            }
+        s.addBlock(2, 0, 2, "create:shaft", "axis", "y");
+        s.addBlock(2, 1, 2, "solarpunk:biofilter");
+        s.addBlock(3, 1, 2, "minecraft:comparator", "facing", "west", "mode", "compare", "powered", "false");
+        s.addBlock(4, 1, 2, "minecraft:redstone_lamp", "lit", "false");
+        s.addBlock(4, 1, 4, "solarpunk:firebox_boiler", "facing", "north", "lit", "true");
+        for (int[] p : new int[][]{{0, 0}, {1, 3}, {0, 4}, {3, 0}, {4, 0}, {2, 4}})
+            s.addBlock(p[0], 1, p[1], "solarpunk:dead_grass");
+        return s;
+    }
+
+    // A three-cell stack along X: the controller plate (facing west) at x=1, cells x=2-4 and the
+    // other plate (facing east) at x=5. Hydrogen comes into the west plate's port (north),
+    // Oxygen into the east plate's (south) and Water leaves the east plate's other port (north).
+    // A Wire Connector on the middle cell feeds a Streetlamp behind it. See FuelCellScenes.
+    private static SceneStructure addFuelCellStack(SceneStructure s) {
+        s.addBlock(1, 1, 2, "solarpunk:end_plate", "facing", "west", "lit", "false");
+        for (int x = 2; x <= 4; x++) s.addBlock(x, 1, 2, "solarpunk:fuel_cell", "axis", "x");
+        s.addBlock(5, 1, 2, "solarpunk:end_plate", "facing", "east", "lit", "false");
+        for (int z : new int[]{0, 1}) {
+            addPipe(s, 1, 1, z, "north", "south");
+            addPipe(s, 5, 1, z, "north", "south");
+        }
+        for (int z : new int[]{3, 4}) addPipe(s, 5, 1, z, "north", "south");
+        s.addBlock(3, 1, 4, "solarpunk:streetlamp", "half", "lower", "lit", "false");
+        s.addBlock(3, 2, 4, "solarpunk:streetlamp", "half", "upper", "lit", "false");
+        s.addBlock(3, 2, 2, "solarpunk:wire_connector", "facing", "up");
+        s.addBlock(3, 3, 4, "solarpunk:wire_connector", "facing", "up");
+        return s;
+    }
+
+    // A 2x3 Brass Solar Panel field at the back with a Wire Connector on it, and two Electric
+    // Motors at the front, each with a connector and a shaft. See WireScenes.
+    private static SceneStructure addWireNetwork(SceneStructure s) {
+        for (int x = 5; x <= 6; x++)
+            for (int z = 1; z <= 3; z++)
+                s.addBlock(x, 1, z, "solarpunk:brass_solar_panel", "lit", "false");
+        s.addBlock(4, 1, 2, "solarpunk:wire_connector", "facing", "west"); // on the side, not shading the panels
+        for (int z : new int[]{1, 3}) {
+            s.addBlock(1, 1, z, "solarpunk:electric_motor", "facing", "west", "lit", "false");
+            s.addBlock(0, 1, z, "create:shaft", "axis", "x");
+            s.addBlock(1, 2, z, "solarpunk:wire_connector", "facing", "up");
+        }
+        return s;
+    }
+
+    // Panels at the back (x=6) wired through a Wire Switch, or a Redstone Wire Relay with a Lever
+    // beside it, on the floor at (3,1,2) to an Electric Motor at the front. See WireScenes.
+    private static SceneStructure addSwitchLine(SceneStructure s, boolean relay) {
+        for (int z = 1; z <= 3; z++) s.addBlock(6, 1, z, "solarpunk:brass_solar_panel", "lit", "false");
+        s.addBlock(5, 1, 2, "solarpunk:wire_connector", "facing", "west"); // on the side, not shading the panels
+        if (relay) {
+            s.addBlock(3, 1, 2, "solarpunk:redstone_wire_relay",
+                    "face", "floor", "facing", "east", "closed", "false", "inverted", "false");
+            s.addBlock(3, 1, 1, "minecraft:lever", "face", "floor", "facing", "east", "powered", "false");
+        } else {
+            s.addBlock(3, 1, 2, "solarpunk:wire_switch", "face", "floor", "facing", "east", "closed", "false");
+        }
+        s.addBlock(1, 1, 2, "solarpunk:electric_motor", "facing", "west", "lit", "false");
+        s.addBlock(0, 1, 2, "create:shaft", "axis", "x");
+        s.addBlock(1, 2, 2, "solarpunk:wire_connector", "facing", "up");
         return s;
     }
 
