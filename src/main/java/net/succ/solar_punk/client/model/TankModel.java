@@ -1,5 +1,6 @@
 package net.succ.solar_punk.client.model;
 
+import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.content.fluids.tank.FluidTankCTBehaviour;
 import com.simibubi.create.foundation.block.connected.CTModel;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
@@ -20,7 +21,8 @@ import java.util.List;
 
 // Connected-texture model for the Create-style multiblock tanks (Fermentation Vat,
 // Solar Power Tower). Uses Create's fluid tank CT layout, connects only to the same
-// block, and culls side faces that touch another block of the same tank.
+// block of the same formed multiblock (not just any neighbour of the same type, or two
+// separate tanks side by side would join), and culls side faces inside the multiblock.
 public class TankModel extends CTModel {
 
     private static final ModelProperty<CullData> CULL_PROPERTY = new ModelProperty<>();
@@ -31,7 +33,8 @@ public class TankModel extends CTModel {
             @Override
             public boolean connectsTo(BlockState state, BlockState other, BlockAndTintGetter reader,
                                       BlockPos pos, BlockPos otherPos, Direction face) {
-                return state.getBlock() == other.getBlock();
+                return state.getBlock() == other.getBlock()
+                        && ConnectivityHandler.isConnected(reader, pos, otherPos);
             }
         });
     }
@@ -42,7 +45,7 @@ public class TankModel extends CTModel {
         super.gatherModelData(builder, world, pos, state, blockEntityData);
         CullData cullData = new CullData();
         for (Direction d : Direction.Plane.HORIZONTAL)
-            cullData.setCulled(d, world.getBlockState(pos.relative(d)).is(state.getBlock()));
+            cullData.setCulled(d, ConnectivityHandler.isConnected(world, pos, pos.relative(d)));
         return builder.with(CULL_PROPERTY, cullData);
     }
 

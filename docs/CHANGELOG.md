@@ -42,11 +42,14 @@
 ## Changes
 
 - Steam is now a gas: in a Create Fluid Tank it fills from the top down instead of pooling at the bottom.
+- New Ponder scenes for wires, Wire Switches, the Electric Motor, Fuel Cells, the Firebox Boiler, Kinetic Sprinkler, Grow Lamp and Biofilter, plus a new Electricity Ponder tag. Older scenes now show each machine doing a real job.
+- Refreshed the connected textures on the tops and insides of the Fermentation Vat and Solar Power Tower.
 
 ## Fixes
 
 - Fixed Kinetic Batteries making free power. Charging now puts stress on the network, the same SU it gives back when discharging, so batteries can no longer charge each other in a loop forever. Faster networks charge them faster.
 - Fixed the Biofuel Engine running forever on a small amount of leftover fuel. It now stops once it doesn't have enough Biofuel for the next burn.
+- Fixed two Fermentation Vats or Solar Power Towers placed side by side joining their textures as if they were one tank, and tanks not updating their textures when they form or split.
 
 # 2.1.0-1.21.1
 
