@@ -32,8 +32,9 @@ public class ModSequencedAssemblyRecipeGen extends SequencedAssemblyRecipeGen {
             .addStep(PressingRecipe::new, rb -> rb));
 
     // Solar Mirror (heliostat): iron sheet base -> deploy glass pane (the mirror)
-    // -> deploy cogwheel (the sun-tracking drive) -> press it together. Kept short
-    // since a tower wants a whole field of these.
+    // -> deploy cogwheel (the sun-tracking drive) -> deploy electron tube (the sun
+    // sensor that aims it) -> press it together. Kept to one loop since a tower
+    // wants a whole field of these.
     GeneratedRecipe SOLAR_MIRROR = create("solar_mirror", b -> b
             .require(ModTags.Items.PLATES_IRON)
             .transitionTo(ModItems.INCOMPLETE_SOLAR_MIRROR.get())
@@ -41,6 +42,7 @@ public class ModSequencedAssemblyRecipeGen extends SequencedAssemblyRecipeGen {
             .loops(1)
             .addStep(DeployerApplicationRecipe::new, rb -> rb.require(Tags.Items.GLASS_PANES_COLORLESS))
             .addStep(DeployerApplicationRecipe::new, rb -> rb.require(createItem("cogwheel")))
+            .addStep(DeployerApplicationRecipe::new, rb -> rb.require(createItem("electron_tube")))
             .addStep(PressingRecipe::new, rb -> rb));
 
     // Electromagnet Coil: lightning rod core -> wind two copper sheets around it -> press

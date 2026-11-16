@@ -92,7 +92,7 @@ img { max-width: 100%; height: auto; }
   margin-right: auto;
   white-space: nowrap;
 }
-.brand img { image-rendering: pixelated; border-radius: 6px; }
+.brand img { border-radius: 50%; }
 .brand small {
   font: 600 11px/1 var(--font); letter-spacing: .08em; text-transform: uppercase;
   color: var(--green); background: var(--green-soft); padding: 4px 7px; border-radius: 99px;
@@ -309,7 +309,7 @@ main { min-width: 0; padding: 36px 0 64px; }
     linear-gradient(0deg, rgb(12 20 12 / .55), transparent 45%);
 }
 .hero-inner { max-width: 620px; }
-.hero-icon { image-rendering: pixelated; border-radius: 16px; box-shadow: 0 8px 30px rgb(0 0 0 / .4); margin-bottom: 20px; }
+.hero-icon { border-radius: 50%; filter: drop-shadow(0 8px 22px rgb(0 0 0 / .45)); margin-bottom: 20px; }
 .eyebrow.light { color: #f0c96a; }
 .hero h1 {
   font: 650 clamp(42px, 7vw, 76px)/1.02 var(--display);

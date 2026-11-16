@@ -7,7 +7,8 @@ Usage: python wiki/build.py <wiki checkout> <output dir>
 - _Sidebar.md is the navigation: bold lines are sections, [[links]] are pages
 - [[Page]] / [[Text|Page]] become links; a link to a missing page fails the build
 - Screenshots linked from docs/photos are resized into img/ (recipes are copied)
-- theme/ holds the page template, stylesheet, script and icon
+- theme/ holds the page template, stylesheet and script; the logo is the mod's own
+  src/main/resources/logo.png
 
 Preview: python -m http.server -d <output dir>
 """
@@ -50,6 +51,7 @@ SKIP_CARDS = {"Create: Solarpunk"}
 HERE = Path(__file__).parent
 THEME = HERE / "theme"
 PHOTOS = HERE.parent / "docs" / "photos"
+LOGO = HERE.parent / "src" / "main" / "resources" / "logo.png"
 PHOTO_URL = re.compile(r"https://raw\.githubusercontent\.com/" + re.escape(REPO) + r"/[^/]+/docs/photos/([\w/.-]+\.png)")
 
 
@@ -57,8 +59,9 @@ def main():
     wiki, out = Path(sys.argv[1]), Path(sys.argv[2])
     shutil.rmtree(out, ignore_errors=True)
     (out / "img" / "thumb").mkdir(parents=True)
-    for f in ("style.css", "site.js", "icon.png"):
+    for f in ("style.css", "site.js"):
         shutil.copy(THEME / f, out / f)
+    shutil.copy(LOGO, out / "logo.png")
     (out / ".nojekyll").write_text("")
 
     sources = {p.stem: p.read_text(encoding="utf-8") for p in wiki.glob("*.md")}
@@ -257,7 +260,7 @@ class Site:
         return f"""
 <section class="hero" style="--hero: url('{hero_img}')">
   <div class="hero-inner">
-    <img class="hero-icon" src="icon.png" alt="" width="88" height="88">
+    <img class="hero-icon" src="logo.png" alt="" width="104" height="104">
     <p class="eyebrow light">Minecraft 1.21.1 · NeoForge · Create 6</p>
     <h1>{html.escape(title)}</h1>
     <div class="hero-lede">{intro_html}</div>

@@ -109,21 +109,20 @@ public class ModMechanicalCraftingRecipeGen extends MechanicalCraftingRecipeGen 
                     .key('S', createItem("shaft"))
                     .key('E', createItem("electron_tube")));
 
-    // Solar Power Tower - the tower block itself is the "intelligent" part that aims
-    // the mirror field, so it takes a Precision Mechanism. Outputs 2 because a full
-    // 3x3x20 tower is 180 blocks.
+    // Solar Power Tower - the tower block is an insulated salt tank, so it takes a
+    // Brass Sheet (keeps it brass tier) rather than a Precision Mechanism. Outputs 2 because a full 3x3x20 tower is 180 blocks.
     //   Q I Q
-    //   I P I
+    //   I B I
     //   Q I Q
     GeneratedRecipe SOLAR_POWER_TOWER = create(() -> ModBlocks.SOLAR_POWER_TOWER.get())
             .returns(2)
             .recipe(b -> b
                     .patternLine("QIQ")
-                    .patternLine("IPI")
+                    .patternLine("IBI")
                     .patternLine("QIQ")
                     .key('Q', Items.QUARTZ_BLOCK)
                     .key('I', ModTags.Items.PLATES_IRON)
-                    .key('P', createItem("precision_mechanism")));
+                    .key('B', ModTags.Items.PLATES_BRASS));
 
     // Fusion Reactor Core - both fuel-chain ingots ring a Netherite Ingot at the
     // literal center (the block is the reactor's core, so the recipe's core is too),

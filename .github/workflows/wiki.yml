@@ -9,6 +9,7 @@ on:
     paths:
       - "wiki/**"
       - "docs/photos/**"
+      - "src/main/resources/logo.png"
       - ".github/workflows/wiki.yml"
   workflow_dispatch:
 

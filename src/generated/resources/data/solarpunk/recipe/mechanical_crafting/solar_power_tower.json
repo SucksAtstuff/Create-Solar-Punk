@@ -3,11 +3,11 @@
   "accept_mirrored": true,
   "category": "misc",
   "key": {
+    "B": {
+      "tag": "c:plates/brass"
+    },
     "I": {
       "tag": "c:plates/iron"
-    },
-    "P": {
-      "item": "create:precision_mechanism"
     },
     "Q": {
       "item": "minecraft:quartz_block"
@@ -15,7 +15,7 @@
   },
   "pattern": [
     "QIQ",
-    "IPI",
+    "IBI",
     "QIQ"
   ],
   "result": {
