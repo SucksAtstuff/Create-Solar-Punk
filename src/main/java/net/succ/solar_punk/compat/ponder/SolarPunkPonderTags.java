@@ -57,6 +57,7 @@ public class SolarPunkPonderTags {
                 .add(ModBlocks.BIOMASS_GASIFIER.getId())
                 .add(ModBlocks.BIOFUEL_ENGINE.getId())
                 .add(ModBlocks.FERMENTATION_VAT.getId())
+                .add(ModBlocks.BIOREACTOR.getId())
                 .add(ModBlocks.GREENHOUSE_CONTROLLER.getId())
                 .add(ModBlocks.GROW_LAMP.getId())
                 .add(ModBlocks.KINETIC_SPRINKLER.getId())

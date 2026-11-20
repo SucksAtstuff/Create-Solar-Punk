@@ -16,6 +16,22 @@
 - **Electrolyzer** - splits Water into **Hydrogen** and **Oxygen** with FE, making twice as much Hydrogen as Oxygen. Pipe Water into the top, and each gas out of the copper flange beside its glass tube, where you can watch it collect.
 - **Fuel Cell** and **End Plate** - burn Hydrogen and Oxygen back into FE, so noon sunshine can run your base at night. Line up Fuel Cells with an End Plate at each end, and pipe Hydrogen into one plate and Oxygen into the other: every cell adds output, up to 16. Its only waste is Water, ready to pipe back into the Electrolyzer.
 
+### Hemp
+
+- **Hemp** - a two-block-tall crop, found by breaking grass. Its Stalks break down into **Hemp Fiber** (by hand, or more with a Millstone or Crushing Wheels), and Fiber spins into String (by hand, or more with a Mixer): String without spiders.
+- **Hemp Seed Oil** - press Hemp Seeds into oil, then mix it with Ash over heat to make Biofuel without a Fermentation Vat.
+- **Hempcrete** - mix Hemp Stalks with Limestone or Calcite and Water for a light building block, with Polished Hempcrete, Polished Hempcrete Bricks, Chiseled Polished Hempcrete, and stairs, slabs and walls.
+
+### Bioreactor
+
+- **Bioreactor** - a glass tank of green algae that turns Water and sunlight into **Biomass** and **Oxygen**. Build it up to 3x3 wide and 8 tall on **Bioreactor Base** blocks, fill it with Water and drop in Kelp or Seagrass to start the culture. Wider tanks catch more sun and make more.
+- Pipe Fertilizer or Rich Fertilizer into the Base to speed it up, closing the loop from Biochar back to Biomass. With global warming on, a running Bioreactor also cleans pollution out of its chunk.
+- Grow Lamps beside or above the tank stand in for the sun, so it keeps growing at night.
+- Pump Oxygen out of the Base, or let it vent: when the Oxygen tank is full, the extra hisses out of the top and the algae keep growing.
+- Pipe **Algae Culture** out of the glass to start another Bioreactor right away.
+- A running Bioreactor hums quietly and bubbles every so often, with its own puff of air when it vents.
+- JEI shows how to start a culture and what it makes, and a Ponder scene walks through building one.
+
 ### Comparators and Display Links
 
 - A Comparator reads Andesite and Brass Solar Panels: 0 while they aren't generating, otherwise 1-15 by how directly they face the sun. The new **Sun Exposure** Display Link readout shows the same as a percentage.
@@ -23,6 +39,7 @@
 - A Comparator reads the Greenhouse Controller: 0 while it isn't sealed, otherwise stronger the faster plants grow (10 by default, 15 with bees inside).
 - A Comparator reads 15 from a closed Wire Switch or Redstone Wire Relay, and 0 while it's open.
 - New Display Link readout: **Electric Motor FE Use**.
+- A Comparator reads the Bioreactor: the glass by how much of the tank is algae, the Base by how full its Biomass slot is. New Display Link readouts: **Biomass per Minute**, **Light Level** and **Culture Level**.
 
 ### Compatibility
 
@@ -30,7 +47,7 @@
 
 ### Holidays
 
-- **Christmas** (December): Streetlamps and Solar Shingles dress up, and wires turn into strings of glowing Christmas lights.
+- **Christmas** (December): Streetlamps and Solar Shingles dress up, Trellis vines get fairy lights, Geyser Caps wear a Santa hat, and wires turn into strings of glowing Christmas lights.
 - **New Year's** (Dec 31 - Jan 1): Solar Shingles get a festive look, Garden Lights glow gold and silver, and geysers throw sparks.
 - **Valentine's Day**: heart-shaped Trellis flowers, pink and red Garden Lights, and pink geyser steam.
 - **St. Patrick's Day**: green solar panels, Garden Lights and geyser steam.
@@ -45,12 +62,17 @@
 - New Ponder scenes for wires, Wire Switches, the Electric Motor, Fuel Cells, the Firebox Boiler, Kinetic Sprinkler, Grow Lamp and Biofilter, plus a new Electricity Ponder tag. Older scenes now show each machine doing a real job.
 - Refreshed the connected textures on the tops and insides of the Fermentation Vat and Solar Power Tower.
 - Solar Power Tower blocks now take a Brass Sheet instead of a Precision Mechanism, so a full tower is much cheaper. Solar Mirrors now need an Electron Tube.
+- Molten Salt now glows with shader packs that support LabPBR, like lava.
+- The Solar Power Tower makes twice as much Steam for the same Water, so with tanks to store it, one tower runs a full-size Steam Turbine through the night.
+- Steam Turbines reach full speed with fewer blade layers, so mid-size turbines are worth building.
 
 ## Fixes
 
 - Fixed Kinetic Batteries making free power. Charging now puts stress on the network, the same SU it gives back when discharging, so batteries can no longer charge each other in a loop forever. Faster networks charge them faster.
 - Fixed the Biofuel Engine running forever on a small amount of leftover fuel. It now stops once it doesn't have enough Biofuel for the next burn.
 - Fixed two Fermentation Vats or Solar Power Towers placed side by side joining their textures as if they were one tank, and tanks not updating their textures when they form or split.
+- Fixed Andesite Solar Panels breaking their network at dawn and dusk, popping panels and shafts off.
+- Fixed JEI showing the Solar Power Tower turning Water into Molten Salt or Steam 1:1. It now shows how much Water a full-size tower really uses.
 
 # 2.1.0-1.21.1
 

@@ -140,6 +140,37 @@ public class ModFluidTypes {
                             .temperature(295)
             ));
 
+    // Pressed from Hemp Seeds (ModCompactingRecipeGen), and mixed with Ash into Biofuel.
+    // Golden, to stay apart from the greens of Biofuel and the Fertilizers.
+    public static final Supplier<FluidType> HEMP_SEED_OIL_TYPE = FLUID_TYPES.register("hemp_seed_oil",
+            () -> new BaseFluidType(
+                    WATER_STILL,
+                    WATER_FLOW,
+                    WATER_OVERLAY,
+                    0xFFC8A832,
+                    new Vector3f(200f / 255f, 168f / 255f, 50f / 255f),
+                    FluidType.Properties.create()
+                            .density(920)
+                            .viscosity(3000)
+                            .temperature(295)
+            ));
+
+    // The Bioreactor's living culture. A bright blue-green like spirulina, well away from the
+    // duller greens of Biofuel and the Fertilizers. Its movement comes from the Bioreactor's
+    // particles (AlgaeParticles), not the texture.
+    public static final Supplier<FluidType> ALGAE_CULTURE_TYPE = FLUID_TYPES.register("algae_culture",
+            () -> new BaseFluidType(
+                    WATER_STILL,
+                    WATER_FLOW,
+                    WATER_OVERLAY,
+                    0xFF2E9E6A,
+                    new Vector3f(46f / 255f, 158f / 255f, 106f / 255f),
+                    FluidType.Properties.create()
+                            .density(1010)
+                            .viscosity(1500)
+                            .temperature(295)
+            ));
+
     public static void register(IEventBus eventBus) {
         FLUID_TYPES.register(eventBus);
     }

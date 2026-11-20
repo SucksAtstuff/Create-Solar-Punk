@@ -3,29 +3,29 @@
 A running list of possible future features. Nothing here is committed. Grouped by theme,
 with the strongest / most on-theme ideas near the top of each section.
 
-## Next up: 2.2
+## Next up: after 2.2
 
-### 1. Christmas art, if 2.2 ships in December
-
-The code side is done (Streetlamp, Shingles, Garden Light, wire lights). Still needs art:
-
-- String lights wound around the Trellis.
-- Snow caps on the solar panels.
-- A little Santa hat on the Geyser Cap.
-
-Saved for after 2.2: a simple FE battery, the last big gap now that the Hydrogen chain
-gives long-term FE storage.
+A simple FE battery, the last big gap now that the Hydrogen chain gives long-term FE storage.
 
 ## Biggest gaps in the renewable lineup
 
 - **Hydrogen extras** (the Electrolyzer and Fuel Cell stack are built): Oxygen, shared with
-  the Bioreactor (see Biofuel and farming).
+  the Bioreactor (see Oxygen uses under Biofuel and farming).
 - **FE battery** - the Electrolyzer and Fuel Cell stack store FE as gas, but lose about a
   third and need plumbing. A plain battery to fill and drain directly with no loss would be the
   cheap early-game store, with hydrogen as the big long-term one. Maybe a large multiblock
   later. A Thermal Generator (Molten Salt heat to FE) is another way in.
 - **Tidal / wave power** - SU from ocean water levels, changing with the time of day, so it's
   different from Create's water wheel.
+- **Ion wind turbine** (a real EWICON: electrostatic wind energy converter) - a solid-state
+  FE generator with no moving parts, the wind counterpart to the Brass Solar Panel, since
+  Create's windmill only gives SU. Sprays charged water droplets that the wind carries off,
+  so it uses a trickle of piped Water. Small, unsteady output: more with height above sea
+  level, needs open air around it (count air blocks in a radius, with a penalty for packing
+  them close together), and rain and thunder boost it, which covers solar's night gap.
+- **Ion thruster** - skipped, like the Oxygen thrusters: thrust is Aeronautics' job, and an
+  FE fan would only duplicate an Electric Motor on an Encased Fan. If ever, only as optional
+  Aeronautics compat.
 - **Dedicated grid-scale storage** beyond Heat Battery / Kinetic Battery - a gravity battery
   that hoists a weighted block on surplus power. (Flywheel storage is largely what the Kinetic
   Battery already does.)
@@ -53,22 +53,7 @@ Glass have little to feed. The Electric Motor (2.2) gives FE a big job; these co
 
 ## Biofuel and farming
 
-- **Bioreactor** - a glass tank of green Algae Culture that turns Water and sunlight into
-  Biomass and Oxygen. Biomass from sunlight instead of crushing plants, and the Oxygen gives
-  the mod's first gas byproduct somewhere to go.
-  - Built like the Vat and Tower (`MultiBlockFluidBE`, `TankModel` connected textures), with
-    glass casing so Create's fluid rendering shows the culture inside, and bubble particles
-    rising while it's `LIT`. Sits on a **Bioreactor Base** block (aerator, item output for
-    hoppers and funnels), so the bottom layer doesn't need special rules.
-  - Needs open sky at the top layer (through `SolarHelper`, so space, seasons and Sable keep
-    working). Output scales with top surface area, so wide beats tall. A Grow Lamp beside it
-    could stand in for the sun at night.
-  - Fertilizer or Rich Fertilizer as optional nutrients for a speed boost, closing the loop:
-    biochar -> fertilizer -> algae -> biomass -> biochar.
-  - Absorbs pollution in its chunk like the Biofilter (real photobioreactors are built
-    around eating CO2).
-  - Multiblock only, max 3 wide and 8 tall, seeded with Kelp (see docs/BIOREACTOR.md).
-- **Oxygen uses** - from the Electrolyzer, and later the Bioreactor.
+- **Oxygen uses** - from the Electrolyzer and the Bioreactor.
   - Aerobic treatment in the Fermentation Vat: speeds up Rich Fertilizer only. That's
     composting, which really is aerobic; biofuel (ethanol) fermentation is anaerobic and
     Oxygen would hurt it, so the Vat gets a real choice of which mode to run.
@@ -85,6 +70,13 @@ Vents are meant to be scarce, so ideas here should make a natural vent worth mor
 let geothermal work anywhere.
 
 - **Enhanced geothermal** - pump water down, steam comes up, run the Steam Turbine.
+
+## Resources
+
+- **Crushed Raw Lithium** - follow Create's ore pattern: crushing Raw Lithium (or the ore)
+  gives Crushed Raw Lithium plus a chance of Experience Nuggets, and the Beryllium Dust
+  bonus moves there. Washing it gives Lithium Nuggets, and smelting gives an ingot, so
+  crushing beats smelting raw. Right now Raw Lithium crushes straight to Lithium Dust.
 
 ## Particle Accelerator
 

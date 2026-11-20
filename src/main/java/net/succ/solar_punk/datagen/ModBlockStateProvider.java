@@ -1,5 +1,7 @@
 package net.succ.solar_punk.datagen;
 
+import net.succ.solar_punk.block.custom.HempCropBlock;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.world.level.block.SlabBlock;
@@ -29,6 +31,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
+import net.succ.solar_punk.block.custom.BioreactorBlock;
 import net.succ.solar_punk.block.custom.FiligreeRailingBlock;
 import net.succ.solar_punk.block.custom.RailingShape;
 import net.succ.solar_punk.block.custom.FiligreeRailingSteepSlopeBlock;
@@ -85,15 +88,18 @@ public class ModBlockStateProvider extends BlockStateProvider {
         // The block model has no shaft (ElectricMotorRenderer spins one); the item keeps the modelled one.
         facingCustomModelBlock(ModBlocks.ELECTRIC_MOTOR, false);
         facingCustomModelBlock(ModBlocks.ELECTROLYZER, true);
-        axisBlock(ModBlocks.FUEL_CELL.get(), modLoc("block/fuel_cell_side"), modLoc("block/fuel_cell_front"));
+        axisBlock(ModBlocks.FUEL_CELL.get(), modLoc("block/fuel_cell/fuel_cell_side"), modLoc("block/fuel_cell/fuel_cell_front"));
         simpleBlockItem(ModBlocks.FUEL_CELL.get(), new UncheckedModelFile(modLoc("block/fuel_cell")));
         endPlateBlock();
         itemModels().getBuilder(ModBlocks.ELECTRIC_MOTOR.getId().getPath())
                 .parent(new UncheckedModelFile(modLoc("block/electric_motor_item")));
         fermentationVatBlock();
+        bioreactorBlocks();
         blockWithItem(ModBlocks.SALT_BLOCK);
         blockWithItem(ModBlocks.SALT_BRICKS);
         blockWithItem(ModBlocks.ASH_BRICKS);
+        blockWithItem(ModBlocks.HEMPCRETE);
+        blockWithItem(ModBlocks.POLISHED_HEMPCRETE_BRICKS);
         simpleBlockWithItem(ModBlocks.SOLAR_GLASS.get(),
                 models().cubeAll("solar_glass", blockTexture(ModBlocks.SOLAR_GLASS.get())).renderType("minecraft:cutout"));
         filigreeRailingBlock(ModBlocks.BRASS_FILIGREE_RAILING, ModBlocks.BRASS_FILIGREE_RAILING);
@@ -115,12 +121,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().withExistingParent("solar_glass_pane", mcLoc("item/generated"))
                 .texture("layer0", blockTexture(ModBlocks.SOLAR_GLASS.get()));
         facingCustomModelBlock(ModBlocks.GREENHOUSE_CONTROLLER, true);
-        greenhouseGlass(ModBlocks.GREENHOUSE_GLASS.get(), ModBlocks.GREENHOUSE_GLASS_PANE.get(), "greenhouse_glass");
-        greenhouseGlass(ModBlocks.CLEAR_GREENHOUSE_GLASS.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS_PANE.get(), "greenhouse_glass_clear");
+        greenhouseGlass(ModBlocks.GREENHOUSE_GLASS.get(), ModBlocks.GREENHOUSE_GLASS_PANE.get(), "greenhouse/greenhouse_glass");
+        greenhouseGlass(ModBlocks.CLEAR_GREENHOUSE_GLASS.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS_PANE.get(), "greenhouse/greenhouse_glass_clear");
         // Frosted panels: opaque textures, so a solid render type, but glass properties let light through.
-        simpleBlockWithItem(ModBlocks.GREENHOUSE_PANEL.get(), cubeAll(ModBlocks.GREENHOUSE_PANEL.get()));
+        simpleBlockWithItem(ModBlocks.GREENHOUSE_PANEL.get(),
+                models().cubeAll("greenhouse_panel", modLoc("block/greenhouse/greenhouse_panel")));
         simpleBlockWithItem(ModBlocks.LARGE_GREENHOUSE_PANEL.get(),
-                models().cubeAll("large_greenhouse_panel", modLoc("block/greenhouse_panel_large")));
+                models().cubeAll("large_greenhouse_panel", modLoc("block/greenhouse/greenhouse_panel_large")));
         ModBlockFamilies.ALL.forEach(this::blockFamily);
         // Placed switched on, so the item shows the glowing model.
         litFacingCustomModelBlock(ModBlocks.SALT_LAMP, false);
@@ -150,6 +157,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         solarPowerTowerBlock();
         solarMirrorBlock();
         kineticSprinklerBlock();
+        hempCropBlock();
 
         litAxisModelBlock(ModBlocks.TURBINE_ROTOR);
         turbineBladeBlock(ModBlocks.ANDESITE_TURBINE_BLADE);
@@ -164,6 +172,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         fluidBlock(ModFluids.DEUTERIUM_BLOCK,   mcLoc("block/water_still"));
         fluidBlock(ModFluids.HYDROGEN_BLOCK,    mcLoc("block/water_still"));
         fluidBlock(ModFluids.OXYGEN_BLOCK,      mcLoc("block/water_still"));
+        fluidBlock(ModFluids.HEMP_SEED_OIL_BLOCK, mcLoc("block/water_still"));
+        fluidBlock(ModFluids.ALGAE_CULTURE_BLOCK, mcLoc("block/water_still"));
 
         ResourceLocation casingTex = modLoc("block/industrial_iron_casing/industrial_iron_casing");
         ResourceLocation glassCasingTex = modLoc("block/industrial_iron_casing/industrial_iron_glass_casing");
@@ -252,7 +262,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ResourceLocation tex = modLoc("block/" + texture);
         String glassPath = BuiltInRegistries.BLOCK.getKey(glass).getPath();
         simpleBlockWithItem(glass, models().cubeAll(glassPath, tex).renderType("minecraft:cutout"));
-        paneBlockWithRenderType(pane, tex, modLoc("block/greenhouse_glass_pane_top"), "minecraft:cutout");
+        paneBlockWithRenderType(pane, tex, modLoc("block/greenhouse/greenhouse_glass_pane_top"), "minecraft:cutout");
         itemModels().withExistingParent(BuiltInRegistries.BLOCK.getKey(pane).getPath(), mcLoc("item/generated"))
                 .texture("layer0", tex);
     }
@@ -761,6 +771,20 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 new UncheckedModelFile(modLoc(base + "block_single")));
     }
 
+    // The glass tank uses hand-made models per layer (models/block/bioreactor/), like the
+    // Fermentation Vat; the Base is a plain cube. Both get connected textures in ModClientEvents.
+    private void bioreactorBlocks() {
+        String base = "block/bioreactor/";
+        getVariantBuilder(ModBlocks.BIOREACTOR.get()).forAllStates(state -> ConfiguredModel.builder()
+                .modelFile(new UncheckedModelFile(modLoc(base + "block_" + state.getValue(BioreactorBlock.POSITION).getSerializedName())))
+                .build());
+        simpleBlockItem(ModBlocks.BIOREACTOR.get(), new UncheckedModelFile(modLoc(base + "block_single")));
+
+        ModelFile baseModel = models().cubeBottomTop("bioreactor_base", modLoc(base + "bioreactor_base"),
+                modLoc(base + "bioreactor_base_bottom"), modLoc(base + "bioreactor_base_top"));
+        simpleBlockWithItem(ModBlocks.BIOREACTOR_BASE.get(), baseModel);
+    }
+
     private void fermentationVatBlock() {
         String base = "block/fermentation_vat/";
 
@@ -773,6 +797,21 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         simpleBlockItem(ModBlocks.FERMENTATION_VAT.get(),
                 new UncheckedModelFile(modLoc(base + "block_single")));
+    }
+
+    // Eight ages share 4 lower and 4 upper textures: lower hemp_stage0 (age 0), 1 (1), 2 (2-3),
+    // 3 (4-7, full height so it meets the top); upper hemp_top_stage0-3 (ages 4-7). The top
+    // appears at age 4.
+    private void hempCropBlock() {
+        getVariantBuilder(ModBlocks.HEMP.get()).forAllStates(state -> {
+            int age = state.getValue(HempCropBlock.AGE);
+            String name = state.getValue(HempCropBlock.HALF) == DoubleBlockHalf.UPPER
+                    ? "hemp_top_stage" + Math.max(0, age - HempCropBlock.TOP_AGE)
+                    : "hemp_stage" + (age >= HempCropBlock.TOP_AGE ? 3 : age >= 2 ? 2 : age);
+            return ConfiguredModel.builder()
+                    .modelFile(models().crop(name, modLoc("block/" + name)).renderType("minecraft:cutout"))
+                    .build();
+        });
     }
 
     private void fluidBlock(DeferredBlock<LiquidBlock> block, ResourceLocation particleTexture) {

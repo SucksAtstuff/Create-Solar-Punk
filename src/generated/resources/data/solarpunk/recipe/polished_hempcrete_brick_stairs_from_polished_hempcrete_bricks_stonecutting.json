@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "solarpunk:polished_hempcrete_bricks"
+  },
+  "result": {
+    "count": 1,
+    "id": "solarpunk:polished_hempcrete_brick_stairs"
+  }
+}

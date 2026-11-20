@@ -3,8 +3,8 @@
 	"credit": "Made by Firstwitch",
 	"render_type": "minecraft:cutout",
 	"textures": {
-		"0": "solarpunk:block/redstone_wire_switch_on",
-		"particle": "solarpunk:block/redstone_wire_switch_on"
+		"0": "solarpunk:block/wires/redstone_wire_switch_on",
+		"particle": "solarpunk:block/wires/redstone_wire_switch_on"
 	},
 	"elements": [
 		{

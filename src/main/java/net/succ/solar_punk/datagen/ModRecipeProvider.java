@@ -121,6 +121,7 @@ public class ModRecipeProvider extends RecipeProvider {
 
         bricksRecipes(output, ModBlocks.SALT_BRICKS.get(), ModBlocks.POLISHED_SALT.get(), ModBlocks.SALT_BLOCK.get());
         bricksRecipes(output, ModBlocks.ASH_BRICKS.get(), ModBlocks.POLISHED_ASH.get(), ModBlocks.ASH_BLOCK.get());
+        bricksRecipes(output, ModBlocks.POLISHED_HEMPCRETE_BRICKS.get(), ModBlocks.POLISHED_HEMPCRETE.get(), ModBlocks.HEMPCRETE.get());
         // Rammed Earth has no polished step: its bricks come straight from the block.
         ModBlocks.RAMMED_EARTH.values().forEach(set ->
                 bricksRecipes(output, set.bricks().get(), set.block().get(), set.block().get()));
@@ -298,6 +299,17 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('S', Items.STICK)
                 .unlockedBy("has_stick", has(Items.STICK))
                 .save(output);
+
+        // Hemp by hand: the slow way. Millstone, Crushing Wheels and the Mixer do better
+        // (ModMillingRecipeGen, ModCrushingRecipeGen, ModMixingRecipeGen).
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.HEMP_FIBER.get())
+                .requires(ModItems.HEMP_STALK.get())
+                .unlockedBy("has_hemp_stalk", has(ModItems.HEMP_STALK.get()))
+                .save(output, id("hemp_fiber_from_stalk"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.STRING)
+                .requires(ModItems.HEMP_FIBER.get(), 2)
+                .unlockedBy("has_hemp_fiber", has(ModItems.HEMP_FIBER.get()))
+                .save(output, id("string_from_hemp_fiber"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SALT.get(), 9)
                 .requires(ModTags.Items.STORAGE_BLOCKS_SALT)
@@ -489,6 +501,28 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('A', createItem("andesite_alloy"))
                 .define('C', createItem("industrial_iron_block"))
                 .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
+                .save(output);
+
+        // Bioreactor: copper-framed glass tank blocks, on a zinc aerator Base with an
+        // Electron Tube to run it.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BIOREACTOR.get(), 2)
+                .pattern("SGS")
+                .pattern("G G")
+                .pattern("SGS")
+                .define('S', createItem("copper_sheet"))
+                .define('G', Tags.Items.GLASS_BLOCKS_COLORLESS)
+                .unlockedBy("has_copper_sheet", has(createItem("copper_sheet")))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BIOREACTOR_BASE.get())
+                .pattern("ZEZ")
+                .pattern("PCP")
+                .pattern("ZZZ")
+                .define('Z', ModTags.Items.INGOTS_ZINC)
+                .define('E', createItem("electron_tube"))
+                .define('P', createItem("fluid_pipe"))
+                .define('C', createItem("copper_casing"))
+                .unlockedBy("has_electron_tube", has(createItem("electron_tube")))
                 .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.GEYSER_CAP.get())

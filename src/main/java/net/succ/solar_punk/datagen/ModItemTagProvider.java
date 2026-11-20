@@ -31,6 +31,8 @@ public class ModItemTagProvider extends ItemTagsProvider {
     private static final TagKey<Item> BUCKETS_FERTILIZER = itemTag("c", "buckets/fertilizer");
     private static final TagKey<Item> BIO_FUELS = itemTag("c", "bio_fuels");
     private static final TagKey<Item> BUCKETS_STEAM = itemTag("c", "buckets/steam");
+    private static final TagKey<Item> SEEDS_HEMP = itemTag("c", "seeds/hemp");
+    private static final TagKey<Item> CROPS_HEMP = itemTag("c", "crops/hemp");
 
     public ModItemTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider,
                               CompletableFuture<TagLookup<Block>> blockTagProvider,
@@ -84,6 +86,12 @@ public class ModItemTagProvider extends ItemTagsProvider {
         tag(ModTags.Items.STORAGE_BLOCKS_LITHIUM).add(ModBlocks.LITHIUM_BLOCK.get().asItem());
         tag(ModTags.Items.STORAGE_BLOCKS_BERYLLIUM).add(ModBlocks.BERYLLIUM_BLOCK.get().asItem());
 
+        // Hemp. The Stalks stay out of c:crops: that tag's Biomass milling and crushing recipes
+        // would clash with the Stalks' own Fiber recipes.
+        tag(Tags.Items.SEEDS).add(ModItems.HEMP_SEEDS.get());
+        tag(SEEDS_HEMP).add(ModItems.HEMP_SEEDS.get());
+        tag(CROPS_HEMP).add(ModItems.HEMP_STALK.get());
+
         // Biomass: biofuel feedstock
         tag(BIO_FUELS).add(ModItems.BIOMASS.get()).add(ModItems.BIOMASS_PELLET.get());
 
@@ -92,10 +100,14 @@ public class ModItemTagProvider extends ItemTagsProvider {
                 .add(ModFluids.MOLTEN_SALT_BUCKET.get())
                 .add(ModFluids.STEAM_BUCKET.get())
                 .add(ModFluids.FERTILIZER_BUCKET.get())
-                .add(ModFluids.RICH_FERTILIZER_BUCKET.get());
+                .add(ModFluids.RICH_FERTILIZER_BUCKET.get())
+                .add(ModFluids.HEMP_SEED_OIL_BUCKET.get())
+                .add(ModFluids.ALGAE_CULTURE_BUCKET.get());
         // Waste the Fermentation Vat turns into Rich Fertilizer.
         tag(ModTags.Items.FERMENTATION_WASTE).add(Items.ROTTEN_FLESH, Items.SPIDER_EYE, Items.POISONOUS_POTATO,
                 Items.BONE, Items.PUFFERFISH);
+        // What starts a culture in the Bioreactor.
+        tag(ModTags.Items.ALGAE_SEEDS).add(Items.KELP, Items.SEAGRASS);
         tag(BUCKETS_BIOFUEL).add(ModFluids.BIOFUEL_BUCKET.get());
         tag(BUCKETS_MOLTEN_SALT).add(ModFluids.MOLTEN_SALT_BUCKET.get());
         tag(BUCKETS_FERTILIZER).add(ModFluids.FERTILIZER_BUCKET.get());

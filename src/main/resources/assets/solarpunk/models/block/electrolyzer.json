@@ -7,8 +7,8 @@
 		32
 	],
 	"textures": {
-		"0": "solarpunk:block/electrolyzer",
-		"particle": "solarpunk:block/electrolyzer"
+		"0": "solarpunk:block/electrolyzer/electrolyzer",
+		"particle": "solarpunk:block/electrolyzer/electrolyzer"
 	},
 	"elements": [
 		{

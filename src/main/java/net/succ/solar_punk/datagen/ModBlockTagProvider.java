@@ -69,6 +69,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.SALT_BLOCK.get())
                 .add(ModBlocks.SALT_BRICKS.get())
                 .add(ModBlocks.ASH_BRICKS.get())
+                .add(ModBlocks.HEMPCRETE.get())
+                .add(ModBlocks.POLISHED_HEMPCRETE_BRICKS.get())
                 .add(ModBlocks.BRASS_FILIGREE_RAILING.get())
                 .add(ModBlocks.BRASS_FILIGREE_RAILING_SLOPE.get())
                 .add(ModBlocks.ANDESITE_FILIGREE_RAILING.get())
@@ -102,6 +104,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.KINETIC_BATTERY.get())
                 .add(ModBlocks.HEAT_BATTERY.get())
                 .add(ModBlocks.FERMENTATION_VAT.get())
+                .add(ModBlocks.BIOREACTOR.get())
+                .add(ModBlocks.BIOREACTOR_BASE.get())
                 .add(ModBlocks.BIOMASS_GASIFIER.get())
                 .add(ModBlocks.BIOFUEL_ENGINE.get())
                 .add(ModBlocks.GEYSER_CAP.get())
@@ -134,6 +138,9 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         tag(BlockTags.MINEABLE_WITH_AXE).add(ModBlocks.TRELLIS.get(), ModBlocks.CHARRED_TIMBER.get());
         tag(BlockTags.PLANKS).add(ModBlocks.CHARRED_TIMBER.get());
         tag(BlockTags.CLIMBABLE).add(ModBlocks.TRELLIS.get());
+        // Not BlockTags.CROPS: bees grow crops with CropBlock.getStateForAge(), which would put
+        // a lower half where the hemp's top is.
+        tag(BlockTags.MAINTAINS_FARMLAND).add(ModBlocks.HEMP.get());
 
         tag(Tags.Blocks.GLASS_BLOCKS).add(ModBlocks.SOLAR_GLASS.get());
         tag(BlockTags.IMPERMEABLE).add(ModBlocks.SOLAR_GLASS.get());

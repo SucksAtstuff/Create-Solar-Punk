@@ -1,6 +1,6 @@
 {
 	"textures": {
-		"particle": "solarpunk:block/streetlamp_off"
+		"particle": "solarpunk:block/streetlamp/streetlamp_off"
 	},
 	"elements": []
 }

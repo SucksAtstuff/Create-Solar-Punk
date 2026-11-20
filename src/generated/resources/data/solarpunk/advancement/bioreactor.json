@@ -1,0 +1,27 @@
+{
+  "parent": "solarpunk:biomass",
+  "criteria": {
+    "0": {
+      "trigger": "solarpunk:bioreactor_biomass"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancement.solarpunk.bioreactor.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "solarpunk:bioreactor"
+    },
+    "title": {
+      "translate": "advancement.solarpunk.bioreactor"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

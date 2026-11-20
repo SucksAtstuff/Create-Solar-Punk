@@ -3,8 +3,8 @@
 	"credit": "Made by Firstwitch",
 	"render_type": "minecraft:cutout",
 	"textures": {
-		"0": "solarpunk:block/grow_lamp_off",
-		"particle": "solarpunk:block/grow_lamp_off"
+		"0": "solarpunk:block/grow_lamp/grow_lamp_off",
+		"particle": "solarpunk:block/grow_lamp/grow_lamp_off"
 	},
 	"elements": [
 		{

@@ -7,8 +7,8 @@
 	],
 	"render_type": "minecraft:cutout",
 	"textures": {
-		"0": "solarpunk:block/electric_motor",
-		"particle": "solarpunk:block/electric_motor"
+		"0": "solarpunk:block/electric_motor/electric_motor",
+		"particle": "solarpunk:block/electric_motor/electric_motor"
 	},
 	"elements": [
 		{

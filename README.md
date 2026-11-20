@@ -14,7 +14,7 @@ A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecos
 - GeckoLib 4.7.2+
 
 **Optional:**
-- JEI (adds recipe categories for the Solar Heater, Fermentation Vat, Solar Power Tower, Crystallizer, and Particle Accelerator)
+- JEI (adds recipe categories for the Solar Heater, Fermentation Vat, Bioreactor, Solar Power Tower, Crystallizer, and Particle Accelerator)
 - Serene Seasons (solar output scales with the season - up in summer, down in winter; can be turned off in the config)
 - Create: Northstar Redux (the Steam Turbine can burn its Liquid Hydrogen as an alternative fuel to Steam)
 - Create: CROWNS (the Steam Turbine can burn its steam)
@@ -65,6 +65,8 @@ A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecos
 - **Biomass Pellet** - a compacted form of biomass; burns slower in the Gasifier but produces twice the Biochar per piece
 - **Biomass Gasifier** - burns raw biomass or pellets to generate rotational force (SU); produces Biochar as a byproduct
 - **Fermentation Vat** - multiblock structure (minimum 2×2 footprint and 4 blocks tall, up to 3×3 and 16 tall) that converts biomass into liquid biofuel using water; larger and taller vats process more per cycle
+- **Bioreactor** - a glass tank of algae (up to 3×3 wide and 8 tall) on a layer of **Bioreactor Base** blocks that turns Water and sunlight into Biomass and Oxygen. Start it with Kelp or Seagrass; wider tanks make more, Fertilizer or Rich Fertilizer speeds it up, Grow Lamps keep it going at night, and with global warming on it cleans pollution out of its chunk. Pipe its Algae Culture out to start another one
+- **Hemp** - a two-block-tall crop grown from Hemp Seeds, which drop from grass. Its Stalks mill or crush into Hemp Fiber for String, or mix with Limestone and Water into Hempcrete; its Seeds press into Hemp Seed Oil, which mixes with Ash in a heated Mixer into Biofuel
 - **Biofuel Engine** - burns biofuel to generate rotational force (SU)
 - **Biochar** - byproduct of the Gasifier; acts as a bonemeal substitute or mixes with water to make Fertilizer. Mix it (or Carbon Dust) with Salt for Gunpowder
 - **Fertilizer** - liquid made from Biochar and water; used in the Kinetic Sprinkler for forced instant crop growth
@@ -137,6 +139,7 @@ Decorative blocks have their own **Create: Solarpunk Building Blocks** creative 
 
 - **Salt** and **Ash** sets - stairs, slabs, walls, polished blocks, bricks and chiseled bricks. Ash comes from blasting Biomass, so you don't need global warming to get it
 - **Rammed Earth** in 25 colours, each with bricks, chiseled bricks, stairs, slabs and walls; pack soil, Gravel, Clay and Ash or Biochar together with a Mechanical Press, and the soil picks the colour
+- **Hempcrete**, mixed from Hemp Stalks, Limestone or Calcite and Water, with polished, bricks and chiseled versions, stairs, slabs and walls
 - **Charred Timber** - dark scorched planks made by applying Biochar to any planks, with stairs and slabs. Unlike planks, it doesn't burn
 - **Moss Stairs** and **Moss Slab** - green roofs made from Moss Blocks, which soak up pollution like leaves when global warming is on
 - **Brass, Andesite, Copper and Iron Filigree Railings** - art nouveau railings that connect to their neighbours; hold Alt to switch between flat, slope and steep slope for ramps, arches and staircases

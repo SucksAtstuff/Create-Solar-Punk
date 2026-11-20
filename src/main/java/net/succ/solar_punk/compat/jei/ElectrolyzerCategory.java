@@ -6,7 +6,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluids;
@@ -51,8 +50,6 @@ public class ElectrolyzerCategory extends SolarPunkCategory<ElectrolyzerCategory
     public void draw(DisplayRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
         long fe = (long) Config.electrolyzerFePerTick * WATER / Math.max(1, Config.electrolyzerWaterPerTick);
-        guiGraphics.drawString(Minecraft.getInstance().font,
-                Component.translatable("jei." + SolarPunk.MODID + ".energy_used", EnergyFormat.fe(fe)),
-                5, 31, 0x404040, false);
+        drawText(guiGraphics, Component.translatable("jei." + SolarPunk.MODID + ".energy_used", EnergyFormat.fe(fe)), 5, 31);
     }
 }

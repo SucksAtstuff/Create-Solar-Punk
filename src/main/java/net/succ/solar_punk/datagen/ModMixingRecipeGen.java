@@ -10,12 +10,14 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluids;
 import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.SolarPunk;
+import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
 
 import static net.succ.solar_punk.datagen.DatagenUtil.anySalt;
+import static net.succ.solar_punk.datagen.DatagenUtil.createItem;
 
 public class ModMixingRecipeGen extends MixingRecipeGen {
 
@@ -53,6 +55,31 @@ public class ModMixingRecipeGen extends MixingRecipeGen {
         .require(anySalt())
         .require(anySalt())
         .output(Items.GUNPOWDER, 1));
+
+    // Spinning: 3 Fiber make 2 String, against 2 Fiber for 1 by hand.
+    GeneratedRecipe HEMP_FIBER_TO_STRING = create("hemp_fiber_to_string", b -> b
+        .require(ModItems.HEMP_FIBER.get())
+        .require(ModItems.HEMP_FIBER.get())
+        .require(ModItems.HEMP_FIBER.get())
+        .output(Items.STRING, 2));
+
+    // Biodiesel: oil and lye make fuel. Wood ash was the old source of lye, so Ash is used
+    // up as the catalyst. A way to Biofuel without a Fermentation Vat, but small: 4 Seeds
+    // make 250 mB, where a full-height Vat makes 1000 mB from one Biomass.
+    GeneratedRecipe HEMP_SEED_OIL_TO_BIOFUEL = create("hemp_seed_oil_to_biofuel", b -> b
+        .require(ModFluids.HEMP_SEED_OIL_SOURCE.get(), 250)
+        .require(ModItems.ASH.get())
+        .output(ModFluids.BIOFUEL_SOURCE.get(), 250)
+        .requiresHeat(HeatCondition.HEATED));
+
+    // Hempcrete: the woody core of Hemp Stalks set in lime and Water. Create's Limestone or
+    // vanilla Calcite is the lime.
+    GeneratedRecipe HEMPCRETE = create("hempcrete", b -> b
+        .require(ModItems.HEMP_STALK.get())
+        .require(ModItems.HEMP_STALK.get())
+        .require(Ingredient.of(createItem("limestone"), Items.CALCITE))
+        .require(Fluids.WATER, 250)
+        .output(ModBlocks.HEMPCRETE.get(), 2));
 
     public ModMixingRecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, SolarPunk.MODID);

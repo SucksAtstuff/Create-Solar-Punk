@@ -228,6 +228,14 @@ public class AllSolarpunkAdvancements implements DataProvider {
             .after(BIOMASS)
     );
 
+    public static final SolarpunkAdvancement BIOREACTOR = SolarpunkAdvancement.create("bioreactor", b -> b
+            .icon(ModBlocks.BIOREACTOR.get())
+            .title("Pond Scum")
+            .description("Grow Biomass from algae in a Bioreactor.")
+            .withCustomTrigger(ModTriggers.BIOREACTOR_BIOMASS)
+            .after(BIOMASS)
+    );
+
     public static final SolarpunkAdvancement GASIFIER = SolarpunkAdvancement.create("gasifier", b -> b
             .icon(ModBlocks.BIOMASS_GASIFIER.get())
             .title("Burning Clean")

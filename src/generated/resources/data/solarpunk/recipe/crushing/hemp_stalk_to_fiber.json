@@ -1,0 +1,23 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "solarpunk:hemp_stalk"
+    }
+  ],
+  "processing_time": 150,
+  "results": [
+    {
+      "count": 2,
+      "id": "solarpunk:hemp_fiber"
+    },
+    {
+      "chance": 0.5,
+      "id": "solarpunk:hemp_fiber"
+    },
+    {
+      "chance": 0.25,
+      "id": "solarpunk:biomass"
+    }
+  ]
+}

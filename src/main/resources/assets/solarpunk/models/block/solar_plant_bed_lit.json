@@ -8,8 +8,8 @@
 	"render_type": "minecraft:translucent",
 	"ambientocclusion": false,
 	"textures": {
-		"0": "solarpunk:block/solar_plant_bed",
-		"particle": "solarpunk:block/solar_plant_bed_off"
+		"0": "solarpunk:block/solar_plant_bed/solar_plant_bed",
+		"particle": "solarpunk:block/solar_plant_bed/solar_plant_bed_off"
 	},
 	"elements": [
 		{

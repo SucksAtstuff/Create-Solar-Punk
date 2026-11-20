@@ -3,8 +3,8 @@
 	"credit": "Made by Firstwitch",
 	"render_type": "minecraft:translucent",
 	"textures": {
-		"0": "solarpunk:block/grow_lamp",
-		"particle": "solarpunk:block/grow_lamp"
+		"0": "solarpunk:block/grow_lamp/grow_lamp",
+		"particle": "solarpunk:block/grow_lamp/grow_lamp"
 	},
 	"elements": [
 		{

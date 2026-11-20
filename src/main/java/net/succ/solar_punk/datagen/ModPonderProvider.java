@@ -1,6 +1,7 @@
 package net.succ.solar_punk.datagen;
 
 import net.succ.solar_punk.compat.ponder.FermentationVatScenes;
+import net.succ.solar_punk.compat.ponder.BioreactorScenes;
 import net.succ.solar_punk.compat.ponder.ParticleAcceleratorScenes;
 import net.minecraft.core.BlockPos;
 import com.google.common.hash.Hashing;
@@ -169,6 +170,10 @@ public class ModPonderProvider implements DataProvider {
         SCHEMATICS.put("fermentation_vat/scaling", addVatLayers(new SceneStructure().withBasePlate(),
                 FermentationVatScenes.SCALING_WIDTH, FermentationVatScenes.SCALING_HEIGHT));
 
+        // A 2x2 Bioreactor, 3 tall, on its Base. Sizes live in BioreactorScenes.
+        SCHEMATICS.put("bioreactor/usage", addBioreactor(new SceneStructure().withBasePlate(),
+                BioreactorScenes.WIDTH, BioreactorScenes.HEIGHT));
+
         // 20-block octagon ring around a 10x10 plate, laid out in ParticleAcceleratorScenes.RING
         SCHEMATICS.put("particle_accelerator/ring", addAcceleratorRing(new SceneStructure(10, 3, 10)));
         SCHEMATICS.put("particle_accelerator/crafting", addAcceleratorRing(new SceneStructure(10, 3, 10)));
@@ -277,6 +282,26 @@ public class ModPonderProvider implements DataProvider {
                 s.addBlock(x, 4, z, "solarpunk:greenhouse_glass");
             }
         }
+        return s;
+    }
+
+    // Base at y=1, glass above it, saved already formed (controller at (1,2,1)) so the
+    // connected textures and fluid show without the multiblock forming in Ponder.
+    private static SceneStructure addBioreactor(SceneStructure s, int width, int height) {
+        BlockPos controller = new BlockPos(1, 2, 1);
+        for (int x = 1; x <= width; x++)
+            for (int z = 1; z <= width; z++) {
+                s.addBlock(x, 1, z, "solarpunk:bioreactor_base");
+                for (int y = 2; y <= height + 1; y++) {
+                    String position = height == 1 ? "single" : y == 2 ? "bottom" : y == height + 1 ? "top" : "middle";
+                    CompoundTag nbt = new CompoundTag();
+                    BlockPos pos = new BlockPos(x, y, z);
+                    if (!pos.equals(controller)) nbt.putLong("Controller", controller.asLong());
+                    nbt.putInt("Width", width);
+                    nbt.putInt("Height", height);
+                    s.addBlockWithNbt(x, y, z, nbt, "solarpunk:bioreactor", "lit", "false", "position", position);
+                }
+            }
         return s;
     }
 
@@ -604,11 +629,21 @@ public class ModPonderProvider implements DataProvider {
         }
 
         SceneStructure addBlock(int x, int y, int z, String name, String... properties) {
+            return addBlockWithNbt(x, y, z, null, name, properties);
+        }
+
+        // With block entity data, e.g. to load a multiblock already formed.
+        SceneStructure addBlockWithNbt(int x, int y, int z, CompoundTag nbt, String name, String... properties) {
             Map<String, String> props = new LinkedHashMap<>();
             for (int i = 0; i < properties.length; i += 2)
                 props.put(properties[i], properties[i + 1]);
             int idx = getOrAddPalette(name, props);
             placeBlock(idx, x, y, z);
+            if (nbt != null) {
+                CompoundTag data = nbt.copy();
+                data.putString("id", name);
+                blocks.get(blocks.size() - 1).put("nbt", data);
+            }
             return this;
         }
 

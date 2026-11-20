@@ -53,6 +53,10 @@ public class ModTags {
         public static final TagKey<Item> FERMENTATION_WASTE = TagKey.create(
                 Registries.ITEM, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "fermentation_waste"));
 
+        // What starts a culture in the Bioreactor (Kelp and Seagrass).
+        public static final TagKey<Item> ALGAE_SEEDS = TagKey.create(
+                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "algae_seeds"));
+
         // Salt: other mods disagree on the tag (Northstar uses c:dusts/salt, Create: Food
         // uses c:salt), so ours is in all three and recipes accept any of them.
         public static final TagKey<Item> GEMS_SALT = common("gems/salt");

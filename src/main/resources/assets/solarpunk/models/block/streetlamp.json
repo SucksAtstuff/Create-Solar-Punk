@@ -5,8 +5,8 @@
 	"texture_size": [32, 32],
 	"render_type": "minecraft:cutout",
 	"textures": {
-		"0": "solarpunk:block/streetlamp_off",
-		"particle": "solarpunk:block/streetlamp_off"
+		"0": "solarpunk:block/streetlamp/streetlamp_off",
+		"particle": "solarpunk:block/streetlamp/streetlamp_off"
 	},
 	"elements": [
 		{

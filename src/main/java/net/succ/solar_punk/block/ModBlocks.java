@@ -28,6 +28,7 @@ import net.succ.solar_punk.block.custom.SaltLampBlock;
 import net.succ.solar_punk.block.custom.GardenLightBlock;
 import net.succ.solar_punk.block.custom.StreetlampBlock;
 import net.succ.solar_punk.block.custom.GrowLampBlock;
+import net.succ.solar_punk.block.custom.HempCropBlock;
 import net.succ.solar_punk.block.custom.SolarPlantBedBlock;
 import net.succ.solar_punk.block.custom.WireConnectorBlock;
 import net.succ.solar_punk.block.custom.WireSwitchBlock;
@@ -49,6 +50,9 @@ import net.succ.solar_punk.block.custom.CrystallizerBlock;
 import net.succ.solar_punk.block.custom.ElectrolyzerBlock;
 import net.succ.solar_punk.block.custom.DeadGrassBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
+import net.succ.solar_punk.block.custom.BioreactorBlock;
+import net.succ.solar_punk.block.custom.BioreactorBaseBlock;
+import net.succ.solar_punk.block.custom.BioreactorItem;
 import net.succ.solar_punk.block.custom.FermentationVatItem;
 import net.succ.solar_punk.block.custom.FireboxBoilerBlock;
 import net.succ.solar_punk.block.custom.FusionReactorCasingBlock;
@@ -297,6 +301,26 @@ public class ModBlocks {
                     .noOcclusion()),
             block -> new FermentationVatItem(block, new Item.Properties()));
 
+    public static final DeferredBlock<BioreactorBlock> BIOREACTOR = registerBlockCustomItem("bioreactor",
+            () -> new BioreactorBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.NONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.0f, 6.0f)
+                    .sound(SoundType.GLASS)
+                    .noOcclusion()
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor((s, l, p) -> false)
+                    .isSuffocating((s, l, p) -> false)
+                    .isViewBlocking((s, l, p) -> false)),
+            block -> new BioreactorItem(block, new Item.Properties()));
+
+    public static final DeferredBlock<BioreactorBaseBlock> BIOREACTOR_BASE = registerBlock("bioreactor_base",
+            () -> new BioreactorBaseBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_LIGHT_GREEN)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.0f, 6.0f)
+                    .sound(SoundType.METAL)));
+
     public static final DeferredBlock<BiofuelEngineBlock> BIOFUEL_ENGINE = registerBlock("biofuel_engine",
             () -> new BiofuelEngineBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_GREEN)
@@ -311,6 +335,10 @@ public class ModBlocks {
                     .strength(2.5f, 4.0f)
                     .noOcclusion()),
             block -> new KineticSprinklerItem(block, new Item.Properties()));
+
+    // Two blocks tall; no item of its own, Hemp Seeds (ModItems) plant it.
+    public static final DeferredBlock<HempCropBlock> HEMP = BLOCKS.register("hemp",
+            () -> new HempCropBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT)));
 
     // Geothermal
 
@@ -506,6 +534,33 @@ public class ModBlocks {
 
     public static final DeferredBlock<Block> CHISELED_ASH_BRICKS = registerDecorative("chiseled_ash_bricks",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(ASH_BRICKS.get())));
+
+    // Hempcrete: Hemp Stalks set in lime. Light and soft for a stone (less than half the
+    // blast resistance of Polished Ash), so it's a building block, not a bunker wall.
+    public static final DeferredBlock<Block> HEMPCRETE = registerDecorative("hempcrete",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.SAND)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.0f, 2.5f)
+                    .sound(SoundType.PACKED_MUD)));
+    public static final DeferredBlock<StairBlock> HEMPCRETE_STAIRS = registerStairs("hempcrete_stairs", HEMPCRETE);
+    public static final DeferredBlock<SlabBlock> HEMPCRETE_SLAB = registerSlab("hempcrete_slab", HEMPCRETE);
+    public static final DeferredBlock<WallBlock> HEMPCRETE_WALL = registerWall("hempcrete_wall", HEMPCRETE);
+
+    public static final DeferredBlock<Block> POLISHED_HEMPCRETE = registerDecorative("polished_hempcrete",
+            () -> new Block(BlockBehaviour.Properties.ofFullCopy(HEMPCRETE.get())));
+    public static final DeferredBlock<StairBlock> POLISHED_HEMPCRETE_STAIRS = registerStairs("polished_hempcrete_stairs", POLISHED_HEMPCRETE);
+    public static final DeferredBlock<SlabBlock> POLISHED_HEMPCRETE_SLAB = registerSlab("polished_hempcrete_slab", POLISHED_HEMPCRETE);
+    public static final DeferredBlock<WallBlock> POLISHED_HEMPCRETE_WALL = registerWall("polished_hempcrete_wall", POLISHED_HEMPCRETE);
+
+    public static final DeferredBlock<Block> CHISELED_POLISHED_HEMPCRETE = registerDecorative("chiseled_polished_hempcrete",
+            () -> new Block(BlockBehaviour.Properties.ofFullCopy(POLISHED_HEMPCRETE.get())));
+
+    public static final DeferredBlock<Block> POLISHED_HEMPCRETE_BRICKS = registerDecorative("polished_hempcrete_bricks",
+            () -> new Block(BlockBehaviour.Properties.ofFullCopy(HEMPCRETE.get()).sound(SoundType.MUD_BRICKS)));
+    public static final DeferredBlock<StairBlock> POLISHED_HEMPCRETE_BRICK_STAIRS = registerStairs("polished_hempcrete_brick_stairs", POLISHED_HEMPCRETE_BRICKS);
+    public static final DeferredBlock<SlabBlock> POLISHED_HEMPCRETE_BRICK_SLAB = registerSlab("polished_hempcrete_brick_slab", POLISHED_HEMPCRETE_BRICKS);
+    public static final DeferredBlock<WallBlock> POLISHED_HEMPCRETE_BRICK_WALL = registerWall("polished_hempcrete_brick_wall", POLISHED_HEMPCRETE_BRICKS);
 
     // Rammed Earth: per RammedEarthColor a block, bricks and chiseled bricks, the block and the
     // bricks each with stairs, slab and wall. Each shape shares one grey texture tinted per colour

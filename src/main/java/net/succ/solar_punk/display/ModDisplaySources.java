@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.succ.solar_punk.block.entity.custom.AndesiteSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BiofilterBlockEntity;
+import net.succ.solar_punk.block.entity.custom.BioreactorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BrassSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCasingBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
@@ -157,6 +158,19 @@ public class ModDisplaySources {
     public static final DeferredHolder<DisplaySource, DisplaySource> BIOFILTER_POLLUTION_LEVEL = register("biofilter_pollution_level",
             () -> new PercentDisplaySource<>(ModDisplaySources::biofilter, BiofilterBlockEntity::getPollutionLevel));
 
+    // --- Bioreactor ---
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> BIOREACTOR_BIOMASS_RATE = register("bioreactor_biomass_rate",
+            () -> new NumericLineDisplaySource<>(ModDisplaySources::bioreactor,
+                    br -> Component.literal(String.format(Locale.ROOT, "%.1f/min", br.getBiomassPerMinute()))
+                            .withStyle(br.getBiomassPerMinute() > 0 ? ChatFormatting.GREEN : ChatFormatting.GRAY)));
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> BIOREACTOR_LIGHT = register("bioreactor_light",
+            () -> new PercentDisplaySource<>(ModDisplaySources::bioreactor, BioreactorBlockEntity::getLight));
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> BIOREACTOR_CULTURE = register("bioreactor_culture",
+            () -> new PercentDisplaySource<>(ModDisplaySources::bioreactor, BioreactorBlockEntity::getCultureLevel));
+
     // --- Greenhouse Controller ---
 
     public static final DeferredHolder<DisplaySource, DisplaySource> GREENHOUSE_STATUS = register("greenhouse_status",
@@ -177,6 +191,11 @@ public class ModDisplaySources {
     }
 
     // --- Block entity lookups ---
+
+    @Nullable
+    private static BioreactorBlockEntity bioreactor(DisplayLinkContext context) {
+        return context.getSourceBlockEntity() instanceof BioreactorBlockEntity be ? be.getControllerBE() : null;
+    }
 
     @Nullable
     private static HeatBatteryBlockEntity heatBattery(DisplayLinkContext context) {

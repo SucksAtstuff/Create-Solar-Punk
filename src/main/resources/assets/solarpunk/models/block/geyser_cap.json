@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "solarpunk:block/geyser_cap"
+    "particle": "solarpunk:block/geyser_cap/geyser_cap"
   }
 }

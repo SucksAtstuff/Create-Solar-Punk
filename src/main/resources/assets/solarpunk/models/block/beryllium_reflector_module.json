@@ -4,8 +4,8 @@
 	"parent": "block/block",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "solarpunk:block/beryllium_reflector_module",
-		"particle": "solarpunk:block/beryllium_reflector_module"
+		"0": "solarpunk:block/fusion_reactor/beryllium_reflector_module",
+		"particle": "solarpunk:block/fusion_reactor/beryllium_reflector_module"
 	},
 	"elements": [
 		{

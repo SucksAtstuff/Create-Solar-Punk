@@ -4,6 +4,8 @@
     "solarpunk:molten_salt_bucket",
     "solarpunk:steam_bucket",
     "solarpunk:fertilizer_bucket",
-    "solarpunk:rich_fertilizer_bucket"
+    "solarpunk:rich_fertilizer_bucket",
+    "solarpunk:hemp_seed_oil_bucket",
+    "solarpunk:algae_culture_bucket"
   ]
 }

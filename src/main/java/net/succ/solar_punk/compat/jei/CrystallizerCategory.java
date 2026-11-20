@@ -20,20 +20,23 @@ public class CrystallizerCategory extends SolarPunkCategory<CrystallizerRecipe> 
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, CrystallizerRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 5, 4)
+        // A column with one slot sits level with the arrow; with two, they straddle it.
+        boolean twoInputs = !recipe.inputB().isEmpty();
+        boolean twoOutputs = !recipe.byproduct().isEmpty();
+        builder.addSlot(RecipeIngredientRole.INPUT, 5, twoInputs ? 4 : 13)
                 .setFluidRenderer(recipe.inputA().getAmount(), false, 16, 16)
                 .addFluidStack(recipe.inputA().getFluid(), recipe.inputA().getAmount());
 
-        if (!recipe.inputB().isEmpty()) {
+        if (twoInputs) {
             builder.addSlot(RecipeIngredientRole.INPUT, 5, 22)
                     .setFluidRenderer(recipe.inputB().getAmount(), false, 16, 16)
                     .addFluidStack(recipe.inputB().getFluid(), recipe.inputB().getAmount());
         }
 
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 88, 4)
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 88, twoOutputs ? 4 : 13)
                 .addItemStack(recipe.result());
 
-        if (!recipe.byproduct().isEmpty()) {
+        if (twoOutputs) {
             builder.addSlot(RecipeIngredientRole.OUTPUT, 88, 22)
                     .setFluidRenderer(recipe.byproduct().getAmount(), false, 16, 16)
                     .addFluidStack(recipe.byproduct().getFluid(), recipe.byproduct().getAmount());

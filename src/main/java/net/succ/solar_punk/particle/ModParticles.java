@@ -3,6 +3,7 @@ package net.succ.solar_punk.particle;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -28,6 +29,14 @@ public class ModParticles {
                     return ColorParticleOption.streamCodec(this);
                 }
             });
+
+    // Inside the Bioreactor's culture (AlgaeParticles): bubbles rising from the aerator, and
+    // specks of algae drifting. Vanilla's bubble removes itself outside water blocks, so these
+    // are our own. Both read their velocity Y as the room above them (see AlgaeParticle).
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> ALGAE_BUBBLE =
+            PARTICLE_TYPES.register("algae_bubble", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> ALGAE_SPECK =
+            PARTICLE_TYPES.register("algae_speck", () -> new SimpleParticleType(false));
 
     public static void register(IEventBus eventBus) {
         PARTICLE_TYPES.register(eventBus);

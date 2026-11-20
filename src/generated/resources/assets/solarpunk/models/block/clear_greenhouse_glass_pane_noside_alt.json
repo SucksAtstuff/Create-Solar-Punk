@@ -2,6 +2,6 @@
   "parent": "minecraft:block/template_glass_pane_noside_alt",
   "render_type": "minecraft:cutout",
   "textures": {
-    "pane": "solarpunk:block/greenhouse_glass_clear"
+    "pane": "solarpunk:block/greenhouse/greenhouse_glass_clear"
   }
 }

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "solarpunk:block/polished_hempcrete_bricks",
+    "side": "solarpunk:block/polished_hempcrete_bricks",
+    "top": "solarpunk:block/polished_hempcrete_bricks"
+  }
+}

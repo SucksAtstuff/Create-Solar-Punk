@@ -18,6 +18,9 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.SALT.get());
         basicItem(ModItems.BIOMASS.get());
         basicItem(ModItems.BIOMASS_PELLET.get());
+        basicItem(ModItems.HEMP_SEEDS.get());
+        basicItem(ModItems.HEMP_STALK.get());
+        basicItem(ModItems.HEMP_FIBER.get());
         basicItem(ModItems.BIOCHAR.get());
         basicItem(ModItems.CARBON_DUST.get());
         basicItem(ModItems.ASH.get());
@@ -54,5 +57,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModFluids.DEUTERIUM_BUCKET.get());
         basicItem(ModFluids.HYDROGEN_BUCKET.get());
         basicItem(ModFluids.OXYGEN_BUCKET.get());
+        basicItem(ModFluids.HEMP_SEED_OIL_BUCKET.get());
+        basicItem(ModFluids.ALGAE_CULTURE_BUCKET.get());
     }
 }

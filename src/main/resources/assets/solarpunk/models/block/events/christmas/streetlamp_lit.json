@@ -9,7 +9,7 @@
 	"render_type": "minecraft:cutout",
 	"textures": {
 		"0": "solarpunk:block/events/christmas/streetlamp",
-		"glow": "solarpunk:block/streetlamp_glow",
+		"glow": "solarpunk:block/streetlamp/streetlamp_glow",
 		"particle": "solarpunk:block/events/christmas/streetlamp"
 	},
 	"elements": [

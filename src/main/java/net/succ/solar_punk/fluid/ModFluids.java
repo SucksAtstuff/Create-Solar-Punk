@@ -188,6 +188,47 @@ public class ModFluids {
             .block(OXYGEN_BLOCK)
             .bucket(OXYGEN_BUCKET);
 
+    public static final Supplier<FlowingFluid> HEMP_SEED_OIL_SOURCE = FLUIDS.register("hemp_seed_oil",
+            () -> new BaseFlowingFluid.Source(ModFluids.HEMP_SEED_OIL_PROPERTIES));
+    public static final Supplier<FlowingFluid> HEMP_SEED_OIL_FLOWING = FLUIDS.register("hemp_seed_oil_flowing",
+            () -> new BaseFlowingFluid.Flowing(ModFluids.HEMP_SEED_OIL_PROPERTIES));
+
+    public static final DeferredBlock<LiquidBlock> HEMP_SEED_OIL_BLOCK = ModBlocks.BLOCKS.register("hemp_seed_oil",
+            () -> new LiquidBlock(HEMP_SEED_OIL_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)
+                    .mapColor(MapColor.COLOR_YELLOW)));
+
+    public static final DeferredItem<BucketItem> HEMP_SEED_OIL_BUCKET = ModItems.ITEMS.registerItem("hemp_seed_oil_bucket",
+            properties -> new BucketItem(HEMP_SEED_OIL_SOURCE.get(), properties.stacksTo(1).craftRemainder(Items.BUCKET)));
+
+    // Thick and slow, like honey.
+    public static final BaseFlowingFluid.Properties HEMP_SEED_OIL_PROPERTIES = new BaseFlowingFluid.Properties(
+            ModFluidTypes.HEMP_SEED_OIL_TYPE, HEMP_SEED_OIL_SOURCE, HEMP_SEED_OIL_FLOWING)
+            .tickRate(20)
+            .slopeFindDistance(2)
+            .levelDecreasePerBlock(2)
+            .block(HEMP_SEED_OIL_BLOCK)
+            .bucket(HEMP_SEED_OIL_BUCKET);
+
+    public static final Supplier<FlowingFluid> ALGAE_CULTURE_SOURCE = FLUIDS.register("algae_culture",
+            () -> new BaseFlowingFluid.Source(ModFluids.ALGAE_CULTURE_PROPERTIES));
+    public static final Supplier<FlowingFluid> ALGAE_CULTURE_FLOWING = FLUIDS.register("algae_culture_flowing",
+            () -> new BaseFlowingFluid.Flowing(ModFluids.ALGAE_CULTURE_PROPERTIES));
+
+    public static final DeferredBlock<LiquidBlock> ALGAE_CULTURE_BLOCK = ModBlocks.BLOCKS.register("algae_culture",
+            () -> new LiquidBlock(ALGAE_CULTURE_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)
+                    .mapColor(MapColor.COLOR_CYAN)));
+
+    public static final DeferredItem<BucketItem> ALGAE_CULTURE_BUCKET = ModItems.ITEMS.registerItem("algae_culture_bucket",
+            properties -> new BucketItem(ALGAE_CULTURE_SOURCE.get(), properties.stacksTo(1).craftRemainder(Items.BUCKET)));
+
+    public static final BaseFlowingFluid.Properties ALGAE_CULTURE_PROPERTIES = new BaseFlowingFluid.Properties(
+            ModFluidTypes.ALGAE_CULTURE_TYPE, ALGAE_CULTURE_SOURCE, ALGAE_CULTURE_FLOWING)
+            .tickRate(10)
+            .slopeFindDistance(3)
+            .levelDecreasePerBlock(1)
+            .block(ALGAE_CULTURE_BLOCK)
+            .bucket(ALGAE_CULTURE_BUCKET);
+
     public static void register(IEventBus eventBus) {
         FLUIDS.register(eventBus);
     }

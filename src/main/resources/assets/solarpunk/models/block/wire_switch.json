@@ -3,8 +3,8 @@
 	"credit": "Made by Firstwitch",
 	"render_type": "minecraft:cutout",
 	"textures": {
-		"0": "solarpunk:block/wire_switch",
-		"particle": "solarpunk:block/wire_switch"
+		"0": "solarpunk:block/wires/wire_switch",
+		"particle": "solarpunk:block/wires/wire_switch"
 	},
 	"elements": [
 		{

@@ -41,7 +41,7 @@ SECTION_IMAGES = {
 # Card text for sections Home doesn't describe with a "**Name** - text" line.
 SECTION_BLURBS = {
     "Endgame": "Mine Lithium and Beryllium, then build a Fusion Reactor and a Particle Accelerator for huge amounts of Steam.",
-    "Building": "Salt, Ash, Rammed Earth, Charred Timber, Trellises, Filigree Railings and more.",
+    "Building": "Salt, Ash, Rammed Earth, Hempcrete, Charred Timber, Trellises, Filigree Railings and more.",
     "Global Warming": "An optional pollution system that's off by default. Fuel-burning machines slowly kill the land around them.",
     "More": "Advancements, Display Links and the optional mods Solarpunk works with.",
 }

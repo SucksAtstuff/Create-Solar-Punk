@@ -233,6 +233,18 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_LEAF_ABSORPTION_PER_INTERVAL;
     private static final ModConfigSpec.IntValue CFG_TRELLIS_ABSORPTION_PER_INTERVAL;
     private static final ModConfigSpec.IntValue CFG_BIOFILTER_SU;
+    private static final ModConfigSpec.IntValue CFG_BIOREACTOR_TICKS_PER_BIOMASS;
+    private static final ModConfigSpec.DoubleValue CFG_BIOREACTOR_GROWTH_PERCENT;
+    private static final ModConfigSpec.IntValue CFG_BIOREACTOR_SEED_MB;
+    private static final ModConfigSpec.IntValue CFG_BIOREACTOR_CULTURE_PER_BIOMASS;
+    private static final ModConfigSpec.IntValue CFG_BIOREACTOR_OXYGEN_PER_BIOMASS;
+    private static final ModConfigSpec.IntValue CFG_BIOREACTOR_NUTRIENT_PER_BIOMASS;
+    private static final ModConfigSpec.DoubleValue CFG_BIOREACTOR_FERTILIZER_BOOST;
+    private static final ModConfigSpec.DoubleValue CFG_BIOREACTOR_RICH_FERTILIZER_BOOST;
+    private static final ModConfigSpec.DoubleValue CFG_BIOREACTOR_POLLUTION_PER_BLOCK;
+    private static final ModConfigSpec.DoubleValue CFG_BIOREACTOR_GROW_LAMP_LIGHT;
+    private static final ModConfigSpec.IntValue CFG_BIOREACTOR_TANK_PER_BLOCK;
+    private static final ModConfigSpec.IntValue CFG_BIOREACTOR_TANK;
     private static final ModConfigSpec.IntValue CFG_STREETLAMP_FE_PER_TICK;
     private static final ModConfigSpec.IntValue CFG_STREETLAMP_BUFFER;
     private static final ModConfigSpec.IntValue CFG_STREETLAMP_MAX_RECEIVE;
@@ -339,9 +351,9 @@ public class Config {
 
         BUILDER.push("steam_turbine");
         CFG_TURBINE_MAX_RPM              = BUILDER.comment("Maximum RPM the turbine can reach (at max height)").defineInRange("max_rpm", 64, 1, 256);
-        CFG_TURBINE_RPM_PER_LAYER        = BUILDER.comment("RPM added per rotor layer").defineInRange("rpm_per_layer", 4, 1, 256);
+        CFG_TURBINE_RPM_PER_LAYER        = BUILDER.comment("RPM added per rotor layer (counting the cap). Default 8 reaches 64 RPM at 7 blade layers, so mid-size turbines aren't punished").defineInRange("rpm_per_layer", 8, 1, 256);
         CFG_TURBINE_SU_PER_LAYER         = BUILDER.comment("SU capacity per rotor layer at full blade efficiency (1 brass blade per arm). Default 256 gives 344 064 SU at max height + full brass, beating the Create superheated steam engine (294 912 SU).").defineInRange("su_per_layer", 256, 1, 1_000_000);
-        CFG_TURBINE_STEAM_PER_LAYER_PER_TICK = BUILDER.comment("mB of steam consumed per rotor layer per tick at full blade efficiency (less-efficient blades waste more steam). Default 1 means a max-height turbine consumes 21 mB/t, matching one max-size Solar Power Tower in steam mode at noon.").defineInRange("steam_per_layer_per_tick", 1, 1, 10_000);
+        CFG_TURBINE_STEAM_PER_LAYER_PER_TICK = BUILDER.comment("mB of steam consumed per rotor layer per tick at full blade efficiency (less-efficient blades waste more steam). Default 1 means a max-height turbine consumes 21 mB/t, what one max-size Solar Power Tower in steam mode averages over a full day/night cycle.").defineInRange("steam_per_layer_per_tick", 1, 1, 10_000);
         CFG_TURBINE_CONDENSATE_RATIO = BUILDER.comment("mB of steam required to produce 1 mB of condensate water. Higher values mean less water produced per steam consumed. Default 10 means 10 mB steam -> 1 mB water.").defineInRange("condensate_ratio", 10, 1, 10_000);
         CFG_TURBINE_CROWNS_STEAM = BUILDER.comment(
                 "With Create: CROWNS installed, also burn its steam (water heated past boiling, carrying",
@@ -364,9 +376,10 @@ public class Config {
                 "headroom to recharge a drained bank, cover rainy days, or run more batteries.")
                 .defineInRange("salt_output_multiplier", 2.0, 0.0, 1000.0);
         CFG_SOLAR_POWER_TOWER_STEAM_MULTIPLIER = BUILDER.comment(
-                "Steam output multiplier. Default 7/3 = 21 mB/t at max size, matching one",
-                "max-height Steam Turbine's consumption.")
-                .defineInRange("steam_output_multiplier", 7.0 / 3.0, 0.0, 1000.0);
+                "Steam output multiplier. Default 14/3 = 42 mB/t at max size while the sun is up.",
+                "Like Molten Salt, production only runs by day, so this averages out to 21 mB/t:",
+                "one max-height Steam Turbine running day and night, if tanks bank the daytime surplus.")
+                .defineInRange("steam_output_multiplier", 14.0 / 3.0, 0.0, 1000.0);
         BUILDER.pop();
 
         BUILDER.push("serene_seasons");
@@ -476,6 +489,42 @@ public class Config {
 
         BUILDER.push("biofilter");
         CFG_BIOFILTER_SU = BUILDER.comment("Stress units consumed while the Biofilter is running").defineInRange("su", 256, 1, 1_000_000);
+        BUILDER.pop();
+
+        BUILDER.push("bioreactor");
+        CFG_BIOREACTOR_TICKS_PER_BIOMASS = BUILDER.comment(
+                "Ticks for one block of the top surface to make one Biomass in full noon sun.",
+                "A 3x3 Bioreactor makes 9 times as much. Morning, evening and rain run at half speed.")
+                .defineInRange("ticks_per_biomass", 1800, 20, 1_000_000);
+        CFG_BIOREACTOR_GROWTH_PERCENT = BUILDER.comment(
+                "How fast the culture spreads through the Water in sunlight: this percent of the",
+                "current culture each second, so a fresh seed starts slow and speeds up.")
+                .defineInRange("growth_percent_per_second", 2.0, 0.01, 100.0);
+        CFG_BIOREACTOR_SEED_MB = BUILDER.comment("mB of Water one Kelp or Seagrass turns into Algae Culture to start a culture")
+                .defineInRange("seed_mb", 250, 1, 100_000);
+        CFG_BIOREACTOR_CULTURE_PER_BIOMASS = BUILDER.comment("mB of Algae Culture used up per Biomass (it regrows from the Water)")
+                .defineInRange("culture_per_biomass_mb", 250, 1, 100_000);
+        CFG_BIOREACTOR_OXYGEN_PER_BIOMASS = BUILDER.comment("mB of Oxygen given off per Biomass")
+                .defineInRange("oxygen_per_biomass_mb", 250, 0, 100_000);
+        CFG_BIOREACTOR_NUTRIENT_PER_BIOMASS = BUILDER.comment("mB of Fertilizer or Rich Fertilizer used per Biomass while boosted")
+                .defineInRange("nutrient_per_biomass_mb", 100, 1, 100_000);
+        CFG_BIOREACTOR_FERTILIZER_BOOST = BUILDER.comment("Speed multiplier with Fertilizer in the Bioreactor")
+                .defineInRange("fertilizer_boost", 1.5, 1.0, 100.0);
+        CFG_BIOREACTOR_RICH_FERTILIZER_BOOST = BUILDER.comment("Speed multiplier with Rich Fertilizer in the Bioreactor")
+                .defineInRange("rich_fertilizer_boost", 2.0, 1.0, 100.0);
+        CFG_BIOREACTOR_POLLUTION_PER_BLOCK = BUILDER.comment(
+                "Pollution removed from its own chunk each second per block of top surface, in full sun",
+                "(global warming only)")
+                .defineInRange("pollution_absorbed_per_block", 4.0, 0.0, 1_000_000.0);
+        CFG_BIOREACTOR_GROW_LAMP_LIGHT = BUILDER.comment(
+                "Light from lit Grow Lamps touching the tank's sides or hanging above it, as a share of",
+                "noon sun. Each lamp lights one block of the top surface, so one lamp per block of",
+                "footprint runs it at this level at night. The sun wins when it's brighter.")
+                .defineInRange("grow_lamp_light", 0.5, 0.0, 1.0);
+        CFG_BIOREACTOR_TANK_PER_BLOCK = BUILDER.comment("Water and Algae Culture capacity per glass block (mB, shared)")
+                .defineInRange("tank_per_block_mb", 8000, 100, 1_000_000);
+        CFG_BIOREACTOR_TANK = BUILDER.comment("Oxygen and nutrient tank capacity per block of footprint (mB, each tank)")
+                .defineInRange("tank_per_footprint_mb", 4000, 100, 1_000_000);
         BUILDER.pop();
 
         BUILDER.push("streetlamp");
@@ -738,6 +787,12 @@ public class Config {
     public static int fusionReactorSteamTank, fusionReactorDeuteriumTank;
 
     public static int fermentationVatMinWidth, fermentationVatMinHeight;
+
+    public static int bioreactorTicksPerBiomass, bioreactorSeedMb, bioreactorCulturePerBiomass;
+    public static int bioreactorOxygenPerBiomass, bioreactorNutrientPerBiomass;
+    public static double bioreactorGrowthPercent, bioreactorFertilizerBoost, bioreactorRichFertilizerBoost;
+    public static double bioreactorPollutionPerBlock, bioreactorGrowLampLight;
+    public static int bioreactorTankPerBlock, bioreactorTank;
     public static int solarPowerTowerMinWidth, solarPowerTowerMinHeight;
 
     public static int solarPowerTowerMirrorBaseRadius, solarPowerTowerMirrorRadiusPerHeight;
@@ -887,6 +942,18 @@ public class Config {
         fusionReactorDeuteriumTank   = CFG_FUSION_REACTOR_DEUTERIUM_TANK.get();
 
         fermentationVatMinWidth     = CFG_FERMENTATION_VAT_MIN_WIDTH.get();
+        bioreactorTicksPerBiomass     = CFG_BIOREACTOR_TICKS_PER_BIOMASS.get();
+        bioreactorGrowthPercent       = CFG_BIOREACTOR_GROWTH_PERCENT.get();
+        bioreactorSeedMb              = CFG_BIOREACTOR_SEED_MB.get();
+        bioreactorCulturePerBiomass   = CFG_BIOREACTOR_CULTURE_PER_BIOMASS.get();
+        bioreactorOxygenPerBiomass    = CFG_BIOREACTOR_OXYGEN_PER_BIOMASS.get();
+        bioreactorNutrientPerBiomass  = CFG_BIOREACTOR_NUTRIENT_PER_BIOMASS.get();
+        bioreactorFertilizerBoost     = CFG_BIOREACTOR_FERTILIZER_BOOST.get();
+        bioreactorRichFertilizerBoost = CFG_BIOREACTOR_RICH_FERTILIZER_BOOST.get();
+        bioreactorPollutionPerBlock   = CFG_BIOREACTOR_POLLUTION_PER_BLOCK.get();
+        bioreactorGrowLampLight       = CFG_BIOREACTOR_GROW_LAMP_LIGHT.get();
+        bioreactorTankPerBlock        = CFG_BIOREACTOR_TANK_PER_BLOCK.get();
+        bioreactorTank                = CFG_BIOREACTOR_TANK.get();
         fermentationVatMinHeight    = CFG_FERMENTATION_VAT_MIN_HEIGHT.get();
         solarPowerTowerMinWidth     = CFG_SOLAR_POWER_TOWER_MIN_WIDTH.get();
         solarPowerTowerMinHeight    = CFG_SOLAR_POWER_TOWER_MIN_HEIGHT.get();

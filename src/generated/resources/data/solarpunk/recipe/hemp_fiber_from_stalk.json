@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "solarpunk:hemp_stalk"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "solarpunk:hemp_fiber"
+  }
+}

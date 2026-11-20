@@ -2,7 +2,7 @@
   "parent": "minecraft:block/template_glass_pane_post",
   "render_type": "minecraft:cutout",
   "textures": {
-    "edge": "solarpunk:block/greenhouse_glass_pane_top",
-    "pane": "solarpunk:block/greenhouse_glass_clear"
+    "edge": "solarpunk:block/greenhouse/greenhouse_glass_pane_top",
+    "pane": "solarpunk:block/greenhouse/greenhouse_glass_clear"
   }
 }

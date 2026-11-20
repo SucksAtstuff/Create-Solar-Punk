@@ -23,7 +23,14 @@ public class ModLangProvider extends LanguageProvider {
         add("itemGroup.solar_punk.building_blocks", "Create: Solarpunk Building Blocks");
         add("jei.solarpunk.category.solar_heating", "Solar Heating");
         add("jei.solarpunk.category.solar_power_tower", "Solar Power Tower");
+        add("jei.solarpunk.solar_power_tower.water_note", "On a %sx%s tower. Each mB made costs %s mB of Water per footprint block");
         add("jei.solarpunk.category.fermentation_vat", "Fermentation Vat");
+        add("jei.solarpunk.category.bioreactor", "Bioreactor");
+        add("jei.solarpunk.bioreactor.seed_note", "Used once to start the culture");
+        add("jei.solarpunk.bioreactor.optional", "Optional: speeds it up");
+        add("jei.solarpunk.bioreactor.culture_note", "Grows from the Water in sunlight; can be piped out to start another Bioreactor");
+        add("jei.solarpunk.bioreactor.rate", "%s/min per top block in sun");
+        add("jei.solarpunk.bioreactor.boost", "Fertilizer x%s, Rich x%s");
         add("jei.solarpunk.category.crystallizing", "Crystallizer");
         add("jei.solarpunk.category.particle_accelerator", "Particle Accelerator");
         add("jei.solarpunk.category.electrolysis", "Electrolysis");
@@ -44,6 +51,9 @@ public class ModLangProvider extends LanguageProvider {
         add("subtitles.solarpunk.biofilter_loop", "Biofilter filtering");
         add("subtitles.solarpunk.biomass_gasifier_loop", "Biomass Gasifier burning");
         add("subtitles.solarpunk.fermentation_vat_bubbling", "Fermentation Vat bubbles");
+        add("subtitles.solarpunk.bioreactor_hum", "Bioreactor hums");
+        add("subtitles.solarpunk.bioreactor_bubbling", "Bioreactor bubbles");
+        add("subtitles.solarpunk.bioreactor_vent", "Bioreactor vents");
         add("subtitles.solarpunk.solar_heater_shimmer", "Solar Heater shimmers");
         add("subtitles.solarpunk.steam_hiss", "Steam hisses");
         add("subtitles.solarpunk.turbine_loop", "Steam Turbine spins");
@@ -173,10 +183,27 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.display_source.particle_accelerator_status", "Particle Accelerator Status");
         add("solarpunk.display_source.particle_accelerator_recipe", "Particle Accelerator Recipe");
         add("solarpunk.display_source.particle_accelerator_progress", "Particle Accelerator Progress");
+        add("solarpunk.display_source.bioreactor_biomass_rate", "Biomass per Minute");
+        add("solarpunk.display_source.bioreactor_light", "Light Level");
+        add("solarpunk.display_source.bioreactor_culture", "Culture Level");
         add("solarpunk.display_source.greenhouse_status", "Greenhouse Status");
         add("solarpunk.display_source.greenhouse_plant_count", "Greenhouse Plant Count");
         add("solarpunk.display_source.greenhouse_growth", "Greenhouse Growth Speed");
 
+        add("create.solar_punk.tooltip.bioreactor_header", "Bioreactor");
+        add("create.solar_punk.tooltip.bioreactor_size", "Size: ");
+        add("create.solar_punk.tooltip.bioreactor_no_base", "Needs Bioreactor Base blocks under the whole tank");
+        add("create.solar_punk.tooltip.bioreactor_no_sun", "No light: needs open sky or Grow Lamps");
+        add("create.solar_punk.tooltip.bioreactor_sunlight", "Sunlight: ");
+        add("create.solar_punk.tooltip.bioreactor_lamplight", "Grow Lamp light: ");
+        add("create.solar_punk.tooltip.bioreactor_grow_lamps", "Grow Lamps: ");
+        add("create.solar_punk.tooltip.bioreactor_no_culture", "Add Kelp or Seagrass to start a culture");
+        add("create.solar_punk.tooltip.bioreactor_biomass_rate", "Biomass: ");
+        add("create.solar_punk.tooltip.bioreactor_full", "Biomass full: take it out of the Base");
+        add("create.solar_punk.tooltip.bioreactor_venting", "Oxygen tank full: venting the extra");
+        add("create.solar_punk.tooltip.bioreactor_absorbing", "Absorbing pollution: ");
+        add("create.solar_punk.tooltip.algae_culture", "Algae Culture: ");
+        add("create.solar_punk.tooltip.nutrients", "Nutrients: ");
         add("create.solar_punk.tooltip.fermentation_vat_header", "Fermentation Vat");
         add("create.solar_punk.tooltip.vat_too_small", "Needs at least 2x2 footprint");
         add("create.solar_punk.tooltip.vat_too_short", "Needs at least 4 blocks tall");
@@ -272,6 +299,13 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.fermentation_vat.tooltip.summary", "Ferments _Biomass_ and water into _Biofuel_, or mob and farm _waste_ into _Rich Fertilizer_. Requires at least a _2x2 footprint_ and _4 blocks tall_ to operate.");
         add("block.solarpunk.fermentation_vat.tooltip.condition1", "Larger footprint");
         add("block.solarpunk.fermentation_vat.tooltip.behaviour1", "Increases batch size and output. A 3x3 footprint processes 9 Biomass per batch. Taller vats produce super-linearly more Biofuel per batch.");
+
+        add("block.solarpunk.bioreactor.tooltip.summary", "A glass tank of _Algae Culture_ that turns _Water_ and _sunlight_ into _Biomass_ and _Oxygen_. Up to _3x3_ wide and _8_ tall, standing on _Bioreactor Base_ blocks.");
+        add("block.solarpunk.bioreactor.tooltip.condition1", "To start");
+        add("block.solarpunk.bioreactor.tooltip.behaviour1", "Fill it with _Water_ and add _Kelp_ or _Seagrass_. The culture spreads through the Water in sunlight. Wider tanks have more surface, so they make more.");
+        add("block.solarpunk.bioreactor.tooltip.condition2", "With Fertilizer");
+        add("block.solarpunk.bioreactor.tooltip.behaviour2", "_Fertilizer_ or _Rich Fertilizer_ piped into the Base speeds it up, and lit _Grow Lamps_ beside or above the tank keep it going at night. While running it also absorbs _pollution_ in its chunk.");
+        add("block.solarpunk.bioreactor_base.tooltip.summary", "The aerator layer under a _Bioreactor_, with the same footprint as the tank. Takes _Water_, _Fertilizer_ and _Kelp_, and gives _Biomass_ and _Oxygen_ out of any side.");
 
         add("block.solarpunk.biomass_gasifier.tooltip.summary", "Burns _Biomass_ to generate _Rotational Force_. Produces _Biochar_ as a byproduct.");
         add("block.solarpunk.biomass_gasifier.tooltip.condition1", "While burning");
@@ -404,6 +438,9 @@ public class ModLangProvider extends LanguageProvider {
         // the loop below would produce. They're excluded from that loop.
         add(ModBlocks.LITHIUM_BLOCK.get(), "Block of Lithium");
         add(ModBlocks.BERYLLIUM_BLOCK.get(), "Block of Beryllium");
+
+        // A BlockItem with its own name (the crop block is "Hemp"), so the item loop skips it.
+        add(ModItems.HEMP_SEEDS.get(), "Hemp Seeds");
 
         ModBlocks.BLOCKS.getEntries().stream()
                 .filter(entry -> entry.get() != ModBlocks.LITHIUM_BLOCK.get()
