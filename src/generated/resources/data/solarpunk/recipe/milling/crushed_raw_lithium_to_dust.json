@@ -1,0 +1,14 @@
+{
+  "type": "create:milling",
+  "ingredients": [
+    {
+      "item": "solarpunk:crushed_raw_lithium"
+    }
+  ],
+  "processing_time": 200,
+  "results": [
+    {
+      "id": "solarpunk:lithium_dust"
+    }
+  ]
+}

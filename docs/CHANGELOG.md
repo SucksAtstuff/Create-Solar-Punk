@@ -58,6 +58,7 @@
 
 ## Changes
 
+- **Crushed Raw Lithium**: Raw Lithium and Lithium Ore now crush into Crushed Raw Lithium like Create's ores, still with the Beryllium Dust bonus. Wash it into Lithium Nuggets, smelt it into an ingot, or mill it into Lithium Dust for fusion.
 - Steam is now a gas: in a Create Fluid Tank it fills from the top down instead of pooling at the bottom.
 - New Ponder scenes for wires, Wire Switches, the Electric Motor, Fuel Cells, the Firebox Boiler, Kinetic Sprinkler, Grow Lamp and Biofilter, plus a new Electricity Ponder tag. Older scenes now show each machine doing a real job.
 - Refreshed the connected textures on the tops and insides of the Fermentation Vat and Solar Power Tower.

@@ -1,0 +1,30 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "solarpunk:lithium_ore"
+    }
+  ],
+  "processing_time": 250,
+  "results": [
+    {
+      "id": "solarpunk:crushed_raw_lithium"
+    },
+    {
+      "chance": 0.75,
+      "id": "solarpunk:crushed_raw_lithium"
+    },
+    {
+      "chance": 0.75,
+      "id": "create:experience_nugget"
+    },
+    {
+      "chance": 0.25,
+      "id": "solarpunk:beryllium_dust"
+    },
+    {
+      "chance": 0.125,
+      "id": "minecraft:cobblestone"
+    }
+  ]
+}

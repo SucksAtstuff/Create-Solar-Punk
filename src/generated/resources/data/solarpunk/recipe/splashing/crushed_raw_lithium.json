@@ -1,0 +1,18 @@
+{
+  "type": "create:splashing",
+  "ingredients": [
+    {
+      "item": "solarpunk:crushed_raw_lithium"
+    }
+  ],
+  "results": [
+    {
+      "count": 9,
+      "id": "solarpunk:lithium_nugget"
+    },
+    {
+      "chance": 0.5,
+      "id": "solarpunk:salt"
+    }
+  ]
+}

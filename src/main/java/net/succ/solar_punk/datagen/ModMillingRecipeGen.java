@@ -33,6 +33,13 @@ public class ModMillingRecipeGen extends MillingRecipeGen {
         .require(CROPS)
         .output(ModItems.BIOMASS.get(), 1));
 
+    // Lithium Dust for the Fusion Reactor and Particle Accelerator: one per Crushed Raw
+    // Lithium, the same as crushing Raw Lithium gave before the crushed step.
+    GeneratedRecipe MILL_CRUSHED_RAW_LITHIUM = create("crushed_raw_lithium_to_dust", b -> b
+        .duration(200)
+        .require(ModItems.CRUSHED_RAW_LITHIUM.get())
+        .output(ModItems.LITHIUM_DUST.get(), 1));
+
     GeneratedRecipe MILL_HEMP_STALK = create("hemp_stalk_to_fiber", b -> b
         .duration(100)
         .require(ModItems.HEMP_STALK.get())

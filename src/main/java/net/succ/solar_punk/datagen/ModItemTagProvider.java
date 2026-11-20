@@ -24,6 +24,7 @@ import static net.succ.solar_punk.datagen.DatagenUtil.itemTag;
 public class ModItemTagProvider extends ItemTagsProvider {
 
     private static final TagKey<Item> BLAZE_BURNER_FUEL_REGULAR = itemTag("create", "blaze_burner_fuel/regular");
+    private static final TagKey<Item> CRUSHED_RAW_MATERIALS = itemTag("create", "crushed_raw_materials");
 
     // Custom c: sub-tags not predefined in NeoForge
     private static final TagKey<Item> BUCKETS_BIOFUEL = itemTag("c", "buckets/biofuel");
@@ -65,6 +66,8 @@ public class ModItemTagProvider extends ItemTagsProvider {
         tag(ModTags.Items.ORES_LITHIUM).add(ModBlocks.LITHIUM_ORE.get().asItem(), ModBlocks.DEEPSLATE_LITHIUM_ORE.get().asItem());
         tag(Tags.Items.RAW_MATERIALS).add(ModItems.RAW_LITHIUM.get());
         tag(ModTags.Items.RAW_MATERIALS_LITHIUM).add(ModItems.RAW_LITHIUM.get());
+        // Create's own tag for its crushed ores, so anything that lists them includes ours
+        tag(CRUSHED_RAW_MATERIALS).add(ModItems.CRUSHED_RAW_LITHIUM.get());
         tag(Tags.Items.INGOTS).add(ModItems.LITHIUM_INGOT.get());
         tag(ModTags.Items.INGOTS_LITHIUM).add(ModItems.LITHIUM_INGOT.get());
         tag(Tags.Items.NUGGETS).add(ModItems.LITHIUM_NUGGET.get());

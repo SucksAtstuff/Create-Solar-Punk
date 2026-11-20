@@ -25,6 +25,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.CARBON_DUST.get());
         basicItem(ModItems.ASH.get());
         basicItem(ModItems.RAW_LITHIUM.get());
+        basicItem(ModItems.CRUSHED_RAW_LITHIUM.get());
         basicItem(ModItems.LITHIUM_INGOT.get());
         basicItem(ModItems.LITHIUM_NUGGET.get());
         basicItem(ModItems.LITHIUM_DUST.get());

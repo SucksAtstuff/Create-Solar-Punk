@@ -397,6 +397,7 @@ main { min-width: 0; padding: 36px 0 64px; }
   .sidebar {
     position: fixed; z-index: 40; top: 0; left: 0; bottom: 0;
     width: min(300px, 86vw); max-height: none;
+    align-self: stretch; overscroll-behavior: contain;
     padding: 20px 14px 40px;
     background: var(--bg); border-right: 1px solid var(--line);
     translate: -100% 0; transition: translate .25s ease;
@@ -417,6 +418,9 @@ main { min-width: 0; padding: 36px 0 64px; }
 .home .sidebar {
   position: fixed; z-index: 40; top: 0; left: 0; bottom: 0;
   width: min(300px, 86vw); max-height: none;
+  /* the docked sidebar's align-self: start would size a fixed drawer to its content,
+     taller than the window, so it couldn't scroll */
+  align-self: stretch; overscroll-behavior: contain;
   padding: 20px 14px 40px;
   background: var(--bg); border-right: 1px solid var(--line);
   translate: -100% 0; transition: translate .25s ease;

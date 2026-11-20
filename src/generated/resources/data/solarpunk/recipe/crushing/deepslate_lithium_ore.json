@@ -1,0 +1,31 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "solarpunk:deepslate_lithium_ore"
+    }
+  ],
+  "processing_time": 350,
+  "results": [
+    {
+      "count": 2,
+      "id": "solarpunk:crushed_raw_lithium"
+    },
+    {
+      "chance": 0.25,
+      "id": "solarpunk:crushed_raw_lithium"
+    },
+    {
+      "chance": 0.75,
+      "id": "create:experience_nugget"
+    },
+    {
+      "chance": 0.35,
+      "id": "solarpunk:beryllium_dust"
+    },
+    {
+      "chance": 0.125,
+      "id": "minecraft:cobbled_deepslate"
+    }
+  ]
+}

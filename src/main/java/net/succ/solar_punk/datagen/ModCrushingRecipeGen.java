@@ -1,6 +1,9 @@
 package net.succ.solar_punk.datagen;
 
+import com.simibubi.create.AllItems;
 import com.simibubi.create.api.data.recipe.CrushingRecipeGen;
+import net.minecraft.world.level.block.Blocks;
+import net.succ.solar_punk.block.ModBlocks;
 import net.minecraft.core.HolderLookup;
 import net.neoforged.neoforge.common.Tags;
 import net.minecraft.data.PackOutput;
@@ -42,13 +45,34 @@ public class ModCrushingRecipeGen extends CrushingRecipeGen {
         .require(SEEDS)
         .output(0.75f, ModItems.BIOMASS.get(), 1));
 
-    // Beryllium has no ore of its own: it comes from this crushing bonus and the
-    // salt brine Mixing recipe (see ModMixingRecipeGen), riding on Lithium production.
-    GeneratedRecipe CRUSH_RAW_LITHIUM = create("raw_lithium_to_dust", b -> b
-        .duration(200)
+    // Lithium follows Create's ore chain: Raw Lithium and the ores crush into Crushed Raw
+    // Lithium with Experience Nuggets, like Create's raw_iron and iron ore recipes (the ores
+    // with the same expected yields as iron). Beryllium has no ore of its own: it comes from
+    // the 15% bonus here and the salt brine Mixing recipe (see ModMixingRecipeGen).
+    GeneratedRecipe CRUSH_RAW_LITHIUM = create("raw_lithium", b -> b
+        .duration(400)
         .require(ModTags.Items.RAW_MATERIALS_LITHIUM)
-        .output(ModItems.LITHIUM_DUST.get(), 1)
+        .output(ModItems.CRUSHED_RAW_LITHIUM.get(), 1)
+        .output(0.75f, AllItems.EXP_NUGGET.get(), 1)
         .output(0.15f, ModItems.BERYLLIUM_DUST.get(), 1));
+
+    GeneratedRecipe CRUSH_LITHIUM_ORE = create("lithium_ore", b -> b
+        .duration(250)
+        .require(ModBlocks.LITHIUM_ORE.get())
+        .output(ModItems.CRUSHED_RAW_LITHIUM.get(), 1)
+        .output(0.75f, ModItems.CRUSHED_RAW_LITHIUM.get(), 1)
+        .output(0.75f, AllItems.EXP_NUGGET.get(), 1)
+        .output(0.25f, ModItems.BERYLLIUM_DUST.get(), 1)
+        .output(0.125f, Blocks.COBBLESTONE));
+
+    GeneratedRecipe CRUSH_DEEPSLATE_LITHIUM_ORE = create("deepslate_lithium_ore", b -> b
+        .duration(350)
+        .require(ModBlocks.DEEPSLATE_LITHIUM_ORE.get())
+        .output(ModItems.CRUSHED_RAW_LITHIUM.get(), 2)
+        .output(0.25f, ModItems.CRUSHED_RAW_LITHIUM.get(), 1)
+        .output(0.75f, AllItems.EXP_NUGGET.get(), 1)
+        .output(0.35f, ModItems.BERYLLIUM_DUST.get(), 1)
+        .output(0.125f, Blocks.COBBLED_DEEPSLATE));
 
     // Better than the Millstone: a chance of a third Fiber, plus the woody core as Biomass.
     GeneratedRecipe CRUSH_HEMP_STALK = create("hemp_stalk_to_fiber", b -> b

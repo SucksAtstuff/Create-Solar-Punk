@@ -3,18 +3,30 @@
 A running list of possible future features. Nothing here is committed. Grouped by theme,
 with the strongest / most on-theme ideas near the top of each section.
 
-## Next up: after 2.2
+## Next up: 2.3, Oxygen
 
-A simple FE battery, the last big gap now that the Hydrogen chain gives long-term FE storage.
+1. **Oxygen uses** (the headline): the Electrolyzer and the Bioreactor both make it, but only
+   the Fuel Cell uses it, so most Bioreactor Oxygen vents. Oxy-fuel burning in the Biomass
+   Gasifier and Biofuel Engine, and the aerobic Rich Fertilizer mode in the Fermentation Vat.
+   See Oxygen uses under Biofuel and farming.
+2. **Small wins**: the wire throughput Display Link, and optionally the Electric Sprinkler.
+
+## After that: 2.4, a new generator
+
+Tidal power or the ion wind turbine (FE, boosted by rain and storms, covering solar's weak
+spots). See Biggest gaps.
 
 ## Biggest gaps in the renewable lineup
 
 - **Hydrogen extras** (the Electrolyzer and Fuel Cell stack are built): Oxygen, shared with
   the Bioreactor (see Oxygen uses under Biofuel and farming).
-- **FE battery** - the Electrolyzer and Fuel Cell stack store FE as gas, but lose about a
-  third and need plumbing. A plain battery to fill and drain directly with no loss would be the
-  cheap early-game store, with hydrogen as the big long-term one. Maybe a large multiblock
-  later. A Thermal Generator (Molten Salt heat to FE) is another way in.
+- **Thermal Generator** - Molten Salt heat to FE.
+- **Seebeck generator** - a solid-state thermoelectric generator that turns hot water into a
+  trickle of FE from the temperature difference, with no moving parts. Puts waste heat to use,
+  like the Steam Turbine's condensed water. There's no hot water fluid yet, so the turbine (and
+  maybe the Crystallizer) would need to give out Hot Water instead of plain Water, which cools
+  back to Water as it passes through.
+- **FE battery** - skipped: the Hydrogen chain is the FE storage.
 - **Tidal / wave power** - SU from ocean water levels, changing with the time of day, so it's
   different from Create's water wheel.
 - **Ion wind turbine** (a real EWICON: electrostatic wind energy converter) - a solid-state
@@ -57,8 +69,9 @@ Glass have little to feed. The Electric Motor (2.2) gives FE a big job; these co
   - Aerobic treatment in the Fermentation Vat: speeds up Rich Fertilizer only. That's
     composting, which really is aerobic; biofuel (ethanol) fermentation is anaerobic and
     Oxygen would hurt it, so the Vat gets a real choice of which mode to run.
-  - Oxy-fuel burning: pipe Oxygen into the Firebox Boiler, Biomass Gasifier or Biofuel
-    Engine for more SU or Steam per unit of fuel. Oxygen isn't a fuel itself, it boosts one.
+  - Oxy-fuel burning: pipe Oxygen into the Biomass Gasifier or Biofuel Engine for more SU per
+    unit of fuel. Oxygen isn't a fuel itself, it boosts one. Not the Firebox Boiler: it stays
+    a simple early-game Steam source.
   - Space compat: if Northstar or Cosmonautics has an Oxygen fluid for life support, let
     ours count as it, for algae-powered space stations (cheap, like `NorthstarCompat`).
   - Skipped for now: Liquid Oxygen (needs a cooling machine and a second fluid for the same
@@ -70,13 +83,6 @@ Vents are meant to be scarce, so ideas here should make a natural vent worth mor
 let geothermal work anywhere.
 
 - **Enhanced geothermal** - pump water down, steam comes up, run the Steam Turbine.
-
-## Resources
-
-- **Crushed Raw Lithium** - follow Create's ore pattern: crushing Raw Lithium (or the ore)
-  gives Crushed Raw Lithium plus a chance of Experience Nuggets, and the Beryllium Dust
-  bonus moves there. Washing it gives Lithium Nuggets, and smelting gives an ingot, so
-  crushing beats smelting raw. Right now Raw Lithium crushes straight to Lithium Dust.
 
 ## Particle Accelerator
 

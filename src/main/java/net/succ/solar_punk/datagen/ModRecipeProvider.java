@@ -337,6 +337,8 @@ public class ModRecipeProvider extends RecipeProvider {
         // minecraft namespace instead of solarpunk.
         ingotSmelting(output, ModTags.Items.RAW_MATERIALS_LITHIUM, "raw_lithium", ModItems.LITHIUM_INGOT.get(), "lithium");
         ingotSmelting(output, ModTags.Items.DUSTS_LITHIUM, "lithium_dust", ModItems.LITHIUM_INGOT.get(), "lithium");
+        ingotSmelting(output, Ingredient.of(ModItems.CRUSHED_RAW_LITHIUM.get()), has(ModItems.CRUSHED_RAW_LITHIUM.get()),
+                "crushed_raw_lithium", ModItems.LITHIUM_INGOT.get(), "lithium");
         metalStorage(output, "lithium", ModItems.LITHIUM_NUGGET.get(), ModItems.LITHIUM_INGOT.get(), ModBlocks.LITHIUM_BLOCK.get(),
                 ModTags.Items.NUGGETS_LITHIUM, ModTags.Items.INGOTS_LITHIUM, ModTags.Items.STORAGE_BLOCKS_LITHIUM);
 
@@ -581,12 +583,17 @@ public class ModRecipeProvider extends RecipeProvider {
 
     // Smelting and blasting recipes turning `input` into a metal ingot.
     private static void ingotSmelting(RecipeOutput output, TagKey<Item> input, String inputName, Item ingot, String metal) {
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.MISC, ingot, 0.7f, 200)
-                .unlockedBy("has_" + inputName, has(input))
+        ingotSmelting(output, Ingredient.of(input), has(input), inputName, ingot, metal);
+    }
+
+    private static void ingotSmelting(RecipeOutput output, Ingredient input, Criterion<?> unlock, String inputName,
+                                      Item ingot, String metal) {
+        SimpleCookingRecipeBuilder.smelting(input, RecipeCategory.MISC, ingot, 0.7f, 200)
+                .unlockedBy("has_" + inputName, unlock)
                 .save(output, id(metal + "_ingot_from_smelting_" + inputName));
 
-        SimpleCookingRecipeBuilder.blasting(Ingredient.of(input), RecipeCategory.MISC, ingot, 0.7f, 100)
-                .unlockedBy("has_" + inputName, has(input))
+        SimpleCookingRecipeBuilder.blasting(input, RecipeCategory.MISC, ingot, 0.7f, 100)
+                .unlockedBy("has_" + inputName, unlock)
                 .save(output, id(metal + "_ingot_from_blasting_" + inputName));
     }
 

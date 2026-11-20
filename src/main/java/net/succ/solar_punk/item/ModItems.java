@@ -50,9 +50,13 @@ public class ModItems {
 
     // Lithium ore chain: mined from Lithium Ore (drops Raw Lithium) or produced
     // directly as Lithium Dust via ModMixingRecipeGen.SALT_BRINE_TO_LITHIUM (Water +
-    // Salt, Superheated Basin). Raw Lithium and Lithium Dust both smelt to Lithium
-    // Ingot; crushing Raw Lithium is also the source of Beryllium Dust.
+    // Salt, Superheated Basin). Like Create's ores, crushing Raw Lithium or the ore gives
+    // Crushed Raw Lithium (and the Beryllium Dust bonus), which washes into 9 Lithium
+    // Nuggets, smelts into an ingot, or mills into Lithium Dust for the Fusion Reactor.
     public static final DeferredItem<Item> RAW_LITHIUM = ITEMS.register("raw_lithium",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> CRUSHED_RAW_LITHIUM = ITEMS.register("crushed_raw_lithium",
             () -> new Item(new Item.Properties()));
 
     public static final DeferredItem<Item> LITHIUM_INGOT = ITEMS.register("lithium_ingot",
