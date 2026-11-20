@@ -3,29 +3,29 @@
 A running list of possible future features. Nothing here is committed. Grouped by theme,
 with the strongest / most on-theme ideas near the top of each section.
 
+## Next up: after 2.2
+
+A simple FE battery, the last big gap now that the Hydrogen chain gives long-term FE storage.
+
 ## Biggest gaps in the renewable lineup
 
-- **Hydrogen chain** - an Electrolyzer splits Water into Hydrogen using FE from Brass Panels,
-  and a Fuel Cell turns it back into SU or FE. Gives solar FE a storage use, and ties into
-  Northstar's Liquid Hydrogen, which the Steam Turbine already burns.
-  - The problem it solves: solar FE has nowhere to go beyond each block's small buffer, and
-    solar stops at night. Hydrogen made at noon can run the base after dark.
-  - Better than a plain battery: storage is only limited by tank space, and Hydrogen can be
-    piped across the base or carried on trains and contraptions, so a desert solar field can
-    ship fuel home.
-  - Lossy on purpose: getting back maybe 60-70% of the FE put in makes it a trade-off, so
-    using solar directly stays worth it.
-  - The Fuel Cell's only waste is Water, which could be piped back into the Electrolyzer.
-  - Open: Fuel Cell output FE, SU, or switchable like the Solar Power Tower's modes?
-  - Open: its own Hydrogen fluid, or reuse Northstar's when installed (like `NorthstarCompat`)?
-  - Open: is Oxygen a byproduct, and does anything use it, or is it just vented?
-  - Open: could the Electrolyzer give a little Deuterium as a rare byproduct for the Fusion
-    Reactor?
-- **FE storage** - FE only exists in the small buffers of the Brass Panel, Solar Shingles and
-  Solar Glass right now. A Thermal Generator (Molten Salt heat to FE) or a large battery
-  multiblock.
+- **Hydrogen extras** (the Electrolyzer and Fuel Cell stack are built): Oxygen, shared with
+  the Bioreactor (see Oxygen uses under Biofuel and farming).
+- **FE battery** - the Electrolyzer and Fuel Cell stack store FE as gas, but lose about a
+  third and need plumbing. A plain battery to fill and drain directly with no loss would be the
+  cheap early-game store, with hydrogen as the big long-term one. Maybe a large multiblock
+  later. A Thermal Generator (Molten Salt heat to FE) is another way in.
 - **Tidal / wave power** - SU from ocean water levels, changing with the time of day, so it's
   different from Create's water wheel.
+- **Ion wind turbine** (a real EWICON: electrostatic wind energy converter) - a solid-state
+  FE generator with no moving parts, the wind counterpart to the Brass Solar Panel, since
+  Create's windmill only gives SU. Sprays charged water droplets that the wind carries off,
+  so it uses a trickle of piped Water. Small, unsteady output: more with height above sea
+  level, needs open air around it (count air blocks in a radius, with a penalty for packing
+  them close together), and rain and thunder boost it, which covers solar's night gap.
+- **Ion thruster** - skipped, like the Oxygen thrusters: thrust is Aeronautics' job, and an
+  FE fan would only duplicate an Electric Motor on an Encased Fan. If ever, only as optional
+  Aeronautics compat.
 - **Dedicated grid-scale storage** beyond Heat Battery / Kinetic Battery - a gravity battery
   that hoists a weighted block on surplus power. (Flywheel storage is largely what the Kinetic
   Battery already does.)
@@ -33,26 +33,14 @@ with the strongest / most on-theme ideas near the top of each section.
 ## More uses for FE
 
 Right now FE mostly just powers lights and Grow Lamps, so Brass Panels, Shingles and Solar
-Glass have little to feed. These give it more jobs and make wire networks something to manage.
+Glass have little to feed. The Electric Motor (2.2) gives FE a big job; these come after.
 
-- **Wire Switch** - a lever-like latch block with two Wire Connector points. Flip it to join or
-  split the two wire groups, so part of a network (a street of lights, a greenhouse) can be cut
-  off without unhooking wires.
-  - **Redstone Wire Relay** - the same thing switched by a redstone signal instead of by hand,
-    so Daylight Sensors, comparators (the new solar panel / Biofilter signals) or Create's
-    redstone links can switch power automatically.
-  - Open: one block with a mode toggle, or two separate blocks?
-  - Open: does a split network keep each side's stored energy, or is it just a gap in the path?
-- **Electric Motor** - turns FE back into SU, so FE can drive Create machines and wires can
-  carry rotational power across a base without long shaft lines.
-  - Balance: a Brass Panel feeding a Motor should give less SU and a lower speed than just
-    placing an Andesite Panel there (16 RPM / 256 SU at noon by default). The Andesite Panel
-    stays the easy, direct option; the Brass Panel + wires + Motor route pays off in scale and
-    flexibility (moving power, gathering it from a whole roof, running it at a distance).
-  - Open: fixed output, or a scroll value for RPM like Create's Creative Motor, with FE use
-    rising with speed and stress?
-  - Open: overlap with Create: New Age's motors when it's installed. Ours could be skipped or
-    tuned to sit alongside it.
+- **Wire throughput readout** - connectors already count FE/s moved; a Display Link source on
+  connectors would turn wires into power meters.
+- **Electric Sprinkler** - an FE-powered Kinetic Sprinkler, so a greenhouse can run entirely
+  on its own Solar Glass roof.
+- **Electric Heater** - FE heats a Create boiler (passive heat at low FE/t, superheat at
+  high). Competes with the Heat Battery, so only if it's clearly more expensive per heat.
 
 ## Solar chain depth
 
@@ -63,12 +51,32 @@ Glass have little to feed. These give it more jobs and make wire networks someth
 - **Stirling dish concentrator** - direct SU/FE from a focused dish, no molten salt loop.
   Overlaps the Solar Heater and tower, so low priority.
 
+## Biofuel and farming
+
+- **Oxygen uses** - from the Electrolyzer and the Bioreactor.
+  - Aerobic treatment in the Fermentation Vat: speeds up Rich Fertilizer only. That's
+    composting, which really is aerobic; biofuel (ethanol) fermentation is anaerobic and
+    Oxygen would hurt it, so the Vat gets a real choice of which mode to run.
+  - Oxy-fuel burning: pipe Oxygen into the Firebox Boiler, Biomass Gasifier or Biofuel
+    Engine for more SU or Steam per unit of fuel. Oxygen isn't a fuel itself, it boosts one.
+  - Space compat: if Northstar or Cosmonautics has an Oxygen fluid for life support, let
+    ours count as it, for algae-powered space stations (cheap, like `NorthstarCompat`).
+  - Skipped for now: Liquid Oxygen (needs a cooling machine and a second fluid for the same
+    gas) and thrusters (Aeronautics and the space mods' job, not a power mod's).
+
 ## Geothermal
 
 Vents are meant to be scarce, so ideas here should make a natural vent worth more rather than
 let geothermal work anywhere.
 
 - **Enhanced geothermal** - pump water down, steam comes up, run the Steam Turbine.
+
+## Resources
+
+- **Crushed Raw Lithium** - follow Create's ore pattern: crushing Raw Lithium (or the ore)
+  gives Crushed Raw Lithium plus a chance of Experience Nuggets, and the Beryllium Dust
+  bonus moves there. Washing it gives Lithium Nuggets, and smelting gives an ingot, so
+  crushing beats smelting raw. Right now Raw Lithium crushes straight to Lithium Dust.
 
 ## Particle Accelerator
 
@@ -91,35 +99,21 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
 
 ## Seasonal events
 
-Purely cosmetic texture swaps for part of the year. Easter, Halloween, Christmas and Pride are
-the big ones worth doing first.
+Already in: model and texture swaps (`client/SeasonalModels`), holiday colours for geyser steam,
+Trellis flowers and the Garden Light's glow (`util/SeasonalColors`), and Christmas lights on
+wires. What's left needs new art.
 
-- **Easter (date moves each year)** - pastel-painted solar panel cells, little decorated eggs
-  hidden on the Trellis, and pastel Garden Lights. Rare chance of an egg item popping out of a
-  harvested crop.
-- **Halloween (Oct 31, or the last week of October)** - Garden Lights become carved pumpkin
-  lanterns with a flickering orange glow, cobwebs on the railings, bats perched on the solar
-  panels, and green or purple "spooky" steam from the geyser.
-- **Christmas (December)** - string lights wound around the Trellis and railings, snow caps on
-  solar panels and Shingles, and a little Santa hat on the geyser cap.
-- **Valentine's Day (Feb 14)** - Garden Lights glow pink or red, the Trellis gets little
-  heart-shaped flowers, and the geyser puffs pink steam.
-- **St. Patrick's Day (Mar 17)** - solar panel cells turn green, clovers show up on the
-  Trellis, and the Garden Light glows green.
+- **Easter** - little decorated eggs hidden on the Trellis. Rare chance of an egg item popping
+  out of a harvested crop.
+- **Halloween** - Garden Lights become carved pumpkin lanterns (the orange glow is done) that
+  flicker, cobwebs on the railings, bats perched on the solar panels.
+- **St. Patrick's Day** - clovers on the Trellis.
 - **April Fools' (Apr 1)** - a chaos pick. Solar panels show a moon or a smiley face, Garden
   Lights look upside down, or the geyser cap has googly eyes.
 - **Earth Day (Apr 22)** - solar panels get a globe or leaf pattern, and moss or flowers grow
   over Rammed Earth.
-- **Day of the Dead (Nov 1-2)** - marigolds on the Trellis and papel picado (cut-paper bunting)
-  strung on the railings. Could be folded into Halloween instead.
-- **Pride Month (June)** - rainbow-striped solar panel cells, Garden Lights that slowly cycle
-  through rainbow colors, rainbow ribbons on the railings, and rainbow steam from the geyser.
-  Could use other pride flags (trans, bi, etc.) as random variants per block.
-- **New Year's Eve (Dec 31 - Jan 1)** - gold and silver Garden Lights, confetti on the solar
-  panels, and sparkler particles from the geyser.
-
-## Compat
-
-- **Ad Astra** - strong solar in orbit, weak on Mars, no wind on airless bodies. Space support
-  already works through the `solarpunk:always_sunny` / `solarpunk:no_weather` dimension type
-  tags, so this may only need tagging (check Ad Astra exists for 1.21.1 NeoForge first).
+- **Day of the Dead** - papel picado (cut-paper bunting) strung on the railings.
+- **Pride Month** - rainbow ribbons on the railings. Garden Lights that slowly cycle through
+  the rainbow (they're a fixed colour per block now; cycling needs a renderer). Other pride
+  flags (trans, bi, etc.) as random variants per block.
+- **New Year's** - confetti on the solar panels.

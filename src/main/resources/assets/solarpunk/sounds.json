@@ -35,6 +35,24 @@
             "solarpunk:fermentation_vat_bubbling"
         ]
     },
+    "bioreactor_hum": {
+        "subtitle": "subtitles.solarpunk.bioreactor_hum",
+        "sounds": [
+            "solarpunk:bioreactor_hum"
+        ]
+    },
+    "bioreactor_bubbling": {
+        "subtitle": "subtitles.solarpunk.bioreactor_bubbling",
+        "sounds": [
+            "solarpunk:bioreactor_bubbling"
+        ]
+    },
+    "bioreactor_vent": {
+        "subtitle": "subtitles.solarpunk.bioreactor_vent",
+        "sounds": [
+            "solarpunk:bioreactor_vent"
+        ]
+    },
     "solar_heater_shimmer": {
         "subtitle": "subtitles.solarpunk.solar_heater_shimmer",
         "sounds": [

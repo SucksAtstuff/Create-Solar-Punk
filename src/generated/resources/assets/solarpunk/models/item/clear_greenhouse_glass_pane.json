@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "solarpunk:block/greenhouse_glass_clear"
+    "layer0": "solarpunk:block/greenhouse/greenhouse_glass_clear"
   }
 }

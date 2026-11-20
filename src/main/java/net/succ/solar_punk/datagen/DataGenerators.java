@@ -21,8 +21,10 @@ public class DataGenerators {
 
         // Server providers
         generator.addProvider(event.includeServer(), new LootTableProvider(output, Set.of(), List.of(
-                new LootTableProvider.SubProviderEntry(ModBlockLootTablesProvider::new, LootContextParamSets.BLOCK)
+                new LootTableProvider.SubProviderEntry(ModBlockLootTablesProvider::new, LootContextParamSets.BLOCK),
+                new LootTableProvider.SubProviderEntry(ModGrassLootProvider::new, LootContextParamSets.BLOCK)
         ), lookupProvider));
+        generator.addProvider(event.includeServer(), new ModLootModifierProvider(output, lookupProvider));
         generator.addProvider(event.includeServer(), new ModRecipeProvider(output, lookupProvider));
         generator.addProvider(event.includeServer(), new ModCrushingRecipeGen(output, lookupProvider));
         generator.addProvider(event.includeServer(), new ModMillingRecipeGen(output, lookupProvider));

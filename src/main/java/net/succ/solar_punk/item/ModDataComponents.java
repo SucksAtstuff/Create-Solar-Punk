@@ -1,5 +1,7 @@
 package net.succ.solar_punk.item;
 
+import net.minecraft.network.codec.ByteBufCodecs;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -31,6 +33,12 @@ public class ModDataComponents {
             DATA_COMPONENTS.registerComponentType("wire_start", builder -> builder
                     .persistent(GlobalPos.CODEC)
                     .networkSynchronized(GlobalPos.STREAM_CODEC));
+
+    // Which terminal of that block the wire starts from (a Wire Switch has two). Missing means 0.
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> WIRE_START_TERMINAL =
+            DATA_COMPONENTS.registerComponentType("wire_start_terminal", builder -> builder
+                    .persistent(Codec.INT)
+                    .networkSynchronized(ByteBufCodecs.VAR_INT));
 
     public static void register(IEventBus eventBus) {
         DATA_COMPONENTS.register(eventBus);

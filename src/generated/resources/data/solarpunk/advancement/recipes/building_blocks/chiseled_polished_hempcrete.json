@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_polished_hempcrete_slab": {
+      "conditions": {
+        "items": [
+          {
+            "items": "solarpunk:polished_hempcrete_slab"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "solarpunk:chiseled_polished_hempcrete"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_polished_hempcrete_slab"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "solarpunk:chiseled_polished_hempcrete"
+    ]
+  }
+}

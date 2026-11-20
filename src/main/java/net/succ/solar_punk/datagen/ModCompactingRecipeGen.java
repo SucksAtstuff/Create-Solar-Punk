@@ -7,6 +7,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
@@ -24,6 +25,14 @@ public class ModCompactingRecipeGen extends CompactingRecipeGen {
         .require(ModItems.CARBON_DUST.get())
         .require(ModItems.CARBON_DUST.get())
         .output(ModItems.BIOCHAR.get(), 1));
+
+    // Cold-pressed oil.
+    GeneratedRecipe HEMP_SEEDS_TO_OIL = create("hemp_seeds_to_oil", b -> b
+        .require(ModItems.HEMP_SEEDS.get())
+        .require(ModItems.HEMP_SEEDS.get())
+        .require(ModItems.HEMP_SEEDS.get())
+        .require(ModItems.HEMP_SEEDS.get())
+        .output(ModFluids.HEMP_SEED_OIL_SOURCE.get(), 250));
 
     public ModCompactingRecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, SolarPunk.MODID);

@@ -28,6 +28,7 @@ import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.TurbineBladeBlock;
 import net.succ.solar_punk.block.custom.TurbineRotorBlock;
 import net.succ.solar_punk.client.sound.TurbineSoundInstance;
+import net.succ.solar_punk.compat.crowns.CrownsCompat;
 import net.succ.solar_punk.compat.northstar.NorthstarCompat;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.util.FluidTankNBTHelper;
@@ -97,6 +98,8 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
     // is accepted at the same rate. FluidTank.fill() refuses a fluid that doesn't match
     // what's already stored, so the two can never mix: the tank has to drain fully
     // before switching.
+    // Create: CROWNS steam (water with a gas state, see CrownsCompat) is turned into
+    // our own Steam on the way in, so the tank only ever holds Solarpunk fluids.
     private static boolean isTurbineFuel(FluidStack stack) {
         return stack.getFluid().isSame(ModFluids.STEAM_SOURCE.get())
                 || NorthstarCompat.isTurbineFuel(stack.getFluid());
@@ -139,10 +142,12 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         }
 
         @Override public boolean isFluidValid(int tank, FluidStack stack) {
-            return tank == 0 && isTurbineFuel(stack);
+            return tank == 0 && (isTurbineFuel(stack) || CrownsCompat.isTurbineSteam(stack));
         }
 
         @Override public int fill(FluidStack resource, FluidAction action) {
+            if (CrownsCompat.isTurbineSteam(resource))
+                return steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), resource.getAmount()), action);
             if (!isTurbineFuel(resource)) return 0;
             return steamTank.fill(resource, action);
         }

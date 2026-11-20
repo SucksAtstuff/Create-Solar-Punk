@@ -3,8 +3,8 @@
 	"credit": "Made by Firstwitch",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "solarpunk:block/greenhouse_controller",
-		"particle": "solarpunk:block/greenhouse_controller"
+		"0": "solarpunk:block/greenhouse/greenhouse_controller",
+		"particle": "solarpunk:block/greenhouse/greenhouse_controller"
 	},
 	"elements": [
 		{

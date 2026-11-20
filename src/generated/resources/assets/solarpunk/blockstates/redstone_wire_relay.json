@@ -1,0 +1,110 @@
+{
+  "variants": {
+    "closed=false,face=ceiling,facing=east": {
+      "model": "solarpunk:block/redstone_wire_switch_open",
+      "x": 180,
+      "y": 270
+    },
+    "closed=false,face=ceiling,facing=north": {
+      "model": "solarpunk:block/redstone_wire_switch_open",
+      "x": 180,
+      "y": 180
+    },
+    "closed=false,face=ceiling,facing=south": {
+      "model": "solarpunk:block/redstone_wire_switch_open",
+      "x": 180
+    },
+    "closed=false,face=ceiling,facing=west": {
+      "model": "solarpunk:block/redstone_wire_switch_open",
+      "x": 180,
+      "y": 90
+    },
+    "closed=false,face=floor,facing=east": {
+      "model": "solarpunk:block/redstone_wire_switch_open",
+      "y": 90
+    },
+    "closed=false,face=floor,facing=north": {
+      "model": "solarpunk:block/redstone_wire_switch_open"
+    },
+    "closed=false,face=floor,facing=south": {
+      "model": "solarpunk:block/redstone_wire_switch_open",
+      "y": 180
+    },
+    "closed=false,face=floor,facing=west": {
+      "model": "solarpunk:block/redstone_wire_switch_open",
+      "y": 270
+    },
+    "closed=false,face=wall,facing=east": {
+      "model": "solarpunk:block/redstone_wire_switch_open",
+      "x": 90,
+      "y": 90
+    },
+    "closed=false,face=wall,facing=north": {
+      "model": "solarpunk:block/redstone_wire_switch_open",
+      "x": 90
+    },
+    "closed=false,face=wall,facing=south": {
+      "model": "solarpunk:block/redstone_wire_switch_open",
+      "x": 90,
+      "y": 180
+    },
+    "closed=false,face=wall,facing=west": {
+      "model": "solarpunk:block/redstone_wire_switch_open",
+      "x": 90,
+      "y": 270
+    },
+    "closed=true,face=ceiling,facing=east": {
+      "model": "solarpunk:block/redstone_wire_switch",
+      "x": 180,
+      "y": 270
+    },
+    "closed=true,face=ceiling,facing=north": {
+      "model": "solarpunk:block/redstone_wire_switch",
+      "x": 180,
+      "y": 180
+    },
+    "closed=true,face=ceiling,facing=south": {
+      "model": "solarpunk:block/redstone_wire_switch",
+      "x": 180
+    },
+    "closed=true,face=ceiling,facing=west": {
+      "model": "solarpunk:block/redstone_wire_switch",
+      "x": 180,
+      "y": 90
+    },
+    "closed=true,face=floor,facing=east": {
+      "model": "solarpunk:block/redstone_wire_switch",
+      "y": 90
+    },
+    "closed=true,face=floor,facing=north": {
+      "model": "solarpunk:block/redstone_wire_switch"
+    },
+    "closed=true,face=floor,facing=south": {
+      "model": "solarpunk:block/redstone_wire_switch",
+      "y": 180
+    },
+    "closed=true,face=floor,facing=west": {
+      "model": "solarpunk:block/redstone_wire_switch",
+      "y": 270
+    },
+    "closed=true,face=wall,facing=east": {
+      "model": "solarpunk:block/redstone_wire_switch",
+      "x": 90,
+      "y": 90
+    },
+    "closed=true,face=wall,facing=north": {
+      "model": "solarpunk:block/redstone_wire_switch",
+      "x": 90
+    },
+    "closed=true,face=wall,facing=south": {
+      "model": "solarpunk:block/redstone_wire_switch",
+      "x": 90,
+      "y": 180
+    },
+    "closed=true,face=wall,facing=west": {
+      "model": "solarpunk:block/redstone_wire_switch",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

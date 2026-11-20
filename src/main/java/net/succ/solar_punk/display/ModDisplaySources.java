@@ -15,12 +15,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.succ.solar_punk.block.entity.custom.AndesiteSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BiofilterBlockEntity;
+import net.succ.solar_punk.block.entity.custom.BioreactorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BrassSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCasingBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GreenhouseControllerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticBatteryBlockEntity;
+import net.succ.solar_punk.block.entity.custom.ElectricMotorBlockEntity;
+import net.succ.solar_punk.util.EnergyFormat;
 import net.succ.solar_punk.block.entity.custom.SolarPowerTowerBlockEntity;
 import net.succ.solar_punk.util.SolarHelper;
 import org.jetbrains.annotations.Nullable;
@@ -49,6 +52,13 @@ public class ModDisplaySources {
                     be -> be.getChargeLevel() / (float) Config.kineticBatteryMaxCharge));
 
     // --- Solar Power Tower ---
+
+    // --- Electric Motor ---
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> ELECTRIC_MOTOR_CONSUMPTION = register("electric_motor_consumption",
+            () -> new NumericLineDisplaySource<>(ModDisplaySources::electricMotor,
+                    motor -> Component.literal(EnergyFormat.feRate(motor.isRunning() ? motor.feUse() : 0))
+                            .withStyle(motor.isRunning() ? ChatFormatting.YELLOW : ChatFormatting.GRAY)));
 
     public static final DeferredHolder<DisplaySource, DisplaySource> SOLAR_POWER_TOWER_EFFICIENCY = register("solar_power_tower_efficiency",
             () -> new PercentDisplaySource<>(ModDisplaySources::towerController, SolarPowerTowerBlockEntity::getEfficiency));
@@ -148,6 +158,19 @@ public class ModDisplaySources {
     public static final DeferredHolder<DisplaySource, DisplaySource> BIOFILTER_POLLUTION_LEVEL = register("biofilter_pollution_level",
             () -> new PercentDisplaySource<>(ModDisplaySources::biofilter, BiofilterBlockEntity::getPollutionLevel));
 
+    // --- Bioreactor ---
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> BIOREACTOR_BIOMASS_RATE = register("bioreactor_biomass_rate",
+            () -> new NumericLineDisplaySource<>(ModDisplaySources::bioreactor,
+                    br -> Component.literal(String.format(Locale.ROOT, "%.1f/min", br.getBiomassPerMinute()))
+                            .withStyle(br.getBiomassPerMinute() > 0 ? ChatFormatting.GREEN : ChatFormatting.GRAY)));
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> BIOREACTOR_LIGHT = register("bioreactor_light",
+            () -> new PercentDisplaySource<>(ModDisplaySources::bioreactor, BioreactorBlockEntity::getLight));
+
+    public static final DeferredHolder<DisplaySource, DisplaySource> BIOREACTOR_CULTURE = register("bioreactor_culture",
+            () -> new PercentDisplaySource<>(ModDisplaySources::bioreactor, BioreactorBlockEntity::getCultureLevel));
+
     // --- Greenhouse Controller ---
 
     public static final DeferredHolder<DisplaySource, DisplaySource> GREENHOUSE_STATUS = register("greenhouse_status",
@@ -170,11 +193,20 @@ public class ModDisplaySources {
     // --- Block entity lookups ---
 
     @Nullable
+    private static BioreactorBlockEntity bioreactor(DisplayLinkContext context) {
+        return context.getSourceBlockEntity() instanceof BioreactorBlockEntity be ? be.getControllerBE() : null;
+    }
+
+    @Nullable
     private static HeatBatteryBlockEntity heatBattery(DisplayLinkContext context) {
         return context.getSourceBlockEntity() instanceof HeatBatteryBlockEntity be ? be : null;
     }
 
     @Nullable
+    private static ElectricMotorBlockEntity electricMotor(DisplayLinkContext context) {
+        return context.getSourceBlockEntity() instanceof ElectricMotorBlockEntity motor ? motor : null;
+    }
+
     private static KineticBatteryBlockEntity kineticBattery(DisplayLinkContext context) {
         return context.getSourceBlockEntity() instanceof KineticBatteryBlockEntity be ? be : null;
     }

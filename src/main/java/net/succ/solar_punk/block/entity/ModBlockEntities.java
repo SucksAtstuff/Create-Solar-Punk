@@ -12,12 +12,14 @@ import net.succ.solar_punk.block.entity.custom.AndesiteSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BiofuelEngineBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BiomassGasifierBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FermentationVatBlockEntity;
+import net.succ.solar_punk.block.entity.custom.BioreactorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FireboxBoilerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GeyserCapBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GeyserVentBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BrassSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.CrystallizerBlockEntity;
+import net.succ.solar_punk.block.entity.custom.ElectrolyzerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarHeaterBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarMirrorBlockEntity;
@@ -33,6 +35,9 @@ import net.succ.solar_punk.block.entity.custom.StreetlampBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GrowLampBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarPlantBedBlockEntity;
 import net.succ.solar_punk.block.entity.custom.WireConnectorBlockEntity;
+import net.succ.solar_punk.block.entity.custom.WireSwitchBlockEntity;
+import net.succ.solar_punk.block.entity.custom.ElectricMotorBlockEntity;
+import net.succ.solar_punk.block.entity.custom.EndPlateBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GreenhouseControllerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCoreBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FusionReactorCasingBlockEntity;
@@ -44,6 +49,11 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FermentationVatBlockEntity>> FERMENTATION_VAT =
             BLOCK_ENTITIES.register("fermentation_vat", () -> BlockEntityType.Builder
                     .of((pos, state) -> new FermentationVatBlockEntity(ModBlockEntities.FERMENTATION_VAT.get(), pos, state), ModBlocks.FERMENTATION_VAT.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BioreactorBlockEntity>> BIOREACTOR =
+            BLOCK_ENTITIES.register("bioreactor", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new BioreactorBlockEntity(ModBlockEntities.BIOREACTOR.get(), pos, state), ModBlocks.BIOREACTOR.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BiomassGasifierBlockEntity>> BIOMASS_GASIFIER =
@@ -111,6 +121,27 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WireConnectorBlockEntity>> WIRE_CONNECTOR =
             BLOCK_ENTITIES.register("wire_connector", () -> BlockEntityType.Builder
                     .of((pos, state) -> new WireConnectorBlockEntity(ModBlockEntities.WIRE_CONNECTOR.get(), pos, state), ModBlocks.WIRE_CONNECTOR.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EndPlateBlockEntity>> END_PLATE =
+            BLOCK_ENTITIES.register("end_plate", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new EndPlateBlockEntity(ModBlockEntities.END_PLATE.get(), pos, state), ModBlocks.END_PLATE.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElectricMotorBlockEntity>> ELECTRIC_MOTOR =
+            BLOCK_ENTITIES.register("electric_motor", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new ElectricMotorBlockEntity(ModBlockEntities.ELECTRIC_MOTOR.get(), pos, state), ModBlocks.ELECTRIC_MOTOR.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WireSwitchBlockEntity>> WIRE_SWITCH =
+            BLOCK_ENTITIES.register("wire_switch", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new WireSwitchBlockEntity(ModBlockEntities.WIRE_SWITCH.get(), pos, state),
+                            ModBlocks.WIRE_SWITCH.get(), ModBlocks.REDSTONE_WIRE_RELAY.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElectrolyzerBlockEntity>> ELECTROLYZER =
+            BLOCK_ENTITIES.register("electrolyzer", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new ElectrolyzerBlockEntity(ModBlockEntities.ELECTROLYZER.get(), pos, state), ModBlocks.ELECTROLYZER.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GrowLampBlockEntity>> GROW_LAMP =

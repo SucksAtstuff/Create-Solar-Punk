@@ -121,6 +121,7 @@ public class ModRecipeProvider extends RecipeProvider {
 
         bricksRecipes(output, ModBlocks.SALT_BRICKS.get(), ModBlocks.POLISHED_SALT.get(), ModBlocks.SALT_BLOCK.get());
         bricksRecipes(output, ModBlocks.ASH_BRICKS.get(), ModBlocks.POLISHED_ASH.get(), ModBlocks.ASH_BLOCK.get());
+        bricksRecipes(output, ModBlocks.POLISHED_HEMPCRETE_BRICKS.get(), ModBlocks.POLISHED_HEMPCRETE.get(), ModBlocks.HEMPCRETE.get());
         // Rammed Earth has no polished step: its bricks come straight from the block.
         ModBlocks.RAMMED_EARTH.values().forEach(set ->
                 bricksRecipes(output, set.bricks().get(), set.block().get(), set.block().get()));
@@ -244,6 +245,21 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_wire", has(ModTags.Items.WIRES))
                 .save(output);
 
+        // A lever on a casing, between two connector posts.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, ModBlocks.WIRE_SWITCH.get())
+                .requires(createItem("andesite_casing"))
+                .requires(Items.LEVER)
+                .requires(ModBlocks.WIRE_CONNECTOR.get(), 2)
+                .unlockedBy("has_wire_connector", has(ModBlocks.WIRE_CONNECTOR.get()))
+                .save(output);
+
+        // A switch thrown by an Electron Tube, like Create's redstone parts.
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, ModBlocks.REDSTONE_WIRE_RELAY.get())
+                .requires(ModBlocks.WIRE_SWITCH.get())
+                .requires(createItem("electron_tube"))
+                .unlockedBy("has_wire_switch", has(ModBlocks.WIRE_SWITCH.get()))
+                .save(output);
+
         // A shaded glowstone bulb, wired down an iron post.
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.STREETLAMP.get())
                 .pattern("SGS")
@@ -283,6 +299,17 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('S', Items.STICK)
                 .unlockedBy("has_stick", has(Items.STICK))
                 .save(output);
+
+        // Hemp by hand: the slow way. Millstone, Crushing Wheels and the Mixer do better
+        // (ModMillingRecipeGen, ModCrushingRecipeGen, ModMixingRecipeGen).
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.HEMP_FIBER.get())
+                .requires(ModItems.HEMP_STALK.get())
+                .unlockedBy("has_hemp_stalk", has(ModItems.HEMP_STALK.get()))
+                .save(output, id("hemp_fiber_from_stalk"));
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.STRING)
+                .requires(ModItems.HEMP_FIBER.get(), 2)
+                .unlockedBy("has_hemp_fiber", has(ModItems.HEMP_FIBER.get()))
+                .save(output, id("string_from_hemp_fiber"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SALT.get(), 9)
                 .requires(ModTags.Items.STORAGE_BLOCKS_SALT)
@@ -380,6 +407,42 @@ public class ModRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_brass_casing", has(createItem("brass_casing")))
                 .save(output);
 
+        // Copper-tier, with an Electron Tube to drive the current: glass tubes, copper electrodes.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ELECTROLYZER.get())
+                .pattern("GPG")
+                .pattern("WEW")
+                .pattern("CBC")
+                .define('G', Tags.Items.GLASS_PANES_COLORLESS)
+                .define('P', createItem("fluid_pipe"))
+                .define('W', ModTags.Items.WIRES_COPPER)
+                .define('E', createItem("electron_tube"))
+                .define('C', ModTags.Items.PLATES_COPPER)
+                .define('B', createItem("copper_casing"))
+                .unlockedBy("has_electron_tube", has(createItem("electron_tube")))
+                .save(output);
+
+        // Carbon plates around a gold catalyst, sheathed in iron.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.FUEL_CELL.get(), 2)
+                .pattern("ICI")
+                .pattern("CGC")
+                .pattern("ICI")
+                .define('I', ModTags.Items.PLATES_IRON)
+                .define('C', ItemTags.COALS)
+                .define('G', Tags.Items.NUGGETS_GOLD)
+                .unlockedBy("has_electrolyzer", has(ModBlocks.ELECTROLYZER.get()))
+                .save(output);
+
+        // An iron clamp plate with two copper ports.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.END_PLATE.get())
+                .pattern("NIN")
+                .pattern("PIP")
+                .pattern("NIN")
+                .define('N', createItem("copper_nugget"))
+                .define('I', ModTags.Items.PLATES_IRON)
+                .define('P', createItem("fluid_pipe"))
+                .unlockedBy("has_electrolyzer", has(ModBlocks.ELECTROLYZER.get()))
+                .save(output);
+
         // Vanilla-tier on purpose (iron, furnace, bucket) so it's the first machine you can make.
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.FIREBOX_BOILER.get())
                 .pattern("III")
@@ -438,6 +501,28 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('A', createItem("andesite_alloy"))
                 .define('C', createItem("industrial_iron_block"))
                 .unlockedBy("has_andesite_alloy", has(createItem("andesite_alloy")))
+                .save(output);
+
+        // Bioreactor: copper-framed glass tank blocks, on a zinc aerator Base with an
+        // Electron Tube to run it.
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BIOREACTOR.get(), 2)
+                .pattern("SGS")
+                .pattern("G G")
+                .pattern("SGS")
+                .define('S', createItem("copper_sheet"))
+                .define('G', Tags.Items.GLASS_BLOCKS_COLORLESS)
+                .unlockedBy("has_copper_sheet", has(createItem("copper_sheet")))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BIOREACTOR_BASE.get())
+                .pattern("ZEZ")
+                .pattern("PCP")
+                .pattern("ZZZ")
+                .define('Z', ModTags.Items.INGOTS_ZINC)
+                .define('E', createItem("electron_tube"))
+                .define('P', createItem("fluid_pipe"))
+                .define('C', createItem("copper_casing"))
+                .unlockedBy("has_electron_tube", has(createItem("electron_tube")))
                 .save(output);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.GEYSER_CAP.get())

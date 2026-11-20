@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.GeyserVentBlockEntity;
+import net.succ.solar_punk.particle.SeasonalSteam;
 
 public class GeyserVentBlock extends Block implements IBE<GeyserVentBlockEntity> {
     public GeyserVentBlock(Properties properties) {
@@ -34,7 +35,7 @@ public class GeyserVentBlock extends Block implements IBE<GeyserVentBlockEntity>
             double vx = (random.nextDouble() - 0.5) * 0.3;
             double vy = 0.8 + random.nextDouble() * 0.8;
             double vz = (random.nextDouble() - 0.5) * 0.3;
-            level.addParticle(ParticleTypes.CLOUD, x, cy, z, vx, vy, vz);
+            SeasonalSteam.add(level, x, cy, z, vx, vy, vz);
         }
         // Water spray
         for (int i = 0; i < 10 + random.nextInt(8); i++) {

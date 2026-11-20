@@ -68,6 +68,27 @@ public final class ModBlockFamilies {
             .chiseled(ModBlocks.CHISELED_ASH_BRICKS.get())
             .getFamily();
 
+    public static final BlockFamily HEMPCRETE = new BlockFamily.Builder(ModBlocks.HEMPCRETE.get())
+            .stairs(ModBlocks.HEMPCRETE_STAIRS.get())
+            .slab(ModBlocks.HEMPCRETE_SLAB.get())
+            .wall(ModBlocks.HEMPCRETE_WALL.get())
+            .polished(ModBlocks.POLISHED_HEMPCRETE.get())
+            .getFamily();
+
+    // The chiseled block hangs off Polished Hempcrete (from its slabs), not the bricks.
+    public static final BlockFamily POLISHED_HEMPCRETE = new BlockFamily.Builder(ModBlocks.POLISHED_HEMPCRETE.get())
+            .stairs(ModBlocks.POLISHED_HEMPCRETE_STAIRS.get())
+            .slab(ModBlocks.POLISHED_HEMPCRETE_SLAB.get())
+            .wall(ModBlocks.POLISHED_HEMPCRETE_WALL.get())
+            .chiseled(ModBlocks.CHISELED_POLISHED_HEMPCRETE.get())
+            .getFamily();
+
+    public static final BlockFamily POLISHED_HEMPCRETE_BRICKS = new BlockFamily.Builder(ModBlocks.POLISHED_HEMPCRETE_BRICKS.get())
+            .stairs(ModBlocks.POLISHED_HEMPCRETE_BRICK_STAIRS.get())
+            .slab(ModBlocks.POLISHED_HEMPCRETE_BRICK_SLAB.get())
+            .wall(ModBlocks.POLISHED_HEMPCRETE_BRICK_WALL.get())
+            .getFamily();
+
     // Decorative only: not part of the multiblocks.
     public static final BlockFamily TURBINE_CASING = new BlockFamily.Builder(ModBlocks.TURBINE_CASING.get())
             .stairs(ModBlocks.TURBINE_CASING_STAIRS.get())
@@ -112,7 +133,8 @@ public final class ModBlockFamilies {
             .getFamily();
 
     public static final List<BlockFamily> ALL = Stream.concat(
-            Stream.of(SALT, POLISHED_SALT, SALT_BRICKS, ASH, POLISHED_ASH, ASH_BRICKS, TURBINE_CASING, FUSION_REACTOR_CASING,
+            Stream.of(SALT, POLISHED_SALT, SALT_BRICKS, ASH, POLISHED_ASH, ASH_BRICKS, HEMPCRETE, POLISHED_HEMPCRETE,
+                    POLISHED_HEMPCRETE_BRICKS, TURBINE_CASING, FUSION_REACTOR_CASING,
                     CHARRED_TIMBER, MOSS),
             RAMMED_EARTH.stream()).toList();
 

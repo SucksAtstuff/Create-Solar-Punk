@@ -30,6 +30,8 @@ public class ModTriggers {
             TRIGGERS.register("greenhouse_sealed", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> FERMENTATION_DONE =
             TRIGGERS.register("fermentation_done", SolarpunkTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> BIOREACTOR_BIOMASS =
+            TRIGGERS.register("bioreactor_biomass", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> TOWER_BUILT =
             TRIGGERS.register("tower_built", SolarpunkTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, SolarpunkTrigger> TURBINE_BUILT =

@@ -1,0 +1,20 @@
+{
+  "type": "create:mixing",
+  "heat_requirement": "heated",
+  "ingredients": [
+    {
+      "item": "solarpunk:ash"
+    },
+    {
+      "type": "neoforge:single",
+      "amount": 250,
+      "fluid": "solarpunk:hemp_seed_oil"
+    }
+  ],
+  "results": [
+    {
+      "amount": 250,
+      "id": "solarpunk:biofuel"
+    }
+  ]
+}

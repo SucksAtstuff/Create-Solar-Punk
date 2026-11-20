@@ -32,8 +32,11 @@ public class SolarPunkJeiPlugin implements IModPlugin {
                 new SolarHeaterCategory(guiHelper),
                 new SolarPowerTowerCategory(guiHelper),
                 new FermentationVatCategory(guiHelper),
+                new BioreactorCategory(guiHelper),
                 new CrystallizerCategory(guiHelper),
-                new ParticleAcceleratorCategory(guiHelper)
+                new ParticleAcceleratorCategory(guiHelper),
+                new ElectrolyzerCategory(guiHelper),
+                new FuelCellCategory(guiHelper)
         );
     }
 
@@ -54,6 +57,7 @@ public class SolarPunkJeiPlugin implements IModPlugin {
         registration.addRecipes(SolarHeaterCategory.RECIPE_TYPE, solarHeaterEntries);
         registration.addRecipes(SolarPowerTowerCategory.RECIPE_TYPE, List.of(SolarPowerTowerCategory.SALT_INSTANCE, SolarPowerTowerCategory.STEAM_INSTANCE));
         registration.addRecipes(FermentationVatCategory.RECIPE_TYPE, List.of(FermentationVatCategory.BIOFUEL, FermentationVatCategory.RICH_FERTILIZER));
+        registration.addRecipes(BioreactorCategory.RECIPE_TYPE, List.of(BioreactorCategory.INSTANCE));
 
         List<CrystallizerRecipe> crystallizerRecipes = level.getRecipeManager()
                 .getAllRecipesFor(ModRecipeTypes.CRYSTALLIZING.get())
@@ -67,6 +71,9 @@ public class SolarPunkJeiPlugin implements IModPlugin {
                 .stream()
                 .map(RecipeHolder::value)
                 .toList());
+
+        registration.addRecipes(ElectrolyzerCategory.RECIPE_TYPE, List.of(ElectrolyzerCategory.INSTANCE));
+        registration.addRecipes(FuelCellCategory.RECIPE_TYPE, List.of(FuelCellCategory.INSTANCE));
     }
 
     @Override
@@ -74,7 +81,12 @@ public class SolarPunkJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.SOLAR_HEATER.get()), SolarHeaterCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.SOLAR_POWER_TOWER.get()), SolarPowerTowerCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.FERMENTATION_VAT.get()), FermentationVatCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.BIOREACTOR.get()), BioreactorCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.BIOREACTOR_BASE.get()), BioreactorCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.CRYSTALLIZER.get()), CrystallizerCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.PARTICLE_ACCELERATOR_INPUT.get()), ParticleAcceleratorCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.ELECTROLYZER.get()), ElectrolyzerCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.FUEL_CELL.get()), FuelCellCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.END_PLATE.get()), FuelCellCategory.RECIPE_TYPE);
     }
 }

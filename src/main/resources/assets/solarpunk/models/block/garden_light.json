@@ -4,8 +4,8 @@
 	"parent": "minecraft:block/block",
 	"render_type": "minecraft:cutout",
 	"textures": {
-		"0": "solarpunk:block/garden_light_off",
-		"particle": "solarpunk:block/garden_light_off"
+		"0": "solarpunk:block/garden_light/garden_light_off",
+		"particle": "solarpunk:block/garden_light/garden_light_off"
 	},
 	"elements": [
 		{

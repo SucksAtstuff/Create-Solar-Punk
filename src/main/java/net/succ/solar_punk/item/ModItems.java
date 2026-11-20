@@ -3,6 +3,8 @@ package net.succ.solar_punk.item;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemNameBlockItem;
+import net.succ.solar_punk.block.ModBlocks;
 import net.neoforged.bus.api.IEventBus;
 import net.succ.solar_punk.wire.WireTier;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -19,6 +21,17 @@ public class ModItems {
             () -> new Item(new Item.Properties()));
 
     public static final DeferredItem<Item> BIOMASS_PELLET = ITEMS.register("biomass_pellet",
+            () -> new Item(new Item.Properties()));
+
+    // Hemp: renewable String without spiders. Seeds plant the two-tall crop (ModBlocks.HEMP)
+    // and press into Hemp Seed Oil; Stalks break down into Fiber, and Fiber spins into String.
+    public static final DeferredItem<ItemNameBlockItem> HEMP_SEEDS = ITEMS.register("hemp_seeds",
+            () -> new ItemNameBlockItem(ModBlocks.HEMP.get(), new Item.Properties()));
+
+    public static final DeferredItem<Item> HEMP_STALK = ITEMS.register("hemp_stalk",
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredItem<Item> HEMP_FIBER = ITEMS.register("hemp_fiber",
             () -> new Item(new Item.Properties()));
 
     // Works like Bone Meal.

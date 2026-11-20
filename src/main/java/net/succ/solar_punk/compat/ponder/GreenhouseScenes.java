@@ -10,6 +10,7 @@ import net.createmod.ponder.api.scene.Selection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
 
 // Schematic (ModPonderProvider "greenhouse/usage"): a 5x5 smooth stone plate, a 3x3 wheat field
@@ -30,6 +31,7 @@ public class GreenhouseScenes {
         Selection roof = util.select().fromTo(0, 4, 0, 4, 4, 4);
         Selection crops = util.select().fromTo(1, 2, 1, 3, 2, 3);
 
+        GrowLampScenes.plant(scene, crops, Blocks.WHEAT.defaultBlockState().setValue(CropBlock.AGE, 1));
         scene.world().showSection(util.select().layer(0), Direction.UP);
         scene.idle(10);
         scene.world().showSection(field, Direction.DOWN);

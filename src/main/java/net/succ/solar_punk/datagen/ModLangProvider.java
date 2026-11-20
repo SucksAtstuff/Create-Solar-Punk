@@ -23,9 +23,20 @@ public class ModLangProvider extends LanguageProvider {
         add("itemGroup.solar_punk.building_blocks", "Create: Solarpunk Building Blocks");
         add("jei.solarpunk.category.solar_heating", "Solar Heating");
         add("jei.solarpunk.category.solar_power_tower", "Solar Power Tower");
+        add("jei.solarpunk.solar_power_tower.water_note", "On a %sx%s tower. Each mB made costs %s mB of Water per footprint block");
         add("jei.solarpunk.category.fermentation_vat", "Fermentation Vat");
+        add("jei.solarpunk.category.bioreactor", "Bioreactor");
+        add("jei.solarpunk.bioreactor.seed_note", "Used once to start the culture");
+        add("jei.solarpunk.bioreactor.optional", "Optional: speeds it up");
+        add("jei.solarpunk.bioreactor.culture_note", "Grows from the Water in sunlight; can be piped out to start another Bioreactor");
+        add("jei.solarpunk.bioreactor.rate", "%s/min per top block in sun");
+        add("jei.solarpunk.bioreactor.boost", "Fertilizer x%s, Rich x%s");
         add("jei.solarpunk.category.crystallizing", "Crystallizer");
         add("jei.solarpunk.category.particle_accelerator", "Particle Accelerator");
+        add("jei.solarpunk.category.electrolysis", "Electrolysis");
+        add("jei.solarpunk.category.fuel_cell", "Fuel Cell");
+        add("jei.solarpunk.energy_used", "Uses %s");
+        add("jei.solarpunk.energy_made", "Makes %s");
         add("jei.solarpunk.particle_accelerator.diameter", "Ring diameter: %s+");
         add("jei.solarpunk.particle_accelerator.stress", "Stress: %s SU (at min diameter)");
         add("jei.solarpunk.particle_accelerator.speed", "Min speed: %s RPM");
@@ -40,6 +51,9 @@ public class ModLangProvider extends LanguageProvider {
         add("subtitles.solarpunk.biofilter_loop", "Biofilter filtering");
         add("subtitles.solarpunk.biomass_gasifier_loop", "Biomass Gasifier burning");
         add("subtitles.solarpunk.fermentation_vat_bubbling", "Fermentation Vat bubbles");
+        add("subtitles.solarpunk.bioreactor_hum", "Bioreactor hums");
+        add("subtitles.solarpunk.bioreactor_bubbling", "Bioreactor bubbles");
+        add("subtitles.solarpunk.bioreactor_vent", "Bioreactor vents");
         add("subtitles.solarpunk.solar_heater_shimmer", "Solar Heater shimmers");
         add("subtitles.solarpunk.steam_hiss", "Steam hisses");
         add("subtitles.solarpunk.turbine_loop", "Steam Turbine spins");
@@ -81,16 +95,37 @@ public class ModLangProvider extends LanguageProvider {
         add("create.solar_punk.tooltip.streetlamp_header", "Streetlamp");
         add("create.solar_punk.tooltip.wire_connector_header", "Wire Connector");
         add("create.solar_punk.tooltip.wires", "Wires: ");
+        add("create.solar_punk.tooltip.wire_switch_header", "Wire Switch");
+        add("create.solar_punk.tooltip.electric_motor_header", "Electric Motor");
+        add("create.solar_punk.tooltip.fe_input", "Input: ");
+        add("create.solar_punk.tooltip.electric_motor_sustains", "Not enough FE: holds up to %1$s RPM");
+        add("solarpunk.display_source.electric_motor_consumption", "Electric Motor FE Use");
+        add("create.solar_punk.tooltip.electrolyzer_header", "Electrolyzer");
+        add("create.solar_punk.tooltip.hydrogen", "Hydrogen: ");
+        add("create.solar_punk.tooltip.oxygen", "Oxygen: ");
+        add("create.solar_punk.tooltip.fuel_cell_header", "Fuel Cell Stack");
+        add("create.solar_punk.tooltip.fuel_cell_cells", "Cells: ");
+        add("create.solar_punk.tooltip.output", "Output: ");
+        add("create.solar_punk.tooltip.fuel_cell_no_cells", "No Fuel Cells behind this End Plate");
+        add("create.solar_punk.tooltip.fuel_cell_no_plate", "Needs an End Plate at the other end");
+        add("create.solar_punk.tooltip.fuel_cell_too_long", "Too long: at most %1$s Fuel Cells");
+        add("create.solar_punk.tooltip.redstone_wire_relay_header", "Redstone Wire Relay");
+        add("create.solar_punk.tooltip.switch_state", "State: ");
+        add("create.solar_punk.tooltip.switch_closed", "Closed");
+        add("create.solar_punk.tooltip.switch_open", "Open");
+        add("create.solar_punk.tooltip.relay_closes", "Closed while: ");
+        add("create.solar_punk.tooltip.relay_powered", "Powered");
+        add("create.solar_punk.tooltip.relay_unpowered", "Unpowered");
         add("create.solar_punk.tooltip.grow_lamp_header", "Grow Lamp");
         add("create.solar_punk.tooltip.grow_lamp_plants", "Plants: ");
         add("create.solar_punk.tooltip.solar_plant_bed_header", "Solar Plant Bed");
         add("create.solar_punk.tooltip.throughput", "Throughput: ");
 
-        add("message.solarpunk.wire.started", "Wire started. Click another Wire Connector to finish it");
+        add("message.solarpunk.wire.started", "Wire started. Click another Wire Connector or switch post to finish it");
         add("message.solarpunk.wire.cancelled", "Wire cancelled");
         add("message.solarpunk.wire.start_missing", "The connector this wire started from is gone");
-        add("message.solarpunk.wire.already_connected", "These connectors are already wired together");
-        add("message.solarpunk.wire.full", "That connector can't hold any more wires");
+        add("message.solarpunk.wire.already_connected", "These are already wired together");
+        add("message.solarpunk.wire.full", "That can't hold any more wires");
         add("message.solarpunk.wire.too_long", "Too long: this wire reaches at most %s blocks");
         add("message.solarpunk.wire.not_enough", "Not enough wire on the spool: needs %s");
         add("item.solarpunk.spool.wires_left", "%s wires left (%s blocks)");
@@ -148,10 +183,27 @@ public class ModLangProvider extends LanguageProvider {
         add("solarpunk.display_source.particle_accelerator_status", "Particle Accelerator Status");
         add("solarpunk.display_source.particle_accelerator_recipe", "Particle Accelerator Recipe");
         add("solarpunk.display_source.particle_accelerator_progress", "Particle Accelerator Progress");
+        add("solarpunk.display_source.bioreactor_biomass_rate", "Biomass per Minute");
+        add("solarpunk.display_source.bioreactor_light", "Light Level");
+        add("solarpunk.display_source.bioreactor_culture", "Culture Level");
         add("solarpunk.display_source.greenhouse_status", "Greenhouse Status");
         add("solarpunk.display_source.greenhouse_plant_count", "Greenhouse Plant Count");
         add("solarpunk.display_source.greenhouse_growth", "Greenhouse Growth Speed");
 
+        add("create.solar_punk.tooltip.bioreactor_header", "Bioreactor");
+        add("create.solar_punk.tooltip.bioreactor_size", "Size: ");
+        add("create.solar_punk.tooltip.bioreactor_no_base", "Needs Bioreactor Base blocks under the whole tank");
+        add("create.solar_punk.tooltip.bioreactor_no_sun", "No light: needs open sky or Grow Lamps");
+        add("create.solar_punk.tooltip.bioreactor_sunlight", "Sunlight: ");
+        add("create.solar_punk.tooltip.bioreactor_lamplight", "Grow Lamp light: ");
+        add("create.solar_punk.tooltip.bioreactor_grow_lamps", "Grow Lamps: ");
+        add("create.solar_punk.tooltip.bioreactor_no_culture", "Add Kelp or Seagrass to start a culture");
+        add("create.solar_punk.tooltip.bioreactor_biomass_rate", "Biomass: ");
+        add("create.solar_punk.tooltip.bioreactor_full", "Biomass full: take it out of the Base");
+        add("create.solar_punk.tooltip.bioreactor_venting", "Oxygen tank full: venting the extra");
+        add("create.solar_punk.tooltip.bioreactor_absorbing", "Absorbing pollution: ");
+        add("create.solar_punk.tooltip.algae_culture", "Algae Culture: ");
+        add("create.solar_punk.tooltip.nutrients", "Nutrients: ");
         add("create.solar_punk.tooltip.fermentation_vat_header", "Fermentation Vat");
         add("create.solar_punk.tooltip.vat_too_small", "Needs at least 2x2 footprint");
         add("create.solar_punk.tooltip.vat_too_short", "Needs at least 4 blocks tall");
@@ -248,6 +300,13 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.fermentation_vat.tooltip.condition1", "Larger footprint");
         add("block.solarpunk.fermentation_vat.tooltip.behaviour1", "Increases batch size and output. A 3x3 footprint processes 9 Biomass per batch. Taller vats produce super-linearly more Biofuel per batch.");
 
+        add("block.solarpunk.bioreactor.tooltip.summary", "A glass tank of _Algae Culture_ that turns _Water_ and _sunlight_ into _Biomass_ and _Oxygen_. Up to _3x3_ wide and _8_ tall, standing on _Bioreactor Base_ blocks.");
+        add("block.solarpunk.bioreactor.tooltip.condition1", "To start");
+        add("block.solarpunk.bioreactor.tooltip.behaviour1", "Fill it with _Water_ and add _Kelp_ or _Seagrass_. The culture spreads through the Water in sunlight. Wider tanks have more surface, so they make more.");
+        add("block.solarpunk.bioreactor.tooltip.condition2", "With Fertilizer");
+        add("block.solarpunk.bioreactor.tooltip.behaviour2", "_Fertilizer_ or _Rich Fertilizer_ piped into the Base speeds it up, and lit _Grow Lamps_ beside or above the tank keep it going at night. While running it also absorbs _pollution_ in its chunk.");
+        add("block.solarpunk.bioreactor_base.tooltip.summary", "The aerator layer under a _Bioreactor_, with the same footprint as the tank. Takes _Water_, _Fertilizer_ and _Kelp_, and gives _Biomass_ and _Oxygen_ out of any side.");
+
         add("block.solarpunk.biomass_gasifier.tooltip.summary", "Burns _Biomass_ to generate _Rotational Force_. Produces _Biochar_ as a byproduct.");
         add("block.solarpunk.biomass_gasifier.tooltip.condition1", "While burning");
         add("block.solarpunk.biomass_gasifier.tooltip.behaviour1", "Outputs 8 RPM with 2048 SU of stress capacity downward.");
@@ -294,6 +353,34 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.wire_connector.tooltip.behaviour1", "Power going into a connector comes out into the blocks under the _other connectors_ it's wired to. Generators that don't push power out are drained. _Gold_ wire carries the most and reaches furthest, then _Copper_, then _Iron_.");
         add("block.solarpunk.wire_connector.tooltip.condition2", "Right-click with Shears");
         add("block.solarpunk.wire_connector.tooltip.behaviour2", "Cuts every wire on it and drops the wires.");
+        add("block.solarpunk.wire_switch.tooltip.summary", "Wire both _posts_ with a _Spool_. While _closed_, FE passes from one post's wires to the other's; while _open_, the network is cut in two.");
+        add("block.solarpunk.wire_switch.tooltip.condition1", "Right-click");
+        add("block.solarpunk.wire_switch.tooltip.behaviour1", "Opens or closes the switch. A _Comparator_ reads 15 while it's closed.");
+        add("block.solarpunk.wire_switch.tooltip.condition2", "Right-click with Shears");
+        add("block.solarpunk.wire_switch.tooltip.behaviour2", "Cuts every wire on it and drops the wires.");
+        add("block.solarpunk.fuel_cell.tooltip.summary", "Burns _Hydrogen_ and _Oxygen_ back into _FE_. Line them up in a row or column with an _End Plate_ at each end to make a stack.");
+        add("block.solarpunk.fuel_cell.tooltip.condition1", "In a stack");
+        add("block.solarpunk.fuel_cell.tooltip.behaviour1", "Each cell adds output and fuel use, up to _16_ cells. Its only waste is _Water_. Take _FE_ from any cell with a _Wire Connector_.");
+        add("block.solarpunk.end_plate.tooltip.summary", "Clamps the end of a _Fuel Cell_ stack. Place one facing out at each end.");
+        add("block.solarpunk.end_plate.tooltip.condition1", "Pipes");
+        add("block.solarpunk.end_plate.tooltip.behaviour1", "The port with arrows pointing in takes _Hydrogen_ or _Oxygen_: pipe one gas into each End Plate. The other port gives out _Water_. Take _FE_ from any side, with a _Wire Connector_ or a machine touching it.");
+        add("block.solarpunk.end_plate.tooltip.condition2", "When powered");
+        add("block.solarpunk.end_plate.tooltip.behaviour2", "A _Redstone_ signal on either plate pauses the stack, saving fuel.");
+        add("block.solarpunk.electric_motor.tooltip.summary", "Turns _FE_ into _rotational force_. Feed it from a _Brass Solar Panel_ or a _Wire Connector_ on any side.");
+        add("block.solarpunk.electric_motor.tooltip.condition1", "When powered");
+        add("block.solarpunk.electric_motor.tooltip.behaviour1", "Spins at the speed you set on it, up to _64 RPM_ either way. It uses FE for that speed whatever the load, so set it _slower_ to save power.");
+        add("block.solarpunk.electric_motor.tooltip.condition2", "Out of FE");
+        add("block.solarpunk.electric_motor.tooltip.behaviour2", "Stops, and starts again once it has half a second of FE stored. If it keeps stopping, _Goggles_ show the fastest speed your supply can hold.");
+        add("block.solarpunk.electrolyzer.tooltip.summary", "Splits _Water_ into _Hydrogen_ and _Oxygen_ with _FE_, making twice as much Hydrogen as Oxygen. A way to store solar power made at noon.");
+        add("block.solarpunk.electrolyzer.tooltip.condition1", "When powered");
+        add("block.solarpunk.electrolyzer.tooltip.behaviour1", "Pipe _Water_ into the top, front, back or bottom. Each gas comes out of the _copper flange_ beside its tube: _Hydrogen_ on the left, _Oxygen_ on the right, seen from the front.");
+        add("block.solarpunk.electrolyzer.tooltip.condition2", "When a gas tank is full");
+        add("block.solarpunk.electrolyzer.tooltip.behaviour2", "Stops until that gas is piped away, so pipe out _both_ gases.");
+        add("block.solarpunk.redstone_wire_relay.tooltip.summary", "A _Wire Switch_ thrown by _redstone_, for lights that turn on at dusk or machines that only run while the panels are strong.");
+        add("block.solarpunk.redstone_wire_relay.tooltip.condition1", "When powered");
+        add("block.solarpunk.redstone_wire_relay.tooltip.behaviour1", "Closes, joining the wires on its two posts. A _Comparator_ reads 15 while it's closed.");
+        add("block.solarpunk.redstone_wire_relay.tooltip.condition2", "When Wrenched");
+        add("block.solarpunk.redstone_wire_relay.tooltip.behaviour2", "Inverts it: _open_ while powered instead.");
         add("block.solarpunk.charred_timber.tooltip.summary", "Planks scorched black with _Biochar_. Charred wood _doesn't burn_.");
         add("block.solarpunk.solar_glass.tooltip.summary", "Glass with solar cells in it that makes a little _FE_. Works as a _skylight_, or a window with _open sky_ above it.");
         add("block.solarpunk.solar_glass.tooltip.condition1", "In sunlight");
@@ -351,6 +438,9 @@ public class ModLangProvider extends LanguageProvider {
         // the loop below would produce. They're excluded from that loop.
         add(ModBlocks.LITHIUM_BLOCK.get(), "Block of Lithium");
         add(ModBlocks.BERYLLIUM_BLOCK.get(), "Block of Beryllium");
+
+        // A BlockItem with its own name (the crop block is "Hemp"), so the item loop skips it.
+        add(ModItems.HEMP_SEEDS.get(), "Hemp Seeds");
 
         ModBlocks.BLOCKS.getEntries().stream()
                 .filter(entry -> entry.get() != ModBlocks.LITHIUM_BLOCK.get()

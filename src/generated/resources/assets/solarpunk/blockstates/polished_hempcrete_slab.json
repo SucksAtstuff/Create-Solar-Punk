@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "solarpunk:block/polished_hempcrete_slab"
+    },
+    "type=double": {
+      "model": "solarpunk:block/polished_hempcrete"
+    },
+    "type=top": {
+      "model": "solarpunk:block/polished_hempcrete_slab_top"
+    }
+  }
+}

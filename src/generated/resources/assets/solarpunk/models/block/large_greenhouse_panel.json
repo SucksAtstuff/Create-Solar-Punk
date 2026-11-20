@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "solarpunk:block/greenhouse_panel_large"
+    "all": "solarpunk:block/greenhouse/greenhouse_panel_large"
   }
 }

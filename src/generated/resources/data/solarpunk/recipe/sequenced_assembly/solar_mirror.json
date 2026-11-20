@@ -42,6 +42,22 @@
       ]
     },
     {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "solarpunk:incomplete_solar_mirror"
+        },
+        {
+          "item": "create:electron_tube"
+        }
+      ],
+      "results": [
+        {
+          "id": "solarpunk:incomplete_solar_mirror"
+        }
+      ]
+    },
+    {
       "type": "create:pressing",
       "ingredients": [
         {

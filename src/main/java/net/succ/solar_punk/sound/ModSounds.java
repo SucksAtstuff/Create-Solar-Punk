@@ -18,6 +18,11 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> BIOFILTER_LOOP = register("biofilter_loop");
     public static final DeferredHolder<SoundEvent, SoundEvent> BIOMASS_GASIFIER_LOOP = register("biomass_gasifier_loop");
     public static final DeferredHolder<SoundEvent, SoundEvent> FERMENTATION_VAT_BUBBLING = register("fermentation_vat_bubbling");
+    // Bioreactor: a quiet hum looping while it runs, and a bubbling one-shot every so often.
+    public static final DeferredHolder<SoundEvent, SoundEvent> BIOREACTOR_HUM = register("bioreactor_hum");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BIOREACTOR_BUBBLING = register("bioreactor_bubbling");
+    // Venting Oxygen when its tank is full: the geyser puff, pitched up and thinned out.
+    public static final DeferredHolder<SoundEvent, SoundEvent> BIOREACTOR_VENT = register("bioreactor_vent");
     public static final DeferredHolder<SoundEvent, SoundEvent> SOLAR_HEATER_SHIMMER = register("solar_heater_shimmer");
     public static final DeferredHolder<SoundEvent, SoundEvent> TURBINE_LOOP = register("turbine_loop");
     public static final DeferredHolder<SoundEvent, SoundEvent> PARTICLE_ACCELERATOR_HUM = register("particle_accelerator_hum");

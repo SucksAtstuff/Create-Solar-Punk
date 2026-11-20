@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "tex":      "solarpunk:block/geyser_cap",
+    "tex":      "solarpunk:block/geyser_cap/geyser_cap",
     "axis":     "create:block/axis",
     "axis_top": "create:block/axis_top"
   },

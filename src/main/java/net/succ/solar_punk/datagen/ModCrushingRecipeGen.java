@@ -50,6 +50,14 @@ public class ModCrushingRecipeGen extends CrushingRecipeGen {
         .output(ModItems.LITHIUM_DUST.get(), 1)
         .output(0.15f, ModItems.BERYLLIUM_DUST.get(), 1));
 
+    // Better than the Millstone: a chance of a third Fiber, plus the woody core as Biomass.
+    GeneratedRecipe CRUSH_HEMP_STALK = create("hemp_stalk_to_fiber", b -> b
+        .duration(150)
+        .require(ModItems.HEMP_STALK.get())
+        .output(ModItems.HEMP_FIBER.get(), 2)
+        .output(0.5f, ModItems.HEMP_FIBER.get(), 1)
+        .output(0.25f, ModItems.BIOMASS.get(), 1));
+
     public ModCrushingRecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, SolarPunk.MODID);
     }

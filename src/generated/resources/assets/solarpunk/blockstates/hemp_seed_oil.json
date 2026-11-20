@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "level=0": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    },
+    "level=1": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    },
+    "level=10": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    },
+    "level=11": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    },
+    "level=12": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    },
+    "level=13": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    },
+    "level=14": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    },
+    "level=15": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    },
+    "level=2": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    },
+    "level=3": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    },
+    "level=4": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    },
+    "level=5": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    },
+    "level=6": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    },
+    "level=7": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    },
+    "level=8": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    },
+    "level=9": {
+      "model": "solarpunk:block/hemp_seed_oil"
+    }
+  }
+}

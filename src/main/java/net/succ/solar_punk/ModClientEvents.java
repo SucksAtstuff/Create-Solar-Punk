@@ -1,5 +1,8 @@
 package net.succ.solar_punk;
 
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.succ.solar_punk.client.particle.AlgaeParticle;
+import net.succ.solar_punk.client.particle.TintedSteamParticle;
 import net.succ.solar_punk.client.renderer.AcceleratorParticleRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.succ.solar_punk.item.FiligreeRailingItem;
@@ -40,9 +43,13 @@ import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.client.model.CasingModel;
 import net.succ.solar_punk.client.model.ModSpriteShifts;
 import net.succ.solar_punk.client.model.TankModel;
+import net.succ.solar_punk.client.renderer.ElectrolyzerRenderer;
 import net.succ.solar_punk.client.renderer.FermentationVatRenderer;
+import net.succ.solar_punk.client.renderer.BioreactorRenderer;
+import net.succ.solar_punk.client.model.BioreactorBaseModel;
 import net.succ.solar_punk.client.renderer.FusionReactorCoreRenderer;
 import net.succ.solar_punk.client.renderer.WireConnectorRenderer;
+import net.succ.solar_punk.client.renderer.ElectricMotorRenderer;
 import net.succ.solar_punk.client.SeasonalModels;
 import net.succ.solar_punk.client.renderer.GeyserCapRenderer;
 import net.succ.solar_punk.client.renderer.HalfShaftRenderer;
@@ -52,6 +59,7 @@ import net.succ.solar_punk.client.renderer.SolarMirrorRenderer;
 import net.succ.solar_punk.client.renderer.SolarPowerTowerRenderer;
 import net.succ.solar_punk.client.renderer.TurbineRotorRenderer;
 import net.succ.solar_punk.compat.ponder.SolarPunkPonderPlugin;
+import net.succ.solar_punk.particle.ModParticles;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,6 +69,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import net.succ.solar_punk.util.SeasonalColors;
 
 @EventBusSubscriber(modid = SolarPunk.MODID, value = Dist.CLIENT)
 public class ModClientEvents {
@@ -77,13 +86,16 @@ public class ModClientEvents {
     }
 
     // Trellis tint 0: the grey vines take the biome's foliage colour, like leaves.
-    // Tint 1: the grey flower takes the colour of the flower that was used (FlowerTint).
+    // Tint 1: the grey flower takes the colour of the flower that was used (FlowerTint), or
+    // a holiday colour (SeasonalColors).
     @SubscribeEvent
     public static void onRegisterBlockColors(RegisterColorHandlersEvent.Block event) {
         event.register((state, level, pos, tintIndex) -> {
             if (tintIndex == 1) {
                 Block flower = state.getValue(TrellisBlock.PLANT).flowerBlock();
-                return flower != null ? FlowerTint.of(flower) : -1;
+                if (flower == null) return -1;
+                int seasonal = SeasonalColors.flower(pos);
+                return seasonal != -1 ? seasonal : FlowerTint.of(flower);
             }
             return level != null && pos != null
                     ? BiomeColors.getAverageFoliageColor(level, pos)
@@ -95,6 +107,9 @@ public class ModClientEvents {
             int argb = 0xFF000000 | color.color;
             set.all().forEach(block -> event.register((state, level, pos, tintIndex) -> argb, block.get()));
         });
+
+        // Garden Light: the lit glow (tint 0) takes a holiday colour, else stays white.
+        event.register((state, level, pos, tintIndex) -> SeasonalColors.gardenLight(pos), ModBlocks.GARDEN_LIGHT.get());
     }
 
     @SubscribeEvent
@@ -103,6 +118,7 @@ public class ModClientEvents {
             int argb = 0xFF000000 | color.color;
             set.all().forEach(block -> event.register((stack, tintIndex) -> argb, block.get()));
         });
+        event.register((stack, tintIndex) -> SeasonalColors.gardenLight(null), ModBlocks.GARDEN_LIGHT.get());
     }
 
     @SubscribeEvent
@@ -130,6 +146,10 @@ public class ModClientEvents {
                         ModSpriteShifts.FERMENTATION_VAT_TOP, ModSpriteShifts.FERMENTATION_VAT_INNER),
                 "solar_power_tower", m -> new TankModel(m, ModSpriteShifts.SOLAR_POWER_TOWER,
                         ModSpriteShifts.SOLAR_POWER_TOWER_TOP, ModSpriteShifts.SOLAR_POWER_TOWER_INNER),
+                "bioreactor", m -> new TankModel(m, ModSpriteShifts.BIOREACTOR_TANK,
+                        ModSpriteShifts.BIOREACTOR_TANK_TOP, ModSpriteShifts.BIOREACTOR_TANK_INNER),
+                "bioreactor_base", m -> new BioreactorBaseModel(m, ModSpriteShifts.BIOREACTOR_BASE,
+                        ModSpriteShifts.BIOREACTOR_BASE_TOP, ModSpriteShifts.BIOREACTOR_BASE_BOTTOM),
                 "turbine_casing", m -> new CasingModel(m, ModSpriteShifts.TURBINE_CASING, turbineCasing),
                 "turbine_casing_glass", m -> new CasingModel(m, ModSpriteShifts.TURBINE_CASING_GLASS, turbineCasing),
                 "fusion_reactor_casing", m -> new CasingModel(m, ModSpriteShifts.FUSION_REACTOR_CASING, reactorCasing),
@@ -141,7 +161,14 @@ public class ModClientEvents {
             UnaryOperator<BakedModel> wrapper = wrappers.get(key.id().getPath());
             return wrapper != null ? wrapper.apply(model) : model;
         });
-        SeasonalModels.apply(event.getModels());
+        SeasonalModels.apply(event);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(ModParticles.TINTED_STEAM.get(), TintedSteamParticle.Provider::new);
+        event.registerSpriteSet(ModParticles.ALGAE_BUBBLE.get(), sprites -> new AlgaeParticle.Provider(sprites, true));
+        event.registerSpriteSet(ModParticles.ALGAE_SPECK.get(), sprites -> new AlgaeParticle.Provider(sprites, false));
     }
 
     @SubscribeEvent
@@ -157,11 +184,15 @@ public class ModClientEvents {
         event.registerBlockEntityRenderer(ModBlockEntities.TURBINE_ROTOR.get(), TurbineRotorRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.KINETIC_BATTERY.get(), KineticBatteryRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.FERMENTATION_VAT.get(), FermentationVatRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.BIOREACTOR.get(), BioreactorRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_POWER_TOWER.get(), SolarPowerTowerRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_MIRROR.get(), SolarMirrorRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.KINETIC_SPRINKLER.get(), KineticSprinklerRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.FUSION_REACTOR_CORE.get(), FusionReactorCoreRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.WIRE_CONNECTOR.get(), WireConnectorRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.WIRE_SWITCH.get(), WireConnectorRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.ELECTRIC_MOTOR.get(), ElectricMotorRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.ELECTROLYZER.get(), ElectrolyzerRenderer::new);
     }
 
     @SubscribeEvent
@@ -199,6 +230,8 @@ public class ModClientEvents {
         tip(ModBlocks.HEAT_BATTERY);
         tip(ModBlocks.KINETIC_BATTERY);
         tip(ModBlocks.FERMENTATION_VAT);
+        tip(ModBlocks.BIOREACTOR);
+        tip(ModBlocks.BIOREACTOR_BASE);
         tip(ModBlocks.BIOMASS_GASIFIER);
         tip(ModBlocks.BIOFUEL_ENGINE);
         tip(ModBlocks.GEYSER_CAP);
@@ -222,6 +255,12 @@ public class ModClientEvents {
         tip(ModBlocks.GARDEN_LIGHT);
         tip(ModBlocks.STREETLAMP);
         tip(ModBlocks.WIRE_CONNECTOR);
+        tip(ModBlocks.WIRE_SWITCH);
+        tip(ModBlocks.REDSTONE_WIRE_RELAY);
+        tip(ModBlocks.ELECTRIC_MOTOR);
+        tip(ModBlocks.ELECTROLYZER);
+        tip(ModBlocks.FUEL_CELL);
+        tip(ModBlocks.END_PLATE);
         tip(ModBlocks.GROW_LAMP);
         tip(ModBlocks.SOLAR_PLANT_BED);
         tip(ModBlocks.CHARRED_TIMBER);

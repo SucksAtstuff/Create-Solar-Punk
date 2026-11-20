@@ -3,6 +3,7 @@ package net.succ.solar_punk.wire;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.succ.solar_punk.block.entity.custom.WireConnectorBlockEntity;
+import net.succ.solar_punk.block.entity.custom.WireNodeBlockEntity;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -14,19 +15,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Shared bookkeeping for wire networks. A network is never stored: each Wire Connector finds
- * the connectors it can reach by walking the wires through loaded connectors, and caches the
- * result until any wire or connector anywhere changes ({@link #topologyVersion()}).
+ * the connectors it can reach by walking the wires through loaded wire nodes, and caches the
+ * result until any wire, node or switch anywhere changes ({@link #topologyVersion()}).
  *
  * <p>Each wire carries at most its tier's rate per tick, shared by everything routed through
  * it that tick, so a thin wire in the middle of a network limits what gets past it.
  */
 public final class WireNetwork {
 
+    /** One terminal of one wire node. */
+    public record End(BlockPos pos, int terminal) {}
+
     /** One wire, the same whichever end it's seen from. */
-    public record WireKey(long a, long b) {
-        public static WireKey of(BlockPos x, BlockPos y) {
+    public record WireKey(long a, int ta, long b, int tb) {
+        public static WireKey of(BlockPos x, int tx, BlockPos y, int ty) {
             long lx = x.asLong(), ly = y.asLong();
-            return lx < ly ? new WireKey(lx, ly) : new WireKey(ly, lx);
+            boolean xFirst = lx < ly || (lx == ly && tx <= ty);
+            return xFirst ? new WireKey(lx, tx, ly, ty) : new WireKey(ly, ty, lx, tx);
         }
     }
 
@@ -86,29 +91,47 @@ public final class WireNetwork {
         return usage;
     }
 
+    private record Visit(WireNodeBlockEntity node, int terminal) {}
+
     /**
      * Every connector reachable from {@code start} over loaded wires, nearest (fewest wires)
-     * first. A wire only counts if both ends still list it.
+     * first. A wire only counts if both ends still list it. A closed switch joins its two
+     * terminals without costing a wire; an open one stops the walk at the terminal it came in on.
      */
     public static List<Endpoint> findEndpoints(Level level, WireConnectorBlockEntity start) {
         List<Endpoint> endpoints = new ArrayList<>();
-        Map<BlockPos, List<Step>> paths = new HashMap<>();
-        ArrayDeque<WireConnectorBlockEntity> queue = new ArrayDeque<>();
-        paths.put(start.getBlockPos(), List.of());
-        queue.add(start);
+        Map<End, List<Step>> paths = new HashMap<>();
+        ArrayDeque<Visit> queue = new ArrayDeque<>();
+        paths.put(new End(start.getBlockPos(), 0), List.of());
+        queue.add(new Visit(start, 0));
         while (!queue.isEmpty()) {
-            WireConnectorBlockEntity current = queue.poll();
-            List<Step> path = paths.get(current.getBlockPos());
-            for (WireConnectorBlockEntity.Connection wire : current.connections()) {
-                BlockPos next = wire.other();
-                if (paths.containsKey(next) || !level.isLoaded(next)) continue;
-                if (!(level.getBlockEntity(next) instanceof WireConnectorBlockEntity other)
-                        || !other.isConnectedTo(current.getBlockPos())) continue;
+            Visit visit = queue.poll();
+            WireNodeBlockEntity current = visit.node();
+            BlockPos here = current.getBlockPos();
+            List<Step> path = paths.get(new End(here, visit.terminal()));
+
+            // Across a closed switch to its other terminals, for free, so it's walked first.
+            if (current.joinsTerminals()) {
+                for (int t = 0; t < current.terminals(); t++) {
+                    End across = new End(here, t);
+                    if (paths.containsKey(across)) continue;
+                    paths.put(across, path);
+                    queue.addFirst(new Visit(current, t));
+                }
+            }
+
+            for (WireNodeBlockEntity.Connection wire : current.connections()) {
+                if (wire.terminal() != visit.terminal()) continue;
+                End next = new End(wire.other(), wire.otherTerminal());
+                if (paths.containsKey(next) || !level.isLoaded(next.pos())) continue;
+                if (!(level.getBlockEntity(next.pos()) instanceof WireNodeBlockEntity other)
+                        || !other.isConnectedTo(next.terminal(), here, visit.terminal())) continue;
                 List<Step> nextPath = new ArrayList<>(path);
-                nextPath.add(new Step(WireKey.of(current.getBlockPos(), next), wire.tier()));
+                nextPath.add(new Step(WireKey.of(here, visit.terminal(), next.pos(), next.terminal()), wire.tier()));
                 paths.put(next, nextPath);
-                endpoints.add(new Endpoint(next, List.copyOf(nextPath)));
-                queue.add(other);
+                if (other instanceof WireConnectorBlockEntity)
+                    endpoints.add(new Endpoint(next.pos(), List.copyOf(nextPath)));
+                queue.add(new Visit(other, next.terminal()));
             }
         }
         return endpoints;

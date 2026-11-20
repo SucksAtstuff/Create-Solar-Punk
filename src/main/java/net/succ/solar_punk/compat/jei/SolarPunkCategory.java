@@ -6,8 +6,11 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.succ.solar_punk.SolarPunk;
@@ -18,6 +21,8 @@ public abstract class SolarPunkCategory<T> implements IRecipeCategory<T> {
 
     private static final int DEFAULT_HEIGHT = 40;
     private static final int ARROW_Y = 12;
+    private static final int TEXT_COLOR = 0x404040;
+    private static final int TEXT_MARGIN = 5;
 
     private final RecipeType<T> recipeType;
     private final int width;
@@ -63,6 +68,24 @@ public abstract class SolarPunkCategory<T> implements IRecipeCategory<T> {
 
     @Override
     public void draw(T recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        arrow.draw(guiGraphics, arrowX, ARROW_Y);
+        arrow.draw(guiGraphics, arrowX, arrowY(recipe));
+    }
+
+    /** Where the arrow goes; categories whose slots move with the recipe line it up with them. */
+    protected int arrowY(T recipe) {
+        return ARROW_Y;
+    }
+
+    /**
+     * Draws grey text at (x, y), wrapped to the page width so long translations and big config
+     * numbers can't run off the side, and returns the y below it for the next line.
+     */
+    protected int drawText(GuiGraphics guiGraphics, Component text, int x, int y) {
+        Font font = Minecraft.getInstance().font;
+        for (FormattedCharSequence line : font.split(text, Math.max(20, width - x - TEXT_MARGIN))) {
+            guiGraphics.drawString(font, line, x, y, TEXT_COLOR, false);
+            y += font.lineHeight + 1;
+        }
+        return y;
     }
 }

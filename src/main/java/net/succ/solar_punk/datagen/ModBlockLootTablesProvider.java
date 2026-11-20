@@ -15,7 +15,15 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.block.custom.HempCropBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.succ.solar_punk.block.custom.StreetlampBlock;
 import net.succ.solar_punk.block.custom.TrellisBlock;
 import net.succ.solar_punk.block.custom.TrellisPlant;
@@ -63,6 +71,7 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
             }
             return table;
         });
+        add(ModBlocks.HEMP.get(), this::hempDrops);
         // A double slab drops two slabs.
         ModBlockFamilies.ALL.forEach(family -> {
             Block slab = family.get(BlockFamily.Variant.SLAB);
@@ -72,6 +81,30 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         for (Block block : getKnownBlocks()) {
             if (!map.containsKey(block.getLootTable())) dropSelf(block);
         }
+    }
+
+    // Like a wheat crop, but only from the lower half (breaking the top breaks the lower half
+    // too, see HempCropBlock), and 2-3 Stalks when grown: a Seed while growing, or Stalks
+    // plus Seeds (more with Fortune) once grown.
+    private LootTable.Builder hempDrops(Block block) {
+        LootItemCondition.Builder lower = LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+                .setProperties(StatePropertiesPredicate.Builder.properties()
+                        .hasProperty(HempCropBlock.HALF, DoubleBlockHalf.LOWER));
+        LootItemCondition.Builder grown = LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+                .setProperties(StatePropertiesPredicate.Builder.properties()
+                        .hasProperty(HempCropBlock.AGE, HempCropBlock.MAX_AGE)
+                        .hasProperty(HempCropBlock.HALF, DoubleBlockHalf.LOWER));
+        HolderLookup.RegistryLookup<Enchantment> enchantments = registries.lookupOrThrow(Registries.ENCHANTMENT);
+        return applyExplosionDecay(block, LootTable.lootTable()
+                .withPool(LootPool.lootPool().when(lower)
+                        .add(LootItem.lootTableItem(ModItems.HEMP_STALK.get())
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 3)))
+                                .when(grown)
+                                .otherwise(LootItem.lootTableItem(ModItems.HEMP_SEEDS.get()))))
+                .withPool(LootPool.lootPool().when(grown)
+                        .add(LootItem.lootTableItem(ModItems.HEMP_SEEDS.get())
+                                .apply(ApplyBonusCount.addBonusBinomialDistributionCount(
+                                        enchantments.getOrThrow(Enchantments.FORTUNE), 0.5714286F, 3)))));
     }
 
     private LootPool.Builder trellisPlantPool(Block trellis, TrellisPlant plant, Item drop) {

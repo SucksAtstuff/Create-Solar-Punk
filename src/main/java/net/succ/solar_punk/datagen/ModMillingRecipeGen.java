@@ -33,6 +33,11 @@ public class ModMillingRecipeGen extends MillingRecipeGen {
         .require(CROPS)
         .output(ModItems.BIOMASS.get(), 1));
 
+    GeneratedRecipe MILL_HEMP_STALK = create("hemp_stalk_to_fiber", b -> b
+        .duration(100)
+        .require(ModItems.HEMP_STALK.get())
+        .output(ModItems.HEMP_FIBER.get(), 2));
+
     public ModMillingRecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, SolarPunk.MODID);
     }

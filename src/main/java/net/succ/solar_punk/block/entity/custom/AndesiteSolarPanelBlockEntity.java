@@ -35,29 +35,46 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
         behaviours.add(rotationDirection);
     }
 
+    // Create expects a generator's speed and capacity to change only together with
+    // updateGeneratedRotation(): its own checks (validation, propagation, network
+    // add/remove) read getGeneratedSpeed() at any moment. Working them out from the sun on
+    // every call let them flip at dawn and dusk between our once-a-second updates, so
+    // Create zeroed the speed without detaching the panel and the network broke apart
+    // (panels and shafts popping off). So they're stored, and only refreshed right before
+    // updateGeneratedRotation(). Saved, so a reloaded panel matches the network it left.
+    private float generatedSpeed = 0;
+    private float generatedCapacity = 0;
+
+    // Plants below cool the panel (agrivoltaics). Only the SU goes up, so the RPM stays clean.
+    private boolean plantBelow = false;
+
     @Override
     public float getGeneratedSpeed() {
+        return generatedSpeed;
+    }
+
+    @Override
+    public float calculateAddedStressCapacity() {
+        this.lastCapacityProvided = generatedCapacity;
+        return generatedCapacity;
+    }
+
+    @Override
+    public void updateGeneratedRotation() {
+        if (level != null && !level.isClientSide) {
+            generatedSpeed = computeSpeed();
+            generatedCapacity = generatedSpeed == 0 ? 0 : computeCapacity();
+        }
+        super.updateGeneratedRotation();
+    }
+
+    private float computeSpeed() {
         float speed = SolarHelper.byPhase(level, worldPosition, Config.andesiteMorningRpm, Config.andesiteNoonRpm);
         // Round so the network keeps clean integer RPM; the season only shifts every few
         // in-game days, so this doesn't churn the kinetic network.
         if (speed != 0) speed = Math.round(speed * SolarHelper.outputMultiplier(level, worldPosition));
         return GeneratorHelper.directed(speed, rotationDirection);
     }
-
-    // Server-computed capacity, synced for the goggle tooltip. The client can't always work
-    // it out itself: in Cosmonautics deep space the sun position is server-only data.
-    private float syncedCapacity = 0;
-
-    @Override
-    public float calculateAddedStressCapacity() {
-        if (level != null && level.isClientSide) return syncedCapacity;
-        float capacity = computeCapacity();
-        this.lastCapacityProvided = capacity;
-        return capacity;
-    }
-
-    // Plants below cool the panel (agrivoltaics). Only the SU goes up, so the RPM stays clean.
-    private boolean plantBelow = false;
 
     private float computeCapacity() {
         float capacity = SolarHelper.byPhase(level, worldPosition, Config.andesiteMorningSu, Config.andesiteNoonSu);
@@ -69,16 +86,10 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
     public void tick() {
         super.tick();
         if (level != null && !level.isClientSide && level.getGameTime() % 20 == 0) {
-            boolean plant = Agrivoltaics.hasPlantBelow(level, worldPosition);
-            boolean plantChanged = plant != plantBelow;
-            plantBelow = plant;
+            plantBelow = Agrivoltaics.hasPlantBelow(level, worldPosition);
+            // Also syncs the speed, capacity and plant to the client for goggles.
             updateGeneratedRotation();
-            float capacity = computeCapacity();
-            if (capacity != syncedCapacity || plantChanged) {
-                syncedCapacity = capacity;
-                sendData();
-            }
-            boolean active = getGeneratedSpeed() != 0;
+            boolean active = generatedSpeed != 0;
             BlockState state = level.getBlockState(worldPosition);
             if (!(state.getBlock() instanceof AndesiteSolarPanelBlock)) return;
             if (state.getValue(AndesiteSolarPanelBlock.LIT) != active)
@@ -102,15 +113,17 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
     @Override
     protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.write(tag, registries, clientPacket);
-        if (clientPacket) tag.putFloat("SolarCapacity", syncedCapacity);
-        if (clientPacket) tag.putBoolean("PlantBelow", plantBelow);
+        tag.putFloat("SolarSpeed", generatedSpeed);
+        tag.putFloat("SolarCapacity", generatedCapacity);
+        tag.putBoolean("PlantBelow", plantBelow);
     }
 
     @Override
     protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.read(tag, registries, clientPacket);
-        if (clientPacket) syncedCapacity = tag.getFloat("SolarCapacity");
-        if (clientPacket) plantBelow = tag.getBoolean("PlantBelow");
+        generatedSpeed = tag.getFloat("SolarSpeed");
+        generatedCapacity = tag.getFloat("SolarCapacity");
+        plantBelow = tag.getBoolean("PlantBelow");
     }
 
     @Override

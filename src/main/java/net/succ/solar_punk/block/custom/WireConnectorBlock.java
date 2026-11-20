@@ -31,6 +31,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.Tags;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.WireConnectorBlockEntity;
+import net.succ.solar_punk.wire.WireNodeBlock;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
@@ -41,7 +42,7 @@ import java.util.Map;
  * connectors, and energy the block pushes in comes out of the blocks under the other
  * connectors; see WireConnectorBlockEntity. Shears cut every wire on it.
  */
-public class WireConnectorBlock extends Block implements EntityBlock {
+public class WireConnectorBlock extends Block implements EntityBlock, WireNodeBlock {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
     // Where wires attach: this far out from the block the connector sits on.
@@ -76,6 +77,11 @@ public class WireConnectorBlock extends Block implements EntityBlock {
     public static Vec3 attachPoint(BlockPos pos, Direction facing) {
         double out = ATTACH_HEIGHT - 0.5;
         return Vec3.atCenterOf(pos).add(facing.getStepX() * out, facing.getStepY() * out, facing.getStepZ() * out);
+    }
+
+    @Override
+    public Vec3 attachPoint(BlockState state, BlockPos pos, int terminal) {
+        return attachPoint(pos, state.getValue(FACING));
     }
 
     @Override

@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "level=0": {
+      "model": "solarpunk:block/oxygen"
+    },
+    "level=1": {
+      "model": "solarpunk:block/oxygen"
+    },
+    "level=10": {
+      "model": "solarpunk:block/oxygen"
+    },
+    "level=11": {
+      "model": "solarpunk:block/oxygen"
+    },
+    "level=12": {
+      "model": "solarpunk:block/oxygen"
+    },
+    "level=13": {
+      "model": "solarpunk:block/oxygen"
+    },
+    "level=14": {
+      "model": "solarpunk:block/oxygen"
+    },
+    "level=15": {
+      "model": "solarpunk:block/oxygen"
+    },
+    "level=2": {
+      "model": "solarpunk:block/oxygen"
+    },
+    "level=3": {
+      "model": "solarpunk:block/oxygen"
+    },
+    "level=4": {
+      "model": "solarpunk:block/oxygen"
+    },
+    "level=5": {
+      "model": "solarpunk:block/oxygen"
+    },
+    "level=6": {
+      "model": "solarpunk:block/oxygen"
+    },
+    "level=7": {
+      "model": "solarpunk:block/oxygen"
+    },
+    "level=8": {
+      "model": "solarpunk:block/oxygen"
+    },
+    "level=9": {
+      "model": "solarpunk:block/oxygen"
+    }
+  }
+}

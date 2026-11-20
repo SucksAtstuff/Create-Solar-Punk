@@ -40,6 +40,9 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
     public  boolean steamMode           = false;
     private float saltAccumulator      = 0f;
     private float steamAccumulator     = 0f;
+    // Fraction of a mB of water already spent but not yet drained (Steam mode costs half a
+    // mB per footprint block, so odd widths leave a half over). Not saved: at most 1 mB.
+    private float waterOwed            = 0f;
     private int   cachedMirrorCount    = 0;
     private int   mirrorScanCooldown   = 0;
     private boolean advancementFired   = false;
@@ -220,46 +223,54 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         // Rate scales super-linearly with height (exponent 1.5) so a tall tower is always
         // more block-efficient than several short ones. baseRate is 9 at max size (3x3x20,
         // full sun, full mirror field), and the configurable mode multipliers turn it into
-        // mB/t: steam defaults to 21 mB/t (one max-height Steam Turbine), salt to 18 mB/t.
-        // Salt is only made by day, while a charged Heat Battery drains 1 mB/t around the
-        // clock, so 18 mB/t averages out to 9 mB/t: enough for 9 Heat Batteries (a max-size
-        // boiler) if the tank has room to bank the daytime surplus.
+        // mB/t: steam defaults to 42 mB/t, salt to 18 mB/t. Both are only made by day, so
+        // they average out to half: 21 mB/t of steam runs one max-height Steam Turbine day
+        // and night, and 9 mB/t of salt holds 9 Heat Batteries (a max-size boiler; a charged
+        // battery drains 1 mB/t around the clock), if tanks bank the daytime surplus.
         float heightFraction = (float) height / maxHeight(width);
         float baseRate = (width * width) * (float) Math.pow(heightFraction, 1.5) * mirrorEfficiency();
         float rate = baseRate * (float) (steamMode ? Config.solarPowerTowerSteamMultiplier : Config.solarPowerTowerSaltMultiplier);
         rate *= SolarHelper.outputMultiplier(level, worldPosition);
         if (steamMode) {
             saltAccumulator = 0f;
-            steamAccumulator = produce(steamTank, ModFluids.STEAM_SOURCE.get(), rate, steamAccumulator);
+            steamAccumulator = produce(steamTank, ModFluids.STEAM_SOURCE.get(), rate, steamAccumulator, waterPerMb(width, true));
         } else {
             steamAccumulator = 0f;
-            saltAccumulator = produce(saltTank, ModFluids.MOLTEN_SALT_SOURCE.get(), rate, saltAccumulator);
+            saltAccumulator = produce(saltTank, ModFluids.MOLTEN_SALT_SOURCE.get(), rate, saltAccumulator, waterPerMb(width, false));
         }
 
         setLit(true);
         if (level.getGameTime() % 20 == 0) sync();
     }
 
+    // mB of Water each mB of output costs: one per footprint block for Molten Salt, half that
+    // for Steam (boiling brine leaves far more steam than salt). JEI shows it too.
+    public static float waterPerMb(int width, boolean steamMode) {
+        return steamMode ? width * width / 2f : width * width;
+    }
+
     // Adds rate mB/t of fluid to the output tank, carrying fractions over in the
-    // accumulator. Every mB costs one mB of water per footprint block. Returns the new
-    // accumulator value. (Fully qualified because IMultiBlockEntityContainer.Fluid
+    // accumulator. Every mB costs waterPerMb mB of water. Returns the new accumulator value. (Fully qualified because IMultiBlockEntityContainer.Fluid
     // shadows the import.)
     private float produce(FluidTank output, net.minecraft.world.level.material.Fluid fluid,
-                          float rate, float accumulator) {
-        int waterPerMb = width * width;
+                          float rate, float accumulator, float waterPerMb) {
+        float waterAvailable = waterTank.getFluidAmount() - waterOwed;
         boolean hasSpaceForOne = output.fill(new FluidStack(fluid, 1), IFluidHandler.FluidAction.SIMULATE) >= 1;
-        boolean hasWaterForOne = waterTank.getFluidAmount() >= waterPerMb;
+        boolean hasWaterForOne = waterAvailable >= waterPerMb;
         boolean running = hasSpaceForOne && hasWaterForOne;
         lastGenerationRate = running ? rate : 0f;
         if (running) accumulator += rate;
 
         int toAdd = (int) accumulator;
         if (toAdd >= 1) {
-            int maxByWater = waterTank.getFluidAmount() / waterPerMb;
+            int maxByWater = (int) (waterAvailable / waterPerMb);
             int maxBySpace = output.fill(new FluidStack(fluid, toAdd), IFluidHandler.FluidAction.SIMULATE);
             int actualToAdd = Math.min(toAdd, Math.min(maxByWater, maxBySpace));
             if (actualToAdd >= 1) {
-                waterTank.drain(actualToAdd * waterPerMb, IFluidHandler.FluidAction.EXECUTE);
+                waterOwed += actualToAdd * waterPerMb;
+                int drain = (int) waterOwed;
+                waterTank.drain(drain, IFluidHandler.FluidAction.EXECUTE);
+                waterOwed -= drain;
                 output.fill(new FluidStack(fluid, actualToAdd), IFluidHandler.FluidAction.EXECUTE);
                 accumulator -= actualToAdd;
             }

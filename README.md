@@ -14,9 +14,10 @@ A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecos
 - GeckoLib 4.7.2+
 
 **Optional:**
-- JEI (adds recipe categories for the Solar Heater, Fermentation Vat, Solar Power Tower, Crystallizer, and Particle Accelerator)
+- JEI (adds recipe categories for the Solar Heater, Fermentation Vat, Bioreactor, Solar Power Tower, Crystallizer, and Particle Accelerator)
 - Serene Seasons (solar output scales with the season - up in summer, down in winter; can be turned off in the config)
 - Create: Northstar Redux (the Steam Turbine can burn its Liquid Hydrogen as an alternative fuel to Steam)
+- Create: CROWNS (the Steam Turbine can burn its steam)
 - Create: Cosmonautics (solar blocks work in space and follow the real sun; stations are built with Create Aeronautics)
 - Create: New Age (the Heat Battery trades heat with New Age's heat pipes and machines)
 
@@ -34,6 +35,11 @@ A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecos
 ### Wires and Electric Blocks
 - **Wire Connector** - a small brass insulator that goes on any face of any block. Power going into one connector comes out into the blocks under every connector it's wired to, so one solar roof can power a whole street. Generators that don't push power out on their own get drained
 - **Iron, Copper and Gold Wire** - cut from metal sheets with a Mechanical Saw, and wound 4 at a time onto an Empty Spool. Click two Wire Connectors with a spool to string a wire between them; longer wires use more of the spool. Gold carries the most power and reaches furthest, then Copper, then Iron. Shears cut a connector's wires and give them back
+- **Wire Switch** - a knife switch with two wire posts. While it's closed, power passes from the wires on one post to the wires on the other; flip it open to cut the network in two
+- **Redstone Wire Relay** - a Wire Switch thrown by redstone, closed while powered (a Wrench inverts it). Comparators read 15 from either while it's closed
+- **Electric Motor** - turns FE back into rotational force at a speed you set, up to 64 RPM. Faster uses more FE, whatever the load. One Brass Solar Panel at noon runs it at 16 RPM for half an Andesite Solar Panel's stress capacity
+- **Electrolyzer** - splits Water into Hydrogen and Oxygen with FE, making twice as much Hydrogen as Oxygen. Water goes in the top; each gas comes out of the copper flange beside its glass tube, and you can watch the gas push the water down as it collects
+- **Fuel Cell** and **End Plate** - a row of Fuel Cells clamped between two End Plates burns Hydrogen and Oxygen back into FE, giving back about two thirds of what the Electrolyzer used. Each cell adds output, up to 16 in a stack. Pipe Hydrogen into one End Plate and Oxygen into the other, through the port with arrows pointing in, and take the Water out of the other port; a redstone signal pauses it
 - **Streetlamp** - a two-block-tall street light that runs on FE and switches itself on at dusk. A full charge lasts the whole night
 - **Grow Lamp** - an FE-powered purple grow light. Hang it under a ceiling or from a wall, and crops below it grow faster, at night and underground too. A redstone signal switches it off
 - **Solar Plant Bed** - a raised bed for one plant, for roofs and balconies. Its soil never dries out, and its little panel charges by day to run a grow light at night that speeds the plant up
@@ -59,6 +65,8 @@ A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecos
 - **Biomass Pellet** - a compacted form of biomass; burns slower in the Gasifier but produces twice the Biochar per piece
 - **Biomass Gasifier** - burns raw biomass or pellets to generate rotational force (SU); produces Biochar as a byproduct
 - **Fermentation Vat** - multiblock structure (minimum 2×2 footprint and 4 blocks tall, up to 3×3 and 16 tall) that converts biomass into liquid biofuel using water; larger and taller vats process more per cycle
+- **Bioreactor** - a glass tank of algae (up to 3×3 wide and 8 tall) on a layer of **Bioreactor Base** blocks that turns Water and sunlight into Biomass and Oxygen. Start it with Kelp or Seagrass; wider tanks make more, Fertilizer or Rich Fertilizer speeds it up, Grow Lamps keep it going at night, and with global warming on it cleans pollution out of its chunk. Pipe its Algae Culture out to start another one
+- **Hemp** - a two-block-tall crop grown from Hemp Seeds, which drop from grass. Its Stalks mill or crush into Hemp Fiber for String, or mix with Limestone and Water into Hempcrete; its Seeds press into Hemp Seed Oil, which mixes with Ash in a heated Mixer into Biofuel
 - **Biofuel Engine** - burns biofuel to generate rotational force (SU)
 - **Biochar** - byproduct of the Gasifier; acts as a bonemeal substitute or mixes with water to make Fertilizer. Mix it (or Carbon Dust) with Salt for Gunpowder
 - **Fertilizer** - liquid made from Biochar and water; used in the Kinetic Sprinkler for forced instant crop growth
@@ -131,6 +139,7 @@ Decorative blocks have their own **Create: Solarpunk Building Blocks** creative 
 
 - **Salt** and **Ash** sets - stairs, slabs, walls, polished blocks, bricks and chiseled bricks. Ash comes from blasting Biomass, so you don't need global warming to get it
 - **Rammed Earth** in 25 colours, each with bricks, chiseled bricks, stairs, slabs and walls; pack soil, Gravel, Clay and Ash or Biochar together with a Mechanical Press, and the soil picks the colour
+- **Hempcrete**, mixed from Hemp Stalks, Limestone or Calcite and Water, with polished, bricks and chiseled versions, stairs, slabs and walls
 - **Charred Timber** - dark scorched planks made by applying Biochar to any planks, with stairs and slabs. Unlike planks, it doesn't burn
 - **Moss Stairs** and **Moss Slab** - green roofs made from Moss Blocks, which soak up pollution like leaves when global warming is on
 - **Brass, Andesite, Copper and Iron Filigree Railings** - art nouveau railings that connect to their neighbours; hold Alt to switch between flat, slope and steep slope for ramps, arches and staircases
@@ -143,6 +152,7 @@ Decorative blocks have their own **Create: Solarpunk Building Blocks** creative 
 - **Other space mods** - modpacks can add dimensions to the `solarpunk:always_sunny` (constant sunshine, no weather) or `solarpunk:no_weather` (normal day and night, no weather) dimension type tags with a datapack
 - **Create: New Age** - the Heat Battery trades heat with New Age's heat pipes and machines: a charged battery heats them, and an emptier one soaks up their heat. The Generator Coil is excluded from pollution
 - **Create: Northstar Redux** - the Steam Turbine can burn its Liquid Hydrogen as an alternative fuel to Steam, at the same rate; pipe it in the same way you would Steam, just not both at once - the tank has to fully drain before switching fuels. Northstar's Salt works in Solarpunk recipes and the other way around
+- **Create: CROWNS** - the Steam Turbine can burn steam from CROWNS reactors and heat exchangers, as long as it's fully boiled (wet steam is refused). Pipe it in like Steam. It can't go the other way: CROWNS machines only take water, so Solarpunk Steam won't run their turbines. Toggle it and set how dry the steam must be under `generators.steam_turbine` in the config
 - **Create: Food** - its Salt works in Solarpunk recipes and the other way around
 - **Create: Diesel Generators** - diesel engines count as pollution sources when Global Warming is enabled
 - **Create: Aeronautics** - engines on airships correctly accumulate pollution in the real-world chunk beneath the airship, even though they run in a simulated sublevel

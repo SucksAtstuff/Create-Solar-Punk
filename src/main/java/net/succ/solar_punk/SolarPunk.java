@@ -22,8 +22,10 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.block.custom.FuelCellBlock;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.FermentationVatBlockEntity;
+import net.succ.solar_punk.block.entity.custom.BioreactorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.TurbineRotorBlockEntity;
 import net.succ.solar_punk.datagen.DataGenerators;
@@ -37,6 +39,7 @@ import net.succ.solar_punk.network.SelectPipeShapePayload;
 import net.succ.solar_punk.network.SelectRailingShapePayload;
 import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
+import net.succ.solar_punk.particle.ModParticles;
 import net.succ.solar_punk.sound.ModSounds;
 import net.succ.solar_punk.worldgen.ModBiomeModifierTypes;
 import net.succ.solar_punk.worldgen.ModFeatures;
@@ -55,6 +58,7 @@ public class SolarPunk {
         ModCreativeModeTabs.register(modEventBus);
         ModRecipeTypes.register(modEventBus);
         ModSounds.register(modEventBus);
+        ModParticles.register(modEventBus);
         ModFeatures.register(modEventBus);
         ModBiomeModifierTypes.register(modEventBus);
         ModTriggers.register(modEventBus);
@@ -126,6 +130,42 @@ public class SolarPunk {
                 ModBlockEntities.GROW_LAMP.get(),
                 (be, side) -> be.energyStorage
         );
+        // Either End Plate of a Fuel Cell stack: FE out of any face, gas into one port, Water out
+        // of the other (EndPlateBlock.gasSide/waterSide), all on the controlling plate's tanks.
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                ModBlockEntities.END_PLATE.get(),
+                (be, side) -> be.energyStorage
+        );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.END_PLATE.get(),
+                (be, side) -> be.fluidHandler(side)
+        );
+        // Fuel Cells give the stack's FE out of any face, so a Wire Connector can go on a cell.
+        event.registerBlock(
+                Capabilities.EnergyStorage.BLOCK,
+                (level, pos, state, be, side) -> new FuelCellBlock.Energy(level, pos),
+                ModBlocks.FUEL_CELL.get()
+        );
+        // Takes FE from every side.
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                ModBlockEntities.ELECTRIC_MOTOR.get(),
+                (be, side) -> be.energyStorage
+        );
+        // FE in from every side. Fluids depend on the side: each flange gives out its own gas,
+        // every other face takes Water.
+        event.registerBlockEntity(
+                Capabilities.EnergyStorage.BLOCK,
+                ModBlockEntities.ELECTROLYZER.get(),
+                (be, side) -> be.energyStorage
+        );
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.ELECTROLYZER.get(),
+                (be, side) -> be.fluidHandler(side)
+        );
         // Only on the face touching the block it's on.
         event.registerBlockEntity(
                 Capabilities.EnergyStorage.BLOCK,
@@ -170,6 +210,27 @@ public class SolarPunk {
                 Capabilities.FluidHandler.BLOCK,
                 ModBlockEntities.FERMENTATION_VAT.get(),
                 (be, side) -> be.combinedFluidHandler
+        );
+        // Bioreactor: the glass takes Water or Algae Culture and gives culture (not through the
+        // top, where a pipe would shade it); the Base takes Water, culture, nutrients and seeds
+        // and gives Oxygen and Biomass. Base blocks have no block entity, so their handlers
+        // find the tank above on every call.
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.BIOREACTOR.get(),
+                (be, side) -> side == Direction.UP ? null : be.tankFluidHandler
+        );
+        event.registerBlock(
+                Capabilities.FluidHandler.BLOCK,
+                (level, pos, state, be, side) -> side == Direction.UP ? null
+                        : new BioreactorBlockEntity.FluidPort(() -> BioreactorBlockEntity.above(level, pos), true),
+                ModBlocks.BIOREACTOR_BASE.get()
+        );
+        event.registerBlock(
+                Capabilities.ItemHandler.BLOCK,
+                (level, pos, state, be, side) -> side == Direction.UP ? null
+                        : new BioreactorBlockEntity.ItemPort(() -> BioreactorBlockEntity.above(level, pos)),
+                ModBlocks.BIOREACTOR_BASE.get()
         );
         event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
@@ -250,6 +311,10 @@ public class SolarPunk {
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.HEAT_BATTERY.get(), ModDisplaySources.HEAT_BATTERY_CHARGE.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.HEAT_BATTERY.get(), ModDisplaySources.HEAT_BATTERY_STATUS.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.KINETIC_BATTERY.get(), ModDisplaySources.KINETIC_BATTERY_CHARGE.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.BIOREACTOR.get(), ModDisplaySources.BIOREACTOR_BIOMASS_RATE.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.BIOREACTOR.get(), ModDisplaySources.BIOREACTOR_LIGHT.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.BIOREACTOR.get(), ModDisplaySources.BIOREACTOR_CULTURE.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.ELECTRIC_MOTOR.get(), ModDisplaySources.ELECTRIC_MOTOR_CONSUMPTION.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.SOLAR_POWER_TOWER.get(), ModDisplaySources.SOLAR_POWER_TOWER_EFFICIENCY.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.SOLAR_POWER_TOWER.get(), ModDisplaySources.SOLAR_POWER_TOWER_MIRROR_COUNT.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.SOLAR_POWER_TOWER.get(), ModDisplaySources.SOLAR_POWER_TOWER_GENERATION_RATE.get());
@@ -301,6 +366,11 @@ public class SolarPunk {
                 () -> (double) Config.biofuelEngineSu);
             BlockStressValues.RPM.register(ModBlocks.BIOFUEL_ENGINE.get(),
                 new GeneratedRpm(Config.biofuelEngineRpm, false));
+
+            BlockStressValues.CAPACITIES.register(ModBlocks.ELECTRIC_MOTOR.get(),
+                () -> (double) Config.motorSu);
+            BlockStressValues.RPM.register(ModBlocks.ELECTRIC_MOTOR.get(),
+                new GeneratedRpm(Config.motorMaxRpm, true));
 
             BlockStressValues.CAPACITIES.register(ModBlocks.GEYSER_CAP.get(),
                 () -> (double) Config.geyserCapSu);

@@ -86,8 +86,10 @@ public class ModFluidTypes {
                     WATER_OVERLAY,
                     0xFFDDEEFF,
                     new Vector3f(221f / 255f, 238f / 255f, 255f / 255f),
+                    // Negative density: lighter than air, so Create's tanks draw it hanging
+                    // from the top like Hydrogen and Oxygen.
                     FluidType.Properties.create()
-                            .density(5)
+                            .density(-5)
                             .viscosity(10)
                             .temperature(373)
             ));
@@ -105,6 +107,67 @@ public class ModFluidTypes {
                     FluidType.Properties.create()
                             .density(150)
                             .viscosity(300)
+                            .temperature(295)
+            ));
+
+    // Electrolyzer outputs. Gases: see-through tints on the water sprite. Hydrogen is lighter
+    // than air (negative density, so Create draws it hanging from the top of a tank) and
+    // pale pink, after the glow of a hydrogen discharge tube; Oxygen is pale blue, like
+    // liquid oxygen, and bluer than Steam.
+    public static final Supplier<FluidType> HYDROGEN_TYPE = FLUID_TYPES.register("hydrogen",
+            () -> new BaseFluidType(
+                    WATER_STILL,
+                    WATER_FLOW,
+                    WATER_OVERLAY,
+                    0xB0FFD8EC,
+                    new Vector3f(255f / 255f, 216f / 255f, 236f / 255f),
+                    FluidType.Properties.create()
+                            .density(-100)
+                            .viscosity(10)
+                            .temperature(295)
+            ));
+
+    public static final Supplier<FluidType> OXYGEN_TYPE = FLUID_TYPES.register("oxygen",
+            () -> new BaseFluidType(
+                    WATER_STILL,
+                    WATER_FLOW,
+                    WATER_OVERLAY,
+                    0xB0A8CCFF,
+                    new Vector3f(168f / 255f, 204f / 255f, 255f / 255f),
+                    FluidType.Properties.create()
+                            .density(-10)
+                            .viscosity(10)
+                            .temperature(295)
+            ));
+
+    // Pressed from Hemp Seeds (ModCompactingRecipeGen), and mixed with Ash into Biofuel.
+    // Golden, to stay apart from the greens of Biofuel and the Fertilizers.
+    public static final Supplier<FluidType> HEMP_SEED_OIL_TYPE = FLUID_TYPES.register("hemp_seed_oil",
+            () -> new BaseFluidType(
+                    WATER_STILL,
+                    WATER_FLOW,
+                    WATER_OVERLAY,
+                    0xFFC8A832,
+                    new Vector3f(200f / 255f, 168f / 255f, 50f / 255f),
+                    FluidType.Properties.create()
+                            .density(920)
+                            .viscosity(3000)
+                            .temperature(295)
+            ));
+
+    // The Bioreactor's living culture. A bright blue-green like spirulina, well away from the
+    // duller greens of Biofuel and the Fertilizers. Its movement comes from the Bioreactor's
+    // particles (AlgaeParticles), not the texture.
+    public static final Supplier<FluidType> ALGAE_CULTURE_TYPE = FLUID_TYPES.register("algae_culture",
+            () -> new BaseFluidType(
+                    WATER_STILL,
+                    WATER_FLOW,
+                    WATER_OVERLAY,
+                    0xFF2E9E6A,
+                    new Vector3f(46f / 255f, 158f / 255f, 106f / 255f),
+                    FluidType.Properties.create()
+                            .density(1010)
+                            .viscosity(1500)
                             .temperature(295)
             ));
 

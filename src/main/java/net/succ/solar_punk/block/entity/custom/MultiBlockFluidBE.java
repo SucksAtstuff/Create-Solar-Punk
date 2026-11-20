@@ -99,6 +99,8 @@ public abstract class MultiBlockFluidBE<T extends MultiBlockFluidBE<T>> extends 
     }
 
     protected void loadMultiblockNBT(CompoundTag tag) {
+        BlockPos controllerBefore = controller;
+        int widthBefore = width, heightBefore = height;
         controller = null;
         if (tag.contains("Controller")) controller = BlockPos.of(tag.getLong("Controller"));
         width  = tag.getInt("Width");
@@ -106,6 +108,14 @@ public abstract class MultiBlockFluidBE<T extends MultiBlockFluidBE<T>> extends 
         if (width  == 0) width  = 1;
         if (height == 0) height = 1;
         updateConnectivity = tag.contains("Uninitialized");
+
+        // The connected textures read the controller, so re-mesh when this block joins or
+        // leaves a multiblock (like Create's FluidTankBlockEntity.read).
+        if (level != null && level.isClientSide && (!java.util.Objects.equals(controllerBefore, controller)
+                || widthBefore != width || heightBefore != height)) {
+            requestModelDataUpdate();
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 8);
+        }
     }
 
     // Packet sync shared implementations

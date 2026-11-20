@@ -7,14 +7,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.Containers;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
@@ -24,26 +18,17 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.WireConnectorBlock;
 import net.succ.solar_punk.util.EnergyFormat;
 import net.succ.solar_punk.wire.WireNetwork;
-import net.succ.solar_punk.wire.WireTier;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * A Wire Connector. Holds no energy: whatever goes into it (pushed in by the block it's on, or
  * pulled out of that block if it's a generator that only gives energy) is handed straight on
  * to the blocks the other connectors in its network sit on, limited by each wire's rate.
- *
- * <p>Both ends of a wire list it. The wire's items are dropped once, by whichever end is
- * broken; the other end just forgets the wire, now or when it's next loaded.
  */
-public class WireConnectorBlockEntity extends BlockEntity implements IHaveGoggleInformation {
+public class WireConnectorBlockEntity extends WireNodeBlockEntity implements IHaveGoggleInformation {
 
-    public record Connection(BlockPos other, WireTier tier, int wires) {}
-
-    private final List<Connection> connections = new ArrayList<>();
     public final IEnergyStorage energyStorage = new ConnectorEnergy();
 
     @Nullable private BlockCapabilityCache<IEnergyStorage, Direction> attachedCache;
@@ -54,7 +39,6 @@ public class WireConnectorBlockEntity extends BlockEntity implements IHaveGoggle
     private int movedThisSecond = 0;
     // FE/t moved through this connector over the last second, for goggles.
     private int throughput = 0;
-    private boolean validated = false;
 
     public WireConnectorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -69,60 +53,13 @@ public class WireConnectorBlockEntity extends BlockEntity implements IHaveGoggle
         return worldPosition.relative(back());
     }
 
-    public List<Connection> connections() {
-        return Collections.unmodifiableList(connections);
-    }
-
-    public boolean isConnectedTo(BlockPos other) {
-        for (Connection c : connections) if (c.other().equals(other)) return true;
-        return false;
-    }
-
-    public void addConnection(BlockPos other, WireTier tier, int wires) {
-        connections.add(new Connection(other, tier, wires));
-        changed();
-    }
-
-    private void removeConnection(BlockPos other) {
-        if (connections.removeIf(c -> c.other().equals(other))) changed();
-    }
-
-    private void changed() {
-        WireNetwork.changed();
-        setChanged();
-        if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-    }
-
-    /** Drops every wire on this connector and removes them from the other ends. */
-    public void cutAll() {
-        if (level == null || level.isClientSide) return;
-        for (Connection c : List.copyOf(connections)) {
-            Containers.dropItemStack(level, worldPosition.getX() + 0.5, worldPosition.getY() + 0.5,
-                    worldPosition.getZ() + 0.5, new ItemStack(c.tier().wireItem(), c.wires()));
-            if (level.isLoaded(c.other()) && level.getBlockEntity(c.other()) instanceof WireConnectorBlockEntity other)
-                other.removeConnection(worldPosition);
-        }
-        connections.clear();
-        changed();
-    }
-
     public void tick() {
         if (!(level instanceof ServerLevel serverLevel)) return;
-
-        // Forget wires whose other end was broken while this one was unloaded.
-        if (!validated) {
-            validated = true;
-            for (Connection c : List.copyOf(connections)) {
-                if (!level.isLoaded(c.other())) continue;
-                if (!(level.getBlockEntity(c.other()) instanceof WireConnectorBlockEntity other)
-                        || !other.isConnectedTo(worldPosition))
-                    removeConnection(c.other());
-            }
-        }
+        validateWires();
 
         // Generators that only give energy (and don't push it out themselves) get drained.
         IEnergyStorage attached = attached(serverLevel);
-        if (attached != null && attached.canExtract() && !attached.canReceive() && !connections.isEmpty()) {
+        if (attached != null && attached.canExtract() && !attached.canReceive() && !connections().isEmpty()) {
             int available = attached.extractEnergy(Integer.MAX_VALUE, true);
             int accepted = route(available, true);
             if (accepted > 0) route(attached.extractEnergy(accepted, false), false);
@@ -192,25 +129,7 @@ public class WireConnectorBlockEntity extends BlockEntity implements IHaveGoggle
         @Override public int getEnergyStored() { return 0; }
         @Override public int getMaxEnergyStored() { return 0; }
         @Override public boolean canExtract() { return false; }
-        @Override public boolean canReceive() { return !connections.isEmpty(); }
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        WireNetwork.changed();
-    }
-
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        WireNetwork.changed();
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
-        WireNetwork.changed();
+        @Override public boolean canReceive() { return !connections().isEmpty(); }
     }
 
     @Override
@@ -219,7 +138,7 @@ public class WireConnectorBlockEntity extends BlockEntity implements IHaveGoggle
 
         CreateLang.translate("solar_punk.tooltip.wires")
                 .style(ChatFormatting.GRAY)
-                .add(Component.literal(connections.size() + " / " + Config.wireMaxConnections)
+                .add(Component.literal(connections().size() + " / " + Config.wireMaxConnections)
                         .withStyle(ChatFormatting.AQUA))
                 .forGoggles(tooltip, 1);
 
@@ -232,40 +151,14 @@ public class WireConnectorBlockEntity extends BlockEntity implements IHaveGoggle
     }
 
     @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
-    }
-
-    @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        ListTag list = new ListTag();
-        for (Connection c : connections) {
-            CompoundTag entry = new CompoundTag();
-            entry.putLong("pos", c.other().asLong());
-            entry.putString("tier", c.tier().getSerializedName());
-            entry.putInt("wires", c.wires());
-            list.add(entry);
-        }
-        tag.put("connections", list);
         tag.putInt("throughput", throughput);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        connections.clear();
-        for (Tag t : tag.getList("connections", Tag.TAG_COMPOUND)) {
-            CompoundTag entry = (CompoundTag) t;
-            connections.add(new Connection(BlockPos.of(entry.getLong("pos")),
-                    WireTier.byName(entry.getString("tier")), entry.getInt("wires")));
-        }
         throughput = tag.getInt("throughput");
-        WireNetwork.changed();
     }
 }
