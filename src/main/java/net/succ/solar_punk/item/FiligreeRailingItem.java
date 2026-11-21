@@ -3,7 +3,7 @@ package net.succ.solar_punk.item;
 import net.succ.solar_punk.block.custom.RailingShape;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.level.block.Block;
-import studio.offbyone.lib.shape.ShapedBlockItem;
+import net.succ.offbyonelib.shape.ShapedBlockItem;
 
 import java.util.function.Supplier;
 

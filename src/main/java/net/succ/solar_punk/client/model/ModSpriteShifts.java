@@ -1,6 +1,6 @@
 package net.succ.solar_punk.client.model;
 
-import studio.offbyone.lib.client.model.SpriteShifts;
+import net.succ.offbyonelib.client.model.SpriteShifts;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
 import net.minecraft.resources.ResourceLocation;
 import net.succ.solar_punk.SolarPunk;

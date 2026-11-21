@@ -11,8 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.util.SeasonalEvent;
-import studio.offbyone.lib.wire.WireNodeBlockEntity;
-import studio.offbyone.lib.wire.client.WireRenderer;
+import net.succ.offbyonelib.wire.WireNodeBlockEntity;
+import net.succ.offbyonelib.wire.client.WireRenderer;
 
 /** Solarpunk's wires: the library's renderer, except at Christmas every wire is green cable hung with glowing coloured bulbs. */
 public class SeasonalWireRenderer<T extends WireNodeBlockEntity> extends WireRenderer<T> {

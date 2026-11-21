@@ -25,8 +25,8 @@ import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.EndPlateBlock;
 import net.succ.solar_punk.compat.northstar.NorthstarCompat;
 import net.succ.solar_punk.fluid.ModFluids;
-import studio.offbyone.lib.util.EnergyFormat;
-import studio.offbyone.lib.util.FluidTankNBTHelper;
+import net.succ.offbyonelib.util.EnergyFormat;
+import net.succ.offbyonelib.util.FluidTankNBTHelper;
 import net.succ.solar_punk.SolarPunk;
 import org.jetbrains.annotations.Nullable;
 

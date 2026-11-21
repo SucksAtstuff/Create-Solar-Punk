@@ -13,7 +13,7 @@ import net.succ.solar_punk.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
 
-import static studio.offbyone.lib.datagen.DatagenUtil.createItem;
+import static net.succ.offbyonelib.datagen.DatagenUtil.createItem;
 
 public class ModItemApplicationRecipeGen extends ItemApplicationRecipeGen {
 

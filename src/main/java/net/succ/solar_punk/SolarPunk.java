@@ -1,7 +1,7 @@
 package net.succ.solar_punk;
 
-import studio.offbyone.lib.solar.SolarSettings;
-import studio.offbyone.lib.solar.SolarHelper;
+import net.succ.offbyonelib.solar.SolarSettings;
+import net.succ.offbyonelib.solar.SolarHelper;
 import net.succ.solar_punk.wire.ModWires;
 import net.succ.solar_punk.block.custom.AcceleratorRing;
 import net.succ.solar_punk.item.HeadwearDispenseBehavior;
@@ -24,7 +24,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.succ.solar_punk.advancement.ModTriggers;
-import studio.offbyone.lib.util.GoggleLines;
+import net.succ.offbyonelib.util.GoggleLines;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.FuelCellBlock;
 import net.succ.solar_punk.block.entity.ModBlockEntities;

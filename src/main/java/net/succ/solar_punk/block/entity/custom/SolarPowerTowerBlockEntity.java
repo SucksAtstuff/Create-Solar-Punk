@@ -1,6 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import studio.offbyone.lib.multiblock.MultiBlockFluidBE;
+import net.succ.offbyonelib.multiblock.MultiBlockFluidBE;
 import net.succ.solar_punk.SolarPunk;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
@@ -32,7 +32,7 @@ import net.succ.solar_punk.fluid.ModFluids;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import studio.offbyone.lib.util.FluidTankNBTHelper;
+import net.succ.offbyonelib.util.FluidTankNBTHelper;
 
 public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowerBlockEntity>
         implements IHaveGoggleInformation {

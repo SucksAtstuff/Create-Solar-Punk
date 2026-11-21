@@ -14,7 +14,7 @@ import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.compat.northstar.NorthstarCompat;
 import net.succ.solar_punk.fluid.ModFluids;
-import studio.offbyone.lib.util.EnergyFormat;
+import net.succ.offbyonelib.util.EnergyFormat;
 
 // Electrolysis is hardcoded in ElectrolyzerBlockEntity, so this shows one display-only
 // entry: 1000 mB Water -> 1000 mB Hydrogen + 500 mB Oxygen, and the FE that takes.

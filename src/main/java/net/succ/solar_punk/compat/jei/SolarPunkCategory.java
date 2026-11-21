@@ -4,7 +4,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.world.level.ItemLike;
 import net.succ.solar_punk.SolarPunk;
-import studio.offbyone.lib.compat.jei.AddonRecipeCategory;
+import net.succ.offbyonelib.compat.jei.AddonRecipeCategory;
 
 // This mod's JEI categories: the library's layout, with recipe types under solarpunk.
 public abstract class SolarPunkCategory<T> extends AddonRecipeCategory<T> {

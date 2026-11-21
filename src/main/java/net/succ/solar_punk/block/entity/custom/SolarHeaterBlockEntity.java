@@ -1,9 +1,9 @@
 package net.succ.solar_punk.block.entity.custom;
 
 import net.neoforged.neoforge.items.IItemHandler;
-import studio.offbyone.lib.client.sound.MachineSoundInstance;
+import net.succ.offbyonelib.client.sound.MachineSoundInstance;
 import net.succ.solar_punk.SolarPunk;
-import studio.offbyone.lib.util.AutomationItemHandler;
+import net.succ.offbyonelib.util.AutomationItemHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.platform.CatnipServices;
@@ -32,7 +32,7 @@ import net.succ.solar_punk.client.sound.SolarHeaterSoundInstance;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
 import net.succ.solar_punk.recipe.SolarHeaterRecipe;
-import studio.offbyone.lib.util.FluidTankNBTHelper;
+import net.succ.offbyonelib.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

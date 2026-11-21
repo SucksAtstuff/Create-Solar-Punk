@@ -29,8 +29,8 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.ElectricMotorBlock;
 import net.succ.solar_punk.client.sound.ElectricMotorSoundInstance;
-import studio.offbyone.lib.client.sound.MachineSoundInstance;
-import studio.offbyone.lib.util.EnergyFormat;
+import net.succ.offbyonelib.client.sound.MachineSoundInstance;
+import net.succ.offbyonelib.util.EnergyFormat;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

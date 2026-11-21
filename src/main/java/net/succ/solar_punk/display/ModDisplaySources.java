@@ -1,7 +1,7 @@
 package net.succ.solar_punk.display;
 
-import studio.offbyone.lib.display.PercentDisplaySource;
-import studio.offbyone.lib.display.NumericLineDisplaySource;
+import net.succ.offbyonelib.display.PercentDisplaySource;
+import net.succ.offbyonelib.display.NumericLineDisplaySource;
 import net.succ.solar_punk.block.entity.custom.ParticleAcceleratorInputBlockEntity;
 import com.simibubi.create.api.behaviour.display.DisplaySource;
 import com.simibubi.create.api.registry.CreateRegistries;
@@ -25,7 +25,7 @@ import net.succ.solar_punk.block.entity.custom.GreenhouseControllerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.ElectricMotorBlockEntity;
-import studio.offbyone.lib.util.EnergyFormat;
+import net.succ.offbyonelib.util.EnergyFormat;
 import net.succ.solar_punk.block.entity.custom.SolarPowerTowerBlockEntity;
 import org.jetbrains.annotations.Nullable;
 

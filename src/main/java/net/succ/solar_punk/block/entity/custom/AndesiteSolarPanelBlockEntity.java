@@ -1,7 +1,7 @@
 package net.succ.solar_punk.block.entity.custom;
 
 import net.succ.solar_punk.SolarPunk;
-import studio.offbyone.lib.util.GeneratorHelper;
+import net.succ.offbyonelib.util.GeneratorHelper;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity.RotationDirection;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;

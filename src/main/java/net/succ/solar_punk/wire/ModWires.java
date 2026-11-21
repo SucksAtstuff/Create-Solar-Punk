@@ -7,9 +7,9 @@ import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.item.ModDataComponents;
 import net.succ.solar_punk.item.ModItems;
-import studio.offbyone.lib.wire.WireSystem;
-import studio.offbyone.lib.wire.WireTier;
-import studio.offbyone.lib.wire.WireTiers;
+import net.succ.offbyonelib.wire.WireSystem;
+import net.succ.offbyonelib.wire.WireTier;
+import net.succ.offbyonelib.wire.WireTiers;
 
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;

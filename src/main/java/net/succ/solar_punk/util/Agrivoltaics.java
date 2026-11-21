@@ -1,6 +1,6 @@
 package net.succ.solar_punk.util;
 
-import studio.offbyone.lib.util.PlantGrowth;
+import net.succ.offbyonelib.util.PlantGrowth;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;

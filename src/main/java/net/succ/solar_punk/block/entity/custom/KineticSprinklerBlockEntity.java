@@ -30,7 +30,7 @@ import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
-import studio.offbyone.lib.util.FluidTankNBTHelper;
+import net.succ.offbyonelib.util.FluidTankNBTHelper;
 
 public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, GeoBlockEntity {
 

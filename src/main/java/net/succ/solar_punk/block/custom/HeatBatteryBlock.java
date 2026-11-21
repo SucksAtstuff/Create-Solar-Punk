@@ -1,6 +1,6 @@
 package net.succ.solar_punk.block.custom;
 
-import studio.offbyone.lib.util.MachineInteractions;
+import net.succ.offbyonelib.util.MachineInteractions;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;

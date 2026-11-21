@@ -1,6 +1,6 @@
 package net.succ.solar_punk.datagen;
 
-import studio.offbyone.lib.datagen.AddonBlockStateProvider;
+import net.succ.offbyonelib.datagen.AddonBlockStateProvider;
 import net.succ.solar_punk.block.custom.HempCropBlock;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,9 +36,9 @@ import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.StreetlampBlock;
-import studio.offbyone.lib.wire.WireConnectorBlock;
-import studio.offbyone.lib.wire.RedstoneWireRelayBlock;
-import studio.offbyone.lib.wire.WireSwitchBlock;
+import net.succ.offbyonelib.wire.WireConnectorBlock;
+import net.succ.offbyonelib.wire.RedstoneWireRelayBlock;
+import net.succ.offbyonelib.wire.WireSwitchBlock;
 import net.succ.solar_punk.block.custom.EndPlateBlock;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.succ.solar_punk.block.custom.GrowLampBlock;

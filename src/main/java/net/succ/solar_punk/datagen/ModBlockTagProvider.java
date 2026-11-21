@@ -1,7 +1,7 @@
 package net.succ.solar_punk.datagen;
 
-import studio.offbyone.lib.datagen.BlockFamilies;
-import studio.offbyone.lib.datagen.AddonBlockTagsProvider;
+import net.succ.offbyonelib.datagen.BlockFamilies;
+import net.succ.offbyonelib.datagen.AddonBlockTagsProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.BlockFamily;
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static studio.offbyone.lib.datagen.DatagenUtil.blockTag;
+import static net.succ.offbyonelib.datagen.DatagenUtil.blockTag;
 
 public class ModBlockTagProvider extends AddonBlockTagsProvider {
 

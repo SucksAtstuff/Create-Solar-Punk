@@ -16,12 +16,12 @@ import net.minecraft.world.level.block.LeverBlock;
 import net.minecraft.world.phys.Vec3;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
 import net.succ.solar_punk.block.custom.ElectricMotorBlock;
-import studio.offbyone.lib.wire.RedstoneWireRelayBlock;
-import studio.offbyone.lib.wire.WireConnectorBlock;
-import studio.offbyone.lib.wire.WireSwitchBlock;
-import studio.offbyone.lib.wire.WireNodeBlockEntity;
+import net.succ.offbyonelib.wire.RedstoneWireRelayBlock;
+import net.succ.offbyonelib.wire.WireConnectorBlock;
+import net.succ.offbyonelib.wire.WireSwitchBlock;
+import net.succ.offbyonelib.wire.WireNodeBlockEntity;
 import net.succ.solar_punk.item.ModItems;
-import studio.offbyone.lib.wire.WireTier;
+import net.succ.offbyonelib.wire.WireTier;
 
 // Schematics (ModPonderProvider): "wire_connector/usage" is a 2x3 Brass Solar Panel field at the
 // back (x 5-6) with a connector on its west side (4,1,2) and two Electric Motors at the front (x=1, z=1 and 3), each

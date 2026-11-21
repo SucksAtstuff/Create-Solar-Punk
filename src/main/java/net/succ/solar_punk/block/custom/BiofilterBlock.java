@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.BiofilterBlockEntity;
-import studio.offbyone.lib.util.MachineInteractions;
+import net.succ.offbyonelib.util.MachineInteractions;
 
 public class BiofilterBlock extends KineticBlock implements IBE<BiofilterBlockEntity> {
 

@@ -1,6 +1,6 @@
 package net.succ.solar_punk.datagen;
 
-import studio.offbyone.lib.datagen.AddonBlockLootProvider;
+import net.succ.offbyonelib.datagen.AddonBlockLootProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;

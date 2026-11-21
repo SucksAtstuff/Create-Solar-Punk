@@ -1,6 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import studio.offbyone.lib.client.sound.MachineSoundInstance;
+import net.succ.offbyonelib.client.sound.MachineSoundInstance;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
@@ -41,7 +41,7 @@ import net.succ.solar_punk.client.sound.AcceleratorHumSoundInstance;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
 import net.succ.solar_punk.recipe.ParticleAcceleratorRecipe;
 import net.succ.solar_punk.sound.ModSounds;
-import studio.offbyone.lib.util.PonderHelper;
+import net.succ.offbyonelib.util.PonderHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package net.succ.solar_punk.item;
 
 import net.succ.solar_punk.wire.ModWires;
-import studio.offbyone.lib.wire.SpoolItem;
+import net.succ.offbyonelib.wire.SpoolItem;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.Item;

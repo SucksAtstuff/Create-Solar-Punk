@@ -4,7 +4,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.succ.solar_punk.block.custom.PipeShape;
-import studio.offbyone.lib.shape.ShapedBlockItem;
+import net.succ.offbyonelib.shape.ShapedBlockItem;
 
 // The one item for every Particle Accelerator Pipe shape. It places whichever shape is
 // stored on the stack (picked in the radial shape menu), and is named after that shape.

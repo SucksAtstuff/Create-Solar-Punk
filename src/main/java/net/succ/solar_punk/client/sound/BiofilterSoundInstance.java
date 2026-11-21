@@ -1,6 +1,6 @@
 package net.succ.solar_punk.client.sound;
 
-import studio.offbyone.lib.client.sound.MachineSoundInstance;
+import net.succ.offbyonelib.client.sound.MachineSoundInstance;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;

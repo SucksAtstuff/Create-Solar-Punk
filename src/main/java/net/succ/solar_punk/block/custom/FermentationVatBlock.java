@@ -1,6 +1,6 @@
 package net.succ.solar_punk.block.custom;
 
-import studio.offbyone.lib.multiblock.MultiBlockLayerItem;
+import net.succ.offbyonelib.multiblock.MultiBlockLayerItem;
 import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;

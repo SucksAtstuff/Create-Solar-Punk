@@ -1,7 +1,7 @@
 package net.succ.solar_punk.block.entity.custom;
 
 import net.succ.solar_punk.SolarPunk;
-import studio.offbyone.lib.client.sound.MachineSoundInstance;
+import net.succ.offbyonelib.client.sound.MachineSoundInstance;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.platform.CatnipServices;
@@ -24,7 +24,7 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
 import net.succ.solar_punk.client.sound.BrassPanelSoundInstance;
 import net.succ.solar_punk.util.Agrivoltaics;
-import studio.offbyone.lib.util.EnergyFormat;
+import net.succ.offbyonelib.util.EnergyFormat;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

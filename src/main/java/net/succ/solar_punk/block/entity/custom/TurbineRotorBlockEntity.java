@@ -1,7 +1,7 @@
 package net.succ.solar_punk.block.entity.custom;
 
 import net.succ.solar_punk.SolarPunk;
-import studio.offbyone.lib.client.sound.MachineSoundInstance;
+import net.succ.offbyonelib.client.sound.MachineSoundInstance;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -31,7 +31,7 @@ import net.succ.solar_punk.client.sound.TurbineSoundInstance;
 import net.succ.solar_punk.compat.crowns.CrownsCompat;
 import net.succ.solar_punk.compat.northstar.NorthstarCompat;
 import net.succ.solar_punk.fluid.ModFluids;
-import studio.offbyone.lib.util.FluidTankNBTHelper;
+import net.succ.offbyonelib.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

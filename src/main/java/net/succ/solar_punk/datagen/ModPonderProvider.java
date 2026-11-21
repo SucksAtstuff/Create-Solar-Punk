@@ -1,7 +1,7 @@
 package net.succ.solar_punk.datagen;
 
-import studio.offbyone.lib.datagen.SceneStructure;
-import studio.offbyone.lib.datagen.PonderSchematicProvider;
+import net.succ.offbyonelib.datagen.SceneStructure;
+import net.succ.offbyonelib.datagen.PonderSchematicProvider;
 import net.succ.solar_punk.compat.ponder.FermentationVatScenes;
 import net.succ.solar_punk.compat.ponder.BioreactorScenes;
 import net.succ.solar_punk.compat.ponder.ParticleAcceleratorScenes;

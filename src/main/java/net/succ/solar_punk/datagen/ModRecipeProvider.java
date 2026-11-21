@@ -1,6 +1,6 @@
 package net.succ.solar_punk.datagen;
 
-import studio.offbyone.lib.datagen.AddonRecipeProvider;
+import net.succ.offbyonelib.datagen.AddonRecipeProvider;
 import java.util.List;
 import net.succ.solar_punk.recipe.ParticleAcceleratorRecipe;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
@@ -36,7 +36,7 @@ import net.succ.solar_punk.recipe.SolarHeaterRecipe;
 import java.util.concurrent.CompletableFuture;
 
 import static net.succ.solar_punk.datagen.DatagenUtil.anySalt;
-import static studio.offbyone.lib.datagen.DatagenUtil.createItem;
+import static net.succ.offbyonelib.datagen.DatagenUtil.createItem;
 
 public class ModRecipeProvider extends AddonRecipeProvider {
     public ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {

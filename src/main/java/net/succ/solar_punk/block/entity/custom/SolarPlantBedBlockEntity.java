@@ -17,8 +17,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.SolarPlantBedBlock;
-import studio.offbyone.lib.util.EnergyFormat;
-import studio.offbyone.lib.util.PlantGrowth;
+import net.succ.offbyonelib.util.EnergyFormat;
+import net.succ.offbyonelib.util.PlantGrowth;
 
 import java.util.List;
 

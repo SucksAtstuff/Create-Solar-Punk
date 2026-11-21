@@ -10,7 +10,7 @@ import net.succ.solar_punk.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
 
-import static studio.offbyone.lib.datagen.DatagenUtil.itemTag;
+import static net.succ.offbyonelib.datagen.DatagenUtil.itemTag;
 
 public class ModMillingRecipeGen extends MillingRecipeGen {
 

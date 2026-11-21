@@ -1,7 +1,7 @@
 package net.succ.solar_punk.block.entity.custom;
 
 import net.succ.solar_punk.SolarPunk;
-import studio.offbyone.lib.util.PonderHelper;
+import net.succ.offbyonelib.util.PonderHelper;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.ChatFormatting;
@@ -29,7 +29,7 @@ import net.succ.solar_punk.sound.ModSounds;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import studio.offbyone.lib.util.FluidTankNBTHelper;
+import net.succ.offbyonelib.util.FluidTankNBTHelper;
 
 /**
  * Generic two-fluids-in, item-plus-optional-fluid-out machine. Everything about what it

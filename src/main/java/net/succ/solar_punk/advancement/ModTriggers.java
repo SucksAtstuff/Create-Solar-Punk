@@ -1,6 +1,6 @@
 package net.succ.solar_punk.advancement;
 
-import studio.offbyone.lib.advancement.SimpleTrigger;
+import net.succ.offbyonelib.advancement.SimpleTrigger;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;

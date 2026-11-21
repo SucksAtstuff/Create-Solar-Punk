@@ -1,6 +1,6 @@
 package net.succ.solar_punk.datagen;
 
-import studio.offbyone.lib.datagen.PonderLang;
+import net.succ.offbyonelib.datagen.PonderLang;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.BlockItem;
 import net.neoforged.neoforge.common.data.LanguageProvider;

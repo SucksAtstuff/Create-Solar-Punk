@@ -9,7 +9,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
-import studio.offbyone.lib.registry.CreativeTabContents;
+import net.succ.offbyonelib.registry.CreativeTabContents;
 
 
 public class ModCreativeModeTabs {

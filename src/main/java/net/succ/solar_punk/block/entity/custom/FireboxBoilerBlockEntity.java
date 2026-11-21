@@ -3,7 +3,7 @@ package net.succ.solar_punk.block.entity.custom;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.succ.solar_punk.SolarPunk;
-import studio.offbyone.lib.util.AutomationItemHandler;
+import net.succ.offbyonelib.util.AutomationItemHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.ChatFormatting;
@@ -27,7 +27,7 @@ import net.succ.solar_punk.block.custom.FireboxBoilerBlock;
 import net.succ.solar_punk.fluid.ModFluids;
 
 import java.util.List;
-import studio.offbyone.lib.util.FluidTankNBTHelper;
+import net.succ.offbyonelib.util.FluidTankNBTHelper;
 
 public class FireboxBoilerBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 

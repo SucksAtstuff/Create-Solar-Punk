@@ -1,7 +1,7 @@
 package net.succ.solar_punk.block.entity.custom;
 
 import net.succ.solar_punk.SolarPunk;
-import studio.offbyone.lib.solar.SharedSolarBlockEntity;
+import net.succ.offbyonelib.solar.SharedSolarBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;

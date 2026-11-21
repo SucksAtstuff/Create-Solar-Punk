@@ -29,7 +29,7 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.TrellisBlock;
-import studio.offbyone.lib.compat.sable.SableCompat;
+import net.succ.offbyonelib.compat.sable.SableCompat;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

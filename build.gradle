@@ -114,9 +114,9 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
     // Off by One Lib, bundled into the jar. The game loads the newest bundled copy when several
     // addons include it, so the range must cover every version this build works with.
-    jarJar(implementation("studio.offbyone:offbyonelib")) {
+    jarJar(implementation("net.succ:offbyonelib")) {
         version {
-            strictly "[${offbyonelib_version},1.0)"
+            strictly "[${offbyonelib_version},2.0)"
             prefer offbyonelib_version
         }
     }

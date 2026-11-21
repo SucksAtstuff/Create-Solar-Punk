@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.StreetlampBlock;
-import studio.offbyone.lib.util.EnergyFormat;
+import net.succ.offbyonelib.util.EnergyFormat;
 
 import java.util.List;
 

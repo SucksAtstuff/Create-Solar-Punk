@@ -23,7 +23,7 @@ import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.fluid.ModFluids;
 
 import java.util.List;
-import studio.offbyone.lib.util.FluidTankNBTHelper;
+import net.succ.offbyonelib.util.FluidTankNBTHelper;
 
 public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 

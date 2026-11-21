@@ -1,8 +1,8 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import studio.offbyone.lib.client.sound.MachineSoundInstance;
+import net.succ.offbyonelib.client.sound.MachineSoundInstance;
 import net.succ.solar_punk.SolarPunk;
-import studio.offbyone.lib.util.GeneratorHelper;
+import net.succ.offbyonelib.util.GeneratorHelper;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity.RotationDirection;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
@@ -28,7 +28,7 @@ import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.BiofuelEngineBlock;
 import net.succ.solar_punk.client.sound.BiofuelEngineSoundInstance;
 import net.succ.solar_punk.fluid.ModFluids;
-import studio.offbyone.lib.util.FluidTankNBTHelper;
+import net.succ.offbyonelib.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

@@ -29,7 +29,7 @@ import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.damage.ModDamageTypes;
 import net.succ.solar_punk.particle.SeasonalSteam;
 import net.succ.solar_punk.sound.ModSounds;
-import studio.offbyone.lib.util.PonderHelper;
+import net.succ.offbyonelib.util.PonderHelper;
 
 import java.util.List;
 

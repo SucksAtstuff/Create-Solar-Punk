@@ -27,10 +27,10 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.ElectrolyzerBlock;
 import net.succ.solar_punk.compat.northstar.NorthstarCompat;
 import net.succ.solar_punk.fluid.ModFluids;
-import studio.offbyone.lib.util.EnergyFormat;
-import studio.offbyone.lib.util.FluidTankNBTHelper;
+import net.succ.offbyonelib.util.EnergyFormat;
+import net.succ.offbyonelib.util.FluidTankNBTHelper;
 import net.succ.solar_punk.SolarPunk;
-import studio.offbyone.lib.util.PonderHelper;
+import net.succ.offbyonelib.util.PonderHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

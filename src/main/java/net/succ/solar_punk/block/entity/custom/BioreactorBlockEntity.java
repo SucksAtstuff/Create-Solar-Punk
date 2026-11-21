@@ -1,6 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import studio.offbyone.lib.multiblock.MultiBlockFluidBE;
+import net.succ.offbyonelib.multiblock.MultiBlockFluidBE;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -9,9 +9,9 @@ import net.minecraft.ChatFormatting;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.succ.solar_punk.client.sound.BioreactorSoundInstance;
-import studio.offbyone.lib.client.sound.MachineSoundInstance;
+import net.succ.offbyonelib.client.sound.MachineSoundInstance;
 import net.succ.solar_punk.sound.ModSounds;
-import studio.offbyone.lib.util.PonderHelper;
+import net.succ.offbyonelib.util.PonderHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -47,10 +47,10 @@ import net.succ.solar_punk.block.custom.FermentationVatBlock.VatPosition;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.pollution.PollutionSavedData;
-import studio.offbyone.lib.util.AutomationItemHandler;
-import studio.offbyone.lib.util.FluidTankNBTHelper;
+import net.succ.offbyonelib.util.AutomationItemHandler;
+import net.succ.offbyonelib.util.FluidTankNBTHelper;
 import net.succ.solar_punk.SolarPunk;
-import studio.offbyone.lib.util.MachineInteractions;
+import net.succ.offbyonelib.util.MachineInteractions;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

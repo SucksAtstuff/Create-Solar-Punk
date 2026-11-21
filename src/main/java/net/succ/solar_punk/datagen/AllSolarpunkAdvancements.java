@@ -11,8 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.advancement.ModTriggers;
-import studio.offbyone.lib.advancement.AddonAdvancement;
-import studio.offbyone.lib.advancement.AddonAdvancement.TaskType;
+import net.succ.offbyonelib.advancement.AddonAdvancement;
+import net.succ.offbyonelib.advancement.AddonAdvancement.TaskType;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.item.ModItems;
 
