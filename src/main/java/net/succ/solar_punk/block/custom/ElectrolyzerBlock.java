@@ -28,7 +28,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.ElectrolyzerBlockEntity;
-import net.succ.solar_punk.util.MachineInteractions;
+import studio.offbyone.lib.util.MachineInteractions;
 
 import java.util.EnumMap;
 import java.util.Map;

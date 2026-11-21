@@ -1,7 +1,8 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import net.succ.solar_punk.util.GoggleHelper;
-import net.succ.solar_punk.client.sound.MachineSoundInstance;
+import studio.offbyone.lib.multiblock.MultiBlockFluidBE;
+import net.succ.solar_punk.SolarPunk;
+import studio.offbyone.lib.client.sound.MachineSoundInstance;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -34,7 +35,7 @@ import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock.VatPosition;
 import net.succ.solar_punk.client.sound.FermentationVatSoundInstance;
 import net.succ.solar_punk.fluid.ModFluids;
-import net.succ.solar_punk.util.FluidTankNBTHelper;
+import studio.offbyone.lib.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -326,9 +327,9 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
                     .forGoggles(tooltip, 1);
         }
 
-        GoggleHelper.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
+        SolarPunk.GOGGLES.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
         boolean fertilizer = outputTank.getFluid().getFluid().isSame(ModFluids.RICH_FERTILIZER_SOURCE.get());
-        GoggleHelper.tank(tooltip, fertilizer ? "rich_fertilizer" : "biofuel", outputTank, ChatFormatting.GREEN);
+        SolarPunk.GOGGLES.tank(tooltip, fertilizer ? "rich_fertilizer" : "biofuel", outputTank, ChatFormatting.GREEN);
 
         return true;
     }

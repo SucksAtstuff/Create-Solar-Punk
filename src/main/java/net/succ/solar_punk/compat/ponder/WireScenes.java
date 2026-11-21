@@ -1,5 +1,6 @@
 package net.succ.solar_punk.compat.ponder;
 
+import net.succ.solar_punk.wire.ModWires;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import net.createmod.catnip.math.Pointing;
@@ -15,12 +16,12 @@ import net.minecraft.world.level.block.LeverBlock;
 import net.minecraft.world.phys.Vec3;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
 import net.succ.solar_punk.block.custom.ElectricMotorBlock;
-import net.succ.solar_punk.block.custom.RedstoneWireRelayBlock;
-import net.succ.solar_punk.block.custom.WireConnectorBlock;
-import net.succ.solar_punk.block.custom.WireSwitchBlock;
-import net.succ.solar_punk.block.entity.custom.WireNodeBlockEntity;
+import studio.offbyone.lib.wire.RedstoneWireRelayBlock;
+import studio.offbyone.lib.wire.WireConnectorBlock;
+import studio.offbyone.lib.wire.WireSwitchBlock;
+import studio.offbyone.lib.wire.WireNodeBlockEntity;
 import net.succ.solar_punk.item.ModItems;
-import net.succ.solar_punk.wire.WireTier;
+import studio.offbyone.lib.wire.WireTier;
 
 // Schematics (ModPonderProvider): "wire_connector/usage" is a 2x3 Brass Solar Panel field at the
 // back (x 5-6) with a connector on its west side (4,1,2) and two Electric Motors at the front (x=1, z=1 and 3), each
@@ -99,7 +100,7 @@ public class WireScenes {
         scene.overlay().showControls(tip(util, plugA), Pointing.DOWN, 30).rightClick()
                 .withItem(new ItemStack(ModItems.COPPER_SPOOL.get()));
         scene.idle(10);
-        wire(scene, source, 0, plugA, 0, WireTier.COPPER);
+        wire(scene, source, 0, plugA, 0, ModWires.COPPER);
         scene.overlay().showText(70)
                 .text("Right-click two connectors with a Spool to string a wire between them")
                 .pointAt(tip(util, plugA))
@@ -119,7 +120,7 @@ public class WireScenes {
         scene.overlay().showControls(tip(util, plugB), Pointing.DOWN, 30).rightClick()
                 .withItem(new ItemStack(ModItems.COPPER_SPOOL.get()));
         scene.idle(10);
-        wire(scene, source, 0, plugB, 0, WireTier.COPPER);
+        wire(scene, source, 0, plugB, 0, ModWires.COPPER);
         scene.idle(10);
         setMotor(scene, util, motorB, 32);
         scene.effects().indicateSuccess(motorB);
@@ -182,9 +183,9 @@ public class WireScenes {
         scene.idle(15);
 
         // Facing east, terminal 0 is the post on the panel side and terminal 1 the one on the motor side
-        wire(scene, source, 0, sw, 0, WireTier.COPPER);
+        wire(scene, source, 0, sw, 0, ModWires.COPPER);
         scene.idle(5);
-        wire(scene, sw, 1, motor.above(), 0, WireTier.COPPER);
+        wire(scene, sw, 1, motor.above(), 0, ModWires.COPPER);
         scene.idle(10);
 
         scene.overlay().showText(80)
@@ -254,9 +255,9 @@ public class WireScenes {
         scene.idle(10);
         scene.world().showSection(util.select().position(relay), Direction.DOWN);
         scene.idle(10);
-        wire(scene, source, 0, relay, 0, WireTier.COPPER);
+        wire(scene, source, 0, relay, 0, ModWires.COPPER);
         scene.idle(5);
-        wire(scene, relay, 1, motor.above(), 0, WireTier.COPPER);
+        wire(scene, relay, 1, motor.above(), 0, ModWires.COPPER);
         scene.idle(15);
 
         scene.overlay().showText(70)

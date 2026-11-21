@@ -66,6 +66,7 @@
 - Molten Salt now glows with shader packs that support LabPBR, like lava.
 - The Solar Power Tower makes twice as much Steam for the same Water, so with tanks to store it, one tower runs a full-size Steam Turbine through the night.
 - Steam Turbines reach full speed with fewer blade layers, so mid-size turbines are worth building.
+- Solarpunk now comes with **Off by One Lib**, shared code for Off by One Studio's mods. It's bundled inside Solarpunk, so there's nothing extra to install.
 
 ## Fixes
 

@@ -1,7 +1,7 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import net.succ.solar_punk.util.GoggleHelper;
-import net.succ.solar_punk.client.sound.MachineSoundInstance;
+import net.succ.solar_punk.SolarPunk;
+import studio.offbyone.lib.client.sound.MachineSoundInstance;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -31,7 +31,7 @@ import net.succ.solar_punk.client.sound.TurbineSoundInstance;
 import net.succ.solar_punk.compat.crowns.CrownsCompat;
 import net.succ.solar_punk.compat.northstar.NorthstarCompat;
 import net.succ.solar_punk.fluid.ModFluids;
-import net.succ.solar_punk.util.FluidTankNBTHelper;
+import studio.offbyone.lib.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -572,7 +572,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
         // Own "Fuel:" key rather than the shared "Steam:" one, since this tank can also
         // hold Liquid Hydrogen (see isTurbineFuel). The fluid's name is appended only
         // while the tank holds something.
-        LangBuilder steamLine = GoggleHelper.tankLine("turbine_fuel",
+        LangBuilder steamLine = SolarPunk.GOGGLES.tankLine("turbine_fuel",
                 steamTank.getFluidAmount(), steamTank.getCapacity(), ChatFormatting.AQUA);
         if (!steamTank.isEmpty())
             steamLine.add(Component.literal(" (").withStyle(ChatFormatting.DARK_GRAY)
@@ -580,7 +580,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
                     .append(Component.literal(")").withStyle(ChatFormatting.DARK_GRAY)));
         steamLine.forGoggles(tooltip, 1);
 
-        GoggleHelper.tank(tooltip, "water", condensateTank, ChatFormatting.BLUE);
+        SolarPunk.GOGGLES.tank(tooltip, "water", condensateTank, ChatFormatting.BLUE);
 
         if (condensateFull())
             CreateLang.translate("solar_punk.tooltip.condensate_full")

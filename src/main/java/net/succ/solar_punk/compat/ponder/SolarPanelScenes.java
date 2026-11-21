@@ -1,5 +1,6 @@
 package net.succ.solar_punk.compat.ponder;
 
+import net.succ.solar_punk.wire.ModWires;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.kinetics.millstone.MillstoneBlockEntity;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
@@ -18,7 +19,6 @@ import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
 import net.succ.solar_punk.block.custom.ElectricMotorBlock;
 import net.succ.solar_punk.block.custom.ElectrolyzerBlock;
-import net.succ.solar_punk.wire.WireTier;
 
 public class SolarPanelScenes {
 
@@ -191,7 +191,7 @@ public class SolarPanelScenes {
         scene.idle(5);
         scene.world().showSection(util.select().fromTo(electrolyzer, electrolyzerPlug), Direction.DOWN);
         scene.idle(15);
-        WireScenes.wire(scene, plug, 0, electrolyzerPlug, 0, WireTier.COPPER);
+        WireScenes.wire(scene, plug, 0, electrolyzerPlug, 0, ModWires.COPPER);
         scene.idle(10);
         scene.world().modifyBlock(electrolyzer, s -> s.setValue(ElectrolyzerBlock.LIT, true), false);
         scene.overlay().showText(70)

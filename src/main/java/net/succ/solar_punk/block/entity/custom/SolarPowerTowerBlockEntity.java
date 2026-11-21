@@ -1,6 +1,7 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import net.succ.solar_punk.util.GoggleHelper;
+import studio.offbyone.lib.multiblock.MultiBlockFluidBE;
+import net.succ.solar_punk.SolarPunk;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -31,8 +32,7 @@ import net.succ.solar_punk.fluid.ModFluids;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import net.succ.solar_punk.util.FluidTankNBTHelper;
-import net.succ.solar_punk.util.SolarHelper;
+import studio.offbyone.lib.util.FluidTankNBTHelper;
 
 public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowerBlockEntity>
         implements IHaveGoggleInformation {
@@ -230,7 +230,7 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         float heightFraction = (float) height / maxHeight(width);
         float baseRate = (width * width) * (float) Math.pow(heightFraction, 1.5) * mirrorEfficiency();
         float rate = baseRate * (float) (steamMode ? Config.solarPowerTowerSteamMultiplier : Config.solarPowerTowerSaltMultiplier);
-        rate *= SolarHelper.outputMultiplier(level, worldPosition);
+        rate *= SolarPunk.SOLAR.outputMultiplier(level, worldPosition);
         if (steamMode) {
             saltAccumulator = 0f;
             steamAccumulator = produce(steamTank, ModFluids.STEAM_SOURCE.get(), rate, steamAccumulator, waterPerMb(width, true));
@@ -280,8 +280,8 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
 
     private boolean isSunActive() {
         if (level == null) return false;
-        if (!SolarHelper.isDaytime(level, worldPosition) || SolarHelper.isThundering(level) || SolarHelper.isRaining(level)) return false;
-        return SolarHelper.canSeeSky(level, worldPosition.above(height));
+        if (!SolarPunk.SOLAR.isDaytime(level, worldPosition) || SolarPunk.SOLAR.isThundering(level) || SolarPunk.SOLAR.isRaining(level)) return false;
+        return SolarPunk.SOLAR.canSeeSky(level, worldPosition.above(height));
     }
 
     // -------------------------------------------------------------------------
@@ -356,7 +356,7 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
     private boolean hasSkyAndLineOfSight(BlockPos mirrorPos) {
         // canSeeSky checks the sky light AT the given position, and both of the mirror's
         // cells absorb skylight, so open air starts two cells above its base.
-        if (!SolarHelper.canSeeSky(level, mirrorPos.above().above())) return false;
+        if (!SolarPunk.SOLAR.canSeeSky(level, mirrorPos.above().above())) return false;
 
         BlockPos receiverPos = worldPosition.above(Math.max(height - 1, 0));
         BlockPos mirrorTopPos = mirrorPos.above();
@@ -521,11 +521,11 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
 
         CreateLang.translate("solar_punk.tooltip.solar_power_tower_header").forGoggles(tooltip);
 
-        GoggleHelper.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
+        SolarPunk.GOGGLES.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
         if (ctrl.steamMode)
-            GoggleHelper.tank(tooltip, "steam", steamTank, ChatFormatting.WHITE);
+            SolarPunk.GOGGLES.tank(tooltip, "steam", steamTank, ChatFormatting.WHITE);
         else
-            GoggleHelper.tank(tooltip, "molten_salt", saltTank, ChatFormatting.GOLD);
+            SolarPunk.GOGGLES.tank(tooltip, "molten_salt", saltTank, ChatFormatting.GOLD);
 
         CreateLang.translate("solar_punk.tooltip.tower_mode")
                 .style(ChatFormatting.GRAY)

@@ -1,8 +1,8 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import net.succ.solar_punk.client.sound.MachineSoundInstance;
-import net.succ.solar_punk.util.GoggleHelper;
-import net.succ.solar_punk.util.GeneratorHelper;
+import studio.offbyone.lib.client.sound.MachineSoundInstance;
+import net.succ.solar_punk.SolarPunk;
+import studio.offbyone.lib.util.GeneratorHelper;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity.RotationDirection;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
@@ -28,7 +28,7 @@ import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.BiofuelEngineBlock;
 import net.succ.solar_punk.client.sound.BiofuelEngineSoundInstance;
 import net.succ.solar_punk.fluid.ModFluids;
-import net.succ.solar_punk.util.FluidTankNBTHelper;
+import studio.offbyone.lib.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -135,7 +135,7 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         CreateLang.translate("solar_punk.tooltip.biofuel_engine_header").forGoggles(tooltip);
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
-        GoggleHelper.tank(tooltip, "biofuel", biofuelTank, ChatFormatting.GREEN);
+        SolarPunk.GOGGLES.tank(tooltip, "biofuel", biofuelTank, ChatFormatting.GREEN);
         CreateLang.translate("solar_punk.tooltip.consumption")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(Config.biofuelConsumeMb).text(" mB / " + Config.biofuelConsumePeriod + "t").style(ChatFormatting.YELLOW).component())

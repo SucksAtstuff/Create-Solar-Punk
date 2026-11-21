@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.succ.solar_punk.block.entity.custom.BioreactorBlockEntity;
-import net.succ.solar_punk.util.MachineInteractions;
+import studio.offbyone.lib.util.MachineInteractions;
 
 /**
  * The aerator layer under a Bioreactor. It has no block entity: everything goes to the

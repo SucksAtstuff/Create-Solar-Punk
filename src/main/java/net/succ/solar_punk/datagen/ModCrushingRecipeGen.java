@@ -15,7 +15,7 @@ import net.succ.solar_punk.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
 
-import static net.succ.solar_punk.datagen.DatagenUtil.itemTag;
+import static studio.offbyone.lib.datagen.DatagenUtil.itemTag;
 
 public class ModCrushingRecipeGen extends CrushingRecipeGen {
 

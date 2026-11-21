@@ -1,5 +1,6 @@
 package net.succ.solar_punk.client.renderer;
 
+import studio.offbyone.lib.client.renderer.HalfShaftRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;

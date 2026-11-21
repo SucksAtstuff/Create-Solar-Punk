@@ -195,7 +195,7 @@ public class FiligreeRailingBlock extends IronBarsBlock implements IWrenchable {
     private static class RunHelper implements IPlacementHelper {
         @Override
         public Predicate<ItemStack> getItemPredicate() {
-            return stack -> stack.getItem() instanceof FiligreeRailingItem && FiligreeRailingItem.getShape(stack) == RailingShape.FLAT;
+            return stack -> stack.getItem() instanceof FiligreeRailingItem railing && railing.getShape(stack) == RailingShape.FLAT;
         }
 
         @Override

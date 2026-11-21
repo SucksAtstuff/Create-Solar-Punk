@@ -1,5 +1,6 @@
 package net.succ.solar_punk.fluid;
 
+import studio.offbyone.lib.fluid.BaseFluidType;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.FluidType;

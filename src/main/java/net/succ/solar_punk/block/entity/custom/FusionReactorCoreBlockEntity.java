@@ -1,7 +1,7 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import net.succ.solar_punk.util.AutomationItemHandler;
-import net.succ.solar_punk.util.PonderHelper;
+import studio.offbyone.lib.util.AutomationItemHandler;
+import studio.offbyone.lib.util.PonderHelper;
 import net.neoforged.neoforge.items.IItemHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -31,7 +31,7 @@ import net.succ.solar_punk.client.sound.FusionReactorSoundInstance;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.sound.ModSounds;
-import net.succ.solar_punk.util.FluidTankNBTHelper;
+import studio.offbyone.lib.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

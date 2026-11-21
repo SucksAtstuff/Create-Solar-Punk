@@ -1,9 +1,9 @@
 package net.succ.solar_punk.block.entity.custom;
 
 import net.neoforged.neoforge.items.IItemHandler;
-import net.succ.solar_punk.client.sound.MachineSoundInstance;
-import net.succ.solar_punk.util.GoggleHelper;
-import net.succ.solar_punk.util.AutomationItemHandler;
+import studio.offbyone.lib.client.sound.MachineSoundInstance;
+import net.succ.solar_punk.SolarPunk;
+import studio.offbyone.lib.util.AutomationItemHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.platform.CatnipServices;
@@ -32,8 +32,7 @@ import net.succ.solar_punk.client.sound.SolarHeaterSoundInstance;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
 import net.succ.solar_punk.recipe.SolarHeaterRecipe;
-import net.succ.solar_punk.util.FluidTankNBTHelper;
-import net.succ.solar_punk.util.SolarHelper;
+import studio.offbyone.lib.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -161,7 +160,7 @@ public class SolarHeaterBlockEntity extends BlockEntity implements IHaveGoggleIn
             return;
         }
 
-        boolean rainPenalty = SolarHelper.isRaining(level) && level.getGameTime() % 2 != 0;
+        boolean rainPenalty = SolarPunk.SOLAR.isRaining(level) && level.getGameTime() % 2 != 0;
         boolean shouldBeLit = false;
 
         // --- Item melting ---
@@ -226,8 +225,8 @@ public class SolarHeaterBlockEntity extends BlockEntity implements IHaveGoggleIn
 
     private boolean isSunShining() {
         if (level == null) return false;
-        return SolarHelper.isDaytime(level, worldPosition) && !SolarHelper.isThundering(level)
-                && SolarHelper.hasSkyAccess(level, worldPosition);
+        return SolarPunk.SOLAR.isDaytime(level, worldPosition) && !SolarPunk.SOLAR.isThundering(level)
+                && SolarPunk.SOLAR.hasSkyAccess(level, worldPosition);
     }
 
     private void setLit(boolean lit) {
@@ -281,7 +280,7 @@ public class SolarHeaterBlockEntity extends BlockEntity implements IHaveGoggleIn
                     .forGoggles(tooltip, 1);
         }
 
-        GoggleHelper.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
+        SolarPunk.GOGGLES.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
         if (evaporationProgress > 0) {
             CreateLang.translate("solar_punk.tooltip.evaporation")
                     .style(ChatFormatting.GRAY)
@@ -292,7 +291,7 @@ public class SolarHeaterBlockEntity extends BlockEntity implements IHaveGoggleIn
                     .forGoggles(tooltip, 2);
         }
 
-        GoggleHelper.namedTank(tooltip, "output_fluid", fluidTank, ChatFormatting.YELLOW);
+        SolarPunk.GOGGLES.namedTank(tooltip, "output_fluid", fluidTank, ChatFormatting.YELLOW);
 
         ItemStack saltOutput = itemHandler.getStackInSlot(1);
         if (!saltOutput.isEmpty()) {

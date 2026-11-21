@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import studio.offbyone.lib.multiblock.MultiBlockFluidBE;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -8,9 +9,9 @@ import net.minecraft.ChatFormatting;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.succ.solar_punk.client.sound.BioreactorSoundInstance;
-import net.succ.solar_punk.client.sound.MachineSoundInstance;
+import studio.offbyone.lib.client.sound.MachineSoundInstance;
 import net.succ.solar_punk.sound.ModSounds;
-import net.succ.solar_punk.util.PonderHelper;
+import studio.offbyone.lib.util.PonderHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -46,11 +47,10 @@ import net.succ.solar_punk.block.custom.FermentationVatBlock.VatPosition;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.pollution.PollutionSavedData;
-import net.succ.solar_punk.util.AutomationItemHandler;
-import net.succ.solar_punk.util.FluidTankNBTHelper;
-import net.succ.solar_punk.util.GoggleHelper;
-import net.succ.solar_punk.util.MachineInteractions;
-import net.succ.solar_punk.util.SolarHelper;
+import studio.offbyone.lib.util.AutomationItemHandler;
+import studio.offbyone.lib.util.FluidTankNBTHelper;
+import net.succ.solar_punk.SolarPunk;
+import studio.offbyone.lib.util.MachineInteractions;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -367,8 +367,8 @@ public class BioreactorBlockEntity extends MultiBlockFluidBE<BioreactorBlockEnti
         float sum = 0;
         for (int dx = 0; dx < width; dx++)
             for (int dz = 0; dz < width; dz++)
-                sum += SolarHelper.byPhase(level, top.offset(dx, 0, dz), 0.5f, 1f);
-        return sum / (width * width) * SolarHelper.outputMultiplier(level, top);
+                sum += SolarPunk.SOLAR.byPhase(level, top.offset(dx, 0, dz), 0.5f, 1f);
+        return sum / (width * width) * SolarPunk.SOLAR.outputMultiplier(level, top);
     }
 
     // A Kelp or Seagrass turns some Water into culture, once there's Water and no culture yet.
@@ -566,10 +566,10 @@ public class BioreactorBlockEntity extends MultiBlockFluidBE<BioreactorBlockEnti
                     .forGoggles(tooltip, 1);
 
         int tankCapacity = waterTank.getCapacity();
-        GoggleHelper.tank(tooltip, "water", waterTank.getFluidAmount(), tankCapacity, ChatFormatting.AQUA);
-        GoggleHelper.tank(tooltip, "algae_culture", cultureTank.getFluidAmount(), tankCapacity, ChatFormatting.DARK_GREEN);
-        GoggleHelper.tank(tooltip, "oxygen", oxygenTank, ChatFormatting.WHITE);
-        GoggleHelper.namedTank(tooltip, "nutrients", nutrientTank, ChatFormatting.GREEN);
+        SolarPunk.GOGGLES.tank(tooltip, "water", waterTank.getFluidAmount(), tankCapacity, ChatFormatting.AQUA);
+        SolarPunk.GOGGLES.tank(tooltip, "algae_culture", cultureTank.getFluidAmount(), tankCapacity, ChatFormatting.DARK_GREEN);
+        SolarPunk.GOGGLES.tank(tooltip, "oxygen", oxygenTank, ChatFormatting.WHITE);
+        SolarPunk.GOGGLES.namedTank(tooltip, "nutrients", nutrientTank, ChatFormatting.GREEN);
         ItemStack biomass = inventory.getStackInSlot(OUTPUT_SLOT);
         if (!biomass.isEmpty())
             CreateLang.translate("solar_punk.tooltip.biomass_stored")

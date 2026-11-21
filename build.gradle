@@ -112,6 +112,15 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 
 dependencies {
+    // Off by One Lib, bundled into the jar. The game loads the newest bundled copy when several
+    // addons include it, so the range must cover every version this build works with.
+    jarJar(implementation("studio.offbyone:offbyonelib")) {
+        version {
+            strictly "[${offbyonelib_version},1.0)"
+            prefer offbyonelib_version
+        }
+    }
+
     implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false }
     implementation("net.createmod.ponder:ponder-neoforge:${ponder_version}")
     compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${flywheel_version}")

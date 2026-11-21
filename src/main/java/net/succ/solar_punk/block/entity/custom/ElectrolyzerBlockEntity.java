@@ -27,10 +27,10 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.ElectrolyzerBlock;
 import net.succ.solar_punk.compat.northstar.NorthstarCompat;
 import net.succ.solar_punk.fluid.ModFluids;
-import net.succ.solar_punk.util.EnergyFormat;
-import net.succ.solar_punk.util.FluidTankNBTHelper;
-import net.succ.solar_punk.util.GoggleHelper;
-import net.succ.solar_punk.util.PonderHelper;
+import studio.offbyone.lib.util.EnergyFormat;
+import studio.offbyone.lib.util.FluidTankNBTHelper;
+import net.succ.solar_punk.SolarPunk;
+import studio.offbyone.lib.util.PonderHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -251,9 +251,9 @@ public class ElectrolyzerBlockEntity extends BlockEntity implements IHaveGoggleI
                         .withStyle(ChatFormatting.AQUA))
                 .forGoggles(tooltip, 1);
 
-        GoggleHelper.tank(tooltip, "water", waterTank, ChatFormatting.BLUE);
-        GoggleHelper.tank(tooltip, "hydrogen", hydrogenTank, ChatFormatting.LIGHT_PURPLE);
-        GoggleHelper.tank(tooltip, "oxygen", oxygenTank, ChatFormatting.AQUA);
+        SolarPunk.GOGGLES.tank(tooltip, "water", waterTank, ChatFormatting.BLUE);
+        SolarPunk.GOGGLES.tank(tooltip, "hydrogen", hydrogenTank, ChatFormatting.LIGHT_PURPLE);
+        SolarPunk.GOGGLES.tank(tooltip, "oxygen", oxygenTank, ChatFormatting.AQUA);
         return true;
     }
 

@@ -1,11 +1,12 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.SolarPunk;
+import studio.offbyone.lib.solar.SharedSolarBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.ModBlocks;
-import net.succ.solar_punk.util.SolarHelper;
 
 /**
  * Solar Glass and Solar Glass Pane. Needs open sky above like the other panels, so it works as
@@ -15,15 +16,15 @@ import net.succ.solar_punk.util.SolarHelper;
 public class SolarGlassBlockEntity extends SharedSolarBlockEntity {
 
     public SolarGlassBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state, Config.solarGlassBuffer, Config.solarGlassMaxExtract);
+        super(type, pos, state, Config.solarGlassBuffer, Config.solarGlassMaxExtract, SolarPunk.GOGGLES);
     }
 
     @Override
     protected int computeGenerating() {
         boolean pane = getBlockState().is(ModBlocks.SOLAR_GLASS_PANE.get());
         float base = pane
-                ? SolarHelper.byPhase(level, worldPosition, Config.solarGlassPaneMorningFe, Config.solarGlassPaneNoonFe)
-                : SolarHelper.byPhase(level, worldPosition, Config.solarGlassMorningFe, Config.solarGlassNoonFe);
-        return Math.round(base * SolarHelper.outputMultiplier(level, worldPosition));
+                ? SolarPunk.SOLAR.byPhase(level, worldPosition, Config.solarGlassPaneMorningFe, Config.solarGlassPaneNoonFe)
+                : SolarPunk.SOLAR.byPhase(level, worldPosition, Config.solarGlassMorningFe, Config.solarGlassNoonFe);
+        return Math.round(base * SolarPunk.SOLAR.outputMultiplier(level, worldPosition));
     }
 }

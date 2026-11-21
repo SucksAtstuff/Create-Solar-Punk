@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.Tags;
 import net.succ.solar_punk.Config;
-import net.succ.solar_punk.util.PlantGrowth;
+import studio.offbyone.lib.util.PlantGrowth;
 import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.GreenhouseControllerBlock;

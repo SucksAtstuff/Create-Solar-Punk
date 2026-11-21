@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.custom;
 
+import studio.offbyone.lib.multiblock.MultiBlockLayerItem;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.fluids.tank.FluidTankBlock;
@@ -51,7 +52,7 @@ public class SolarPowerTowerBlock extends Block implements EntityBlock, IWrencha
 
     @Override
     public SoundType getSoundType(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
-        if (entity instanceof Player player && player.getPersistentData().contains("SilenceTowerSound"))
+        if (MultiBlockLayerItem.isFillingLayer(entity))
             return FluidTankBlock.SILENCED_METAL;
         return super.getSoundType(state, level, pos, entity);
     }

@@ -14,7 +14,7 @@ import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.compat.northstar.NorthstarCompat;
 import net.succ.solar_punk.fluid.ModFluids;
-import net.succ.solar_punk.util.EnergyFormat;
+import studio.offbyone.lib.util.EnergyFormat;
 
 // The Fuel Cell stack is hardcoded in EndPlateBlockEntity, so this shows one display-only
 // entry: 1000 mB Hydrogen + 500 mB Oxygen -> 1000 mB Water, and the FE it makes.

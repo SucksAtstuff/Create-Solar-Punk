@@ -1,6 +1,6 @@
 package net.succ.solar_punk.datagen;
 
-import net.createmod.ponder.foundation.PonderIndex;
+import studio.offbyone.lib.datagen.PonderLang;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.BlockItem;
 import net.neoforged.neoforge.common.data.LanguageProvider;
@@ -64,8 +64,7 @@ public class ModLangProvider extends LanguageProvider {
         // Ponder tags and scene text come straight from SolarPunkPonderTags and the scene
         // classes. Ponder normally registers its plugins during client setup, which doesn't
         // run during datagen, so register ours here first (same as Create's datagen).
-        PonderIndex.addPlugin(new SolarPunkPonderPlugin());
-        PonderIndex.getLangAccess().provideLang(SolarPunk.MODID, this::add);
+        PonderLang.provide(new SolarPunkPonderPlugin(), SolarPunk.MODID, this::add);
 
         add("create.solar_punk.tooltip.biofilter_header", "Biofilter");
         add("create.solar_punk.tooltip.biofilter_status", "Status: ");

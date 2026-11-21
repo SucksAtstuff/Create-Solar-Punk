@@ -1,5 +1,8 @@
 package net.succ.solar_punk;
 
+import studio.offbyone.lib.solar.SolarSettings;
+import studio.offbyone.lib.solar.SolarHelper;
+import net.succ.solar_punk.wire.ModWires;
 import net.succ.solar_punk.block.custom.AcceleratorRing;
 import net.succ.solar_punk.item.HeadwearDispenseBehavior;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -21,6 +24,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.succ.solar_punk.advancement.ModTriggers;
+import studio.offbyone.lib.util.GoggleLines;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.FuelCellBlock;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
@@ -35,8 +39,6 @@ import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.item.ModCreativeModeTabs;
 import net.succ.solar_punk.item.ModDataComponents;
 import net.succ.solar_punk.item.ModItems;
-import net.succ.solar_punk.network.SelectPipeShapePayload;
-import net.succ.solar_punk.network.SelectRailingShapePayload;
 import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
 import net.succ.solar_punk.particle.ModParticles;
@@ -48,7 +50,18 @@ import net.succ.solar_punk.worldgen.ModFeatures;
 public class SolarPunk {
     public static final String MODID = "solarpunk";
 
+    // Goggle tank lines, labelled from create.solar_punk.tooltip.<key>
+    public static final GoggleLines GOGGLES = new GoggleLines("create", "solar_punk.tooltip.");
+
+    // Every sunlight check goes through this, with Solarpunk's dimension tags and config
+    public static final SolarHelper SOLAR = new SolarHelper(new SolarSettings(
+            ModTags.DimensionTypes.ALWAYS_SUNNY, ModTags.DimensionTypes.NO_WEATHER,
+            () -> Config.sunAngle, () -> Config.spaceSolarMultiplier, () -> Config.spaceRealSun,
+            () -> Config.sereneSeasonsEnabled,
+            () -> Config.sereneSeasonsSummerMultiplier, () -> Config.sereneSeasonsWinterMultiplier));
+
     public SolarPunk(IEventBus modEventBus, ModContainer modContainer) {
+        ModWires.init();
         ModFluidTypes.register(modEventBus);
         ModFluids.register(modEventBus);
         ModItems.register(modEventBus);
@@ -68,8 +81,6 @@ public class SolarPunk {
         modEventBus.addListener(Config::onLoad);
         modEventBus.addListener(SolarPunk::registerCapabilities);
         modEventBus.addListener(SolarPunk::commonSetup);
-        modEventBus.addListener(SelectPipeShapePayload::register);
-        modEventBus.addListener(SelectRailingShapePayload::register);
 
         NeoForge.EVENT_BUS.addListener(GlobalWarmingHandler::onLevelTick);
 

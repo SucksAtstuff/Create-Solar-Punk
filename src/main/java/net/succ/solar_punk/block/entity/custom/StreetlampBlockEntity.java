@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
+import net.succ.solar_punk.SolarPunk;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.ChatFormatting;
@@ -15,8 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.StreetlampBlock;
-import net.succ.solar_punk.util.EnergyFormat;
-import net.succ.solar_punk.util.SolarHelper;
+import studio.offbyone.lib.util.EnergyFormat;
 
 import java.util.List;
 
@@ -53,7 +53,7 @@ public class StreetlampBlockEntity extends BlockEntity implements IHaveGoggleInf
         if (Math.floorMod(level.getGameTime() + worldPosition.hashCode(), 20) != 0) return;
 
         int perSecond = Config.streetlampFePerTick * 20;
-        boolean lit = !SolarHelper.isDaytime(level, worldPosition)
+        boolean lit = !SolarPunk.SOLAR.isDaytime(level, worldPosition)
                 && energyStorage.getEnergyStored() >= perSecond;
         if (lit && perSecond > 0) {
             energyStorage.use(perSecond);

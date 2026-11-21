@@ -1,5 +1,5 @@
 {
-  "parent": "solarpunk:block/tinted/cube_column",
+  "parent": "offbyonelib:block/tinted/cube_column",
   "textures": {
     "end": "solarpunk:block/rammed_earth_top",
     "side": "solarpunk:block/rammed_earth"

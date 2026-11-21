@@ -266,14 +266,14 @@ public class FiligreeRailingSlopeBlock extends HorizontalDirectionalBlock implem
     }
 
     private static boolean isSlopeItem(ItemStack stack) {
-        return stack.getItem() instanceof FiligreeRailingItem && FiligreeRailingItem.getShape(stack) != RailingShape.FLAT;
+        return stack.getItem() instanceof FiligreeRailingItem railing && railing.getShape(stack) != RailingShape.FLAT;
     }
 
     // There's no slope item: pick-block gives the railing item set to this shape.
     @Override
     public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         RailingShape shape = this instanceof FiligreeRailingSteepSlopeBlock ? RailingShape.STEEP_SLOPE : RailingShape.SLOPE;
-        return FiligreeRailingItem.stackOf(asItem(), shape);
+        return asItem() instanceof FiligreeRailingItem railing ? railing.stackOf(shape) : new ItemStack(this);
     }
 
     public enum Part implements StringRepresentable {
@@ -345,7 +345,7 @@ public class FiligreeRailingSlopeBlock extends HorizontalDirectionalBlock implem
     private static class FlatOffEndHelper implements IPlacementHelper {
         @Override
         public Predicate<ItemStack> getItemPredicate() {
-            return stack -> stack.getItem() instanceof FiligreeRailingItem && FiligreeRailingItem.getShape(stack) == RailingShape.FLAT;
+            return stack -> stack.getItem() instanceof FiligreeRailingItem railing && railing.getShape(stack) == RailingShape.FLAT;
         }
 
         @Override

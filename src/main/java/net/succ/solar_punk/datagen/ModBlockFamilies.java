@@ -8,7 +8,6 @@ import net.succ.solar_punk.SolarPunk;
 import net.succ.solar_punk.block.ModBlocks;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +103,7 @@ public final class ModBlockFamilies {
 
     // Two per Rammed Earth colour: the block, and its bricks (with the chiseled bricks). Tinted:
     // every colour shares the grey rammed_earth textures, and the models use the tinted parents
-    // in models/block/tinted/.
+    // from the library (offbyonelib:block/tinted/).
     public static final List<BlockFamily> RAMMED_EARTH = ModBlocks.RAMMED_EARTH.values().stream()
             .flatMap(set -> Stream.of(
                     new BlockFamily.Builder(set.block().get())
@@ -176,14 +175,6 @@ public final class ModBlockFamilies {
 
     public static boolean isTinted(BlockFamily family) {
         return RAMMED_EARTH.contains(family);
-    }
-
-    // BlockFamily keeps its variants in a HashMap, so they come out in a different order each
-    // run. Datagen goes through them in Variant order instead, so tag files don't reshuffle.
-    public static Map<BlockFamily.Variant, Block> variants(BlockFamily family) {
-        Map<BlockFamily.Variant, Block> sorted = new EnumMap<>(BlockFamily.Variant.class);
-        sorted.putAll(family.getVariants());
-        return sorted;
     }
 
     // The texture stairs, slabs and walls use, or null for textures/block/<base id>.png.

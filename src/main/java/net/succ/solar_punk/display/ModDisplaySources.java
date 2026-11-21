@@ -1,5 +1,7 @@
 package net.succ.solar_punk.display;
 
+import studio.offbyone.lib.display.PercentDisplaySource;
+import studio.offbyone.lib.display.NumericLineDisplaySource;
 import net.succ.solar_punk.block.entity.custom.ParticleAcceleratorInputBlockEntity;
 import com.simibubi.create.api.behaviour.display.DisplaySource;
 import com.simibubi.create.api.registry.CreateRegistries;
@@ -23,9 +25,8 @@ import net.succ.solar_punk.block.entity.custom.GreenhouseControllerBlockEntity;
 import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.ElectricMotorBlockEntity;
-import net.succ.solar_punk.util.EnergyFormat;
+import studio.offbyone.lib.util.EnergyFormat;
 import net.succ.solar_punk.block.entity.custom.SolarPowerTowerBlockEntity;
-import net.succ.solar_punk.util.SolarHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -127,7 +128,7 @@ public class ModDisplaySources {
 
     public static final DeferredHolder<DisplaySource, DisplaySource> SOLAR_PANEL_SUN_ANGLE = register("solar_panel_sun_angle",
             () -> new NumericLineDisplaySource<>(ModDisplaySources::solarPanel, panel -> {
-                Double angle = SolarHelper.sunAngle(panel.getLevel());
+                Double angle = SolarPunk.SOLAR.sunAngle(panel.getLevel());
                 if (angle == null) return Component.literal("No day cycle").withStyle(ChatFormatting.GRAY);
                 long degrees = Math.round(angle);
                 String side = degrees < 0 ? " East" : degrees > 0 ? " West" : "";
@@ -137,7 +138,7 @@ public class ModDisplaySources {
 
     public static final DeferredHolder<DisplaySource, DisplaySource> SOLAR_PANEL_SUN_OFFSET = register("solar_panel_sun_offset",
             () -> new NumericLineDisplaySource<>(ModDisplaySources::solarPanel, panel -> {
-                Double offset = SolarHelper.sunOffset(panel.getLevel(), panel.getBlockPos());
+                Double offset = SolarPunk.SOLAR.sunOffset(panel.getLevel(), panel.getBlockPos());
                 if (offset == null) return Component.literal("Sun down").withStyle(ChatFormatting.GRAY);
                 return Component.literal(Math.round(offset) + "°").withStyle(ChatFormatting.YELLOW);
             }));
@@ -145,7 +146,7 @@ public class ModDisplaySources {
     // How directly the panel faces the sun, 0% when it isn't generating. Same as its comparator signal.
     public static final DeferredHolder<DisplaySource, DisplaySource> SOLAR_PANEL_SUN_EXPOSURE = register("solar_panel_sun_exposure",
             () -> new PercentDisplaySource<>(ModDisplaySources::solarPanel,
-                    panel -> SolarHelper.sunExposure(panel.getLevel(), panel.getBlockPos(),
+                    panel -> SolarPunk.SOLAR.sunExposure(panel.getLevel(), panel.getBlockPos(),
                             panel.getBlockState().getOptionalValue(BlockStateProperties.LIT).orElse(false))));
 
     // --- Biofilter ---

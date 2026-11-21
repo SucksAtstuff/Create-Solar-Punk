@@ -1,9 +1,9 @@
 package net.succ.solar_punk.block.entity.custom;
 
 import net.neoforged.neoforge.items.IItemHandler;
-import net.succ.solar_punk.client.sound.MachineSoundInstance;
-import net.succ.solar_punk.util.GeneratorHelper;
-import net.succ.solar_punk.util.AutomationItemHandler;
+import studio.offbyone.lib.client.sound.MachineSoundInstance;
+import studio.offbyone.lib.util.GeneratorHelper;
+import studio.offbyone.lib.util.AutomationItemHandler;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity.RotationDirection;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
