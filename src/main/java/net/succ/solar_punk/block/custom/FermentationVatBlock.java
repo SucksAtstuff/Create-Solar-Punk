@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.custom;
 
+import net.succ.offbyonelib.multiblock.MultiBlockLayerItem;
 import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
@@ -7,7 +8,6 @@ import com.simibubi.create.content.fluids.tank.FluidTankBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -58,7 +58,7 @@ public class FermentationVatBlock extends Block implements EntityBlock, IWrencha
 
     @Override
     public SoundType getSoundType(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
-        if (entity instanceof Player player && player.getPersistentData().contains("SilenceVatSound"))
+        if (MultiBlockLayerItem.isFillingLayer(entity))
             return FluidTankBlock.SILENCED_METAL;
         return super.getSoundType(state, level, pos, entity);
     }

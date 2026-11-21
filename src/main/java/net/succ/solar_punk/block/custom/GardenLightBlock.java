@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.custom;
 
+import net.succ.solar_punk.SolarPunk;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
@@ -18,7 +19,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.succ.solar_punk.util.SolarHelper;
 
 // A small solar garden light. It charges when it sees the sky during the day and glows
 // through the following night, so a light kept in the shade (or placed after dark) stays off
@@ -71,10 +71,10 @@ public class GardenLightBlock extends Block {
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         BlockState next;
-        if (SolarHelper.isDaytime(level, pos)) {
+        if (SolarPunk.SOLAR.isDaytime(level, pos)) {
             // Still lit means the night just ended, which used up its charge.
             boolean charged = state.getValue(CHARGED) && !state.getValue(LIT);
-            next = state.setValue(LIT, false).setValue(CHARGED, charged || SolarHelper.hasSkyAccess(level, pos));
+            next = state.setValue(LIT, false).setValue(CHARGED, charged || SolarPunk.SOLAR.hasSkyAccess(level, pos));
         } else {
             next = state.setValue(LIT, state.getValue(CHARGED));
         }

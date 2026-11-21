@@ -1,5 +1,6 @@
 package net.succ.solar_punk.client.renderer;
 
+import net.succ.offbyonelib.client.renderer.TankGaugeRenderer;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;

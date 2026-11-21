@@ -1,8 +1,7 @@
 package net.succ.solar_punk.client.model;
 
-import com.simibubi.create.foundation.block.connected.AllCTTypes;
+import net.succ.offbyonelib.client.model.SpriteShifts;
 import com.simibubi.create.foundation.block.connected.CTSpriteShiftEntry;
-import com.simibubi.create.foundation.block.connected.CTSpriteShifter;
 import net.minecraft.resources.ResourceLocation;
 import net.succ.solar_punk.SolarPunk;
 
@@ -33,19 +32,11 @@ public class ModSpriteShifts {
         FUSION_REACTOR_CASING_GLASS = shiftOmni(REACTOR_CASING, "fusion_reactor_casing_glass");
 
     private static CTSpriteShiftEntry shift(String folder, String name) {
-        return CTSpriteShifter.getCT(
-            AllCTTypes.RECTANGLE,
-            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, folder + name),
-            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, folder + name + "_connected")
-        );
+        return SpriteShifts.rectangle(ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, folder + name));
     }
 
     private static CTSpriteShiftEntry shiftOmni(String folder, String name) {
-        return CTSpriteShifter.getCT(
-            AllCTTypes.OMNIDIRECTIONAL,
-            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, folder + name),
-            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, folder + name + "_connected")
-        );
+        return SpriteShifts.omni(ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, folder + name));
     }
 
     public static void init() {}

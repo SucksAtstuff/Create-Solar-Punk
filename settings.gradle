@@ -9,3 +9,9 @@ pluginManagement {
 plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }
+
+// Off by One Lib from the sibling folder, so library changes show up here without publishing
+// Only when it's checked out next to this repo; otherwise the published version is used.
+if (file("../Off By One Lib").isDirectory()) {
+    includeBuild("../Off By One Lib")
+}

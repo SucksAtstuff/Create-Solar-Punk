@@ -1,6 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import net.succ.solar_punk.util.GoggleHelper;
+import net.succ.solar_punk.SolarPunk;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.ChatFormatting;
@@ -23,7 +23,7 @@ import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.fluid.ModFluids;
 
 import java.util.List;
-import net.succ.solar_punk.util.FluidTankNBTHelper;
+import net.succ.offbyonelib.util.FluidTankNBTHelper;
 
 public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 
@@ -148,7 +148,7 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
                     .forGoggles(tooltip, 1);
         }
 
-        GoggleHelper.tank(tooltip, "molten_salt", fluidTank, ChatFormatting.AQUA);
+        SolarPunk.GOGGLES.tank(tooltip, "molten_salt", fluidTank, ChatFormatting.AQUA);
 
         return true;
     }

@@ -1,24 +1,19 @@
 package net.succ.solar_punk.datagen;
 
+import net.succ.offbyonelib.datagen.AddonRecipeProvider;
 import java.util.List;
-import java.util.stream.Stream;
 import net.succ.solar_punk.recipe.ParticleAcceleratorRecipe;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
-import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
-import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -26,7 +21,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.Tags;
@@ -42,11 +36,11 @@ import net.succ.solar_punk.recipe.SolarHeaterRecipe;
 import java.util.concurrent.CompletableFuture;
 
 import static net.succ.solar_punk.datagen.DatagenUtil.anySalt;
-import static net.succ.solar_punk.datagen.DatagenUtil.createItem;
+import static net.succ.offbyonelib.datagen.DatagenUtil.createItem;
 
-public class ModRecipeProvider extends RecipeProvider {
+public class ModRecipeProvider extends AddonRecipeProvider {
     public ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+        super(output, registries, SolarPunk.MODID);
     }
 
     @Override
@@ -126,7 +120,7 @@ public class ModRecipeProvider extends RecipeProvider {
         ModBlocks.RAMMED_EARTH.values().forEach(set ->
                 bricksRecipes(output, set.bricks().get(), set.block().get(), set.block().get()));
 
-        ModBlockFamilies.ALL.forEach(family -> blockFamilyRecipes(output, family));
+        ModBlockFamilies.ALL.forEach(family -> blockFamilyRecipes(output, family, ModBlockFamilies.isStonecuttable(family)));
 
         // 6 of the material in two rows make 8 railings. One item places every shape.
         filigreeRailingRecipe(output, ModBlocks.BRASS_FILIGREE_RAILING.get(),
@@ -581,53 +575,6 @@ public class ModRecipeProvider extends RecipeProvider {
                 .save(output);
     }
 
-    // Smelting and blasting recipes turning `input` into a metal ingot.
-    private static void ingotSmelting(RecipeOutput output, TagKey<Item> input, String inputName, Item ingot, String metal) {
-        ingotSmelting(output, Ingredient.of(input), has(input), inputName, ingot, metal);
-    }
-
-    private static void ingotSmelting(RecipeOutput output, Ingredient input, Criterion<?> unlock, String inputName,
-                                      Item ingot, String metal) {
-        SimpleCookingRecipeBuilder.smelting(input, RecipeCategory.MISC, ingot, 0.7f, 200)
-                .unlockedBy("has_" + inputName, unlock)
-                .save(output, id(metal + "_ingot_from_smelting_" + inputName));
-
-        SimpleCookingRecipeBuilder.blasting(input, RecipeCategory.MISC, ingot, 0.7f, 100)
-                .unlockedBy("has_" + inputName, unlock)
-                .save(output, id(metal + "_ingot_from_blasting_" + inputName));
-    }
-
-    // 9 nuggets <-> ingot <-> 9 ingots as a storage block. Inputs use the c: tags so any
-    // mod's version packs and unpacks into ours.
-    private static void metalStorage(RecipeOutput output, String metal, Item nugget, Item ingot, ItemLike block,
-                                     TagKey<Item> nuggetTag, TagKey<Item> ingotTag, TagKey<Item> blockTag) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ingot)
-                .pattern("NNN")
-                .pattern("NNN")
-                .pattern("NNN")
-                .define('N', nuggetTag)
-                .unlockedBy("has_" + metal + "_nugget", has(nuggetTag))
-                .save(output);
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, nugget, 9)
-                .requires(ingotTag)
-                .unlockedBy("has_" + metal + "_ingot", has(ingotTag))
-                .save(output, id(metal + "_nugget_from_ingot"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, block)
-                .pattern("III")
-                .pattern("III")
-                .pattern("III")
-                .define('I', ingotTag)
-                .unlockedBy("has_" + metal + "_ingot", has(ingotTag))
-                .save(output);
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ingot, 9)
-                .requires(blockTag)
-                .unlockedBy("has_" + metal + "_block", has(blockTag))
-                .save(output, id(metal + "_ingot_from_block"));
-    }
-
     private void filigreeRailingRecipe(RecipeOutput output, Block railing, Ingredient material,
                                        Criterion<InventoryChangeTrigger.TriggerInstance> unlock) {
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, railing, 8)
@@ -636,52 +583,6 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('S', material)
                 .unlockedBy("has_material", unlock)
                 .save(output);
-    }
-
-    // Bricks: 2x2 of the polished block (itself 2x2 of the raw block), like Deepslate's
-    // polished -> bricks chain, or straight from either one in a stonecutter.
-    private void stonecutBothWays(RecipeOutput output, Block a, Block b) {
-        for (Block[] pair : new Block[][] {{a, b}, {b, a}}) {
-            String to = BuiltInRegistries.BLOCK.getKey(pair[1]).getPath();
-            String from = BuiltInRegistries.BLOCK.getKey(pair[0]).getPath();
-            SingleItemRecipeBuilder.stonecutting(Ingredient.of(pair[0]), RecipeCategory.BUILDING_BLOCKS, pair[1])
-                    .unlockedBy(getHasName(pair[0]), has(pair[0]))
-                    .save(output, id(to + "_from_" + from + "_stonecutting"));
-        }
-    }
-
-    private void bricksRecipes(RecipeOutput output, Block bricks, Block polished, Block raw) {
-        String bricksName = BuiltInRegistries.BLOCK.getKey(bricks).getPath();
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, bricks, 4)
-                .pattern("SS")
-                .pattern("SS")
-                .define('S', polished)
-                .unlockedBy(getHasName(polished), has(polished))
-                .save(output);
-        for (Block from : Stream.of(polished, raw).distinct().toList()) {
-            SingleItemRecipeBuilder.stonecutting(Ingredient.of(from), RecipeCategory.BUILDING_BLOCKS, bricks)
-                    .unlockedBy(getHasName(from), has(from))
-                    .save(output, id(bricksName + "_from_" + BuiltInRegistries.BLOCK.getKey(from).getPath() + "_stonecutting"));
-        }
-    }
-
-    // Vanilla's crafting recipes for every variant (stairs, slab, wall, polished, chiseled...),
-    // plus stonecutting each one straight from the base block. Vanilla's own stonecutter helper
-    // would save under the minecraft namespace, so these are built by hand.
-    private void blockFamilyRecipes(RecipeOutput output, BlockFamily family) {
-        generateRecipes(output, family, FeatureFlags.DEFAULT_FLAGS);
-        if (!ModBlockFamilies.isStonecuttable(family)) return;
-
-        Block base = family.getBaseBlock();
-        String baseName = BuiltInRegistries.BLOCK.getKey(base).getPath();
-        ModBlockFamilies.variants(family).forEach((variant, block) -> {
-            if (variant == BlockFamily.Variant.CRACKED) return; // smelted, not cut
-            int count = variant == BlockFamily.Variant.SLAB ? 2 : 1;
-            String name = BuiltInRegistries.BLOCK.getKey(block).getPath();
-            SingleItemRecipeBuilder.stonecutting(Ingredient.of(base), RecipeCategory.BUILDING_BLOCKS, block, count)
-                    .unlockedBy(getHasName(base), has(base))
-                    .save(output, id(name + "_from_" + baseName + "_stonecutting"));
-        });
     }
 
     private static ResourceLocation id(String path) {

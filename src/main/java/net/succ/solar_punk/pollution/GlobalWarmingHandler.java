@@ -29,7 +29,7 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.TrellisBlock;
-import net.succ.solar_punk.compat.sable.SableCompat;
+import net.succ.offbyonelib.compat.sable.SableCompat;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -172,7 +172,11 @@ public class GlobalWarmingHandler {
         }
 
         if (ModList.get().isLoaded("sable")) {
-            SableCompat.countSubLevelSources(level, totals, autoSources);
+            // Pollution from sources on airships counts where the airship really is.
+            SableCompat.forEachSubLevelBlockEntity(level, (worldChunk, state) -> {
+                int amount = sourcePollution(state, autoSources);
+                if (amount >= 0) totals.merge(worldChunk, (long) amount, Long::sum);
+            });
         }
 
         return totals;

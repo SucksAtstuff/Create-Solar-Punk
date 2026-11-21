@@ -1,6 +1,10 @@
 package net.succ.solar_punk.block;
 
-import net.minecraft.world.item.BlockItem;
+import net.succ.solar_punk.wire.ModWires;
+import net.succ.solar_punk.block.entity.ModBlockEntities;
+import net.succ.solar_punk.item.ModDataComponents;
+import net.succ.offbyonelib.multiblock.MultiBlockLayerItem;
+import net.succ.offbyonelib.registry.BlockRegistrar;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -30,12 +34,12 @@ import net.succ.solar_punk.block.custom.StreetlampBlock;
 import net.succ.solar_punk.block.custom.GrowLampBlock;
 import net.succ.solar_punk.block.custom.HempCropBlock;
 import net.succ.solar_punk.block.custom.SolarPlantBedBlock;
-import net.succ.solar_punk.block.custom.WireConnectorBlock;
-import net.succ.solar_punk.block.custom.WireSwitchBlock;
+import net.succ.offbyonelib.wire.WireConnectorBlock;
+import net.succ.offbyonelib.wire.WireSwitchBlock;
 import net.succ.solar_punk.block.custom.ElectricMotorBlock;
 import net.succ.solar_punk.block.custom.EndPlateBlock;
 import net.succ.solar_punk.block.custom.FuelCellBlock;
-import net.succ.solar_punk.block.custom.RedstoneWireRelayBlock;
+import net.succ.offbyonelib.wire.RedstoneWireRelayBlock;
 import net.succ.solar_punk.block.custom.GreenhouseControllerBlock;
 import net.succ.solar_punk.block.custom.TrellisBlock;
 import net.succ.solar_punk.block.custom.TrellisPlant;
@@ -52,8 +56,6 @@ import net.succ.solar_punk.block.custom.DeadGrassBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.BioreactorBlock;
 import net.succ.solar_punk.block.custom.BioreactorBaseBlock;
-import net.succ.solar_punk.block.custom.BioreactorItem;
-import net.succ.solar_punk.block.custom.FermentationVatItem;
 import net.succ.solar_punk.block.custom.FireboxBoilerBlock;
 import net.succ.solar_punk.block.custom.FusionReactorCasingBlock;
 import net.succ.solar_punk.block.custom.FusionReactorCasingGlassBlock;
@@ -70,7 +72,6 @@ import net.succ.solar_punk.block.custom.KineticSprinklerItem;
 import net.succ.solar_punk.block.custom.SolarHeaterBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.SolarPowerTowerBlock;
-import net.succ.solar_punk.block.custom.SolarPowerTowerItem;
 import net.succ.solar_punk.block.custom.TurbineBladeBlock;
 import net.succ.solar_punk.block.custom.TurbineCasingBlock;
 import net.succ.solar_punk.block.custom.TurbineCasingGlassBlock;
@@ -78,31 +79,28 @@ import net.succ.solar_punk.block.custom.TurbineRotorBlock;
 import net.succ.solar_punk.item.FiligreeRailingItem;
 import net.succ.solar_punk.item.ModItems;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(SolarPunk.MODID);
 
-    // Filled by registerDecorative (and the stairs/slab/wall helpers) as the blocks below
-    // register, so it has to be declared first.
-    private static final List<DeferredBlock<? extends Block>> DECORATIVE_BLOCKS = new ArrayList<>();
+    // Registers each block with its item, and tracks decorative ones for the Building Blocks
+    // tab. Declared before the blocks below, which register through it.
+    private static final BlockRegistrar REG = new BlockRegistrar(BLOCKS, ModItems.ITEMS);
 
     // Solar
 
-    public static final DeferredBlock<AndesiteSolarPanelBlock> ANDESITE_SOLAR_PANEL = registerBlock("andesite_solar_panel",
+    public static final DeferredBlock<AndesiteSolarPanelBlock> ANDESITE_SOLAR_PANEL = REG.block("andesite_solar_panel",
             () -> new AndesiteSolarPanelBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_BLUE)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
 
-    public static final DeferredBlock<BrassSolarPanelBlock> BRASS_SOLAR_PANEL = registerBlock("brass_solar_panel",
+    public static final DeferredBlock<BrassSolarPanelBlock> BRASS_SOLAR_PANEL = REG.block("brass_solar_panel",
             () -> new BrassSolarPanelBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_YELLOW)
                     .requiresCorrectToolForDrops()
@@ -110,8 +108,8 @@ public class ModBlocks {
                     .noOcclusion()));
 
     // Strung together with spools of wire to carry FE; see WireConnectorBlockEntity.
-    public static final DeferredBlock<WireConnectorBlock> WIRE_CONNECTOR = registerBlock("wire_connector",
-            () -> new WireConnectorBlock(BlockBehaviour.Properties.of()
+    public static final DeferredBlock<WireConnectorBlock> WIRE_CONNECTOR = REG.block("wire_connector",
+            () -> new WireConnectorBlock(ModWires.SYSTEM, BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_YELLOW)
                     .strength(0.5f)
                     .sound(SoundType.COPPER)
@@ -119,16 +117,16 @@ public class ModBlocks {
                     .pushReaction(PushReaction.DESTROY)));
 
     // Cuts a wire network in two at its posts; the relay is thrown by redstone. See WireSwitchBlockEntity.
-    public static final DeferredBlock<WireSwitchBlock> WIRE_SWITCH = registerBlock("wire_switch",
-            () -> new WireSwitchBlock(BlockBehaviour.Properties.of()
+    public static final DeferredBlock<WireSwitchBlock> WIRE_SWITCH = REG.block("wire_switch",
+            () -> new WireSwitchBlock(ModWires.SYSTEM, BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .strength(0.5f)
                     .sound(SoundType.COPPER)
                     .noOcclusion()
                     .pushReaction(PushReaction.DESTROY)));
 
-    public static final DeferredBlock<RedstoneWireRelayBlock> REDSTONE_WIRE_RELAY = registerBlock("redstone_wire_relay",
-            () -> new RedstoneWireRelayBlock(BlockBehaviour.Properties.of()
+    public static final DeferredBlock<RedstoneWireRelayBlock> REDSTONE_WIRE_RELAY = REG.block("redstone_wire_relay",
+            () -> new RedstoneWireRelayBlock(ModWires.SYSTEM, BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .strength(0.5f)
                     .sound(SoundType.COPPER)
@@ -136,7 +134,7 @@ public class ModBlocks {
                     .pushReaction(PushReaction.DESTROY)));
 
     // FE back into rotation; see ElectricMotorBlockEntity.
-    public static final DeferredBlock<ElectricMotorBlock> ELECTRIC_MOTOR = registerBlock("electric_motor",
+    public static final DeferredBlock<ElectricMotorBlock> ELECTRIC_MOTOR = REG.block("electric_motor",
             () -> new ElectricMotorBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_ORANGE)
                     .requiresCorrectToolForDrops()
@@ -145,7 +143,7 @@ public class ModBlocks {
                     .noOcclusion()));
 
     // Water into Hydrogen and Oxygen with FE; see ElectrolyzerBlockEntity.
-    public static final DeferredBlock<ElectrolyzerBlock> ELECTROLYZER = registerBlock("electrolyzer",
+    public static final DeferredBlock<ElectrolyzerBlock> ELECTROLYZER = REG.block("electrolyzer",
             () -> new ElectrolyzerBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_ORANGE)
                     .requiresCorrectToolForDrops()
@@ -155,14 +153,14 @@ public class ModBlocks {
 
     // Hydrogen and Oxygen back into FE: a row of Fuel Cells clamped between two End Plates.
     // The plates run the stack (see EndPlateBlockEntity); cells pass goggles and FE to them.
-    public static final DeferredBlock<FuelCellBlock> FUEL_CELL = registerBlock("fuel_cell",
+    public static final DeferredBlock<FuelCellBlock> FUEL_CELL = REG.block("fuel_cell",
             () -> new FuelCellBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_GRAY)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .sound(SoundType.NETHERITE_BLOCK)));
 
-    public static final DeferredBlock<EndPlateBlock> END_PLATE = registerBlock("end_plate",
+    public static final DeferredBlock<EndPlateBlock> END_PLATE = REG.block("end_plate",
             () -> new EndPlateBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_GRAY)
                     .requiresCorrectToolForDrops()
@@ -170,42 +168,42 @@ public class ModBlocks {
                     .sound(SoundType.NETHERITE_BLOCK)
                     .noOcclusion()));
 
-    public static final DeferredBlock<KineticBatteryBlock> KINETIC_BATTERY = registerBlock("kinetic_battery",
+    public static final DeferredBlock<KineticBatteryBlock> KINETIC_BATTERY = REG.block("kinetic_battery",
             () -> new KineticBatteryBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
 
-    public static final DeferredBlock<SolarHeaterBlock> SOLAR_HEATER = registerBlock("solar_heater",
+    public static final DeferredBlock<SolarHeaterBlock> SOLAR_HEATER = REG.block("solar_heater",
             () -> new SolarHeaterBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_ORANGE)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
 
-    public static final DeferredBlock<HeatBatteryBlock> HEAT_BATTERY = registerBlock("heat_battery",
+    public static final DeferredBlock<HeatBatteryBlock> HEAT_BATTERY = REG.block("heat_battery",
             () -> new HeatBatteryBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.DEEPSLATE)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .lightLevel(state -> state.getValue(HeatBatteryBlock.HEAT) * 4)));
 
-    public static final DeferredBlock<CrystallizerBlock> CRYSTALLIZER = registerBlock("crystallizer",
+    public static final DeferredBlock<CrystallizerBlock> CRYSTALLIZER = REG.block("crystallizer",
             () -> new CrystallizerBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_LIGHT_BLUE)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)));
 
-    public static final DeferredBlock<SolarPowerTowerBlock> SOLAR_POWER_TOWER = registerBlockCustomItem("solar_power_tower",
+    public static final DeferredBlock<SolarPowerTowerBlock> SOLAR_POWER_TOWER = REG.blockWithItem("solar_power_tower",
             () -> new SolarPowerTowerBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_ORANGE)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()),
-            block -> new SolarPowerTowerItem(block, new Item.Properties()));
+            block -> new MultiBlockLayerItem(block, ModBlockEntities.SOLAR_POWER_TOWER, new Item.Properties()));
 
-    public static final DeferredBlock<SolarMirrorBlock> SOLAR_MIRROR = registerBlock("solar_mirror",
+    public static final DeferredBlock<SolarMirrorBlock> SOLAR_MIRROR = REG.block("solar_mirror",
             () -> new SolarMirrorBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
@@ -214,28 +212,28 @@ public class ModBlocks {
 
     // Steam
 
-    public static final DeferredBlock<FireboxBoilerBlock> FIREBOX_BOILER = registerBlock("firebox_boiler",
+    public static final DeferredBlock<FireboxBoilerBlock> FIREBOX_BOILER = REG.block("firebox_boiler",
             () -> new FireboxBoilerBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .lightLevel(state -> state.getValue(FireboxBoilerBlock.LIT) ? 13 : 0)));
 
-    public static final DeferredBlock<TurbineRotorBlock> TURBINE_ROTOR = registerBlock("turbine_rotor",
+    public static final DeferredBlock<TurbineRotorBlock> TURBINE_ROTOR = REG.block("turbine_rotor",
             () -> new TurbineRotorBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
 
-    public static final DeferredBlock<TurbineCasingBlock> TURBINE_CASING = registerBlock("turbine_casing",
+    public static final DeferredBlock<TurbineCasingBlock> TURBINE_CASING = REG.block("turbine_casing",
             () -> new TurbineCasingBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
                     .strength(4.0f, 8.0f)
                     .sound(SoundType.NETHERITE_BLOCK)));
 
-    public static final DeferredBlock<TurbineCasingGlassBlock> TURBINE_CASING_GLASS = registerBlock("turbine_casing_glass",
+    public static final DeferredBlock<TurbineCasingGlassBlock> TURBINE_CASING_GLASS = REG.block("turbine_casing_glass",
             () -> new TurbineCasingGlassBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
@@ -243,14 +241,14 @@ public class ModBlocks {
                     .noOcclusion()
                     .sound(SoundType.NETHERITE_BLOCK)));
 
-    public static final DeferredBlock<TurbineBladeBlock> ANDESITE_TURBINE_BLADE = registerBlock("andesite_turbine_blade",
+    public static final DeferredBlock<TurbineBladeBlock> ANDESITE_TURBINE_BLADE = REG.block("andesite_turbine_blade",
             () -> new TurbineBladeBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .requiresCorrectToolForDrops()
                     .strength(3.0f, 6.0f)
                     .noOcclusion()));
 
-    public static final DeferredBlock<TurbineBladeBlock> BRASS_TURBINE_BLADE = registerBlock("brass_turbine_blade",
+    public static final DeferredBlock<TurbineBladeBlock> BRASS_TURBINE_BLADE = REG.block("brass_turbine_blade",
             () -> new TurbineBladeBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_YELLOW)
                     .requiresCorrectToolForDrops()
@@ -260,7 +258,7 @@ public class ModBlocks {
     // Biofuel and farming
 
     // Copper tier: turns a glass-roofed space in front of it into a greenhouse.
-    public static final DeferredBlock<GreenhouseControllerBlock> GREENHOUSE_CONTROLLER = registerBlock("greenhouse_controller",
+    public static final DeferredBlock<GreenhouseControllerBlock> GREENHOUSE_CONTROLLER = REG.block("greenhouse_controller",
             () -> new GreenhouseControllerBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_ORANGE)
                     .requiresCorrectToolForDrops()
@@ -268,7 +266,7 @@ public class ModBlocks {
                     .sound(SoundType.COPPER)));
 
     // FE-powered grow light; see GrowLampBlockEntity.
-    public static final DeferredBlock<GrowLampBlock> GROW_LAMP = registerBlock("grow_lamp",
+    public static final DeferredBlock<GrowLampBlock> GROW_LAMP = REG.block("grow_lamp",
             () -> new GrowLampBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .strength(1.0f, 3.0f)
@@ -278,7 +276,7 @@ public class ModBlocks {
                     .lightLevel(state -> state.getValue(GrowLampBlock.LIT) ? 15 : 0)));
 
     // Raised bed with its own panel and grow light; see SolarPlantBedBlockEntity.
-    public static final DeferredBlock<SolarPlantBedBlock> SOLAR_PLANT_BED = registerBlock("solar_plant_bed",
+    public static final DeferredBlock<SolarPlantBedBlock> SOLAR_PLANT_BED = REG.block("solar_plant_bed",
             () -> new SolarPlantBedBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_ORANGE)
                     .strength(2.0f, 6.0f)
@@ -286,22 +284,22 @@ public class ModBlocks {
                     .noOcclusion()
                     .lightLevel(state -> state.getValue(SolarPlantBedBlock.LIT) ? 13 : 0)));
 
-    public static final DeferredBlock<BiomassGasifierBlock> BIOMASS_GASIFIER = registerBlock("biomass_gasifier",
+    public static final DeferredBlock<BiomassGasifierBlock> BIOMASS_GASIFIER = REG.block("biomass_gasifier",
             () -> new BiomassGasifierBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_GREEN)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
 
-    public static final DeferredBlock<FermentationVatBlock> FERMENTATION_VAT = registerBlockCustomItem("fermentation_vat",
+    public static final DeferredBlock<FermentationVatBlock> FERMENTATION_VAT = REG.blockWithItem("fermentation_vat",
             () -> new FermentationVatBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_GREEN)
                     .requiresCorrectToolForDrops()
                     .strength(3.0f, 6.0f)
                     .noOcclusion()),
-            block -> new FermentationVatItem(block, new Item.Properties()));
+            block -> new MultiBlockLayerItem(block, ModBlockEntities.FERMENTATION_VAT, new Item.Properties()));
 
-    public static final DeferredBlock<BioreactorBlock> BIOREACTOR = registerBlockCustomItem("bioreactor",
+    public static final DeferredBlock<BioreactorBlock> BIOREACTOR = REG.blockWithItem("bioreactor",
             () -> new BioreactorBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.NONE)
                     .requiresCorrectToolForDrops()
@@ -312,23 +310,23 @@ public class ModBlocks {
                     .isRedstoneConductor((s, l, p) -> false)
                     .isSuffocating((s, l, p) -> false)
                     .isViewBlocking((s, l, p) -> false)),
-            block -> new BioreactorItem(block, new Item.Properties()));
+            block -> new MultiBlockLayerItem(block, ModBlockEntities.BIOREACTOR, new Item.Properties()));
 
-    public static final DeferredBlock<BioreactorBaseBlock> BIOREACTOR_BASE = registerBlock("bioreactor_base",
+    public static final DeferredBlock<BioreactorBaseBlock> BIOREACTOR_BASE = REG.block("bioreactor_base",
             () -> new BioreactorBaseBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_LIGHT_GREEN)
                     .requiresCorrectToolForDrops()
                     .strength(3.0f, 6.0f)
                     .sound(SoundType.METAL)));
 
-    public static final DeferredBlock<BiofuelEngineBlock> BIOFUEL_ENGINE = registerBlock("biofuel_engine",
+    public static final DeferredBlock<BiofuelEngineBlock> BIOFUEL_ENGINE = REG.block("biofuel_engine",
             () -> new BiofuelEngineBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_GREEN)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
 
-    public static final DeferredBlock<KineticSprinklerBlock> KINETIC_SPRINKLER = registerBlockCustomItem("kinetic_sprinkler",
+    public static final DeferredBlock<KineticSprinklerBlock> KINETIC_SPRINKLER = REG.blockWithItem("kinetic_sprinkler",
             () -> new KineticSprinklerBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
@@ -342,14 +340,14 @@ public class ModBlocks {
 
     // Geothermal
 
-    public static final DeferredBlock<GeyserCapBlock> GEYSER_CAP = registerBlock("geyser_cap",
+    public static final DeferredBlock<GeyserCapBlock> GEYSER_CAP = REG.block("geyser_cap",
             () -> new GeyserCapBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .requiresCorrectToolForDrops()
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
 
-    public static final DeferredBlock<GeyserVentBlock> GEYSER_VENT = registerBlock("geyser_vent",
+    public static final DeferredBlock<GeyserVentBlock> GEYSER_VENT = REG.block("geyser_vent",
             () -> new GeyserVentBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .strength(-1, 3600000f)
@@ -358,7 +356,7 @@ public class ModBlocks {
 
     // Fusion
 
-    public static final DeferredBlock<FusionReactorCoreBlock> FUSION_REACTOR_CORE = registerBlock("fusion_reactor_core",
+    public static final DeferredBlock<FusionReactorCoreBlock> FUSION_REACTOR_CORE = REG.block("fusion_reactor_core",
             () -> new FusionReactorCoreBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_BLACK)
                     .requiresCorrectToolForDrops()
@@ -367,14 +365,14 @@ public class ModBlocks {
                     .pushReaction(PushReaction.BLOCK)));
 
     // Fusion Reactor containment shell, one tier above the Turbine's industrial iron casing.
-    public static final DeferredBlock<FusionReactorCasingBlock> FUSION_REACTOR_CASING = registerBlock("fusion_reactor_casing",
+    public static final DeferredBlock<FusionReactorCasingBlock> FUSION_REACTOR_CASING = REG.block("fusion_reactor_casing",
             () -> new FusionReactorCasingBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
                     .strength(6.0f, 12.0f)
                     .sound(SoundType.NETHERITE_BLOCK)));
 
-    public static final DeferredBlock<FusionReactorCasingGlassBlock> FUSION_REACTOR_CASING_GLASS = registerBlock("fusion_reactor_casing_glass",
+    public static final DeferredBlock<FusionReactorCasingGlassBlock> FUSION_REACTOR_CASING_GLASS = REG.block("fusion_reactor_casing_glass",
             () -> new FusionReactorCasingGlassBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
@@ -385,13 +383,13 @@ public class ModBlocks {
     // Blanket modules fill the band between the Core and the Casing shell. Plain blocks:
     // FusionReactorCoreBlockEntity's scan counts them and does all the ratio math.
     // Lithium is the fuel-efficient build, Beryllium burns more fuel for more steam.
-    public static final DeferredBlock<Block> LITHIUM_BREEDER_MODULE = registerBlock("lithium_breeder_module",
+    public static final DeferredBlock<Block> LITHIUM_BREEDER_MODULE = REG.block("lithium_breeder_module",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_LIGHT_BLUE)
                     .requiresCorrectToolForDrops()
                     .strength(4.0f, 8.0f)));
 
-    public static final DeferredBlock<Block> BERYLLIUM_REFLECTOR_MODULE = registerBlock("beryllium_reflector_module",
+    public static final DeferredBlock<Block> BERYLLIUM_REFLECTOR_MODULE = REG.block("beryllium_reflector_module",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_GREEN)
                     .requiresCorrectToolForDrops()
@@ -400,7 +398,7 @@ public class ModBlocks {
     // Particle Accelerator ring pieces. Models only for now, no ring logic yet.
     // One item places every pipe shape (picked from a radial menu, see PipeShape), so the
     // bends and diagonal are registered without items of their own.
-    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE = registerBlockCustomItem("particle_accelerator_pipe",
+    public static final DeferredBlock<ParticleAcceleratorPipeBlock> PARTICLE_ACCELERATOR_PIPE = REG.blockWithItem("particle_accelerator_pipe",
             () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), ParticleAcceleratorPipeBlock.Kind.STRAIGHT),
             block -> new ParticleAcceleratorPipeItem(block, new Item.Properties()));
 
@@ -415,24 +413,24 @@ public class ModBlocks {
             () -> new ParticleAcceleratorPipeBlock(acceleratorPipeProperties(), ParticleAcceleratorPipeBlock.Kind.ANGLED));
 
     // Where shaft power enters the ring (the shaft hookup comes with the ring logic).
-    public static final DeferredBlock<ParticleAcceleratorInputBlock> PARTICLE_ACCELERATOR_INPUT = registerBlock("particle_accelerator_input",
+    public static final DeferredBlock<ParticleAcceleratorInputBlock> PARTICLE_ACCELERATOR_INPUT = REG.block("particle_accelerator_input",
             () -> new ParticleAcceleratorInputBlock(acceleratorPipeProperties()));
 
     // Global warming
 
-    public static final DeferredBlock<BiofilterBlock> BIOFILTER = registerBlock("biofilter",
+    public static final DeferredBlock<BiofilterBlock> BIOFILTER = REG.block("biofilter",
             () -> new BiofilterBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.PLANT)
                     .requiresCorrectToolForDrops()
                     .strength(1.5f, 4.0f)));
 
-    public static final DeferredBlock<Block> DEAD_GRASS_BLOCK = registerBlock("dead_grass_block",
+    public static final DeferredBlock<Block> DEAD_GRASS_BLOCK = REG.block("dead_grass_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_BROWN)
                     .strength(0.5f)
                     .sound(SoundType.GRASS)));
 
-    public static final DeferredBlock<DeadGrassBlock> DEAD_GRASS = registerBlock("dead_grass",
+    public static final DeferredBlock<DeadGrassBlock> DEAD_GRASS = REG.block("dead_grass",
             () -> new DeadGrassBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_BROWN)
                     .noCollission()
@@ -441,13 +439,13 @@ public class ModBlocks {
                     .offsetType(BlockBehaviour.OffsetType.XZ)
                     .replaceable()));
 
-    public static final DeferredBlock<Block> RUINED_DIRT = registerBlock("ruined_dirt",
+    public static final DeferredBlock<Block> RUINED_DIRT = REG.block("ruined_dirt",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.DIRT)
                     .strength(0.5f)
                     .sound(SoundType.GRAVEL)));
 
-    public static final DeferredBlock<Block> ASH_BLOCK = registerBlock("ash_block",
+    public static final DeferredBlock<Block> ASH_BLOCK = REG.block("ash_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_LIGHT_GRAY)
                     .requiresCorrectToolForDrops()
@@ -456,14 +454,14 @@ public class ModBlocks {
 
     // Resources
 
-    public static final DeferredBlock<Block> SALT_BLOCK = registerBlock("salt_block",
+    public static final DeferredBlock<Block> SALT_BLOCK = REG.block("salt_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.SNOW)
                     .requiresCorrectToolForDrops()
                     .strength(1.5f, 3.0f)));
 
     // Generates underground everywhere, with no biome gate. Drops Raw Lithium.
-    public static final DeferredBlock<Block> LITHIUM_ORE = registerBlock("lithium_ore",
+    public static final DeferredBlock<Block> LITHIUM_ORE = REG.block("lithium_ore",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .requiresCorrectToolForDrops()
@@ -471,7 +469,7 @@ public class ModBlocks {
 
     // Same hardness and sound bump vanilla gives its deepslate ores. Generated wherever
     // the Lithium Ore feature hits deepslate.
-    public static final DeferredBlock<Block> DEEPSLATE_LITHIUM_ORE = registerBlock("deepslate_lithium_ore",
+    public static final DeferredBlock<Block> DEEPSLATE_LITHIUM_ORE = REG.block("deepslate_lithium_ore",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.DEEPSLATE)
                     .requiresCorrectToolForDrops()
@@ -479,14 +477,14 @@ public class ModBlocks {
                     .sound(SoundType.DEEPSLATE)));
 
     // Storage blocks, named and tuned like vanilla's metal blocks (iron_block -> "Block of Iron").
-    public static final DeferredBlock<Block> LITHIUM_BLOCK = registerBlock("lithium_block",
+    public static final DeferredBlock<Block> LITHIUM_BLOCK = REG.block("lithium_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
                     .strength(5.0f, 6.0f)
                     .sound(SoundType.METAL)));
 
-    public static final DeferredBlock<Block> BERYLLIUM_BLOCK = registerBlock("beryllium_block",
+    public static final DeferredBlock<Block> BERYLLIUM_BLOCK = REG.block("beryllium_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
@@ -494,73 +492,73 @@ public class ModBlocks {
                     .sound(SoundType.METAL)));
 
     // Building blocks: these go in the Building Blocks creative tab. Register them with
-    // registerDecorative (stairs, slabs and walls already are), and add stairs/slab/wall/
+    // REG.decorative (stairs, slabs and walls already are), and add stairs/slab/wall/
     // chiseled sets to a family in datagen/ModBlockFamilies.
 
-    public static final DeferredBlock<StairBlock> SALT_STAIRS = registerStairs("salt_stairs", SALT_BLOCK);
-    public static final DeferredBlock<SlabBlock> SALT_SLAB = registerSlab("salt_slab", SALT_BLOCK);
+    public static final DeferredBlock<StairBlock> SALT_STAIRS = REG.stairs("salt_stairs", SALT_BLOCK);
+    public static final DeferredBlock<SlabBlock> SALT_SLAB = REG.slab("salt_slab", SALT_BLOCK);
 
-    public static final DeferredBlock<Block> POLISHED_SALT = registerDecorative("polished_salt",
+    public static final DeferredBlock<Block> POLISHED_SALT = REG.decorative("polished_salt",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(SALT_BLOCK.get())));
-    public static final DeferredBlock<StairBlock> POLISHED_SALT_STAIRS = registerStairs("polished_salt_stairs", POLISHED_SALT);
-    public static final DeferredBlock<SlabBlock> POLISHED_SALT_SLAB = registerSlab("polished_salt_slab", POLISHED_SALT);
-    public static final DeferredBlock<WallBlock> POLISHED_SALT_WALL = registerWall("polished_salt_wall", POLISHED_SALT);
+    public static final DeferredBlock<StairBlock> POLISHED_SALT_STAIRS = REG.stairs("polished_salt_stairs", POLISHED_SALT);
+    public static final DeferredBlock<SlabBlock> POLISHED_SALT_SLAB = REG.slab("polished_salt_slab", POLISHED_SALT);
+    public static final DeferredBlock<WallBlock> POLISHED_SALT_WALL = REG.wall("polished_salt_wall", POLISHED_SALT);
 
-    public static final DeferredBlock<Block> SALT_BRICKS = registerDecorative("salt_bricks",
+    public static final DeferredBlock<Block> SALT_BRICKS = REG.decorative("salt_bricks",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(SALT_BLOCK.get())));
-    public static final DeferredBlock<StairBlock> SALT_BRICK_STAIRS = registerStairs("salt_brick_stairs", SALT_BRICKS);
-    public static final DeferredBlock<SlabBlock> SALT_BRICK_SLAB = registerSlab("salt_brick_slab", SALT_BRICKS);
-    public static final DeferredBlock<WallBlock> SALT_BRICK_WALL = registerWall("salt_brick_wall", SALT_BRICKS);
+    public static final DeferredBlock<StairBlock> SALT_BRICK_STAIRS = REG.stairs("salt_brick_stairs", SALT_BRICKS);
+    public static final DeferredBlock<SlabBlock> SALT_BRICK_SLAB = REG.slab("salt_brick_slab", SALT_BRICKS);
+    public static final DeferredBlock<WallBlock> SALT_BRICK_WALL = REG.wall("salt_brick_wall", SALT_BRICKS);
 
-    public static final DeferredBlock<Block> CHISELED_SALT_BRICKS = registerDecorative("chiseled_salt_bricks",
+    public static final DeferredBlock<Block> CHISELED_SALT_BRICKS = REG.decorative("chiseled_salt_bricks",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(SALT_BRICKS.get())));
 
     // Pressed from soft Ash Blocks into stone-like blocks: pickaxe, not shovel.
-    public static final DeferredBlock<Block> POLISHED_ASH = registerDecorative("polished_ash",
+    public static final DeferredBlock<Block> POLISHED_ASH = REG.decorative("polished_ash",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_LIGHT_GRAY)
                     .requiresCorrectToolForDrops()
                     .strength(1.5f, 6.0f)
                     .sound(SoundType.POLISHED_TUFF)));
-    public static final DeferredBlock<StairBlock> POLISHED_ASH_STAIRS = registerStairs("polished_ash_stairs", POLISHED_ASH);
-    public static final DeferredBlock<SlabBlock> POLISHED_ASH_SLAB = registerSlab("polished_ash_slab", POLISHED_ASH);
-    public static final DeferredBlock<WallBlock> POLISHED_ASH_WALL = registerWall("polished_ash_wall", POLISHED_ASH);
+    public static final DeferredBlock<StairBlock> POLISHED_ASH_STAIRS = REG.stairs("polished_ash_stairs", POLISHED_ASH);
+    public static final DeferredBlock<SlabBlock> POLISHED_ASH_SLAB = REG.slab("polished_ash_slab", POLISHED_ASH);
+    public static final DeferredBlock<WallBlock> POLISHED_ASH_WALL = REG.wall("polished_ash_wall", POLISHED_ASH);
 
-    public static final DeferredBlock<Block> ASH_BRICKS = registerDecorative("ash_bricks",
+    public static final DeferredBlock<Block> ASH_BRICKS = REG.decorative("ash_bricks",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(POLISHED_ASH.get()).sound(SoundType.TUFF_BRICKS)));
-    public static final DeferredBlock<StairBlock> ASH_BRICK_STAIRS = registerStairs("ash_brick_stairs", ASH_BRICKS);
-    public static final DeferredBlock<SlabBlock> ASH_BRICK_SLAB = registerSlab("ash_brick_slab", ASH_BRICKS);
-    public static final DeferredBlock<WallBlock> ASH_BRICK_WALL = registerWall("ash_brick_wall", ASH_BRICKS);
+    public static final DeferredBlock<StairBlock> ASH_BRICK_STAIRS = REG.stairs("ash_brick_stairs", ASH_BRICKS);
+    public static final DeferredBlock<SlabBlock> ASH_BRICK_SLAB = REG.slab("ash_brick_slab", ASH_BRICKS);
+    public static final DeferredBlock<WallBlock> ASH_BRICK_WALL = REG.wall("ash_brick_wall", ASH_BRICKS);
 
-    public static final DeferredBlock<Block> CHISELED_ASH_BRICKS = registerDecorative("chiseled_ash_bricks",
+    public static final DeferredBlock<Block> CHISELED_ASH_BRICKS = REG.decorative("chiseled_ash_bricks",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(ASH_BRICKS.get())));
 
     // Hempcrete: Hemp Stalks set in lime. Light and soft for a stone (less than half the
     // blast resistance of Polished Ash), so it's a building block, not a bunker wall.
-    public static final DeferredBlock<Block> HEMPCRETE = registerDecorative("hempcrete",
+    public static final DeferredBlock<Block> HEMPCRETE = REG.decorative("hempcrete",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.SAND)
                     .requiresCorrectToolForDrops()
                     .strength(1.0f, 2.5f)
                     .sound(SoundType.PACKED_MUD)));
-    public static final DeferredBlock<StairBlock> HEMPCRETE_STAIRS = registerStairs("hempcrete_stairs", HEMPCRETE);
-    public static final DeferredBlock<SlabBlock> HEMPCRETE_SLAB = registerSlab("hempcrete_slab", HEMPCRETE);
-    public static final DeferredBlock<WallBlock> HEMPCRETE_WALL = registerWall("hempcrete_wall", HEMPCRETE);
+    public static final DeferredBlock<StairBlock> HEMPCRETE_STAIRS = REG.stairs("hempcrete_stairs", HEMPCRETE);
+    public static final DeferredBlock<SlabBlock> HEMPCRETE_SLAB = REG.slab("hempcrete_slab", HEMPCRETE);
+    public static final DeferredBlock<WallBlock> HEMPCRETE_WALL = REG.wall("hempcrete_wall", HEMPCRETE);
 
-    public static final DeferredBlock<Block> POLISHED_HEMPCRETE = registerDecorative("polished_hempcrete",
+    public static final DeferredBlock<Block> POLISHED_HEMPCRETE = REG.decorative("polished_hempcrete",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(HEMPCRETE.get())));
-    public static final DeferredBlock<StairBlock> POLISHED_HEMPCRETE_STAIRS = registerStairs("polished_hempcrete_stairs", POLISHED_HEMPCRETE);
-    public static final DeferredBlock<SlabBlock> POLISHED_HEMPCRETE_SLAB = registerSlab("polished_hempcrete_slab", POLISHED_HEMPCRETE);
-    public static final DeferredBlock<WallBlock> POLISHED_HEMPCRETE_WALL = registerWall("polished_hempcrete_wall", POLISHED_HEMPCRETE);
+    public static final DeferredBlock<StairBlock> POLISHED_HEMPCRETE_STAIRS = REG.stairs("polished_hempcrete_stairs", POLISHED_HEMPCRETE);
+    public static final DeferredBlock<SlabBlock> POLISHED_HEMPCRETE_SLAB = REG.slab("polished_hempcrete_slab", POLISHED_HEMPCRETE);
+    public static final DeferredBlock<WallBlock> POLISHED_HEMPCRETE_WALL = REG.wall("polished_hempcrete_wall", POLISHED_HEMPCRETE);
 
-    public static final DeferredBlock<Block> CHISELED_POLISHED_HEMPCRETE = registerDecorative("chiseled_polished_hempcrete",
+    public static final DeferredBlock<Block> CHISELED_POLISHED_HEMPCRETE = REG.decorative("chiseled_polished_hempcrete",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(POLISHED_HEMPCRETE.get())));
 
-    public static final DeferredBlock<Block> POLISHED_HEMPCRETE_BRICKS = registerDecorative("polished_hempcrete_bricks",
+    public static final DeferredBlock<Block> POLISHED_HEMPCRETE_BRICKS = REG.decorative("polished_hempcrete_bricks",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(HEMPCRETE.get()).sound(SoundType.MUD_BRICKS)));
-    public static final DeferredBlock<StairBlock> POLISHED_HEMPCRETE_BRICK_STAIRS = registerStairs("polished_hempcrete_brick_stairs", POLISHED_HEMPCRETE_BRICKS);
-    public static final DeferredBlock<SlabBlock> POLISHED_HEMPCRETE_BRICK_SLAB = registerSlab("polished_hempcrete_brick_slab", POLISHED_HEMPCRETE_BRICKS);
-    public static final DeferredBlock<WallBlock> POLISHED_HEMPCRETE_BRICK_WALL = registerWall("polished_hempcrete_brick_wall", POLISHED_HEMPCRETE_BRICKS);
+    public static final DeferredBlock<StairBlock> POLISHED_HEMPCRETE_BRICK_STAIRS = REG.stairs("polished_hempcrete_brick_stairs", POLISHED_HEMPCRETE_BRICKS);
+    public static final DeferredBlock<SlabBlock> POLISHED_HEMPCRETE_BRICK_SLAB = REG.slab("polished_hempcrete_brick_slab", POLISHED_HEMPCRETE_BRICKS);
+    public static final DeferredBlock<WallBlock> POLISHED_HEMPCRETE_BRICK_WALL = REG.wall("polished_hempcrete_brick_wall", POLISHED_HEMPCRETE_BRICKS);
 
     // Rammed Earth: per RammedEarthColor a block, bricks and chiseled bricks, the block and the
     // bricks each with stairs, slab and wall. Each shape shares one grey texture tinted per colour
@@ -580,22 +578,22 @@ public class ModBlocks {
     private static Map<RammedEarthColor, RammedEarthSet> registerRammedEarth() {
         Map<RammedEarthColor, RammedEarthSet> sets = new EnumMap<>(RammedEarthColor.class);
         for (RammedEarthColor color : RammedEarthColor.values()) {
-            DeferredBlock<Block> block = registerDecorative(color.id,
+            DeferredBlock<Block> block = REG.decorative(color.id,
                     () -> new Block(BlockBehaviour.Properties.of()
                             .mapColor(color.mapColor)
                             .requiresCorrectToolForDrops()
                             .strength(1.5f, 6.0f)
                             .sound(SoundType.PACKED_MUD)));
-            DeferredBlock<StairBlock> stairs = registerStairs(color.id + "_stairs", block);
-            DeferredBlock<SlabBlock> slab = registerSlab(color.id + "_slab", block);
-            DeferredBlock<WallBlock> wall = registerWall(color.id + "_wall", block);
-            DeferredBlock<Block> bricks = registerDecorative(color.id + "_bricks",
+            DeferredBlock<StairBlock> stairs = REG.stairs(color.id + "_stairs", block);
+            DeferredBlock<SlabBlock> slab = REG.slab(color.id + "_slab", block);
+            DeferredBlock<WallBlock> wall = REG.wall(color.id + "_wall", block);
+            DeferredBlock<Block> bricks = REG.decorative(color.id + "_bricks",
                     () -> new Block(BlockBehaviour.Properties.ofFullCopy(block.get()).sound(SoundType.MUD_BRICKS)));
             sets.put(color, new RammedEarthSet(block, stairs, slab, wall, bricks,
-                    registerStairs(color.id + "_brick_stairs", bricks),
-                    registerSlab(color.id + "_brick_slab", bricks),
-                    registerWall(color.id + "_brick_wall", bricks),
-                    registerDecorative("chiseled_" + color.id + "_bricks",
+                    REG.stairs(color.id + "_brick_stairs", bricks),
+                    REG.slab(color.id + "_brick_slab", bricks),
+                    REG.wall(color.id + "_brick_wall", bricks),
+                    REG.decorative("chiseled_" + color.id + "_bricks",
                             () -> new Block(BlockBehaviour.Properties.ofFullCopy(bricks.get())))));
         }
         return Collections.unmodifiableMap(sets);
@@ -603,67 +601,67 @@ public class ModBlocks {
 
     // Filigree railings: one item per material places every shape (flat, slope, steep slope,
     // picked from a radial menu), so the slope blocks have no items of their own.
-    public static final DeferredBlock<FiligreeRailingBlock> BRASS_FILIGREE_RAILING = registerDecorativeCustomItem("brass_filigree_railing",
+    public static final DeferredBlock<FiligreeRailingBlock> BRASS_FILIGREE_RAILING = REG.decorativeWithItem("brass_filigree_railing",
             () -> new FiligreeRailingBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS)
                     .mapColor(MapColor.TERRACOTTA_YELLOW)),
             block -> new FiligreeRailingItem(block, ModBlocks.BRASS_FILIGREE_RAILING_SLOPE,
-                    ModBlocks.BRASS_FILIGREE_RAILING_STEEP_SLOPE, new Item.Properties()));
+                    ModBlocks.BRASS_FILIGREE_RAILING_STEEP_SLOPE, ModDataComponents.RAILING_SHAPE, new Item.Properties()));
     public static final DeferredBlock<FiligreeRailingSlopeBlock> BRASS_FILIGREE_RAILING_SLOPE = BLOCKS.register("brass_filigree_railing_slope",
             () -> new FiligreeRailingSlopeBlock(BlockBehaviour.Properties.ofFullCopy(BRASS_FILIGREE_RAILING.get())));
     public static final DeferredBlock<FiligreeRailingSteepSlopeBlock> BRASS_FILIGREE_RAILING_STEEP_SLOPE = BLOCKS.register("brass_filigree_railing_steep_slope",
             () -> new FiligreeRailingSteepSlopeBlock(BlockBehaviour.Properties.ofFullCopy(BRASS_FILIGREE_RAILING.get())));
 
-    public static final DeferredBlock<FiligreeRailingBlock> ANDESITE_FILIGREE_RAILING = registerDecorativeCustomItem("andesite_filigree_railing",
+    public static final DeferredBlock<FiligreeRailingBlock> ANDESITE_FILIGREE_RAILING = REG.decorativeWithItem("andesite_filigree_railing",
             () -> new FiligreeRailingBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS)
                     .mapColor(MapColor.STONE)),
             block -> new FiligreeRailingItem(block, ModBlocks.ANDESITE_FILIGREE_RAILING_SLOPE,
-                    ModBlocks.ANDESITE_FILIGREE_RAILING_STEEP_SLOPE, new Item.Properties()));
+                    ModBlocks.ANDESITE_FILIGREE_RAILING_STEEP_SLOPE, ModDataComponents.RAILING_SHAPE, new Item.Properties()));
     public static final DeferredBlock<FiligreeRailingSlopeBlock> ANDESITE_FILIGREE_RAILING_SLOPE = BLOCKS.register("andesite_filigree_railing_slope",
             () -> new FiligreeRailingSlopeBlock(BlockBehaviour.Properties.ofFullCopy(ANDESITE_FILIGREE_RAILING.get())));
     public static final DeferredBlock<FiligreeRailingSteepSlopeBlock> ANDESITE_FILIGREE_RAILING_STEEP_SLOPE = BLOCKS.register("andesite_filigree_railing_steep_slope",
             () -> new FiligreeRailingSteepSlopeBlock(BlockBehaviour.Properties.ofFullCopy(ANDESITE_FILIGREE_RAILING.get())));
 
-    public static final DeferredBlock<FiligreeRailingBlock> COPPER_FILIGREE_RAILING = registerDecorativeCustomItem("copper_filigree_railing",
+    public static final DeferredBlock<FiligreeRailingBlock> COPPER_FILIGREE_RAILING = REG.decorativeWithItem("copper_filigree_railing",
             () -> new FiligreeRailingBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS)
                     .mapColor(MapColor.COLOR_ORANGE)),
             block -> new FiligreeRailingItem(block, ModBlocks.COPPER_FILIGREE_RAILING_SLOPE,
-                    ModBlocks.COPPER_FILIGREE_RAILING_STEEP_SLOPE, new Item.Properties()));
+                    ModBlocks.COPPER_FILIGREE_RAILING_STEEP_SLOPE, ModDataComponents.RAILING_SHAPE, new Item.Properties()));
     public static final DeferredBlock<FiligreeRailingSlopeBlock> COPPER_FILIGREE_RAILING_SLOPE = BLOCKS.register("copper_filigree_railing_slope",
             () -> new FiligreeRailingSlopeBlock(BlockBehaviour.Properties.ofFullCopy(COPPER_FILIGREE_RAILING.get())));
     public static final DeferredBlock<FiligreeRailingSteepSlopeBlock> COPPER_FILIGREE_RAILING_STEEP_SLOPE = BLOCKS.register("copper_filigree_railing_steep_slope",
             () -> new FiligreeRailingSteepSlopeBlock(BlockBehaviour.Properties.ofFullCopy(COPPER_FILIGREE_RAILING.get())));
 
-    public static final DeferredBlock<FiligreeRailingBlock> IRON_FILIGREE_RAILING = registerDecorativeCustomItem("iron_filigree_railing",
+    public static final DeferredBlock<FiligreeRailingBlock> IRON_FILIGREE_RAILING = REG.decorativeWithItem("iron_filigree_railing",
             () -> new FiligreeRailingBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS)
                     .mapColor(MapColor.METAL)),
             block -> new FiligreeRailingItem(block, ModBlocks.IRON_FILIGREE_RAILING_SLOPE,
-                    ModBlocks.IRON_FILIGREE_RAILING_STEEP_SLOPE, new Item.Properties()));
+                    ModBlocks.IRON_FILIGREE_RAILING_STEEP_SLOPE, ModDataComponents.RAILING_SHAPE, new Item.Properties()));
     public static final DeferredBlock<FiligreeRailingSlopeBlock> IRON_FILIGREE_RAILING_SLOPE = BLOCKS.register("iron_filigree_railing_slope",
             () -> new FiligreeRailingSlopeBlock(BlockBehaviour.Properties.ofFullCopy(IRON_FILIGREE_RAILING.get())));
     public static final DeferredBlock<FiligreeRailingSteepSlopeBlock> IRON_FILIGREE_RAILING_STEEP_SLOPE = BLOCKS.register("iron_filigree_railing_steep_slope",
             () -> new FiligreeRailingSteepSlopeBlock(BlockBehaviour.Properties.ofFullCopy(IRON_FILIGREE_RAILING.get())));
 
     // Glass that makes a little FE under open sky; see SolarGlassBlockEntity.
-    public static final DeferredBlock<SolarGlassBlock> SOLAR_GLASS = registerDecorative("solar_glass",
+    public static final DeferredBlock<SolarGlassBlock> SOLAR_GLASS = REG.decorative("solar_glass",
             () -> new SolarGlassBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
-    public static final DeferredBlock<SolarGlassPaneBlock> SOLAR_GLASS_PANE = registerDecorative("solar_glass_pane",
+    public static final DeferredBlock<SolarGlassPaneBlock> SOLAR_GLASS_PANE = REG.decorative("solar_glass_pane",
             () -> new SolarGlassPaneBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)));
     // Greenhouse glass: decorative for now; meant to be what seals a future greenhouse (see
     // docs/IDEAS.md). The panels are frosted: opaque-looking but they still let light through.
-    public static final DeferredBlock<TransparentBlock> GREENHOUSE_GLASS = registerDecorative("greenhouse_glass",
+    public static final DeferredBlock<TransparentBlock> GREENHOUSE_GLASS = REG.decorative("greenhouse_glass",
             () -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
-    public static final DeferredBlock<IronBarsBlock> GREENHOUSE_GLASS_PANE = registerDecorative("greenhouse_glass_pane",
+    public static final DeferredBlock<IronBarsBlock> GREENHOUSE_GLASS_PANE = REG.decorative("greenhouse_glass_pane",
             () -> new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)));
-    public static final DeferredBlock<TransparentBlock> CLEAR_GREENHOUSE_GLASS = registerDecorative("clear_greenhouse_glass",
+    public static final DeferredBlock<TransparentBlock> CLEAR_GREENHOUSE_GLASS = REG.decorative("clear_greenhouse_glass",
             () -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
-    public static final DeferredBlock<IronBarsBlock> CLEAR_GREENHOUSE_GLASS_PANE = registerDecorative("clear_greenhouse_glass_pane",
+    public static final DeferredBlock<IronBarsBlock> CLEAR_GREENHOUSE_GLASS_PANE = REG.decorative("clear_greenhouse_glass_pane",
             () -> new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)));
-    public static final DeferredBlock<TransparentBlock> GREENHOUSE_PANEL = registerDecorative("greenhouse_panel",
+    public static final DeferredBlock<TransparentBlock> GREENHOUSE_PANEL = REG.decorative("greenhouse_panel",
             () -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
-    public static final DeferredBlock<TransparentBlock> LARGE_GREENHOUSE_PANEL = registerDecorative("large_greenhouse_panel",
+    public static final DeferredBlock<TransparentBlock> LARGE_GREENHOUSE_PANEL = REG.decorative("large_greenhouse_panel",
             () -> new TransparentBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)));
     // Decorative stepped roofing that bends into corners like stairs; see SolarShinglesBlock.
-    public static final DeferredBlock<SolarShinglesBlock> SOLAR_SHINGLES = registerDecorative("solar_shingles",
+    public static final DeferredBlock<SolarShinglesBlock> SOLAR_SHINGLES = REG.decorative("solar_shingles",
             () -> new SolarShinglesBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_BLUE)
                     .requiresCorrectToolForDrops()
@@ -671,19 +669,19 @@ public class ModBlocks {
                     .sound(SoundType.COPPER)
                     .noOcclusion()));
     // Solar Shingles made of Solar Glass: same block, glass models and Solar Glass output.
-    public static final DeferredBlock<SolarShinglesBlock> SOLAR_GLASS_SHINGLES = registerDecorative("solar_glass_shingles",
+    public static final DeferredBlock<SolarShinglesBlock> SOLAR_GLASS_SHINGLES = REG.decorative("solar_glass_shingles",
             () -> new SolarShinglesBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS)
                     .mapColor(MapColor.COLOR_BLUE)));
 
-    public static final DeferredBlock<StairBlock> TURBINE_CASING_STAIRS = registerStairs("turbine_casing_stairs", TURBINE_CASING);
-    public static final DeferredBlock<SlabBlock> TURBINE_CASING_SLAB = registerSlab("turbine_casing_slab", TURBINE_CASING);
-    public static final DeferredBlock<WallBlock> TURBINE_CASING_WALL = registerWall("turbine_casing_wall", TURBINE_CASING);
+    public static final DeferredBlock<StairBlock> TURBINE_CASING_STAIRS = REG.stairs("turbine_casing_stairs", TURBINE_CASING);
+    public static final DeferredBlock<SlabBlock> TURBINE_CASING_SLAB = REG.slab("turbine_casing_slab", TURBINE_CASING);
+    public static final DeferredBlock<WallBlock> TURBINE_CASING_WALL = REG.wall("turbine_casing_wall", TURBINE_CASING);
 
-    public static final DeferredBlock<StairBlock> FUSION_REACTOR_CASING_STAIRS = registerStairs("fusion_reactor_casing_stairs", FUSION_REACTOR_CASING);
-    public static final DeferredBlock<SlabBlock> FUSION_REACTOR_CASING_SLAB = registerSlab("fusion_reactor_casing_slab", FUSION_REACTOR_CASING);
-    public static final DeferredBlock<WallBlock> FUSION_REACTOR_CASING_WALL = registerWall("fusion_reactor_casing_wall", FUSION_REACTOR_CASING);
+    public static final DeferredBlock<StairBlock> FUSION_REACTOR_CASING_STAIRS = REG.stairs("fusion_reactor_casing_stairs", FUSION_REACTOR_CASING);
+    public static final DeferredBlock<SlabBlock> FUSION_REACTOR_CASING_SLAB = REG.slab("fusion_reactor_casing_slab", FUSION_REACTOR_CASING);
+    public static final DeferredBlock<WallBlock> FUSION_REACTOR_CASING_WALL = REG.wall("fusion_reactor_casing_wall", FUSION_REACTOR_CASING);
 
-    public static final DeferredBlock<SaltLampBlock> SALT_LAMP = registerDecorative("salt_lamp",
+    public static final DeferredBlock<SaltLampBlock> SALT_LAMP = REG.decorative("salt_lamp",
             () -> new SaltLampBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_ORANGE)
                     .strength(0.5f)
@@ -691,7 +689,7 @@ public class ModBlocks {
                     .noOcclusion()
                     .lightLevel(state -> state.getValue(SaltLampBlock.LIT) ? 12 : 0)));
 
-    public static final DeferredBlock<GardenLightBlock> GARDEN_LIGHT = registerDecorative("garden_light",
+    public static final DeferredBlock<GardenLightBlock> GARDEN_LIGHT = REG.decorative("garden_light",
             () -> new GardenLightBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .strength(0.5f)
@@ -701,7 +699,7 @@ public class ModBlocks {
                     .lightLevel(state -> state.getValue(GardenLightBlock.LIT) ? 10 : 0)));
 
     // Two cells tall; only the upper half (the lamp head) gives off light.
-    public static final DeferredBlock<StreetlampBlock> STREETLAMP = registerDecorative("streetlamp",
+    public static final DeferredBlock<StreetlampBlock> STREETLAMP = REG.decorative("streetlamp",
             () -> new StreetlampBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
@@ -714,20 +712,20 @@ public class ModBlocks {
 
     // Scorched planks, made by applying Biochar to planks. Charring makes wood fire resistant,
     // so unlike planks it doesn't burn.
-    public static final DeferredBlock<Block> CHARRED_TIMBER = registerDecorative("charred_timber",
+    public static final DeferredBlock<Block> CHARRED_TIMBER = REG.decorative("charred_timber",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_BLACK)
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(2.0f, 3.0f)
                     .sound(SoundType.WOOD)));
-    public static final DeferredBlock<StairBlock> CHARRED_TIMBER_STAIRS = registerStairs("charred_timber_stairs", CHARRED_TIMBER);
-    public static final DeferredBlock<SlabBlock> CHARRED_TIMBER_SLAB = registerSlab("charred_timber_slab", CHARRED_TIMBER);
+    public static final DeferredBlock<StairBlock> CHARRED_TIMBER_STAIRS = REG.stairs("charred_timber_stairs", CHARRED_TIMBER);
+    public static final DeferredBlock<SlabBlock> CHARRED_TIMBER_SLAB = REG.slab("charred_timber_slab", CHARRED_TIMBER);
 
     // Green roofing from vanilla's Moss Block. With global warming on it absorbs pollution like leaves.
-    public static final DeferredBlock<StairBlock> MOSS_STAIRS = registerStairs("moss_stairs", () -> Blocks.MOSS_BLOCK);
-    public static final DeferredBlock<SlabBlock> MOSS_SLAB = registerSlab("moss_slab", () -> Blocks.MOSS_BLOCK);
+    public static final DeferredBlock<StairBlock> MOSS_STAIRS = REG.stairs("moss_stairs", () -> Blocks.MOSS_BLOCK);
+    public static final DeferredBlock<SlabBlock> MOSS_SLAB = REG.slab("moss_slab", () -> Blocks.MOSS_BLOCK);
 
-    public static final DeferredBlock<TrellisBlock> TRELLIS = registerDecorative("trellis",
+    public static final DeferredBlock<TrellisBlock> TRELLIS = REG.decorative("trellis",
             () -> new TrellisBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(0.4f)
@@ -746,49 +744,8 @@ public class ModBlocks {
                 .noOcclusion();
     }
 
-    private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
-        DeferredBlock<T> toReturn = BLOCKS.register(name, block);
-        ModItems.ITEMS.register(name, () -> new BlockItem(toReturn.get(), new Item.Properties()));
-        return toReturn;
-    }
-
-    // Blocks shown in the Building Blocks creative tab instead of the main one.
-    private static <T extends Block> DeferredBlock<T> registerDecorative(String name, Supplier<T> block) {
-        DeferredBlock<T> registered = registerBlock(name, block);
-        DECORATIVE_BLOCKS.add(registered);
-        return registered;
-    }
-
-    private static <T extends Block> DeferredBlock<T> registerDecorativeCustomItem(String name, Supplier<T> block,
-            Function<T, ? extends BlockItem> itemFactory) {
-        DeferredBlock<T> registered = registerBlockCustomItem(name, block, itemFactory);
-        DECORATIVE_BLOCKS.add(registered);
-        return registered;
-    }
-
     public static List<DeferredBlock<? extends Block>> decorativeBlocks() {
-        return Collections.unmodifiableList(DECORATIVE_BLOCKS);
-    }
-
-    // Stairs, slabs and walls copy every property of the block they're made from.
-    private static DeferredBlock<StairBlock> registerStairs(String name, Supplier<? extends Block> base) {
-        return registerDecorative(name, () -> new StairBlock(base.get().defaultBlockState(),
-                BlockBehaviour.Properties.ofFullCopy(base.get())));
-    }
-
-    private static DeferredBlock<SlabBlock> registerSlab(String name, Supplier<? extends Block> base) {
-        return registerDecorative(name, () -> new SlabBlock(BlockBehaviour.Properties.ofFullCopy(base.get())));
-    }
-
-    private static DeferredBlock<WallBlock> registerWall(String name, Supplier<? extends Block> base) {
-        return registerDecorative(name, () -> new WallBlock(BlockBehaviour.Properties.ofFullCopy(base.get()).forceSolidOn()));
-    }
-
-    private static <T extends Block> DeferredBlock<T> registerBlockCustomItem(String name, Supplier<T> block,
-            Function<T, ? extends BlockItem> itemFactory) {
-        DeferredBlock<T> toReturn = BLOCKS.register(name, block);
-        ModItems.ITEMS.register(name, () -> itemFactory.apply(toReturn.get()));
-        return toReturn;
+        return REG.decorativeBlocks();
     }
 
     public static void register(IEventBus eventBus) {

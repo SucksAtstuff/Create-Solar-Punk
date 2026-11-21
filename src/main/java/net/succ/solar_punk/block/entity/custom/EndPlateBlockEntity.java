@@ -25,9 +25,9 @@ import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.EndPlateBlock;
 import net.succ.solar_punk.compat.northstar.NorthstarCompat;
 import net.succ.solar_punk.fluid.ModFluids;
-import net.succ.solar_punk.util.EnergyFormat;
-import net.succ.solar_punk.util.FluidTankNBTHelper;
-import net.succ.solar_punk.util.GoggleHelper;
+import net.succ.offbyonelib.util.EnergyFormat;
+import net.succ.offbyonelib.util.FluidTankNBTHelper;
+import net.succ.solar_punk.SolarPunk;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -335,9 +335,9 @@ public class EndPlateBlockEntity extends BlockEntity implements IHaveGoggleInfor
                 .add(Component.literal(EnergyFormat.fe(c.energy) + " / " + EnergyFormat.fe(c.bufferSize()))
                         .withStyle(ChatFormatting.AQUA))
                 .forGoggles(tooltip, 1);
-        GoggleHelper.tank(tooltip, "hydrogen", c.hydrogenTank, ChatFormatting.LIGHT_PURPLE);
-        GoggleHelper.tank(tooltip, "oxygen", c.oxygenTank, ChatFormatting.AQUA);
-        GoggleHelper.tank(tooltip, "water", c.waterTank, ChatFormatting.BLUE);
+        SolarPunk.GOGGLES.tank(tooltip, "hydrogen", c.hydrogenTank, ChatFormatting.LIGHT_PURPLE);
+        SolarPunk.GOGGLES.tank(tooltip, "oxygen", c.oxygenTank, ChatFormatting.AQUA);
+        SolarPunk.GOGGLES.tank(tooltip, "water", c.waterTank, ChatFormatting.BLUE);
         return true;
     }
 

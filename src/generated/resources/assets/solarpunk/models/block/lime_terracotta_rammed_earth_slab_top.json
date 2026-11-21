@@ -1,5 +1,5 @@
 {
-  "parent": "solarpunk:block/tinted/slab_top",
+  "parent": "offbyonelib:block/tinted/slab_top",
   "textures": {
     "bottom": "solarpunk:block/rammed_earth_top",
     "side": "solarpunk:block/rammed_earth",

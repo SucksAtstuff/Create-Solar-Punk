@@ -1,5 +1,7 @@
 package net.succ.solar_punk;
 
+import net.succ.solar_punk.client.renderer.SeasonalWireRenderer;
+import net.succ.offbyonelib.client.ItemTooltips;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.succ.solar_punk.client.particle.AlgaeParticle;
 import net.succ.solar_punk.client.particle.TintedSteamParticle;
@@ -9,11 +11,7 @@ import net.succ.solar_punk.item.FiligreeRailingItem;
 import net.succ.solar_punk.item.ParticleAcceleratorPipeItem;
 import net.minecraft.client.renderer.item.ItemProperties;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
-import com.simibubi.create.foundation.item.ItemDescription;
-import com.simibubi.create.foundation.item.KineticStats;
-import com.simibubi.create.foundation.item.TooltipModifier;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
-import net.createmod.catnip.lang.FontHelper.Palette;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.resources.model.BakedModel;
@@ -40,19 +38,18 @@ import net.succ.solar_punk.block.custom.TrellisBlock;
 import net.succ.solar_punk.client.FlowerTint;
 import net.succ.solar_punk.block.custom.TurbineCasingGlassBlock;
 import net.succ.solar_punk.block.entity.ModBlockEntities;
-import net.succ.solar_punk.client.model.CasingModel;
+import net.succ.offbyonelib.client.model.CasingModel;
 import net.succ.solar_punk.client.model.ModSpriteShifts;
-import net.succ.solar_punk.client.model.TankModel;
+import net.succ.offbyonelib.client.model.TankModel;
 import net.succ.solar_punk.client.renderer.ElectrolyzerRenderer;
 import net.succ.solar_punk.client.renderer.FermentationVatRenderer;
 import net.succ.solar_punk.client.renderer.BioreactorRenderer;
 import net.succ.solar_punk.client.model.BioreactorBaseModel;
 import net.succ.solar_punk.client.renderer.FusionReactorCoreRenderer;
-import net.succ.solar_punk.client.renderer.WireConnectorRenderer;
 import net.succ.solar_punk.client.renderer.ElectricMotorRenderer;
 import net.succ.solar_punk.client.SeasonalModels;
 import net.succ.solar_punk.client.renderer.GeyserCapRenderer;
-import net.succ.solar_punk.client.renderer.HalfShaftRenderer;
+import net.succ.offbyonelib.client.renderer.HalfShaftRenderer;
 import net.succ.solar_punk.client.renderer.KineticBatteryRenderer;
 import net.succ.solar_punk.client.renderer.KineticSprinklerRenderer;
 import net.succ.solar_punk.client.renderer.SolarMirrorRenderer;
@@ -189,8 +186,8 @@ public class ModClientEvents {
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_MIRROR.get(), SolarMirrorRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.KINETIC_SPRINKLER.get(), KineticSprinklerRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.FUSION_REACTOR_CORE.get(), FusionReactorCoreRenderer::new);
-        event.registerBlockEntityRenderer(ModBlockEntities.WIRE_CONNECTOR.get(), WireConnectorRenderer::new);
-        event.registerBlockEntityRenderer(ModBlockEntities.WIRE_SWITCH.get(), WireConnectorRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.WIRE_CONNECTOR.get(), SeasonalWireRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.WIRE_SWITCH.get(), SeasonalWireRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.ELECTRIC_MOTOR.get(), ElectricMotorRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.ELECTROLYZER.get(), ElectrolyzerRenderer::new);
     }
@@ -205,13 +202,14 @@ public class ModClientEvents {
             // Which shape the Particle Accelerator Pipe item is set to, for its item model
             ItemProperties.register(ModBlocks.PARTICLE_ACCELERATOR_PIPE.get().asItem(),
                     ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "shape"),
-                    (stack, level, entity, seed) -> ParticleAcceleratorPipeItem.getShape(stack).ordinal());
+                    (stack, level, entity, seed) -> ParticleAcceleratorPipeItem.shapeOf(stack).ordinal());
             // Same for the filigree railing items (flat, slope, steep slope)
             for (var railing : List.of(ModBlocks.BRASS_FILIGREE_RAILING, ModBlocks.ANDESITE_FILIGREE_RAILING, ModBlocks.COPPER_FILIGREE_RAILING,
                     ModBlocks.IRON_FILIGREE_RAILING))
                 ItemProperties.register(railing.get().asItem(),
                         ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "railing_shape"),
-                        (stack, level, entity, seed) -> FiligreeRailingItem.getShape(stack).ordinal());
+                        (stack, level, entity, seed) -> stack.getItem() instanceof FiligreeRailingItem item
+                                ? item.getShape(stack).ordinal() : 0);
 
             // Only the Turbine Rotor gets a Flywheel visualizer, since it really is a full
             // shaft. Half-shaft machines use HalfShaftRenderer instead.
@@ -273,10 +271,6 @@ public class ModClientEvents {
     }
 
     private static void tip(Supplier<? extends Block> block) {
-        Item item = block.get().asItem();
-        TooltipModifier modifier = new ItemDescription.Modifier(item, Palette.STANDARD_CREATE);
-        KineticStats stats = KineticStats.create(item);
-        if (stats != null) modifier = modifier.andThen(stats);
-        TooltipModifier.REGISTRY.register(item, modifier);
+        ItemTooltips.describe(block.get());
     }
 }

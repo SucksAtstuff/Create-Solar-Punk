@@ -1,12 +1,8 @@
 package net.succ.solar_punk.datagen;
 
-import net.minecraft.core.Holder;
+import net.succ.offbyonelib.datagen.AddonBlockLootProvider;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.BlockFamily;
-import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.world.item.Items;
@@ -32,17 +28,16 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.succ.solar_punk.item.ModItems;
 
 import java.util.List;
-import java.util.Set;
 
-public class ModBlockLootTablesProvider extends BlockLootSubProvider {
+public class ModBlockLootTablesProvider extends AddonBlockLootProvider {
     protected ModBlockLootTablesProvider(HolderLookup.Provider registries) {
-        super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
+        super(registries, ModBlocks.BLOCKS);
     }
 
     // Every block drops itself unless it's listed here. A new block that should drop
     // something else (or nothing) needs an entry, or it will silently drop itself.
     @Override
-    protected void generate() {
+    protected void generateDrops() {
         add(ModBlocks.LITHIUM_ORE.get(), block -> createOreDrop(block, ModItems.RAW_LITHIUM.get()));
         add(ModBlocks.DEEPSLATE_LITHIUM_ORE.get(), block -> createOreDrop(block, ModItems.RAW_LITHIUM.get()));
         add(ModBlocks.DEAD_GRASS.get(), noDrop());
@@ -73,14 +68,7 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
         });
         add(ModBlocks.HEMP.get(), this::hempDrops);
         // A double slab drops two slabs.
-        ModBlockFamilies.ALL.forEach(family -> {
-            Block slab = family.get(BlockFamily.Variant.SLAB);
-            if (slab != null) add(slab, this::createSlabItemTable);
-        });
-
-        for (Block block : getKnownBlocks()) {
-            if (!map.containsKey(block.getLootTable())) dropSelf(block);
-        }
+        familySlabs(ModBlockFamilies.ALL);
     }
 
     // Like a wheat crop, but only from the lower half (breaking the top breaks the lower half
@@ -113,13 +101,5 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
                 .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(trellis)
                         .setProperties(StatePropertiesPredicate.Builder.properties()
                                 .hasProperty(TrellisBlock.PLANT, plant))));
-    }
-
-    @Override
-    protected Iterable<Block> getKnownBlocks() {
-        return ModBlocks.BLOCKS.getEntries().stream()
-                .map(Holder::value)
-                .filter(b -> !(b instanceof LiquidBlock))
-                ::iterator;
     }
 }

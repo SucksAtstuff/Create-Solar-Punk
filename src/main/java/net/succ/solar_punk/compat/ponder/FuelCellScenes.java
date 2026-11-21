@@ -1,5 +1,6 @@
 package net.succ.solar_punk.compat.ponder;
 
+import net.succ.solar_punk.wire.ModWires;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;
@@ -17,7 +18,6 @@ import net.succ.solar_punk.block.custom.EndPlateBlock;
 import net.succ.solar_punk.block.custom.StreetlampBlock;
 import net.succ.solar_punk.block.entity.custom.EndPlateBlockEntity;
 import net.succ.solar_punk.fluid.ModFluids;
-import net.succ.solar_punk.wire.WireTier;
 
 // Schematic (ModPonderProvider "fuel_cell/usage"): the controller End Plate (facing west) at
 // (1,1,2), Fuel Cells at x 2-4 and the other plate (facing east) at (5,1,2). Hydrogen comes in on
@@ -117,7 +117,7 @@ public class FuelCellScenes {
         scene.idle(5);
         scene.world().showSection(util.select().position(CELL_PLUG), Direction.DOWN);
         scene.idle(15);
-        WireScenes.wire(scene, CELL_PLUG, 0, LAMP_PLUG, 0, WireTier.COPPER);
+        WireScenes.wire(scene, CELL_PLUG, 0, LAMP_PLUG, 0, ModWires.COPPER);
         scene.idle(10);
         scene.world().modifyBlocks(util.select().fromTo(3, 1, 4, 3, 2, 4), s -> s.setValue(StreetlampBlock.LIT, true), false);
         scene.overlay().showText(80)

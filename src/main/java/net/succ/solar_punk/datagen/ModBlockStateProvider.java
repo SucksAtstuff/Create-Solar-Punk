@@ -1,12 +1,10 @@
 package net.succ.solar_punk.datagen;
 
+import net.succ.offbyonelib.datagen.AddonBlockStateProvider;
 import net.succ.solar_punk.block.custom.HempCropBlock;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.BlockFamily;
-import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.StairBlock;
-import net.minecraft.world.level.block.WallBlock;
 import net.succ.solar_punk.block.custom.PipeShape;
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.minecraft.core.Direction;
@@ -18,12 +16,9 @@ import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.ModelFile.UncheckedModelFile;
-import net.neoforged.neoforge.client.model.generators.ModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.succ.solar_punk.SolarPunk;
@@ -41,9 +36,9 @@ import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.StreetlampBlock;
-import net.succ.solar_punk.block.custom.WireConnectorBlock;
-import net.succ.solar_punk.block.custom.RedstoneWireRelayBlock;
-import net.succ.solar_punk.block.custom.WireSwitchBlock;
+import net.succ.offbyonelib.wire.WireConnectorBlock;
+import net.succ.offbyonelib.wire.RedstoneWireRelayBlock;
+import net.succ.offbyonelib.wire.WireSwitchBlock;
 import net.succ.solar_punk.block.custom.EndPlateBlock;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.succ.solar_punk.block.custom.GrowLampBlock;
@@ -58,7 +53,7 @@ import net.succ.solar_punk.fluid.ModFluids;
 
 import java.util.Map;
 
-public class ModBlockStateProvider extends BlockStateProvider {
+public class ModBlockStateProvider extends AddonBlockStateProvider {
     public ModBlockStateProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, SolarPunk.MODID, existingFileHelper);
     }
@@ -216,45 +211,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
         itemModels().withExistingParent("fusion_reactor_core", modLoc("block/fusion_reactor_core"));
     }
 
-    // Every variant of a ModBlockFamilies family. Stairs, slabs and walls use the base
-    // block's texture; full-block variants (polished, chiseled...) use their own.
+    // Every variant of a ModBlockFamilies family (the library generates the shapes). Tinted
+    // families (Rammed Earth) also cover their base block, on the library's tinted parents.
     private void blockFamily(BlockFamily family) {
-        if (ModBlockFamilies.isTinted(family)) {
-            tintedBlockFamily(family);
-            return;
-        }
-        ResourceLocation baseModel = blockTexture(family.getBaseBlock()); // block/<base id>
-        ResourceLocation baseTex = ModBlockFamilies.baseTexture(family);
-        if (baseTex == null) baseTex = baseModel;
-        ResourceLocation tex = baseTex;
-        ModBlockFamilies.variants(family).forEach((variant, block) -> {
-            String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
-            switch (variant) {
-                case STAIRS -> {
-                    stairsBlock((StairBlock) block, tex);
-                    simpleBlockItem(block, new UncheckedModelFile(modLoc("block/" + path)));
-                }
-                case SLAB -> {
-                    // The double slab reuses the base block's model. Passed unchecked, since
-                    // the base model may only be generated later in this run.
-                    slabBlock((SlabBlock) block, models().slab(path, tex, tex, tex),
-                            models().slabTop(path + "_top", tex, tex, tex), new UncheckedModelFile(baseModel));
-                    simpleBlockItem(block, new UncheckedModelFile(modLoc("block/" + path)));
-                }
-                case WALL -> {
-                    wallBlock((WallBlock) block, tex);
-                    itemModels().wallInventory(path, tex);
-                }
-                default -> {
-                    // A <id>_top texture, if one exists, goes on the top and bottom.
-                    ResourceLocation side = blockTexture(block);
-                    ResourceLocation top = side.withSuffix("_top");
-                    simpleBlockWithItem(block, models().existingFileHelper.exists(top, ModelProvider.TEXTURE)
-                            ? models().cubeColumn(path, side, top)
-                            : cubeAll(block));
-                }
-            }
-        });
+        if (ModBlockFamilies.isTinted(family))
+            tintedBlockFamily(family, ModBlockFamilies.baseTexture(family), ModBlockFamilies::tintedVariantTexture);
+        else
+            blockFamily(family, ModBlockFamilies.baseTexture(family));
     }
 
     // Greenhouse glass and its pane, like Solar Glass. Both kinds share one pane edge texture.
@@ -265,70 +228,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
         paneBlockWithRenderType(pane, tex, modLoc("block/greenhouse/greenhouse_glass_pane_top"), "minecraft:cutout");
         itemModels().withExistingParent(BuiltInRegistries.BLOCK.getKey(pane).getPath(), mcLoc("item/generated"))
                 .texture("layer0", tex);
-    }
-
-    // A tinted family (Rammed Earth), base block included: the same shapes as above, built on
-    // the copies of vanilla's parents in models/block/tinted/ whose faces have tintindex 0. A
-    // <texture>_top.png, if one exists, goes on the top and bottom faces of every shape.
-    private void tintedBlockFamily(BlockFamily family) {
-        ResourceLocation tex = ModBlockFamilies.baseTexture(family);
-        ResourceLocation top = topOrSide(tex);
-        Block base = family.getBaseBlock();
-        String basePath = BuiltInRegistries.BLOCK.getKey(base).getPath();
-        ModelFile cube = tintedCube(basePath, tex);
-        simpleBlockWithItem(base, cube);
-        ModBlockFamilies.variants(family).forEach((variant, block) -> {
-            String path = BuiltInRegistries.BLOCK.getKey(block).getPath();
-            switch (variant) {
-                case STAIRS -> {
-                    stairsBlock((StairBlock) block,
-                            sideTopBottom(tinted(path, "stairs"), tex, top),
-                            sideTopBottom(tinted(path + "_inner", "inner_stairs"), tex, top),
-                            sideTopBottom(tinted(path + "_outer", "outer_stairs"), tex, top));
-                    simpleBlockItem(block, new UncheckedModelFile(modLoc("block/" + path)));
-                }
-                case SLAB -> {
-                    slabBlock((SlabBlock) block, sideTopBottom(tinted(path, "slab"), tex, top),
-                            sideTopBottom(tinted(path + "_top", "slab_top"), tex, top), cube);
-                    simpleBlockItem(block, new UncheckedModelFile(modLoc("block/" + path)));
-                }
-                case WALL -> {
-                    wallBlock((WallBlock) block,
-                            tinted(path + "_post", "wall_post").texture("wall", tex).texture("top", top),
-                            tinted(path + "_side", "wall_side").texture("wall", tex).texture("top", top),
-                            tinted(path + "_side_tall", "wall_side_tall").texture("wall", tex).texture("top", top));
-                    itemModels().withExistingParent(path, modLoc("block/tinted/wall_inventory"))
-                            .texture("wall", tex).texture("top", top);
-                }
-                default -> {
-                    ResourceLocation variantTex = ModBlockFamilies.tintedVariantTexture(block);
-                    if (variantTex == null) throw new IllegalStateException("No tinted texture for " + path);
-                    simpleBlockWithItem(block, tintedCube(path, variantTex));
-                }
-            }
-        });
-    }
-
-    // A tinted full block: cube_all, or cube_column when a <texture>_top.png exists.
-    private ModelFile tintedCube(String path, ResourceLocation tex) {
-        ResourceLocation top = topOrSide(tex);
-        return top.equals(tex)
-                ? tinted(path, "cube_all").texture("all", tex)
-                : tinted(path, "cube_column").texture("side", tex).texture("end", top);
-    }
-
-    // <texture>_top if that texture exists, otherwise the texture itself.
-    private ResourceLocation topOrSide(ResourceLocation tex) {
-        ResourceLocation top = tex.withSuffix("_top");
-        return models().existingFileHelper.exists(top, ModelProvider.TEXTURE) ? top : tex;
-    }
-
-    private BlockModelBuilder tinted(String path, String parent) {
-        return models().withExistingParent(path, modLoc("block/tinted/" + parent));
-    }
-
-    private static BlockModelBuilder sideTopBottom(BlockModelBuilder model, ResourceLocation side, ResourceLocation top) {
-        return model.texture("side", side).texture("top", top).texture("bottom", top);
     }
 
     // A straight run (POST off) shows <id>_straight (running north-south), turned to the run's
@@ -543,16 +442,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     .rotationY(axis == Direction.Axis.X ? 90 : 0)
                     .build();
         });
-    }
-
-    // Y rotation for a model authored facing NORTH.
-    private static int horizontalYRot(Direction facing) {
-        return switch (facing) {
-            case EAST  ->  90;
-            case SOUTH -> 180;
-            case WEST  -> 270;
-            default    ->   0; // NORTH
-        };
     }
 
     // Turbine blades can sit on any of the 3 rotor axes. The model is thin along Y and

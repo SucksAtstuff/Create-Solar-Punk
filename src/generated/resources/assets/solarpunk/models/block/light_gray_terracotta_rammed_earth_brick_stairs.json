@@ -1,5 +1,5 @@
 {
-  "parent": "solarpunk:block/tinted/stairs",
+  "parent": "offbyonelib:block/tinted/stairs",
   "textures": {
     "bottom": "solarpunk:block/rammed_earth_bricks",
     "side": "solarpunk:block/rammed_earth_bricks",

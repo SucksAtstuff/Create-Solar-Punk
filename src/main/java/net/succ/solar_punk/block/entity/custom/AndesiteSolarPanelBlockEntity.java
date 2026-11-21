@@ -1,6 +1,7 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import net.succ.solar_punk.util.GeneratorHelper;
+import net.succ.solar_punk.SolarPunk;
+import net.succ.offbyonelib.util.GeneratorHelper;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity.RotationDirection;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -14,7 +15,6 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.AndesiteSolarPanelBlock;
 
 import java.util.List;
-import net.succ.solar_punk.util.SolarHelper;
 import net.succ.solar_punk.util.Agrivoltaics;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.ChatFormatting;
@@ -69,16 +69,16 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
     }
 
     private float computeSpeed() {
-        float speed = SolarHelper.byPhase(level, worldPosition, Config.andesiteMorningRpm, Config.andesiteNoonRpm);
+        float speed = SolarPunk.SOLAR.byPhase(level, worldPosition, Config.andesiteMorningRpm, Config.andesiteNoonRpm);
         // Round so the network keeps clean integer RPM; the season only shifts every few
         // in-game days, so this doesn't churn the kinetic network.
-        if (speed != 0) speed = Math.round(speed * SolarHelper.outputMultiplier(level, worldPosition));
+        if (speed != 0) speed = Math.round(speed * SolarPunk.SOLAR.outputMultiplier(level, worldPosition));
         return GeneratorHelper.directed(speed, rotationDirection);
     }
 
     private float computeCapacity() {
-        float capacity = SolarHelper.byPhase(level, worldPosition, Config.andesiteMorningSu, Config.andesiteNoonSu);
-        return capacity == 0 ? 0 : capacity * SolarHelper.outputMultiplier(level, worldPosition)
+        float capacity = SolarPunk.SOLAR.byPhase(level, worldPosition, Config.andesiteMorningSu, Config.andesiteNoonSu);
+        return capacity == 0 ? 0 : capacity * SolarPunk.SOLAR.outputMultiplier(level, worldPosition)
                 * Agrivoltaics.multiplier(plantBelow);
     }
 
@@ -94,7 +94,7 @@ public class AndesiteSolarPanelBlockEntity extends GeneratingKineticBlockEntity 
             if (!(state.getBlock() instanceof AndesiteSolarPanelBlock)) return;
             if (state.getValue(AndesiteSolarPanelBlock.LIT) != active)
                 level.setBlock(worldPosition, state.setValue(AndesiteSolarPanelBlock.LIT, active), 3);
-            int signal = SolarHelper.comparatorSignal(level, worldPosition, active);
+            int signal = SolarPunk.SOLAR.comparatorSignal(level, worldPosition, active);
             if (signal != comparatorSignal) {
                 comparatorSignal = signal;
                 level.updateNeighbourForOutputSignal(worldPosition, state.getBlock());

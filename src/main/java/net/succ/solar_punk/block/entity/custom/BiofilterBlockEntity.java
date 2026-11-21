@@ -1,6 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import net.succ.solar_punk.client.sound.MachineSoundInstance;
+import net.succ.offbyonelib.client.sound.MachineSoundInstance;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -26,7 +26,7 @@ import net.succ.solar_punk.client.sound.BiofilterSoundInstance;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.pollution.GlobalWarmingHandler;
 import net.succ.solar_punk.pollution.PollutionSavedData;
-import net.succ.solar_punk.util.AutomationItemHandler;
+import net.succ.offbyonelib.util.AutomationItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

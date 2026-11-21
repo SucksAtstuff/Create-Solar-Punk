@@ -1,6 +1,7 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import net.succ.solar_punk.client.sound.MachineSoundInstance;
+import net.succ.solar_punk.SolarPunk;
+import net.succ.offbyonelib.client.sound.MachineSoundInstance;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.platform.CatnipServices;
@@ -23,8 +24,7 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
 import net.succ.solar_punk.client.sound.BrassPanelSoundInstance;
 import net.succ.solar_punk.util.Agrivoltaics;
-import net.succ.solar_punk.util.EnergyFormat;
-import net.succ.solar_punk.util.SolarHelper;
+import net.succ.offbyonelib.util.EnergyFormat;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -60,9 +60,9 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
     }
 
     private int getGeneratedFE() {
-        float base = SolarHelper.byPhase(level, worldPosition, Config.brassMorningFe, Config.brassNoonFe);
+        float base = SolarPunk.SOLAR.byPhase(level, worldPosition, Config.brassMorningFe, Config.brassNoonFe);
         if (base == 0) return 0;
-        return Math.round(base * SolarHelper.outputMultiplier(level, worldPosition) * Agrivoltaics.multiplier(plantBelow));
+        return Math.round(base * SolarPunk.SOLAR.outputMultiplier(level, worldPosition) * Agrivoltaics.multiplier(plantBelow));
     }
 
     public void tick() {
@@ -110,7 +110,7 @@ public class BrassSolarPanelBlockEntity extends BlockEntity implements IHaveGogg
             if (state.getValue(BrassSolarPanelBlock.LIT) != active)
                 level.setBlock(worldPosition, state.setValue(BrassSolarPanelBlock.LIT, active), 3);
             level.sendBlockUpdated(worldPosition, state, level.getBlockState(worldPosition), 2);
-            int signal = SolarHelper.comparatorSignal(level, worldPosition, active);
+            int signal = SolarPunk.SOLAR.comparatorSignal(level, worldPosition, active);
             if (signal != comparatorSignal) {
                 comparatorSignal = signal;
                 level.updateNeighbourForOutputSignal(worldPosition, state.getBlock());

@@ -1,5 +1,7 @@
 package net.succ.solar_punk.datagen;
 
+import net.succ.offbyonelib.datagen.BlockFamilies;
+import net.succ.offbyonelib.datagen.AddonBlockTagsProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.BlockFamily;
@@ -11,7 +13,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.SolarPunk;
@@ -21,9 +22,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static net.succ.solar_punk.datagen.DatagenUtil.blockTag;
+import static net.succ.offbyonelib.datagen.DatagenUtil.blockTag;
 
-public class ModBlockTagProvider extends BlockTagsProvider {
+public class ModBlockTagProvider extends AddonBlockTagsProvider {
 
     private static final TagKey<Block> STORAGE_BLOCKS_SALT = blockTag("c", "storage_blocks/salt");
     private static final TagKey<Block> ORES_LITHIUM = blockTag("c", "ores/lithium");
@@ -39,25 +40,16 @@ public class ModBlockTagProvider extends BlockTagsProvider {
     protected void addTags(HolderLookup.Provider provider) {
         // Casing stairs, slabs and walls come off with a Wrench, like the casings themselves.
         for (BlockFamily family : List.of(ModBlockFamilies.TURBINE_CASING, ModBlockFamilies.FUSION_REACTOR_CASING))
-            ModBlockFamilies.variants(family).values().forEach(block -> tag(blockTag("create", "wrench_pickup")).add(block));
+            BlockFamilies.variants(family).values().forEach(block -> tag(blockTag("create", "wrench_pickup")).add(block));
 
         // Building block families: shape tags, and every variant is pickaxe-mineable (axe
         // for wooden ones, whose wooden_stairs/wooden_slabs tags are already in stairs/slabs,
         // and hoe for moss).
         ModBlockFamilies.ALL.forEach(family -> {
             boolean wooden = ModBlockFamilies.isWooden(family);
-            TagKey<Block> tool = wooden ? BlockTags.MINEABLE_WITH_AXE
+            familyTags(family, wooden, wooden ? BlockTags.MINEABLE_WITH_AXE
                     : ModBlockFamilies.isMoss(family) ? BlockTags.MINEABLE_WITH_HOE
-                    : BlockTags.MINEABLE_WITH_PICKAXE;
-            ModBlockFamilies.variants(family).forEach((variant, block) -> {
-                switch (variant) {
-                    case STAIRS -> tag(wooden ? BlockTags.WOODEN_STAIRS : BlockTags.STAIRS).add(block);
-                    case SLAB -> tag(wooden ? BlockTags.WOODEN_SLABS : BlockTags.SLABS).add(block);
-                    case WALL -> tag(BlockTags.WALLS).add(block);
-                    default -> {}
-                }
-                tag(tool).add(block);
-            });
+                    : BlockTags.MINEABLE_WITH_PICKAXE);
         });
 
         tag(BlockTags.MINEABLE_WITH_PICKAXE)

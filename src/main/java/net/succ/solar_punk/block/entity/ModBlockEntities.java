@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.entity;
 
+import net.succ.solar_punk.wire.ModWires;
 import net.succ.solar_punk.compat.newage.NewAgeHeat;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -34,8 +35,8 @@ import net.succ.solar_punk.block.entity.custom.SolarGlassBlockEntity;
 import net.succ.solar_punk.block.entity.custom.StreetlampBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GrowLampBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarPlantBedBlockEntity;
-import net.succ.solar_punk.block.entity.custom.WireConnectorBlockEntity;
-import net.succ.solar_punk.block.entity.custom.WireSwitchBlockEntity;
+import net.succ.offbyonelib.wire.WireConnectorBlockEntity;
+import net.succ.offbyonelib.wire.WireSwitchBlockEntity;
 import net.succ.solar_punk.block.entity.custom.ElectricMotorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.EndPlateBlockEntity;
 import net.succ.solar_punk.block.entity.custom.GreenhouseControllerBlockEntity;
@@ -120,7 +121,7 @@ public class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WireConnectorBlockEntity>> WIRE_CONNECTOR =
             BLOCK_ENTITIES.register("wire_connector", () -> BlockEntityType.Builder
-                    .of((pos, state) -> new WireConnectorBlockEntity(ModBlockEntities.WIRE_CONNECTOR.get(), pos, state), ModBlocks.WIRE_CONNECTOR.get())
+                    .of((pos, state) -> new WireConnectorBlockEntity(ModBlockEntities.WIRE_CONNECTOR.get(), pos, state, ModWires.SYSTEM), ModBlocks.WIRE_CONNECTOR.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EndPlateBlockEntity>> END_PLATE =
@@ -135,7 +136,7 @@ public class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WireSwitchBlockEntity>> WIRE_SWITCH =
             BLOCK_ENTITIES.register("wire_switch", () -> BlockEntityType.Builder
-                    .of((pos, state) -> new WireSwitchBlockEntity(ModBlockEntities.WIRE_SWITCH.get(), pos, state),
+                    .of((pos, state) -> new WireSwitchBlockEntity(ModBlockEntities.WIRE_SWITCH.get(), pos, state, ModWires.SYSTEM),
                             ModBlocks.WIRE_SWITCH.get(), ModBlocks.REDSTONE_WIRE_RELAY.get())
                     .build(null));
 

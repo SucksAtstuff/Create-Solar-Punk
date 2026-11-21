@@ -1,5 +1,6 @@
 package net.succ.solar_punk.block.custom;
 
+import net.succ.offbyonelib.multiblock.MultiBlockLayerItem;
 import com.simibubi.create.api.connectivity.ConnectivityHandler;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.item.ItemHelper;
@@ -84,7 +85,7 @@ public class BioreactorBlock extends Block implements EntityBlock, IWrenchable {
 
     @Override
     public SoundType getSoundType(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
-        if (entity instanceof Player player && player.getPersistentData().contains("SilenceVatSound"))
+        if (MultiBlockLayerItem.isFillingLayer(entity))
             return SILENCED_GLASS;
         return super.getSoundType(state, level, pos, entity);
     }

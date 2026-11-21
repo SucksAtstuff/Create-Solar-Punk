@@ -16,7 +16,7 @@ import net.succ.solar_punk.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
 
-import static net.succ.solar_punk.datagen.DatagenUtil.createItem;
+import static net.succ.offbyonelib.datagen.DatagenUtil.createItem;
 
 public class ModSequencedAssemblyRecipeGen extends SequencedAssemblyRecipeGen {
 

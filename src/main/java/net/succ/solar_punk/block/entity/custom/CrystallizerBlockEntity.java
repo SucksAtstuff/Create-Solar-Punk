@@ -1,7 +1,7 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import net.succ.solar_punk.util.GoggleHelper;
-import net.succ.solar_punk.util.PonderHelper;
+import net.succ.solar_punk.SolarPunk;
+import net.succ.offbyonelib.util.PonderHelper;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.ChatFormatting;
@@ -29,7 +29,7 @@ import net.succ.solar_punk.sound.ModSounds;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import net.succ.solar_punk.util.FluidTankNBTHelper;
+import net.succ.offbyonelib.util.FluidTankNBTHelper;
 
 /**
  * Generic two-fluids-in, item-plus-optional-fluid-out machine. Everything about what it
@@ -260,9 +260,9 @@ public class CrystallizerBlockEntity extends BlockEntity implements IHaveGoggleI
                 .add(CreateLang.number(progress).style(ChatFormatting.YELLOW).component())
                 .forGoggles(tooltip, 1);
 
-        GoggleHelper.namedTank(tooltip, "crystallizer_input_a", inputTankA, ChatFormatting.GOLD);
-        GoggleHelper.namedTank(tooltip, "crystallizer_input_b", inputTankB, ChatFormatting.GOLD);
-        GoggleHelper.namedTank(tooltip, "crystallizer_byproduct", outputFluidTank, ChatFormatting.YELLOW);
+        SolarPunk.GOGGLES.namedTank(tooltip, "crystallizer_input_a", inputTankA, ChatFormatting.GOLD);
+        SolarPunk.GOGGLES.namedTank(tooltip, "crystallizer_input_b", inputTankB, ChatFormatting.GOLD);
+        SolarPunk.GOGGLES.namedTank(tooltip, "crystallizer_byproduct", outputFluidTank, ChatFormatting.YELLOW);
 
         ItemStack output = itemHandler.getStackInSlot(0);
         if (!output.isEmpty()) {

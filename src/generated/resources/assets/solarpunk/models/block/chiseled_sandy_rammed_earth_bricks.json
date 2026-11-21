@@ -1,5 +1,5 @@
 {
-  "parent": "solarpunk:block/tinted/cube_all",
+  "parent": "offbyonelib:block/tinted/cube_all",
   "textures": {
     "all": "solarpunk:block/chiseled_rammed_earth"
   }

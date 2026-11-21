@@ -1,6 +1,6 @@
 package net.succ.solar_punk.block.entity.custom;
 
-import net.succ.solar_punk.util.GoggleHelper;
+import net.succ.solar_punk.SolarPunk;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -30,7 +30,7 @@ import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
-import net.succ.solar_punk.util.FluidTankNBTHelper;
+import net.succ.offbyonelib.util.FluidTankNBTHelper;
 
 public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, GeoBlockEntity {
 
@@ -133,7 +133,7 @@ public class KineticSprinklerBlockEntity extends SmartBlockEntity implements IHa
                 .forGoggles(tooltip, 1);
 
         boolean fertilizer = hasFertilizer();
-        GoggleHelper.tank(tooltip, hasRichFertilizer() ? "rich_fertilizer" : fertilizer ? "fertilizer" : "water", fluidTank,
+        SolarPunk.GOGGLES.tank(tooltip, hasRichFertilizer() ? "rich_fertilizer" : fertilizer ? "fertilizer" : "water", fluidTank,
                 fertilizer ? ChatFormatting.GREEN : ChatFormatting.AQUA);
 
         return true;

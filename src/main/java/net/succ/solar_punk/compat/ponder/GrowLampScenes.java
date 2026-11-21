@@ -1,5 +1,6 @@
 package net.succ.solar_punk.compat.ponder;
 
+import net.succ.solar_punk.wire.ModWires;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import net.createmod.catnip.math.Pointing;
@@ -15,7 +16,6 @@ import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.succ.solar_punk.block.custom.BrassSolarPanelBlock;
 import net.succ.solar_punk.block.custom.GrowLampBlock;
-import net.succ.solar_punk.wire.WireTier;
 
 // Schematic (ModPonderProvider "grow_lamp/usage"): a 3x3 carrot bed (x/z 1-3), a stripped spruce
 // post at x=0 and x=4 (z=2, y 1-4) with a Brass Solar Panel on top and a Wire Connector on the
@@ -71,13 +71,13 @@ public class GrowLampScenes {
         scene.world().showSection(plugs, Direction.DOWN);
         scene.idle(15);
         BlockPos left = new BlockPos(0, 5, 1), right = new BlockPos(4, 5, 1);
-        WireScenes.wire(scene, left, 0, new BlockPos(1, 5, 2), 0, WireTier.COPPER);
+        WireScenes.wire(scene, left, 0, new BlockPos(1, 5, 2), 0, ModWires.COPPER);
         scene.idle(4);
-        WireScenes.wire(scene, new BlockPos(1, 5, 2), 0, new BlockPos(2, 5, 2), 0, WireTier.COPPER);
+        WireScenes.wire(scene, new BlockPos(1, 5, 2), 0, new BlockPos(2, 5, 2), 0, ModWires.COPPER);
         scene.idle(4);
-        WireScenes.wire(scene, new BlockPos(2, 5, 2), 0, new BlockPos(3, 5, 2), 0, WireTier.COPPER);
+        WireScenes.wire(scene, new BlockPos(2, 5, 2), 0, new BlockPos(3, 5, 2), 0, ModWires.COPPER);
         scene.idle(4);
-        WireScenes.wire(scene, new BlockPos(3, 5, 2), 0, right, 0, WireTier.COPPER);
+        WireScenes.wire(scene, new BlockPos(3, 5, 2), 0, right, 0, ModWires.COPPER);
         scene.idle(10);
         scene.overlay().showText(70)
                 .text("They run on FE from any side, 8 FE/t each. Here Wire Connectors bring it from the solar panels")

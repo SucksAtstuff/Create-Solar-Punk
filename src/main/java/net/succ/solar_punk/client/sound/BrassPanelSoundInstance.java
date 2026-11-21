@@ -1,5 +1,6 @@
 package net.succ.solar_punk.client.sound;
 
+import net.succ.offbyonelib.client.sound.MachineSoundInstance;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.succ.solar_punk.block.entity.custom.BrassSolarPanelBlockEntity;

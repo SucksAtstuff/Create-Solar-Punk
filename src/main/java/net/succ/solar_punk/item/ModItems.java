@@ -1,12 +1,13 @@
 package net.succ.solar_punk.item;
 
+import net.succ.solar_punk.wire.ModWires;
+import net.succ.offbyonelib.wire.SpoolItem;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemNameBlockItem;
 import net.succ.solar_punk.block.ModBlocks;
 import net.neoforged.bus.api.IEventBus;
-import net.succ.solar_punk.wire.WireTier;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.succ.solar_punk.SolarPunk;
@@ -129,13 +130,13 @@ public class ModItems {
             () -> new Item(new Item.Properties()));
 
     public static final DeferredItem<SpoolItem> COPPER_SPOOL = ITEMS.register("copper_spool",
-            () -> new SpoolItem(WireTier.COPPER, new Item.Properties()));
+            () -> new SpoolItem(ModWires.COPPER, ModWires.SYSTEM, new Item.Properties()));
 
     public static final DeferredItem<SpoolItem> IRON_SPOOL = ITEMS.register("iron_spool",
-            () -> new SpoolItem(WireTier.IRON, new Item.Properties()));
+            () -> new SpoolItem(ModWires.IRON, ModWires.SYSTEM, new Item.Properties()));
 
     public static final DeferredItem<SpoolItem> GOLD_SPOOL = ITEMS.register("gold_spool",
-            () -> new SpoolItem(WireTier.GOLD, new Item.Properties()));
+            () -> new SpoolItem(ModWires.GOLD, ModWires.SYSTEM, new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
