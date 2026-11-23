@@ -12,6 +12,7 @@ import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.entity.custom.AndesiteSolarPanelBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BiofuelEngineBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BiomassGasifierBlockEntity;
+import net.succ.solar_punk.block.entity.custom.BioreactorBaseBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FermentationVatBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BioreactorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.FireboxBoilerBlockEntity;
@@ -55,6 +56,11 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BioreactorBlockEntity>> BIOREACTOR =
             BLOCK_ENTITIES.register("bioreactor", () -> BlockEntityType.Builder
                     .of((pos, state) -> new BioreactorBlockEntity(ModBlockEntities.BIOREACTOR.get(), pos, state), ModBlocks.BIOREACTOR.get())
+                    .build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BioreactorBaseBlockEntity>> BIOREACTOR_BASE =
+            BLOCK_ENTITIES.register("bioreactor_base", () -> BlockEntityType.Builder
+                    .of((pos, state) -> new BioreactorBaseBlockEntity(ModBlockEntities.BIOREACTOR_BASE.get(), pos, state), ModBlocks.BIOREACTOR_BASE.get())
                     .build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BiomassGasifierBlockEntity>> BIOMASS_GASIFIER =

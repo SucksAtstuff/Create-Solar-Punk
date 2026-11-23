@@ -224,8 +224,8 @@ public class SolarPunk {
         );
         // Bioreactor: the glass takes Water or Algae Culture and gives culture (not through the
         // top, where a pipe would shade it); the Base takes Water, culture, nutrients and seeds
-        // and gives Oxygen and Biomass. Base blocks have no block entity, so their handlers
-        // find the tank above on every call.
+        // and gives Oxygen and Biomass. The Base's handlers find the tank above on every call,
+        // since it can form, split or be replaced while the Base stays.
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 ModBlockEntities.BIOREACTOR.get(),

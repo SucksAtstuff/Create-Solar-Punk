@@ -1,3 +1,18 @@
+# 2.2.1-1.21.1
+
+## Fixes
+
+- Fixed Create pipes and pumps not connecting to the Bioreactor Base, so Fertilizer, Rich Fertilizer and Water can be piped in and Oxygen pumped out.
+- Fixed tall Bioreactors looking sectioned off, with a lid and floor drawn between every layer. Existing tanks fix themselves when loaded.
+- Fixed a Bioreactor not on a Base having no visible floor from the inside.
+- Fixed the Solar Plant Bed turning dark on any side with a block next to it.
+- Fixed a Steam Turbine spun against its network dropping a new Turbine Rotor every time it broke, instead of breaking once.
+- Fixed Fuel Cells showing their side texture turned the wrong way, so a row now reads as one long cell.
+
+## Changes
+
+- End Plates can be turned with a Wrench, so their ports can point any way around the stack.
+
 # 2.2.0-1.21.1
 
 ## New

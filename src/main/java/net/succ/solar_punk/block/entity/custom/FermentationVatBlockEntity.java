@@ -43,6 +43,8 @@ import java.util.List;
 public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVatBlockEntity>
         implements IHaveGoggleInformation {
 
+    private boolean positionChecked;
+
     public static final int MAX_HEIGHT = 16;
 
     @OnlyIn(Dist.CLIENT)
@@ -132,12 +134,14 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
 
     @Override
     protected void updatePosition() {
+        // This block's own height, not the controller's: Create sets the parts' size
+        // before the controller's, so the controller still has its old height here.
         FermentationVatBlockEntity ctrl = getControllerBE();
         if (ctrl == null) return;
         int yOffset = worldPosition.getY() - ctrl.worldPosition.getY();
-        boolean alone = ctrl.height == 1;
+        boolean alone = height == 1;
         boolean isBot = yOffset == 0;
-        boolean isTop = yOffset == ctrl.height - 1;
+        boolean isTop = yOffset == height - 1;
         VatPosition vPos = alone ? VatPosition.SINGLE
                 : isBot  ? VatPosition.BOTTOM
                 : isTop  ? VatPosition.TOP
@@ -187,6 +191,12 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         if (updateConnectivity) {
             updateConnectivity = false;
             ConnectivityHandler.formMulti(this);
+        }
+        // Tanks formed before 2.2.1 could have the wrong POSITION on every block but the
+        // controller, so each block checks its own once after loading.
+        if (!positionChecked) {
+            positionChecked = true;
+            updatePosition();
         }
 
         if (!isController()) return;

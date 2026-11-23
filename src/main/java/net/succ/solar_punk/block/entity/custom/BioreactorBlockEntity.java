@@ -68,6 +68,8 @@ import java.util.function.Supplier;
 public class BioreactorBlockEntity extends MultiBlockFluidBE<BioreactorBlockEntity>
         implements IHaveGoggleInformation {
 
+    private boolean positionChecked;
+
     public static final int MAX_HEIGHT = 8;
     public static final int OUTPUT_SLOT = 0, SEED_SLOT = 1;
     /** Inset of the rendered fluid (and particles) from the glass, in blocks. */
@@ -139,12 +141,14 @@ public class BioreactorBlockEntity extends MultiBlockFluidBE<BioreactorBlockEnti
 
     @Override
     protected void updatePosition() {
+        // This block's own height, not the controller's: Create sets the parts' size
+        // before the controller's, so the controller still has its old height here.
         BioreactorBlockEntity ctrl = getControllerBE();
         if (ctrl == null) return;
         int yOffset = worldPosition.getY() - ctrl.worldPosition.getY();
-        VatPosition vPos = ctrl.height == 1 ? VatPosition.SINGLE
+        VatPosition vPos = height == 1 ? VatPosition.SINGLE
                 : yOffset == 0 ? VatPosition.BOTTOM
-                : yOffset == ctrl.height - 1 ? VatPosition.TOP
+                : yOffset == height - 1 ? VatPosition.TOP
                 : VatPosition.MIDDLE;
         BlockState state = level.getBlockState(worldPosition);
         if (state.getValue(BioreactorBlock.POSITION) != vPos)
@@ -244,6 +248,12 @@ public class BioreactorBlockEntity extends MultiBlockFluidBE<BioreactorBlockEnti
         if (updateConnectivity) {
             updateConnectivity = false;
             ConnectivityHandler.formMulti(this);
+        }
+        // Tanks formed before 2.2.1 could have the wrong POSITION on every block but the
+        // controller, so each block checks its own once after loading.
+        if (!positionChecked) {
+            positionChecked = true;
+            updatePosition();
         }
         if (!isController() || level.getGameTime() % 20 != 0) return;
 
@@ -585,8 +595,8 @@ public class BioreactorBlockEntity extends MultiBlockFluidBE<BioreactorBlockEnti
 
     /**
      * A fluid handler that finds the controller on every call, so it keeps working while the
-     * tank forms and splits (pipes cache the handler object, and Base blocks have no block
-     * entity to invalidate it). The glass takes Water or culture and gives culture; the Base
+     * tank forms and splits (pipes cache the handler object, and nothing invalidates the
+     * Base's when the tank above changes). The glass takes Water or culture and gives culture; the Base
      * takes Water, culture and nutrients and gives Oxygen, so a pump on the Base pulls Oxygen.
      */
     public static class FluidPort implements IFluidHandler {

@@ -37,6 +37,8 @@ import net.succ.offbyonelib.util.FluidTankNBTHelper;
 public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowerBlockEntity>
         implements IHaveGoggleInformation {
 
+    private boolean positionChecked;
+
     public  boolean steamMode           = false;
     private float saltAccumulator      = 0f;
     private float steamAccumulator     = 0f;
@@ -135,12 +137,14 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
 
     @Override
     protected void updatePosition() {
+        // This block's own height, not the controller's: Create sets the parts' size
+        // before the controller's, so the controller still has its old height here.
         SolarPowerTowerBlockEntity ctrl = getControllerBE();
         if (ctrl == null) return;
         int yOffset = worldPosition.getY() - ctrl.worldPosition.getY();
-        boolean alone  = ctrl.height == 1;
+        boolean alone  = height == 1;
         boolean isBot  = yOffset == 0;
-        boolean isTop  = yOffset == ctrl.height - 1;
+        boolean isTop  = yOffset == height - 1;
         SolarPowerTowerBlock.TowerPosition pos = alone  ? SolarPowerTowerBlock.TowerPosition.SINGLE
                                                : isBot  ? SolarPowerTowerBlock.TowerPosition.BOTTOM
                                                : isTop  ? SolarPowerTowerBlock.TowerPosition.TOP
@@ -190,6 +194,12 @@ public class SolarPowerTowerBlockEntity extends MultiBlockFluidBE<SolarPowerTowe
         if (updateConnectivity) {
             updateConnectivity = false;
             ConnectivityHandler.formMulti(this);
+        }
+        // Tanks formed before 2.2.1 could have the wrong POSITION on every block but the
+        // controller, so each block checks its own once after loading.
+        if (!positionChecked) {
+            positionChecked = true;
+            updatePosition();
         }
 
         if (!isController()) return;

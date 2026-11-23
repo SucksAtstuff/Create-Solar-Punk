@@ -9,20 +9,29 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.succ.solar_punk.block.entity.ModBlockEntities;
+import net.succ.solar_punk.block.entity.custom.BioreactorBaseBlockEntity;
 import net.succ.solar_punk.block.entity.custom.BioreactorBlockEntity;
 import net.succ.offbyonelib.util.MachineInteractions;
 
 /**
- * The aerator layer under a Bioreactor. It has no block entity: everything goes to the
- * controller of the glass tank above ({@link BioreactorBlockEntity#above}). Water, nutrients
- * and Kelp go in, Biomass and Oxygen come out.
+ * The aerator layer under a Bioreactor. Everything goes to the controller of the glass tank
+ * above ({@link BioreactorBlockEntity#above}); its block entity holds nothing and is only
+ * there so Create's pipes connect. Water, nutrients and Kelp go in, Biomass and Oxygen come out.
  */
-public class BioreactorBaseBlock extends Block implements IProxyHoveringInformation {
+public class BioreactorBaseBlock extends Block implements EntityBlock, IProxyHoveringInformation {
 
     public BioreactorBaseBlock(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new BioreactorBaseBlockEntity(ModBlockEntities.BIOREACTOR_BASE.get(), pos, state);
     }
 
     @Override
