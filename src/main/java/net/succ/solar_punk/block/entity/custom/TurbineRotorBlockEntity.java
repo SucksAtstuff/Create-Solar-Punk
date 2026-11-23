@@ -258,6 +258,9 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
             steamSupply = Math.min(1f, (float) steamTank.getFluidAmount() / steamPerTick);
         if (!wasActive || level.getGameTime() % 20 == 0) {
             updateGeneratedRotation();
+            // Create pops a generator that turns against its network, and this block
+            // entity is gone from then on.
+            if (isRemoved()) return;
             setChanged();
         }
 
@@ -283,7 +286,11 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
     }
 
     private void setActive(boolean active) {
-        BlockState state = getBlockState();
+        // The level's state, not the cached one: if Create just popped this rotor (turning
+        // against its network), setting the cached state would put the block back, and
+        // every pop would drop another rotor.
+        if (isRemoved()) return;
+        BlockState state = level.getBlockState(worldPosition);
         if (state.getBlock() instanceof TurbineRotorBlock && state.getValue(TurbineRotorBlock.ACTIVE) != active) {
             level.setBlock(worldPosition, state.setValue(TurbineRotorBlock.ACTIVE, active), 3);
             setBladeHidden(active);

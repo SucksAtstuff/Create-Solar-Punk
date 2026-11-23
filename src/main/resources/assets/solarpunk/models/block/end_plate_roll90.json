@@ -1,0 +1,16 @@
+{
+	"loader": "neoforge:composite",
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"particle": "solarpunk:block/fuel_cell/end_plate"
+	},
+	"transform": {
+		"rotation": {"z": 90},
+		"origin": "center"
+	},
+	"children": {
+		"plate": {
+			"parent": "solarpunk:block/end_plate"
+		}
+	}
+}

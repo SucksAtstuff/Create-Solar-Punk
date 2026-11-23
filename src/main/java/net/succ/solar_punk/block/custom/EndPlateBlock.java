@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -30,54 +31,80 @@ import net.succ.solar_punk.block.entity.ModBlockEntities;
 import net.succ.solar_punk.block.entity.custom.EndPlateBlockEntity;
 import net.succ.offbyonelib.util.MachineInteractions;
 
-import java.util.EnumMap;
-import java.util.Map;
-
 /**
  * Clamps one end of a Fuel Cell stack. FACING points away from the stack: the flat plate
  * touches the cells, and the rod ends and two ports face out. The port on FACING's clockwise
  * side (the model's east) takes Hydrogen and Oxygen; the one on the counter-clockwise side
- * (the model's west) gives out Water. See EndPlateBlockEntity.
+ * (the model's west) gives out Water. ROLL turns the plate around FACING in quarter turns (a
+ * Wrench cycles it), so the ports can point any way; the rolled models are neoforge:composite
+ * wrappers of end_plate.json with a root transform. See EndPlateBlockEntity.
  */
 public class EndPlateBlock extends Block implements IBE<EndPlateBlockEntity>, IWrenchable {
 
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    /** Quarter turns around FACING; 0 is the model as made. */
+    public static final IntegerProperty ROLL = IntegerProperty.create("roll", 0, 3);
 
-    private static final Map<Direction, VoxelShape> SHAPES = new EnumMap<>(Direction.class);
+    private static final VoxelShape[] SHAPES = new VoxelShape[6 * 4];
     static {
         // As modelled facing north: the plate on the south side, and the two ports.
         for (Direction dir : Direction.values()) {
-            SHAPES.put(dir, Shapes.or(
-                    box(dir, 0, 0, 13, 16, 16, 16),
-                    box(dir, 0, 3, 3, 7, 13, 13),
-                    box(dir, 9, 3, 3, 16, 13, 13)));
+            for (int roll = 0; roll < 4; roll++) {
+                SHAPES[dir.get3DDataValue() * 4 + roll] = Shapes.or(
+                        box(dir, roll, 0, 0, 13, 16, 16, 16),
+                        box(dir, roll, 0, 3, 3, 7, 13, 13),
+                        box(dir, roll, 9, 3, 3, 16, 13, 13));
+            }
         }
     }
 
-    // A box in model pixels (facing north), turned the way the blockstate turns the model.
-    private static VoxelShape box(Direction dir, double x1, double y1, double z1, double x2, double y2, double z2) {
+    /**
+     * A point in model space (facing north, centred on the block) turned the way the model is:
+     * first the roll (the composite's root transform, a right-handed turn around Z, so +X goes
+     * to +Y), then the blockstate's x/y rotation.
+     */
+    private static double[] toWorld(Direction dir, int roll, double x, double y, double z) {
+        for (int i = 0; i < roll; i++) {
+            double t = x;
+            x = -y;
+            y = t;
+        }
         return switch (dir) {
-            case SOUTH -> Block.box(16 - x2, y1, 16 - z2, 16 - x1, y2, 16 - z1);
-            case EAST -> Block.box(16 - z2, y1, x1, 16 - z1, y2, x2);
-            case WEST -> Block.box(z1, y1, 16 - x2, z2, y2, 16 - x1);
+            case SOUTH -> new double[]{-x, y, -z};
+            case EAST -> new double[]{-z, y, x};
+            case WEST -> new double[]{z, y, -x};
             // x = 90: north turns to face down.
-            case DOWN -> Block.box(x1, z1, 16 - y2, x2, z2, 16 - y1);
+            case DOWN -> new double[]{x, z, -y};
             // x = 270: north turns to face up.
-            case UP -> Block.box(x1, 16 - z2, y1, x2, 16 - z1, y2);
-            default -> Block.box(x1, y1, z1, x2, y2, z2);
+            case UP -> new double[]{x, -z, y};
+            default -> new double[]{x, y, z};
         };
+    }
+
+    // A box in model pixels (facing north), turned the way the model is turned.
+    private static VoxelShape box(Direction dir, int roll, double x1, double y1, double z1, double x2, double y2, double z2) {
+        double[] a = toWorld(dir, roll, x1 - 8, y1 - 8, z1 - 8);
+        double[] b = toWorld(dir, roll, x2 - 8, y2 - 8, z2 - 8);
+        return Block.box(Math.min(a[0], b[0]) + 8, Math.min(a[1], b[1]) + 8, Math.min(a[2], b[2]) + 8,
+                Math.max(a[0], b[0]) + 8, Math.max(a[1], b[1]) + 8, Math.max(a[2], b[2]) + 8);
+    }
+
+    // The world side that the model's side (dx, 0, 0) ends up on.
+    private static Direction side(Direction facing, int roll, int dx) {
+        double[] v = toWorld(facing, roll, dx, 0, 0);
+        return Direction.getNearest(v[0], v[1], v[2]);
     }
 
     public EndPlateBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(LIT, false).setValue(FACING, Direction.NORTH));
+        registerDefaultState(defaultBlockState().setValue(LIT, false).setValue(FACING, Direction.NORTH).setValue(ROLL, 0));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(LIT, FACING);
+        builder.add(LIT, FACING, ROLL);
     }
 
     // Placed against the end of a stack (or anything), it faces away from what was clicked.
@@ -86,31 +113,51 @@ public class EndPlateBlock extends Block implements IBE<EndPlateBlockEntity>, IW
         return defaultBlockState().setValue(FACING, context.getClickedFace());
     }
 
+    // A Wrench rolls the plate a quarter turn around FACING, so the ports point another way.
+    @Override
+    public BlockState getRotatedBlockState(BlockState state, Direction targetedFace) {
+        return state.cycle(ROLL);
+    }
+
+    // The ports moved, so pipes have to look up the sided fluid handlers again.
+    @Override
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        if (oldState.is(this) && oldState.getValue(ROLL) != state.getValue(ROLL))
+            level.invalidateCapabilities(pos);
+    }
+
+    // Turned or mirrored with a structure: keep the ports on the same world sides they turn to.
     @Override
     protected BlockState rotate(BlockState state, Rotation rotation) {
-        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+        return withGasSide(state, rotation.rotate(state.getValue(FACING)), rotation.rotate(gasSide(state)));
     }
 
     @Override
     protected BlockState mirror(BlockState state, Mirror mirror) {
-        return state.rotate(mirror.getRotation(state.getValue(FACING)));
+        return withGasSide(state, mirror.mirror(state.getValue(FACING)), mirror.mirror(gasSide(state)));
+    }
+
+    private static BlockState withGasSide(BlockState state, Direction facing, Direction gas) {
+        for (int roll = 0; roll < 4; roll++)
+            if (side(facing, roll, 1) == gas)
+                return state.setValue(FACING, facing).setValue(ROLL, roll);
+        return state.setValue(FACING, facing);
     }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPES.get(state.getValue(FACING));
+        return SHAPES[state.getValue(FACING).get3DDataValue() * 4 + state.getValue(ROLL)];
     }
 
-    /** The face the gas port opens onto. */
+    /** The face the gas port opens onto (the model's east). */
     public static Direction gasSide(BlockState state) {
-        Direction facing = state.getValue(FACING);
-        return facing.getAxis().isVertical() ? Direction.EAST : facing.getClockWise();
+        return side(state.getValue(FACING), state.getValue(ROLL), 1);
     }
 
-    /** The face the Water port opens onto. */
+    /** The face the Water port opens onto (the model's west). */
     public static Direction waterSide(BlockState state) {
-        Direction facing = state.getValue(FACING);
-        return facing.getAxis().isVertical() ? Direction.WEST : facing.getCounterClockWise();
+        return side(state.getValue(FACING), state.getValue(ROLL), -1);
     }
 
     // Buckets: Hydrogen or Oxygen in, an empty one takes Water out.

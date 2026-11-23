@@ -1,49 +1,187 @@
 {
   "variants": {
-    "facing=down,lit=false": {
+    "facing=down,lit=false,roll=0": {
       "model": "solarpunk:block/end_plate",
       "x": 90
     },
-    "facing=down,lit=true": {
+    "facing=down,lit=false,roll=1": {
+      "model": "solarpunk:block/end_plate_roll90",
+      "x": 90
+    },
+    "facing=down,lit=false,roll=2": {
+      "model": "solarpunk:block/end_plate_roll180",
+      "x": 90
+    },
+    "facing=down,lit=false,roll=3": {
+      "model": "solarpunk:block/end_plate_roll270",
+      "x": 90
+    },
+    "facing=down,lit=true,roll=0": {
       "model": "solarpunk:block/end_plate",
       "x": 90
     },
-    "facing=east,lit=false": {
+    "facing=down,lit=true,roll=1": {
+      "model": "solarpunk:block/end_plate_roll90",
+      "x": 90
+    },
+    "facing=down,lit=true,roll=2": {
+      "model": "solarpunk:block/end_plate_roll180",
+      "x": 90
+    },
+    "facing=down,lit=true,roll=3": {
+      "model": "solarpunk:block/end_plate_roll270",
+      "x": 90
+    },
+    "facing=east,lit=false,roll=0": {
       "model": "solarpunk:block/end_plate",
       "y": 90
     },
-    "facing=east,lit=true": {
+    "facing=east,lit=false,roll=1": {
+      "model": "solarpunk:block/end_plate_roll90",
+      "y": 90
+    },
+    "facing=east,lit=false,roll=2": {
+      "model": "solarpunk:block/end_plate_roll180",
+      "y": 90
+    },
+    "facing=east,lit=false,roll=3": {
+      "model": "solarpunk:block/end_plate_roll270",
+      "y": 90
+    },
+    "facing=east,lit=true,roll=0": {
       "model": "solarpunk:block/end_plate",
       "y": 90
     },
-    "facing=north,lit=false": {
+    "facing=east,lit=true,roll=1": {
+      "model": "solarpunk:block/end_plate_roll90",
+      "y": 90
+    },
+    "facing=east,lit=true,roll=2": {
+      "model": "solarpunk:block/end_plate_roll180",
+      "y": 90
+    },
+    "facing=east,lit=true,roll=3": {
+      "model": "solarpunk:block/end_plate_roll270",
+      "y": 90
+    },
+    "facing=north,lit=false,roll=0": {
       "model": "solarpunk:block/end_plate"
     },
-    "facing=north,lit=true": {
+    "facing=north,lit=false,roll=1": {
+      "model": "solarpunk:block/end_plate_roll90"
+    },
+    "facing=north,lit=false,roll=2": {
+      "model": "solarpunk:block/end_plate_roll180"
+    },
+    "facing=north,lit=false,roll=3": {
+      "model": "solarpunk:block/end_plate_roll270"
+    },
+    "facing=north,lit=true,roll=0": {
       "model": "solarpunk:block/end_plate"
     },
-    "facing=south,lit=false": {
+    "facing=north,lit=true,roll=1": {
+      "model": "solarpunk:block/end_plate_roll90"
+    },
+    "facing=north,lit=true,roll=2": {
+      "model": "solarpunk:block/end_plate_roll180"
+    },
+    "facing=north,lit=true,roll=3": {
+      "model": "solarpunk:block/end_plate_roll270"
+    },
+    "facing=south,lit=false,roll=0": {
       "model": "solarpunk:block/end_plate",
       "y": 180
     },
-    "facing=south,lit=true": {
+    "facing=south,lit=false,roll=1": {
+      "model": "solarpunk:block/end_plate_roll90",
+      "y": 180
+    },
+    "facing=south,lit=false,roll=2": {
+      "model": "solarpunk:block/end_plate_roll180",
+      "y": 180
+    },
+    "facing=south,lit=false,roll=3": {
+      "model": "solarpunk:block/end_plate_roll270",
+      "y": 180
+    },
+    "facing=south,lit=true,roll=0": {
       "model": "solarpunk:block/end_plate",
       "y": 180
     },
-    "facing=up,lit=false": {
+    "facing=south,lit=true,roll=1": {
+      "model": "solarpunk:block/end_plate_roll90",
+      "y": 180
+    },
+    "facing=south,lit=true,roll=2": {
+      "model": "solarpunk:block/end_plate_roll180",
+      "y": 180
+    },
+    "facing=south,lit=true,roll=3": {
+      "model": "solarpunk:block/end_plate_roll270",
+      "y": 180
+    },
+    "facing=up,lit=false,roll=0": {
       "model": "solarpunk:block/end_plate",
       "x": 270
     },
-    "facing=up,lit=true": {
+    "facing=up,lit=false,roll=1": {
+      "model": "solarpunk:block/end_plate_roll90",
+      "x": 270
+    },
+    "facing=up,lit=false,roll=2": {
+      "model": "solarpunk:block/end_plate_roll180",
+      "x": 270
+    },
+    "facing=up,lit=false,roll=3": {
+      "model": "solarpunk:block/end_plate_roll270",
+      "x": 270
+    },
+    "facing=up,lit=true,roll=0": {
       "model": "solarpunk:block/end_plate",
       "x": 270
     },
-    "facing=west,lit=false": {
+    "facing=up,lit=true,roll=1": {
+      "model": "solarpunk:block/end_plate_roll90",
+      "x": 270
+    },
+    "facing=up,lit=true,roll=2": {
+      "model": "solarpunk:block/end_plate_roll180",
+      "x": 270
+    },
+    "facing=up,lit=true,roll=3": {
+      "model": "solarpunk:block/end_plate_roll270",
+      "x": 270
+    },
+    "facing=west,lit=false,roll=0": {
       "model": "solarpunk:block/end_plate",
       "y": 270
     },
-    "facing=west,lit=true": {
+    "facing=west,lit=false,roll=1": {
+      "model": "solarpunk:block/end_plate_roll90",
+      "y": 270
+    },
+    "facing=west,lit=false,roll=2": {
+      "model": "solarpunk:block/end_plate_roll180",
+      "y": 270
+    },
+    "facing=west,lit=false,roll=3": {
+      "model": "solarpunk:block/end_plate_roll270",
+      "y": 270
+    },
+    "facing=west,lit=true,roll=0": {
       "model": "solarpunk:block/end_plate",
+      "y": 270
+    },
+    "facing=west,lit=true,roll=1": {
+      "model": "solarpunk:block/end_plate_roll90",
+      "y": 270
+    },
+    "facing=west,lit=true,roll=2": {
+      "model": "solarpunk:block/end_plate_roll180",
+      "y": 270
+    },
+    "facing=west,lit=true,roll=3": {
+      "model": "solarpunk:block/end_plate_roll270",
       "y": 270
     }
   }

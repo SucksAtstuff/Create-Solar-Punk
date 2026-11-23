@@ -365,6 +365,8 @@ public class ModLangProvider extends LanguageProvider {
         add("block.solarpunk.end_plate.tooltip.behaviour1", "The port with arrows pointing in takes _Hydrogen_ or _Oxygen_: pipe one gas into each End Plate. The other port gives out _Water_. Take _FE_ from any side, with a _Wire Connector_ or a machine touching it.");
         add("block.solarpunk.end_plate.tooltip.condition2", "When powered");
         add("block.solarpunk.end_plate.tooltip.behaviour2", "A _Redstone_ signal on either plate pauses the stack, saving fuel.");
+        add("block.solarpunk.end_plate.tooltip.condition3", "When Wrenched");
+        add("block.solarpunk.end_plate.tooltip.behaviour3", "Turns the plate a quarter turn, so the ports point the way your pipes come in.");
         add("block.solarpunk.electric_motor.tooltip.summary", "Turns _FE_ into _rotational force_. Feed it from a _Brass Solar Panel_ or a _Wire Connector_ on any side.");
         add("block.solarpunk.electric_motor.tooltip.condition1", "When powered");
         add("block.solarpunk.electric_motor.tooltip.behaviour1", "Spins at the speed you set on it, up to _64 RPM_ either way. It uses FE for that speed whatever the load, so set it _slower_ to save power.");

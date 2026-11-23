@@ -572,14 +572,18 @@ public class ModBlockStateProvider extends AddonBlockStateProvider {
         simpleBlockItem(ModBlocks.WIRE_CONNECTOR.get(), model);
     }
 
-    // The hand-made model faces north (ports and rod ends out); any of the six directions.
+    // The hand-made model faces north (ports and rod ends out); any of the six directions. Each
+    // roll is a hand-written composite (end_plate_roll90/180/270) turning it around its facing,
+    // since blockstate rotations can't.
     private void endPlateBlock() {
         ModelFile model = new UncheckedModelFile(modLoc("block/end_plate"));
         getVariantBuilder(ModBlocks.END_PLATE.get()).forAllStates(state -> {
             Direction facing = state.getValue(EndPlateBlock.FACING);
+            int roll = state.getValue(EndPlateBlock.ROLL);
             int x = facing == Direction.DOWN ? 90 : facing == Direction.UP ? 270 : 0;
             int y = facing.getAxis().isHorizontal() ? horizontalYRot(facing) : 0;
-            return ConfiguredModel.builder().modelFile(model).rotationX(x).rotationY(y).build();
+            ModelFile rolled = roll == 0 ? model : new UncheckedModelFile(modLoc("block/end_plate_roll" + roll * 90));
+            return ConfiguredModel.builder().modelFile(rolled).rotationX(x).rotationY(y).build();
         });
         simpleBlockItem(ModBlocks.END_PLATE.get(), model);
     }
