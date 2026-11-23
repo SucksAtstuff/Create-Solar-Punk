@@ -1,10 +1,10 @@
 # Create: Solarpunk
 
-A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecosystem: solar panels, solar heat and thermal storage, steam turbines, biofuel, geothermal power, nuclear fusion, a Particle Accelerator, wires for carrying power, greenhouses, solarpunk building blocks, and an optional global warming system.
+A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecosystem: solar panels, solar heat and thermal storage, steam turbines, biofuel, geothermal power, hydrogen fuel cells, nuclear fusion, a Particle Accelerator, wires for carrying power, greenhouses, solarpunk building blocks, and an optional global warming system.
 
 **New to the mod?** Watch this video for an overview of what it adds and how it all fits together:
 
-[![Create: Solarpunk 2.1 overview](https://img.youtube.com/vi/wIznaRLFJZE/maxresdefault.jpg)](https://youtu.be/wIznaRLFJZE)
+[![Create: Solarpunk 2.2 overview](https://img.youtube.com/vi/uABaQljtn2k/maxresdefault.jpg)](https://youtu.be/uABaQljtn2k)
 
 ## Requirements
 
@@ -16,7 +16,7 @@ A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecos
 **Optional:**
 - JEI (adds recipe categories for the Solar Heater, Fermentation Vat, Bioreactor, Solar Power Tower, Crystallizer, and Particle Accelerator)
 - Serene Seasons (solar output scales with the season - up in summer, down in winter; can be turned off in the config)
-- Create: Northstar Redux (the Steam Turbine can burn its Liquid Hydrogen as an alternative fuel to Steam)
+- Create: Northstar Redux (the Steam Turbine can burn its Liquid Hydrogen as an alternative fuel to Steam, and the Electrolyzer can make it)
 - Create: CROWNS (the Steam Turbine can burn its steam)
 - Create: Cosmonautics (solar blocks work in space and follow the real sun; stations are built with Create Aeronautics)
 - Create: New Age (the Heat Battery trades heat with New Age's heat pipes and machines)
@@ -38,11 +38,15 @@ A NeoForge mod for Minecraft 1.21.1 that adds renewable power to the Create ecos
 - **Wire Switch** - a knife switch with two wire posts. While it's closed, power passes from the wires on one post to the wires on the other; flip it open to cut the network in two
 - **Redstone Wire Relay** - a Wire Switch thrown by redstone, closed while powered (a Wrench inverts it). Comparators read 15 from either while it's closed
 - **Electric Motor** - turns FE back into rotational force at a speed you set, up to 64 RPM. Faster uses more FE, whatever the load. One Brass Solar Panel at noon runs it at 16 RPM for half an Andesite Solar Panel's stress capacity
-- **Electrolyzer** - splits Water into Hydrogen and Oxygen with FE, making twice as much Hydrogen as Oxygen. Water goes in the top; each gas comes out of the copper flange beside its glass tube, and you can watch the gas push the water down as it collects
-- **Fuel Cell** and **End Plate** - a row of Fuel Cells clamped between two End Plates burns Hydrogen and Oxygen back into FE, giving back about two thirds of what the Electrolyzer used. Each cell adds output, up to 16 in a stack. Pipe Hydrogen into one End Plate and Oxygen into the other, through the port with arrows pointing in, and take the Water out of the other port; a redstone signal pauses it
 - **Streetlamp** - a two-block-tall street light that runs on FE and switches itself on at dusk. A full charge lasts the whole night
 - **Grow Lamp** - an FE-powered purple grow light. Hang it under a ceiling or from a wall, and crops below it grow faster, at night and underground too. A redstone signal switches it off
 - **Solar Plant Bed** - a raised bed for one plant, for roofs and balconies. Its soil never dries out, and its little panel charges by day to run a grow light at night that speeds the plant up
+
+### Hydrogen
+Store noon sunshine as gas and turn it back into power at night.
+
+- **Electrolyzer** - splits Water into Hydrogen and Oxygen with FE, making twice as much Hydrogen as Oxygen. Water goes in the top; each gas comes out of the copper flange beside its glass tube, and you can watch the gas push the water down as it collects
+- **Fuel Cell** and **End Plate** - a row of Fuel Cells clamped between two End Plates burns Hydrogen and Oxygen back into FE, giving back about two thirds of what the Electrolyzer used. Each cell adds output, up to 16 in a stack. Pipe Hydrogen into one End Plate and Oxygen into the other, through the port with arrows pointing in, and take the Water out of the other port; a Wrench turns an End Plate so its ports can face any way around the stack, and a redstone signal pauses it. Its only waste is Water, ready to pipe back into the Electrolyzer. Wire Connectors can go on any cell or plate
 
 ### Solar Heat Chain
 - **Salt** - a new material found as underground deposits in desert, badlands, and savanna biomes; the core fuel of the solar heat chain. Salt from Northstar and Create: Food works too
@@ -88,7 +92,7 @@ The **Biomass Gasifier** and **Biofuel Engine** support rotation direction contr
 - **Fusion Reactor Core** - the mod's endgame capstone; produces a huge amount of Steam from Deuterium plus Lithium Dust or Tritium Capsules, far more than any single Steam Turbine can use on its own - meant to feed a whole bank of them. A redstone signal anywhere on the shell throttles it up or down
 - **Fusion Reactor Casing / Casing Glass** - the Netherite-and-Copper shell built around the Core. The shell is a standard hollow sphere, so you can build it straight from WorldEdit's `//hsphere` or an online sphere generator
 - **Lithium Breeder Module / Beryllium Reflector Module** - Blanket modules that ring the Core in whatever mix you like; more Lithium breeds Tritium more efficiently for a lower, steadier output, while more Beryllium burns fuel faster for more raw Steam output. Breeder Modules also slowly refill Empty Fuel Capsules into Tritium Capsules
-- **Lithium & Beryllium** - Lithium is a new ore found underground worldwide rather than in any specific biome, in stone and deepslate; mine it for Raw Lithium and smelt that into Lithium Ingots, or crush it for Lithium Dust (which also smelts into ingots) with a small chance of bonus Beryllium Dust. Beryllium Dust smelts into Beryllium Ingots too, and both metals store compactly as a Block of Lithium or Block of Beryllium
+- **Lithium & Beryllium** - Lithium is a new ore found underground worldwide rather than in any specific biome, in stone and deepslate; mine it for Raw Lithium and smelt that into Lithium Ingots, or crush it into Crushed Raw Lithium like Create's ores, with a chance of bonus Beryllium Dust. Wash the crushed ore into Lithium Nuggets, smelt it into an ingot, or mill it into Lithium Dust for fusion. Beryllium Dust smelts into Beryllium Ingots too, and both metals store compactly as a Block of Lithium or Block of Beryllium
 - **Deuterium** - made by Mixing Water with an overheated Copper Ingot; Lithium Dust can also be made by Mixing Water with Salt over superheat (with a small chance of bonus Beryllium Dust). Both show up in JEI automatically
 
 Building the reactor and getting it running is rewarded with its own dedicated advancement, "A Star in a Bottle."
@@ -127,7 +131,8 @@ An opt-in pollution system, disabled by default and toggled in the config.
 
 ### Create Integration
 - **Ponder** scenes for every machine and multiblock, walking through each one step by step
-- **Display Link** sources for the Heat Battery, Kinetic Battery, Solar Power Tower, Fusion Reactor, Particle Accelerator, and Greenhouse Controller, so their live stats can go on a Display Board or Nixie Tube. Solar Panels also show the **Sun Angle** and **Sun Offset**, handy for lining up sun-tracking arrays
+- **Display Link** sources for the Heat Battery, Kinetic Battery, Solar Power Tower, Fusion Reactor, Particle Accelerator, Greenhouse Controller, Bioreactor, Biofilter and Electric Motor, so their live stats can go on a Display Board or Nixie Tube. Solar Panels also show the **Sun Angle**, **Sun Offset** and **Sun Exposure**, handy for lining up sun-tracking arrays
+- **Comparator** signals from the batteries, Solar Panels (how directly they face the sun), Biofilter (chunk pollution), Greenhouse Controller (sealed and how fast plants grow), Bioreactor, Wire Switches and Geyser Vents
 - **Goggle** readouts on every machine
 - Progression follows Create's own: cheap to get started, then sheets, sequenced assembly, Mechanical Crafters, and Precision Mechanisms for the higher-tier machines
 
@@ -151,7 +156,7 @@ Decorative blocks have their own **Create: Solarpunk Building Blocks** creative 
 - **Create: Cosmonautics** - Solar Panels, the Solar Heater, and the Solar Power Tower work in space. In deep space they track where the sun actually is: turn your station away from it and they go dark, fly into a planet's shadow and it's night, and your station's own hull can shade them. On the Moon they follow the Moon's own day and night. There's no weather in space. Config options under `generators.space` boost deep space output or make it always sunny instead
 - **Other space mods** - modpacks can add dimensions to the `solarpunk:always_sunny` (constant sunshine, no weather) or `solarpunk:no_weather` (normal day and night, no weather) dimension type tags with a datapack
 - **Create: New Age** - the Heat Battery trades heat with New Age's heat pipes and machines: a charged battery heats them, and an emptier one soaks up their heat. The Generator Coil is excluded from pollution
-- **Create: Northstar Redux** - the Steam Turbine can burn its Liquid Hydrogen as an alternative fuel to Steam, at the same rate; pipe it in the same way you would Steam, just not both at once - the tank has to fully drain before switching fuels. Northstar's Salt works in Solarpunk recipes and the other way around
+- **Create: Northstar Redux** - the Steam Turbine can burn its Liquid Hydrogen as an alternative fuel to Steam, at the same rate; pipe it in the same way you would Steam, just not both at once - the tank has to fully drain before switching fuels. Turn on `machines.electrolyzer.northstar_hydrogen` in the config and the Electrolyzer makes Liquid Hydrogen instead of Solarpunk Hydrogen; Fuel Cells burn either. Northstar's Salt works in Solarpunk recipes and the other way around
 - **Create: CROWNS** - the Steam Turbine can burn steam from CROWNS reactors and heat exchangers, as long as it's fully boiled (wet steam is refused). Pipe it in like Steam. It can't go the other way: CROWNS machines only take water, so Solarpunk Steam won't run their turbines. Toggle it and set how dry the steam must be under `generators.steam_turbine` in the config
 - **Create: Food** - its Salt works in Solarpunk recipes and the other way around
 - **Create: Diesel Generators** - diesel engines count as pollution sources when Global Warming is enabled
