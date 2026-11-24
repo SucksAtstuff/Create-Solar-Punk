@@ -22,6 +22,13 @@ public class ModKubeSchemaProvider extends KubeRecipeSchemaProvider {
                 .key("ingredient", Role.INPUT, INGREDIENT)
                 .unique("result");
 
+        // evaporating('solarpunk:salt', Fluid.of('minecraft:water', 250)).processingTime(200)
+        schema("evaporating")
+                .key("result", Role.OUTPUT, ITEM_STACK)
+                .key("ingredient", Role.INPUT, FLUID_STACK)
+                .key("processing_time", Role.INPUT, TICKS).optional(200).functionNames("processingTime")
+                .unique("result");
+
         // crystallizing('4x solarpunk:salt', Fluid.of('solarpunk:molten_salt', 100))
         //     .secondInput(Fluid.water(50)).byproduct(Fluid.of('solarpunk:steam', 25)).processingTime(100)
         schema("crystallizing")

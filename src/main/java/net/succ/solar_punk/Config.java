@@ -143,8 +143,6 @@ public class Config {
     // -------------------------------------------------------------------------
 
     private static final ModConfigSpec.IntValue CFG_SOLAR_HEATER_MELT_TICKS;
-    private static final ModConfigSpec.IntValue CFG_SOLAR_HEATER_EVAPORATION_TICKS;
-    private static final ModConfigSpec.IntValue CFG_SOLAR_HEATER_WATER_PER_SALT;
 
     private static final ModConfigSpec.IntValue CFG_FIREBOX_BOILER_STEAM_PER_TICK;
 
@@ -427,8 +425,6 @@ public class Config {
 
         BUILDER.push("solar_heater");
         CFG_SOLAR_HEATER_MELT_TICKS       = BUILDER.comment("Ticks to melt one item").defineInRange("melt_ticks", 200, 1, 100_000);
-        CFG_SOLAR_HEATER_EVAPORATION_TICKS = BUILDER.comment("Ticks to evaporate enough water to produce one salt").defineInRange("evaporation_ticks", 200, 1, 100_000);
-        CFG_SOLAR_HEATER_WATER_PER_SALT   = BUILDER.comment("mB of water consumed per salt produced").defineInRange("water_per_salt_mb", 250, 1, 10_000);
         BUILDER.pop();
 
         BUILDER.push("firebox_boiler");
@@ -757,7 +753,7 @@ public class Config {
     public static double spaceSolarMultiplier;
     public static boolean spaceRealSun;
 
-    public static int solarHeaterMeltTicks, solarHeaterEvaporationTicks, solarHeaterWaterPerSalt;
+    public static int solarHeaterMeltTicks;
     public static int fireboxBoilerSteamPerTick;
     public static int fermentationAerobicSpeed, fermentationAerobicOxygen, fermentationVatOxygenTank;
     public static int sprinklerRichExtraRange;
@@ -887,8 +883,6 @@ public class Config {
         spaceRealSun         = CFG_SPACE_REAL_SUN.get();
 
         solarHeaterMeltTicks       = CFG_SOLAR_HEATER_MELT_TICKS.get();
-        solarHeaterEvaporationTicks = CFG_SOLAR_HEATER_EVAPORATION_TICKS.get();
-        solarHeaterWaterPerSalt    = CFG_SOLAR_HEATER_WATER_PER_SALT.get();
 
         fireboxBoilerSteamPerTick = CFG_FIREBOX_BOILER_STEAM_PER_TICK.get();
 

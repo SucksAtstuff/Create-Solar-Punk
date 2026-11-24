@@ -31,6 +31,7 @@ import net.succ.solar_punk.block.custom.SolarHeaterBlock;
 import net.succ.solar_punk.client.sound.SolarHeaterSoundInstance;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.recipe.ModRecipeTypes;
+import net.succ.solar_punk.recipe.EvaporatingRecipe;
 import net.succ.solar_punk.recipe.SolarHeaterRecipe;
 import net.succ.offbyonelib.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +41,7 @@ import java.util.Optional;
 
 public class SolarHeaterBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 
-    // Slot 0: item melting input. Slot 1: evaporation salt output (no external insertion).
+    // Slot 0: item melting input. Slot 1: evaporation output (Salt by default; no external insertion).
     public final ItemStackHandler itemHandler = new ItemStackHandler(2) {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
@@ -59,7 +60,7 @@ public class SolarHeaterBlockEntity extends BlockEntity implements IHaveGoggleIn
         protected void onContentsChanged(int slot) { setChanged(); }
     };
 
-    // Hoppers and funnels put items in to melt and take the evaporated Salt out
+    // Hoppers and funnels put items in to melt and take the evaporated output out
     public final IItemHandler automationHandler = AutomationItemHandler.inputOutput(itemHandler, 0, 1);
 
     // Output tank for melted fluids (molten salt, lava, etc.)
@@ -68,18 +69,20 @@ public class SolarHeaterBlockEntity extends BlockEntity implements IHaveGoggleIn
         protected void onContentsChanged() { setChanged(); }
     };
 
-    // Input tank for water evaporation. Exposed on all non-top sides via combinedFluidHandler.
+    // Input tank for evaporation: any fluid an evaporating recipe uses (Water by default).
+    // Exposed on all non-top sides via combinedFluidHandler.
     public final FluidTank waterTank = new FluidTank(Config.solarHeaterTank) {
         @Override
         public boolean isFluidValid(FluidStack stack) {
-            return stack.getFluid().isSame(Fluids.WATER);
+            if (level == null) return stack.getFluid().isSame(Fluids.WATER);
+            return findEvaporation(stack).isPresent();
         }
 
         @Override
         protected void onContentsChanged() { setChanged(); }
     };
 
-    // Routes fill(water) -> waterTank, drain() -> fluidTank. Exposed on all non-top faces.
+    // Routes fill(evaporating fluid) -> waterTank, drain() -> fluidTank. Exposed on all non-top faces.
     public final IFluidHandler combinedFluidHandler = new IFluidHandler() {
         @Override public int getTanks() { return 2; }
 
@@ -96,8 +99,7 @@ public class SolarHeaterBlockEntity extends BlockEntity implements IHaveGoggleIn
         }
 
         @Override public int fill(FluidStack resource, FluidAction action) {
-            if (resource.getFluid().isSame(Fluids.WATER)) return waterTank.fill(resource, action);
-            return 0;
+            return waterTank.isFluidValid(resource) ? waterTank.fill(resource, action) : 0;
         }
 
         @Override public FluidStack drain(FluidStack resource, FluidAction action) {
@@ -136,6 +138,16 @@ public class SolarHeaterBlockEntity extends BlockEntity implements IHaveGoggleIn
                 .stream()
                 .filter(r -> r.value().matches(input, level))
                 .map(RecipeHolder::value)
+                .findFirst();
+    }
+
+    private Optional<EvaporatingRecipe> findEvaporation(FluidStack fluid) {
+        if (level == null || fluid.isEmpty()) return Optional.empty();
+        return level.getRecipeManager()
+                .getAllRecipesFor(ModRecipeTypes.EVAPORATING.get())
+                .stream()
+                .map(RecipeHolder::value)
+                .filter(r -> r.uses(fluid))
                 .findFirst();
     }
 
@@ -188,15 +200,17 @@ public class SolarHeaterBlockEntity extends BlockEntity implements IHaveGoggleIn
             if (progress > 0) { progress = 0; setChanged(); }
         }
 
-        // --- Water evaporation ---
-        if (waterTank.getFluidAmount() >= Config.solarHeaterWaterPerSalt && canOutputSalt()) {
+        // --- Evaporation ---
+        EvaporatingRecipe evaporation = findEvaporation(waterTank.getFluid()).orElse(null);
+        if (evaporation != null && waterTank.getFluidAmount() >= evaporation.ingredient().getAmount()
+                && canOutput(evaporation.result())) {
             shouldBeLit = true;
             if (!rainPenalty) {
                 evaporationProgress++;
                 setChanged();
-                if (evaporationProgress >= Config.solarHeaterEvaporationTicks) {
-                    waterTank.drain(Config.solarHeaterWaterPerSalt, IFluidHandler.FluidAction.EXECUTE);
-                    outputSalt();
+                if (evaporationProgress >= evaporation.processingTime()) {
+                    waterTank.drain(evaporation.ingredient().getAmount(), IFluidHandler.FluidAction.EXECUTE);
+                    output(evaporation.result());
                     evaporationProgress = 0;
                     setChanged();
                 }
@@ -208,18 +222,19 @@ public class SolarHeaterBlockEntity extends BlockEntity implements IHaveGoggleIn
         if (shouldBeLit != currentlyLit) setLit(shouldBeLit);
     }
 
-    private boolean canOutputSalt() {
+    private boolean canOutput(ItemStack result) {
         ItemStack current = itemHandler.getStackInSlot(1);
         return current.isEmpty()
-                || (current.is(ModItems.SALT.get()) && current.getCount() < current.getMaxStackSize());
+                || (ItemStack.isSameItemSameComponents(current, result)
+                    && current.getCount() + result.getCount() <= current.getMaxStackSize());
     }
 
-    private void outputSalt() {
+    private void output(ItemStack result) {
         ItemStack current = itemHandler.getStackInSlot(1);
         if (current.isEmpty()) {
-            itemHandler.setStackInSlot(1, new ItemStack(ModItems.SALT.get()));
+            itemHandler.setStackInSlot(1, result.copy());
         } else {
-            itemHandler.setStackInSlot(1, current.copyWithCount(current.getCount() + 1));
+            itemHandler.setStackInSlot(1, current.copyWithCount(current.getCount() + result.getCount()));
         }
     }
 
@@ -280,12 +295,16 @@ public class SolarHeaterBlockEntity extends BlockEntity implements IHaveGoggleIn
                     .forGoggles(tooltip, 1);
         }
 
-        SolarPunk.GOGGLES.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
-        if (evaporationProgress > 0) {
+        if (waterTank.isEmpty() || waterTank.getFluid().getFluid().isSame(Fluids.WATER))
+            SolarPunk.GOGGLES.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
+        else
+            SolarPunk.GOGGLES.namedTank(tooltip, "evaporation", waterTank, ChatFormatting.AQUA);
+        EvaporatingRecipe evaporation = findEvaporation(waterTank.getFluid()).orElse(null);
+        if (evaporationProgress > 0 && evaporation != null) {
             CreateLang.translate("solar_punk.tooltip.evaporation")
                     .style(ChatFormatting.GRAY)
                     .add(CreateLang.number(evaporationProgress)
-                            .text(" / " + Config.solarHeaterEvaporationTicks)
+                            .text(" / " + evaporation.processingTime())
                             .style(ChatFormatting.YELLOW)
                             .component())
                     .forGoggles(tooltip, 2);
@@ -293,11 +312,17 @@ public class SolarHeaterBlockEntity extends BlockEntity implements IHaveGoggleIn
 
         SolarPunk.GOGGLES.namedTank(tooltip, "output_fluid", fluidTank, ChatFormatting.YELLOW);
 
-        ItemStack saltOutput = itemHandler.getStackInSlot(1);
-        if (!saltOutput.isEmpty()) {
+        ItemStack evaporated = itemHandler.getStackInSlot(1);
+        if (evaporated.is(ModItems.SALT.get())) {
             CreateLang.translate("solar_punk.tooltip.salt_output")
                     .style(ChatFormatting.GRAY)
-                    .add(CreateLang.number(saltOutput.getCount()).style(ChatFormatting.WHITE).component())
+                    .add(CreateLang.number(evaporated.getCount()).style(ChatFormatting.WHITE).component())
+                    .forGoggles(tooltip, 1);
+        } else if (!evaporated.isEmpty()) {
+            CreateLang.translate("solar_punk.tooltip.output")
+                    .style(ChatFormatting.GRAY)
+                    .add(evaporated.getHoverName().copy().withStyle(ChatFormatting.WHITE))
+                    .add(CreateLang.text(" x" + evaporated.getCount()).style(ChatFormatting.WHITE).component())
                     .forGoggles(tooltip, 1);
         }
 

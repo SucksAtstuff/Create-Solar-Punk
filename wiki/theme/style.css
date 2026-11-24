@@ -246,6 +246,32 @@ main { min-width: 0; padding: 36px 0 64px; }
   padding: 14px 16px; overflow-x: auto; font-size: 14px; line-height: 1.55;
 }
 .prose pre code { background: none; padding: 0; }
+
+/* Highlighted code blocks (Pygments, through codehilite): always a dark panel, like an editor */
+.prose .highlight { position: relative; margin: 0 0 16px; }
+.prose .highlight pre {
+  margin: 0; background: #1b1d27; border-color: #2c2f3d; color: #d6d9e6;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+}
+.prose .highlight pre code { color: inherit; }
+.highlight .c, .highlight .c1, .highlight .cm, .highlight .cs { color: #9d7fb8; font-style: italic; }
+.highlight .k, .highlight .kd, .highlight .kn, .highlight .kr, .highlight .kt, .highlight .kc { color: #c792ea; }
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb, .highlight .se, .highlight .si, .highlight .dl { color: #9ece6a; }
+.highlight .m, .highlight .mi, .highlight .mf, .highlight .mh, .highlight .il { color: #ff9e64; }
+.highlight .nf, .highlight .fm { color: #82aaff; }
+.highlight .nt, .highlight .na, .highlight .nl { color: #7dcfff; }
+.highlight .nc, .highlight .nn { color: #ffcb6b; }
+.highlight .o, .highlight .ow { color: #89ddff; }
+.highlight .p { color: #a9b1d6; }
+.highlight .nd { color: #ffcb6b; }
+
+.copy-btn {
+  position: absolute; top: 8px; right: 8px; padding: 4px 9px;
+  font: 12px var(--mono); color: #a9b1d6; background: #262938; border: 1px solid #343850;
+  border-radius: 6px; cursor: pointer; opacity: 0; transition: opacity .15s;
+}
+.prose .highlight:hover .copy-btn, .copy-btn:focus { opacity: 1; }
+.copy-btn:hover { color: #fff; }
 .prose blockquote {
   margin: 0 0 16px; padding: 12px 18px;
   border-left: 3px solid var(--brass); background: var(--surface); border-radius: 0 10px 10px 0;

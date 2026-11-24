@@ -145,4 +145,21 @@
     }, { rootMargin: "-60px 0px -60% 0px" });
     headings.forEach((h) => observer.observe(h));
   }
+
+  // ---- copy buttons on code blocks ----
+  document.querySelectorAll(".prose .highlight").forEach((block) => {
+    const code = block.querySelector("pre");
+    if (!code || !navigator.clipboard) return;
+    const button = document.createElement("button");
+    button.className = "copy-btn";
+    button.type = "button";
+    button.textContent = "Copy";
+    button.addEventListener("click", () => {
+      navigator.clipboard.writeText(code.innerText).then(() => {
+        button.textContent = "Copied";
+        setTimeout(() => (button.textContent = "Copy"), 1500);
+      });
+    });
+    block.appendChild(button);
+  });
 })();

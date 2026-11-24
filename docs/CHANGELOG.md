@@ -9,8 +9,9 @@
 
 ### Custom Recipes and Fuels
 
-- **KubeJS support** - write Solarpunk recipes in scripts like Create's: `event.recipes.solarpunk.fermenting(...)`, `.crystallizing(...)`, `.solar_heating(...)` and `.particle_accelerator(...)`, with builder calls like `.processingTime(200)`.
+- **KubeJS support** - write Solarpunk recipes in scripts like Create's: `event.recipes.solarpunk.fermenting(...)`, `.crystallizing(...)`, `.solar_heating(...)`, `.evaporating(...)` and `.particle_accelerator(...)`, with builder calls like `.processingTime(200)`.
 - **Fermentation Vat recipes** - what the Vat ferments is now a recipe, so modpacks can add their own (any item into any fluid), and JEI shows every one.
+- **Solar Heater evaporation recipes** - Water into Salt is now a recipe too, so modpacks can make the Solar Heater dry any fluid into any item.
 - **Custom fuels** - modpacks can change what the Steam Turbine, Biomass Gasifier and Biofuel Engine burn and what the Heat Battery stores heat from, with a datapack or with KubeJS (`SolarpunkEvents.turbineFuels(...)` and friends). See Custom Recipes on the wiki.
 
 ## Compatibility
@@ -22,7 +23,7 @@
 
 - Biofuel Engines can be filled with a bucket of Biofuel, and emptied with an empty one.
 - Biomass and Biomass Pellets can be put in a Biomass Gasifier by hand.
-- Removed the config options for Fermentation Vat batches, Biomass Gasifier burn times, Biofuel Engine fuel use and Heat Battery heat per mB. They're now set by recipes and data maps, with the same defaults, so changed values in an old config are ignored.
+- Removed the config options for Fermentation Vat batches, Solar Heater evaporation, Biomass Gasifier burn times, Biofuel Engine fuel use and Heat Battery heat per mB. They're now set by recipes and data maps, with the same defaults, so changed values in an old config are ignored.
 
 # 2.2.1-1.21.1
 

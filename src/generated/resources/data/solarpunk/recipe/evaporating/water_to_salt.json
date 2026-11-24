@@ -1,0 +1,11 @@
+{
+  "type": "solarpunk:evaporating",
+  "ingredient": {
+    "amount": 250,
+    "id": "minecraft:water"
+  },
+  "result": {
+    "count": 1,
+    "id": "solarpunk:salt"
+  }
+}

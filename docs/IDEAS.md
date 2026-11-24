@@ -3,11 +3,11 @@
 A running list of possible future features. Nothing here is committed. Grouped by theme,
 with the strongest / most on-theme ideas near the top of each section.
 
-## Next up: 2.3, Oxygen and Geothermal
+## Next up: 2.3, Oxygen, Geothermal and Modpack Support
 
-1. **Geothermal** (the headline now that Oxygen is built): nothing new since the Geyser Cap. A vent should be
-   worth more once you find it, not let geothermal work anywhere. In this order (details
-   under Geothermal):
+1. **Geothermal** (the headline): nothing new since the Geyser Cap. A vent should be worth
+   more once you find it, not let geothermal work anywhere. In this order (details under
+   Geothermal):
    - **Geothermal Well**: the Steam option for a vent, for the Steam Turbine. Only on a
      natural Geyser Vent, like the Cap.
    - **Geothermal Brine**: Lithium from the Well, tying geothermal to fusion.
@@ -96,6 +96,21 @@ let geothermal work anywhere.
   (see Biggest gaps), if that gets built.
 - Skipped: ground-source heat pumps and geothermal that works anywhere, since vents are meant
   to be scarce. A vent heating a Create boiler directly competes with the Heat Battery.
+
+## Modpack support
+
+KubeJS recipes and data-driven fuels are in (2.3). What's left:
+
+- **Shorter script syntax** - a `kubejs/recipe_mappings.json` so scripts can write
+  `event.solarpunkFermenting(...)` instead of `event.recipes.solarpunk.fermenting(...)` (keep the
+  mod prefix: mapping names are shared with every mod), and `.aerobic()` as a no-argument switch
+  like Create's `.heated()` instead of `.aerobic(true)`. Mapping support would go in the
+  library's `KubeRecipeSchemaProvider` so other addons get it too.
+- **More recipe types** - Solar Power Tower output is still hardcoded, so modpacks can't change
+  it.
+- **Pollution sources as a data map** - they're a tag plus a config list now; a data map on
+  block entity types would let datapacks and KubeJS set how much each source pollutes, like
+  the fuels.
 
 ## Particle Accelerator
 

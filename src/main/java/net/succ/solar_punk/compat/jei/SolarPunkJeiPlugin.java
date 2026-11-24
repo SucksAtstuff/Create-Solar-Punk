@@ -51,7 +51,11 @@ public class SolarPunkJeiPlugin implements IModPlugin {
                         .stream()
                         .map(RecipeHolder::value)
                         .map(SolarHeaterCategory.Entry.ItemMelt::new),
-                Stream.of(SolarHeaterCategory.WATER_EVAPORATION_INSTANCE)
+                level.getRecipeManager()
+                        .getAllRecipesFor(ModRecipeTypes.EVAPORATING.get())
+                        .stream()
+                        .map(RecipeHolder::value)
+                        .map(SolarHeaterCategory.Entry.Evaporation::new)
         ).toList();
 
         registration.addRecipes(SolarHeaterCategory.RECIPE_TYPE, solarHeaterEntries);

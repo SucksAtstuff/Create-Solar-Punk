@@ -31,6 +31,7 @@ import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.recipe.CrystallizerRecipe;
+import net.succ.solar_punk.recipe.EvaporatingRecipe;
 import net.succ.solar_punk.recipe.FermentingRecipe;
 import net.succ.solar_punk.recipe.SolarHeaterRecipe;
 
@@ -97,6 +98,10 @@ public class ModRecipeProvider extends AddonRecipeProvider {
                         new SizedIngredient(Ingredient.of(Tags.Items.NETHERRACKS), 16),
                         new SizedIngredient(Ingredient.of(Tags.Items.GEMS_QUARTZ), 4)),
                 new ItemStack(Items.NETHERITE_SCRAP), 21, 32768, 192, 1200);
+
+        // Solar Heater evaporation (datapacks and KubeJS can add more): the slow trickle of Salt
+        // before a Crystallizer
+        evaporating(output, "water_to_salt", new FluidStack(Fluids.WATER, 250), new ItemStack(ModItems.SALT.get()), 200);
 
         // Fermentation Vat (datapacks and KubeJS can add more). Amounts are per footprint block.
         fermenting(output, "biofuel", Ingredient.of(itemTag("c", "bio_fuels")),
@@ -603,6 +608,15 @@ public class ModRecipeProvider extends AddonRecipeProvider {
         output.accept(
                 id("particle_accelerator/" + name),
                 new ParticleAcceleratorRecipe(ingredients, result, minDiameter, stress, minSpeed, processingTime),
+                null
+        );
+    }
+
+    private static void evaporating(RecipeOutput output, String name, FluidStack ingredient, ItemStack result,
+                                    int processingTime) {
+        output.accept(
+                id("evaporating/" + name),
+                new EvaporatingRecipe(ingredient, result, processingTime),
                 null
         );
     }

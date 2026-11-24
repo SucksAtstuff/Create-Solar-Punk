@@ -5,25 +5,19 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluids;
-import net.succ.solar_punk.Config;
+import net.minecraft.world.item.crafting.Recipe;
 import net.succ.solar_punk.block.ModBlocks;
-import net.succ.solar_punk.item.ModItems;
+import net.succ.solar_punk.recipe.EvaporatingRecipe;
 import net.succ.solar_punk.recipe.SolarHeaterRecipe;
 
 public class SolarHeaterCategory extends SolarPunkCategory<SolarHeaterCategory.Entry> {
 
-    // The Solar Heater melts items into fluids (data-driven SolarHeaterRecipes) and also
-    // evaporates water into Salt (hardcoded in SolarHeaterBlockEntity). ItemMelt wraps the
-    // real recipes and WaterEvaporation is a single display-only entry, so both show up
-    // on this one page.
+    // The Solar Heater melts items into fluids (SolarHeaterRecipe) and evaporates fluids into
+    // items (EvaporatingRecipe, Water -> Salt by default). Both show up on this one page.
     public sealed interface Entry {
         record ItemMelt(SolarHeaterRecipe recipe) implements Entry {}
-        record WaterEvaporation() implements Entry {}
+        record Evaporation(EvaporatingRecipe recipe) implements Entry {}
     }
-
-    public static final Entry.WaterEvaporation WATER_EVAPORATION_INSTANCE = new Entry.WaterEvaporation();
 
     public static final RecipeType<Entry> RECIPE_TYPE = type("solar_heating", Entry.class);
 
@@ -42,19 +36,22 @@ public class SolarHeaterCategory extends SolarPunkCategory<SolarHeaterCategory.E
                         .setFluidRenderer(recipe.result().getAmount(), false, 16, 16)
                         .addFluidStack(recipe.result().getFluid(), recipe.result().getAmount());
             }
-            case Entry.WaterEvaporation ignored -> {
+            case Entry.Evaporation(EvaporatingRecipe recipe) -> {
                 builder.addSlot(RecipeIngredientRole.INPUT, 5, 12)
-                        .setFluidRenderer(Config.solarHeaterWaterPerSalt, false, 16, 16)
-                        .addFluidStack(Fluids.WATER, Config.solarHeaterWaterPerSalt);
+                        .setFluidRenderer(recipe.ingredient().getAmount(), false, 16, 16)
+                        .addFluidStack(recipe.ingredient().getFluid(), recipe.ingredient().getAmount());
 
                 builder.addSlot(RecipeIngredientRole.OUTPUT, 61, 12)
-                        .addItemStack(new ItemStack(ModItems.SALT.get()));
+                        .addItemStack(recipe.result());
             }
         }
     }
 
     @Override
-    protected net.minecraft.world.item.crafting.Recipe<?> recipeOf(Entry entry) {
-        return entry instanceof Entry.ItemMelt melt ? melt.recipe() : null;
+    protected Recipe<?> recipeOf(Entry entry) {
+        return switch (entry) {
+            case Entry.ItemMelt melt -> melt.recipe();
+            case Entry.Evaporation evaporation -> evaporation.recipe();
+        };
     }
 }

@@ -142,8 +142,8 @@ class Site:
         return src, title.group(1).strip() if title else ""
 
     def render(self, md_src):
-        md = markdown.Markdown(extensions=["tables", "sane_lists", "attr_list", "fenced_code",
-                                           "toc"], extension_configs={"toc": {"slugify": lambda v, s: slugify(v), "toc_depth": "2-3"}})
+        md = markdown.Markdown(extensions=["tables", "sane_lists", "attr_list", "fenced_code", "codehilite",
+                                           "toc"], extension_configs={"codehilite": {"css_class": "highlight", "guess_lang": False}, "toc": {"slugify": lambda v, s: slugify(v), "toc_depth": "2-3"}})
         body = md.convert(md_src)
         body = re.sub(r"<table>", '<div class="table-wrap"><table>', body).replace("</table>", "</table></div>")
         body = re.sub(r'<img alt="([^"]*)" src="(img/(?!recipes/)[^"]+)"',
