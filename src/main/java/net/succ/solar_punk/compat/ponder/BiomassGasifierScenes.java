@@ -12,6 +12,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
 import net.succ.solar_punk.block.entity.custom.BiomassGasifierBlockEntity;
 import net.succ.solar_punk.fluid.ModFluids;
@@ -20,7 +22,7 @@ import net.succ.solar_punk.item.ModItems;
 // Schematic (ModPonderProvider "biomass_gasifier/usage"): a Basin at (2,1,2) with the Mechanical
 // Mixer one block above the gap at (2,3,2), turned by a cogwheel at (1,3,2). The gasifier sits on
 // that cogwheel at (1,4,2), on an Andesite Casing pillar, and a Hopper with a Chest on it feeds it
-// from a pillar to the west.
+// from a pillar to the west. An Oxygen pipe goes into its south side.
 public class BiomassGasifierScenes {
 
     private static final BlockPos MACHINE = new BlockPos(1, 4, 2);
@@ -28,6 +30,7 @@ public class BiomassGasifierScenes {
     private static final BlockPos MIXER = new BlockPos(2, 3, 2);
     private static final BlockPos BASIN = new BlockPos(2, 1, 2);
     private static final BlockPos HOPPER = new BlockPos(0, 4, 2);
+    private static final BlockPos OXYGEN_PIPE = new BlockPos(1, 4, 3);
 
     public static void usage(SceneBuilder builder, SceneBuildingUtil util) {
         CreateSceneBuilder scene = new CreateSceneBuilder(builder);
@@ -131,6 +134,28 @@ public class BiomassGasifierScenes {
                 .pointAt(util.vector().centerOf(HOPPER))
                 .placeNearTarget()
                 .attachKeyFrame();
+        scene.idle(80);
+
+        scene.world().showSection(util.select().position(OXYGEN_PIPE), Direction.NORTH);
+        scene.idle(10);
+        scene.overlay().showControls(util.vector().topOf(OXYGEN_PIPE), Pointing.DOWN, 30)
+                .withItem(new ItemStack(ModFluids.OXYGEN_BUCKET.get()));
+        scene.idle(35);
+        scene.world().modifyBlockEntity(MACHINE, BiomassGasifierBlockEntity.class, be ->
+                be.oxyFuel.tank.fill(new FluidStack(ModFluids.OXYGEN_SOURCE.get(), 1000),
+                        IFluidHandler.FluidAction.EXECUTE));
+        scene.effects().indicateSuccess(MACHINE);
+        scene.overlay().showText(80)
+                .text("Pipe in Oxygen as well and it burns hotter: 50% more stress capacity, at the same speed")
+                .pointAt(util.vector().centerOf(OXYGEN_PIPE))
+                .placeNearTarget()
+                .attachKeyFrame();
+        scene.idle(90);
+
+        scene.overlay().showText(70)
+                .text("It uses 5 mB of Oxygen a second, from an Electrolyzer or a Bioreactor")
+                .pointAt(util.vector().topOf(MACHINE))
+                .placeNearTarget();
         scene.idle(80);
 
         scene.world().modifyBlock(MACHINE, s -> s.setValue(BiomassGasifierBlock.LIT, false), false);

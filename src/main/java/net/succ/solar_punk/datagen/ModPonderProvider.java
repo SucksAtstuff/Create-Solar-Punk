@@ -35,7 +35,7 @@ public class ModPonderProvider extends PonderSchematicProvider {
         // Like Create's own mixer scene: a Basin, a one-block gap, then the Mechanical Mixer, turned
         // by a cogwheel beside it (a mixer has no shaft input). The gasifier sits on that cogwheel
         // on an Andesite Casing pillar, fed by a Hopper (with a Chest on it) on a pillar to its
-        // west. See BiomassGasifierScenes.
+        // west, with an Oxygen pipe into its south side. See BiomassGasifierScenes.
         SceneStructure gasifier = new SceneStructure(5, 6, 5).withBasePlate()
                 .addBlock(2, 1, 2, "create:basin", "facing", "down")
                 .addBlock(2, 3, 2, "create:mechanical_mixer")
@@ -48,10 +48,12 @@ public class ModPonderProvider extends PonderSchematicProvider {
                 .addBlock(0, 3, 2, "create:andesite_casing")
                 .addBlock(0, 4, 2, "minecraft:hopper", "facing", "east", "enabled", "true")
                 .addBlock(0, 5, 2, "minecraft:chest", "facing", "north", "type", "single");
+        addPipe(gasifier, 1, 4, 3, "north", "south");
         SCHEMATICS.put("biomass_gasifier/usage", gasifier);
 
         // Engine on a Gearbox, a shaft east into a Mechanical Drill facing a block of Andesite,
-        // and a fuel pipe into the engine's west side. See BiofuelEngineScenes.
+        // a fuel pipe into the engine's west side and an Oxygen pipe into its south side. See
+        // BiofuelEngineScenes.
         SceneStructure engine = new SceneStructure().withBasePlate()
                 .addBlock(1, 1, 2, "create:gearbox", "axis", "z")
                 .addBlock(1, 2, 2, "solarpunk:biofuel_engine", "facing", "north", "lit", "false")
@@ -59,6 +61,7 @@ public class ModPonderProvider extends PonderSchematicProvider {
                 .addBlock(3, 1, 2, "create:mechanical_drill", "facing", "east")
                 .addBlock(4, 1, 2, "minecraft:andesite");
         addPipe(engine, 0, 2, 2, "east", "west");
+        addPipe(engine, 1, 2, 3, "north", "south");
         SCHEMATICS.put("biofuel_engine/usage", engine);
 
         // Chest -> Hopper -> Solar Heater -> pipe -> Heat Battery, along x at z=2. Shared with

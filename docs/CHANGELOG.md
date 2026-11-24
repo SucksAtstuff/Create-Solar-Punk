@@ -1,3 +1,22 @@
+# 2.3.0-1.21.1
+
+## New
+
+### Oxygen
+
+- **Oxy-fuel burning** - pipe Oxygen into a Biomass Gasifier or Biofuel Engine and it burns hotter, for 50% more stress capacity at the same speed. It only boosts a fuel, so it does nothing on its own. Feed it from an Electrolyzer, or put a Bioreactor's Oxygen to use instead of venting it.
+- **Aerobic composting** - pipe Oxygen into a Fermentation Vat making Rich Fertilizer and its batches run twice as fast. Biofuel is made without air, so the Vat only takes Oxygen while it holds waste.
+
+## Compatibility
+
+- **Create: Northstar Redux** - Solarpunk Oxygen is breathable: the Oxygen Sealer and Oxygen Filler take it, so a Bioreactor can keep a space base's air going.
+- **Create: Cosmonautics** - rockets burn Solarpunk Hydrogen as fuel and take Solarpunk Oxygen as oxidizer.
+
+## Changes
+
+- Biofuel Engines can be filled with a bucket of Biofuel, and emptied with an empty one.
+- Biomass and Biomass Pellets can be put in a Biomass Gasifier by hand.
+
 # 2.2.1-1.21.1
 
 ## Fixes

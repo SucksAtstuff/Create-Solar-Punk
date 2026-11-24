@@ -102,6 +102,41 @@ public class FermentationVatScenes {
                 .placeNearTarget();
         scene.idle(80);
 
+        // Rich Fertilizer from waste, sped up with Oxygen
+        scene.world().modifyBlockEntity(CONTROLLER, FermentationVatBlockEntity.class, be -> {
+            be.outputTank.setFluid(FluidStack.EMPTY);
+            be.itemHandler.setStackInSlot(0, new ItemStack(Items.ROTTEN_FLESH, 16));
+        });
+        scene.overlay().showControls(util.vector().topOf(top), Pointing.DOWN, 70)
+                .withItem(new ItemStack(Items.ROTTEN_FLESH));
+        scene.overlay().showText(70)
+                .text("Feed it waste like Rotten Flesh or Bones instead, and it makes Rich Fertilizer")
+                .pointAt(util.vector().topOf(top))
+                .placeNearTarget()
+                .attachKeyFrame();
+        scene.idle(80);
+
+        scene.overlay().showControls(util.vector().blockSurface(side, Direction.WEST), Pointing.LEFT, 70)
+                .withItem(new ItemStack(ModFluids.OXYGEN_BUCKET.get()));
+        scene.world().modifyBlockEntity(CONTROLLER, FermentationVatBlockEntity.class, be -> {
+            be.oxygenTank.fill(new FluidStack(ModFluids.OXYGEN_SOURCE.get(), 4000), IFluidHandler.FluidAction.EXECUTE);
+            be.outputTank.fill(new FluidStack(ModFluids.RICH_FERTILIZER_SOURCE.get(), 2000), IFluidHandler.FluidAction.EXECUTE);
+        });
+        scene.effects().indicateSuccess(top);
+        scene.overlay().showText(80)
+                .text("Composting needs air: pipe in Oxygen too and Rich Fertilizer batches run twice as fast")
+                .pointAt(util.vector().blockSurface(side, Direction.WEST))
+                .placeNearTarget()
+                .attachKeyFrame();
+        scene.idle(90);
+
+        scene.overlay().showText(70)
+                .colored(PonderPalette.RED)
+                .text("Biofuel is made without air, so the Vat only takes Oxygen while it holds waste")
+                .pointAt(util.vector().centerOf(side))
+                .placeNearTarget();
+        scene.idle(80);
+
         scene.markAsFinished();
     }
 

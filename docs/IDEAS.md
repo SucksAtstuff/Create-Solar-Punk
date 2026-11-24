@@ -3,13 +3,16 @@
 A running list of possible future features. Nothing here is committed. Grouped by theme,
 with the strongest / most on-theme ideas near the top of each section.
 
-## Next up: 2.3, Oxygen
+## Next up: 2.3, Oxygen and Geothermal
 
-1. **Oxygen uses** (the headline): the Electrolyzer and the Bioreactor both make it, but only
-   the Fuel Cell uses it, so most Bioreactor Oxygen vents. Oxy-fuel burning in the Biomass
-   Gasifier and Biofuel Engine, and the aerobic Rich Fertilizer mode in the Fermentation Vat.
-   See Oxygen uses under Biofuel and farming.
-2. **Small wins**: the wire throughput Display Link, and optionally the Electric Sprinkler.
+1. **Geothermal** (the headline now that Oxygen is built): nothing new since the Geyser Cap. A vent should be
+   worth more once you find it, not let geothermal work anywhere. In this order (details
+   under Geothermal):
+   - **Geothermal Well**: the Steam option for a vent, for the Steam Turbine. Only on a
+     natural Geyser Vent, like the Cap.
+   - **Geothermal Brine**: Lithium from the Well, tying geothermal to fusion.
+   - **Nether vents**: stronger vents in Basalt Deltas, worth the danger.
+2. **Small wins**: the wire throughput Display Link.
 3. **KubeJS integration**, mirroring what KubeJS Create does for Create. KubeJS Create
    (2101.3.x) is a `KubeJSPlugin` (listed in `kubejs.plugins.txt`) that adds four things;
    Solarpunk could do the same in a `compat/kubejs/` package, compiled against KubeJS
@@ -43,8 +46,6 @@ spots). See Biggest gaps.
 
 ## Biggest gaps in the renewable lineup
 
-- **Hydrogen extras** (the Electrolyzer and Fuel Cell stack are built): Oxygen, shared with
-  the Bioreactor (see Oxygen uses under Biofuel and farming).
 - **Thermal Generator** - Molten Salt heat to FE.
 - **Seebeck generator** - a solid-state thermoelectric generator that turns hot water into a
   trickle of FE from the temperature difference, with no moving parts. Puts waste heat to use,
@@ -60,9 +61,6 @@ spots). See Biggest gaps.
   so it uses a trickle of piped Water. Small, unsteady output: more with height above sea
   level, needs open air around it (count air blocks in a radius, with a penalty for packing
   them close together), and rain and thunder boost it, which covers solar's night gap.
-- **Ion thruster** - skipped, like the Oxygen thrusters: thrust is Aeronautics' job, and an
-  FE fan would only duplicate an Electric Motor on an Encased Fan. If ever, only as optional
-  Aeronautics compat.
 - **Dedicated grid-scale storage** beyond Heat Battery / Kinetic Battery - a gravity battery
   that hoists a weighted block on surplus power. (Flywheel storage is largely what the Kinetic
   Battery already does.)
@@ -88,26 +86,41 @@ Glass have little to feed. The Electric Motor (2.2) gives FE a big job; these co
 - **Stirling dish concentrator** - direct SU/FE from a focused dish, no molten salt loop.
   Overlaps the Solar Heater and tower, so low priority.
 
-## Biofuel and farming
-
-- **Oxygen uses** - from the Electrolyzer and the Bioreactor.
-  - Aerobic treatment in the Fermentation Vat: speeds up Rich Fertilizer only. That's
-    composting, which really is aerobic; biofuel (ethanol) fermentation is anaerobic and
-    Oxygen would hurt it, so the Vat gets a real choice of which mode to run.
-  - Oxy-fuel burning: pipe Oxygen into the Biomass Gasifier or Biofuel Engine for more SU per
-    unit of fuel. Oxygen isn't a fuel itself, it boosts one. Not the Firebox Boiler: it stays
-    a simple early-game Steam source.
-  - Space compat: if Northstar or Cosmonautics has an Oxygen fluid for life support, let
-    ours count as it, for algae-powered space stations (cheap, like `NorthstarCompat`).
-  - Skipped for now: Liquid Oxygen (needs a cooling machine and a second fluid for the same
-    gas) and thrusters (Aeronautics and the space mods' job, not a power mod's).
-
 ## Geothermal
 
 Vents are meant to be scarce, so ideas here should make a natural vent worth more rather than
 let geothermal work anywhere.
 
-- **Enhanced geothermal** - pump water down, steam comes up, run the Steam Turbine.
+- **Geothermal Well** (like a real flash steam plant on natural vents) - a second block for a
+  natural Geyser Vent, instead of the Geyser Cap. It can't go anywhere else, so it doesn't
+  add geothermal spots: it's another way to use a vent you've found. Pipe Water in, Steam
+  comes out, for the Steam Turbine. So a vent gives a
+  choice: SU straight from the Cap, or Steam from the Well (more total power, but you need a
+  turbine and a water supply). Steam rate set so one vent runs a small turbine. Like the Cap,
+  it stops eruptions. Ponder scene, and the turbine's condensed water can loop back in.
+- **Geothermal Brine** (real: the Salton Sea geothermal plants are now a big lithium source) -
+  the Well also gives out a trickle of **Geothermal Brine** with the Steam. The Crystallizer
+  turns Brine into Salt plus a little Lithium Dust (a `crystallizing` recipe, no new
+  machine). A renewable Lithium source for the Fusion Reactor, and geothermal's first link to
+  another chain. Brine has to be piped away or the Well backs up, like the turbine's water.
+- **Vent strength** - each vent rolls weak, normal or strong at world gen (saved in the vent's
+  block entity), scaling Cap and Well output (e.g. 0.5x / 1x / 2x). Goggles on a vent show
+  it, and strong vents puff more steam, so a good vent is worth travelling for. Old vents
+  read as normal.
+- **Nether vents** - vents in Basalt Deltas, with more output than Overworld vents (a
+  multiplier on the Cap and Well, or always strong if vent strength gets built), surrounded
+  by lava and magma. High risk, high reward, and a reason to build in the Nether. The Cap works there as
+  is; the Well needs Water piped in, which is fine, since Water doesn't evaporate in pipes.
+- **Geyser Collector** - for players who like the eruptions: sits beside an uncapped vent and
+  catches each eruption as a big burst of Steam into its tank, keeping the eruptions. Lower
+  output than the Well on average, but bursty, so it pairs with storage. Lower priority.
+- **Geothermal greenhouse heating** (real: Iceland grows bananas this way) - a Greenhouse
+  with a capped vent or Well inside, or Steam piped to its controller, grows faster or lets
+  crops grow in cold biomes. Ties into the Greenhouse.
+- **Hot Water** - the Well's spent water could come out as Hot Water for the Seebeck generator
+  (see Biggest gaps), if that gets built.
+- Skipped: ground-source heat pumps and geothermal that works anywhere, since vents are meant
+  to be scarce. A vent heating a Create boiler directly competes with the Heat Battery.
 
 ## Particle Accelerator
 

@@ -29,6 +29,16 @@ public class ModFluidTagsProvider extends FluidTagsProvider {
             TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "steam"));
     private static final TagKey<Fluid> HEMP_SEED_OIL =
             TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "hemp_seed_oil"));
+    // Northstar's Oxygen Sealer and Oxygen Filler take anything in #northstar:breathable, which
+    // includes #c:oxygen, so our Oxygen works as life support there
+    private static final TagKey<Fluid> OXYGEN =
+            TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "oxygen"));
+    // Cosmonautics' #rocketnautics:rocket_fuel includes #c:hydrogen
+    private static final TagKey<Fluid> HYDROGEN =
+            TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "hydrogen"));
+    // Cosmonautics rocket oxidizer (Water by default)
+    private static final TagKey<Fluid> ROCKET_OXIDIZER =
+            TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("rocketnautics", "oxidizer"));
 
     public ModFluidTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider,
                                 @Nullable ExistingFileHelper existingFileHelper) {
@@ -63,5 +73,13 @@ public class ModFluidTagsProvider extends FluidTagsProvider {
         tag(HEMP_SEED_OIL)
                 .add(ModFluids.HEMP_SEED_OIL_SOURCE.get())
                 .add(ModFluids.HEMP_SEED_OIL_FLOWING.get());
+
+        tag(OXYGEN)
+                .add(ModFluids.OXYGEN_SOURCE.get())
+                .add(ModFluids.OXYGEN_FLOWING.get());
+        tag(HYDROGEN)
+                .add(ModFluids.HYDROGEN_SOURCE.get())
+                .add(ModFluids.HYDROGEN_FLOWING.get());
+        tag(ROCKET_OXIDIZER).addTag(OXYGEN);
     }
 }

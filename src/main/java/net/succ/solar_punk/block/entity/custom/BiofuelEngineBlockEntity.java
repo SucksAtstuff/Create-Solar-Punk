@@ -29,6 +29,7 @@ import net.succ.solar_punk.block.custom.BiofuelEngineBlock;
 import net.succ.solar_punk.client.sound.BiofuelEngineSoundInstance;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.offbyonelib.util.FluidTankNBTHelper;
+import net.succ.solar_punk.util.OxyFuel;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -49,6 +50,12 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
                 level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
         }
     };
+
+    // Oxygen piped in alongside the Biofuel raises the stress capacity while running
+    public final OxyFuel oxyFuel = new OxyFuel(Config.biofuelEngineOxygenTank, Config.biofuelEngineOxygenPerSecond,
+            Config.biofuelEngineOxygenBoost, this::setChanged);
+    // Biofuel and Oxygen in from any face; only Biofuel comes back out
+    public final IFluidHandler fluidHandler = oxyFuel.handler(biofuelTank);
 
     @OnlyIn(Dist.CLIENT)
     @Nullable
@@ -81,7 +88,7 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
 
     @Override
     public float calculateAddedStressCapacity() {
-        float capacity = hasFuel() ? Config.biofuelEngineSu : 0;
+        float capacity = hasFuel() ? oxyFuel.capacity(Config.biofuelEngineSu) : 0;
         this.lastCapacityProvided = capacity;
         return capacity;
     }
@@ -99,6 +106,8 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
             biofuelTank.drain(Config.biofuelConsumeMb, IFluidHandler.FluidAction.EXECUTE);
 
         if (level.getGameTime() % 20 == 0) {
+            oxyFuel.tickSecond(hasFuel());
+            // Also re-solves the network for the Oxygen boost, and syncs the tanks to Goggles
             updateGeneratedRotation();
             boolean active = hasFuel();
             BlockState state = level.getBlockState(worldPosition);
@@ -123,12 +132,15 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
     protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.write(tag, registries, clientPacket);
         FluidTankNBTHelper.save(tag, "BiofuelTank", biofuelTank);
+        oxyFuel.write(tag);
     }
 
     @Override
     protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
-        super.read(tag, registries, clientPacket);
+        // Before super.read(), which reads the capacity back
         FluidTankNBTHelper.load(tag, "BiofuelTank", biofuelTank);
+        oxyFuel.read(tag);
+        super.read(tag, registries, clientPacket);
     }
 
     @Override
@@ -140,6 +152,7 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(Config.biofuelConsumeMb).text(" mB / " + Config.biofuelConsumePeriod + "t").style(ChatFormatting.YELLOW).component())
                 .forGoggles(tooltip, 1);
+        oxyFuel.addToGoggleTooltip(tooltip);
         return true;
     }
 }

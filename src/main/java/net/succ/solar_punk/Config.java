@@ -109,9 +109,13 @@ public class Config {
 
     private static final ModConfigSpec.IntValue CFG_GASIFIER_RPM;
     private static final ModConfigSpec.IntValue CFG_GASIFIER_SU;
+    private static final ModConfigSpec.IntValue CFG_GASIFIER_OXYGEN_PER_SECOND;
+    private static final ModConfigSpec.DoubleValue CFG_GASIFIER_OXYGEN_BOOST;
 
     private static final ModConfigSpec.IntValue CFG_BIOFUEL_ENGINE_RPM;
     private static final ModConfigSpec.IntValue CFG_BIOFUEL_ENGINE_SU;
+    private static final ModConfigSpec.IntValue CFG_BIOFUEL_ENGINE_OXYGEN_PER_SECOND;
+    private static final ModConfigSpec.DoubleValue CFG_BIOFUEL_ENGINE_OXYGEN_BOOST;
     private static final ModConfigSpec.IntValue CFG_MOTOR_MAX_RPM, CFG_MOTOR_SU, CFG_MOTOR_FE_PER_RPM;
 
     private static final ModConfigSpec.IntValue CFG_TURBINE_MAX_RPM;
@@ -148,6 +152,9 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_WATER_PER_BATCH;
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_BIOFUEL_PER_BATCH;
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_RICH_FERTILIZER_PER_BATCH;
+    private static final ModConfigSpec.IntValue CFG_FERMENTATION_AEROBIC_SPEED;
+    private static final ModConfigSpec.IntValue CFG_FERMENTATION_AEROBIC_OXYGEN;
+    private static final ModConfigSpec.IntValue CFG_FERMENTATION_VAT_OXYGEN_TANK;
     private static final ModConfigSpec.IntValue CFG_SPRINKLER_RICH_EXTRA_RANGE;
 
     private static final ModConfigSpec.IntValue CFG_GASIFIER_BURN_TICKS;
@@ -182,6 +189,8 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_TURBINE_CONDENSATE_TANK;
     private static final ModConfigSpec.IntValue CFG_HEAT_BATTERY_TANK;
     private static final ModConfigSpec.IntValue CFG_BIOFUEL_ENGINE_TANK;
+    private static final ModConfigSpec.IntValue CFG_BIOFUEL_ENGINE_OXYGEN_TANK;
+    private static final ModConfigSpec.IntValue CFG_GASIFIER_OXYGEN_TANK;
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_VAT_TANK_PER_BLOCK;
     private static final ModConfigSpec.IntValue CFG_SOLAR_POWER_TOWER_TANK_PER_BLOCK;
     private static final ModConfigSpec.IntValue CFG_SPRINKLER_TANK;
@@ -336,11 +345,15 @@ public class Config {
         BUILDER.push("biomass_gasifier");
         CFG_GASIFIER_RPM = BUILDER.comment("RPM output while burning").defineInRange("rpm", 8, 1, 256);
         CFG_GASIFIER_SU  = BUILDER.comment("Stress capacity while burning").defineInRange("su", 256, 1, 1_000_000);
+        CFG_GASIFIER_OXYGEN_PER_SECOND = BUILDER.comment("mB of Oxygen used per second while burning with Oxygen piped in").defineInRange("oxygen_per_second", 5, 1, 100_000);
+        CFG_GASIFIER_OXYGEN_BOOST      = BUILDER.comment("Extra stress capacity while burning with Oxygen (0.5 = +50%). Speed stays the same").defineInRange("oxygen_boost", 0.5, 0.0, 10.0);
         BUILDER.pop();
 
         BUILDER.push("biofuel_engine");
         CFG_BIOFUEL_ENGINE_RPM = BUILDER.comment("RPM output while running").defineInRange("rpm", 16, 1, 256);
         CFG_BIOFUEL_ENGINE_SU  = BUILDER.comment("Stress capacity while running").defineInRange("su", 512, 1, 1_000_000);
+        CFG_BIOFUEL_ENGINE_OXYGEN_PER_SECOND = BUILDER.comment("mB of Oxygen used per second while running with Oxygen piped in").defineInRange("oxygen_per_second", 10, 1, 100_000);
+        CFG_BIOFUEL_ENGINE_OXYGEN_BOOST      = BUILDER.comment("Extra stress capacity while running with Oxygen (0.5 = +50%). Speed stays the same").defineInRange("oxygen_boost", 0.5, 0.0, 10.0);
         BUILDER.pop();
 
         BUILDER.push("electric_motor");
@@ -444,6 +457,8 @@ public class Config {
         CFG_FERMENTATION_WATER_PER_BATCH  = BUILDER.comment("mB of water consumed per batch (per footprint block)").defineInRange("water_per_batch_mb", 1000, 1, 100_000);
         CFG_FERMENTATION_BIOFUEL_PER_BATCH = BUILDER.comment("mB of biofuel produced per batch (per footprint block)").defineInRange("biofuel_per_batch_mb", 1000, 1, 100_000);
         CFG_FERMENTATION_RICH_FERTILIZER_PER_BATCH = BUILDER.comment("mB of Rich Fertilizer produced per batch of waste (per footprint block)").defineInRange("rich_fertilizer_per_batch_mb", 500, 1, 100_000);
+        CFG_FERMENTATION_AEROBIC_SPEED  = BUILDER.comment("How many times faster Rich Fertilizer batches run with Oxygen piped in (composting is aerobic). Biofuel batches don't take Oxygen").defineInRange("aerobic_speed_multiplier", 2, 1, 20);
+        CFG_FERMENTATION_AEROBIC_OXYGEN = BUILDER.comment("mB of Oxygen used per second per footprint block while a Rich Fertilizer batch runs with Oxygen").defineInRange("aerobic_oxygen_per_second", 2, 1, 100_000);
         BUILDER.pop();
 
         BUILDER.push("biomass_gasifier");
@@ -618,7 +633,10 @@ public class Config {
         CFG_TURBINE_CONDENSATE_TANK = BUILDER.comment("Steam Turbine: condensate water tank capacity (mB)").defineInRange("steam_turbine_condensate_mb", 8000, 100, 1_000_000);
         CFG_HEAT_BATTERY_TANK               = BUILDER.comment("Heat Battery: molten salt tank capacity (mB)").defineInRange("heat_battery_mb", 8000, 100, 1_000_000);
         CFG_BIOFUEL_ENGINE_TANK             = BUILDER.comment("Biofuel Engine: fuel tank capacity (mB)").defineInRange("biofuel_engine_mb", 8000, 100, 1_000_000);
+        CFG_BIOFUEL_ENGINE_OXYGEN_TANK      = BUILDER.comment("Biofuel Engine: Oxygen tank capacity (mB)").defineInRange("biofuel_engine_oxygen_mb", 2000, 100, 1_000_000);
+        CFG_GASIFIER_OXYGEN_TANK            = BUILDER.comment("Biomass Gasifier: Oxygen tank capacity (mB)").defineInRange("biomass_gasifier_oxygen_mb", 2000, 100, 1_000_000);
         CFG_FERMENTATION_VAT_TANK_PER_BLOCK = BUILDER.comment("Fermentation Vat: fluid capacity per multiblock block (mB)").defineInRange("fermentation_vat_per_block_mb", 8000, 100, 1_000_000);
+        CFG_FERMENTATION_VAT_OXYGEN_TANK    = BUILDER.comment("Fermentation Vat: Oxygen tank capacity (mB, whatever the size)").defineInRange("fermentation_vat_oxygen_mb", 8000, 100, 1_000_000);
         CFG_SOLAR_POWER_TOWER_TANK_PER_BLOCK = BUILDER.comment("Solar Power Tower: fluid capacity per multiblock block (mB)").defineInRange("solar_power_tower_per_block_mb", 8000, 100, 1_000_000);
         CFG_SPRINKLER_TANK                  = BUILDER.comment("Kinetic Sprinkler: fluid tank capacity (mB)").defineInRange("kinetic_sprinkler_mb", 4000, 100, 1_000_000);
         CFG_SOLAR_HEATER_TANK               = BUILDER.comment("Solar Heater: output fluid tank capacity (mB)").defineInRange("solar_heater_mb", 8000, 100, 1_000_000);
@@ -749,8 +767,10 @@ public class Config {
     public static float geyserDamage;
     public static int kineticBatteryRpm, kineticBatterySu, kineticBatteryMaxCharge;
     public static double kineticBatteryDischargeRate;
-    public static int gasifierRpm, gasifierSu;
-    public static int biofuelEngineRpm, biofuelEngineSu;
+    public static int gasifierRpm, gasifierSu, gasifierOxygenPerSecond, gasifierOxygenTank;
+    public static double gasifierOxygenBoost;
+    public static int biofuelEngineRpm, biofuelEngineSu, biofuelEngineOxygenPerSecond, biofuelEngineOxygenTank;
+    public static double biofuelEngineOxygenBoost;
     public static int motorMaxRpm, motorSu, motorFePerRpm;
     public static int turbineMaxRpm, turbineRpmPerLayer, turbineSuPerLayer, turbineSteamPerLayerPerTick, turbineCondensateRatio;
     public static boolean turbineCrownsSteam;
@@ -768,6 +788,7 @@ public class Config {
     public static int solarHeaterMeltTicks, solarHeaterEvaporationTicks, solarHeaterWaterPerSalt;
     public static int fireboxBoilerSteamPerTick;
     public static int fermentationTicks, fermentationWaterPerBatch, fermentationBiofuelPerBatch, fermentationRichFertilizerPerBatch;
+    public static int fermentationAerobicSpeed, fermentationAerobicOxygen, fermentationVatOxygenTank;
     public static int sprinklerRichExtraRange;
     public static int gasifierBurnTicks, pelletBurnTicks, pelletBiocharAmount;
     public static int biofuelConsumeMb, biofuelConsumePeriod;
@@ -866,9 +887,13 @@ public class Config {
 
         gasifierRpm          = CFG_GASIFIER_RPM.get();
         gasifierSu           = CFG_GASIFIER_SU.get();
+        gasifierOxygenPerSecond = CFG_GASIFIER_OXYGEN_PER_SECOND.get();
+        gasifierOxygenBoost  = CFG_GASIFIER_OXYGEN_BOOST.get();
 
         biofuelEngineRpm     = CFG_BIOFUEL_ENGINE_RPM.get();
         biofuelEngineSu      = CFG_BIOFUEL_ENGINE_SU.get();
+        biofuelEngineOxygenPerSecond = CFG_BIOFUEL_ENGINE_OXYGEN_PER_SECOND.get();
+        biofuelEngineOxygenBoost = CFG_BIOFUEL_ENGINE_OXYGEN_BOOST.get();
         motorMaxRpm          = CFG_MOTOR_MAX_RPM.get();
         motorSu              = CFG_MOTOR_SU.get();
         motorFePerRpm        = CFG_MOTOR_FE_PER_RPM.get();
@@ -900,6 +925,9 @@ public class Config {
 
         fermentationTicks          = CFG_FERMENTATION_TICKS.get();
         fermentationWaterPerBatch  = CFG_FERMENTATION_WATER_PER_BATCH.get();
+        fermentationAerobicSpeed   = CFG_FERMENTATION_AEROBIC_SPEED.get();
+        fermentationAerobicOxygen  = CFG_FERMENTATION_AEROBIC_OXYGEN.get();
+        fermentationVatOxygenTank  = CFG_FERMENTATION_VAT_OXYGEN_TANK.get();
         fermentationBiofuelPerBatch = CFG_FERMENTATION_BIOFUEL_PER_BATCH.get();
         fermentationRichFertilizerPerBatch = CFG_FERMENTATION_RICH_FERTILIZER_PER_BATCH.get();
 
@@ -932,6 +960,8 @@ public class Config {
         turbineCondensateTank   = CFG_TURBINE_CONDENSATE_TANK.get();
         heatBatteryTank              = CFG_HEAT_BATTERY_TANK.get();
         biofuelEngineTank            = CFG_BIOFUEL_ENGINE_TANK.get();
+        biofuelEngineOxygenTank      = CFG_BIOFUEL_ENGINE_OXYGEN_TANK.get();
+        gasifierOxygenTank           = CFG_GASIFIER_OXYGEN_TANK.get();
         fermentationVatTankPerBlock  = CFG_FERMENTATION_VAT_TANK_PER_BLOCK.get();
         solarPowerTowerTankPerBlock  = CFG_SOLAR_POWER_TOWER_TANK_PER_BLOCK.get();
         sprinklerTank                = CFG_SPRINKLER_TANK.get();

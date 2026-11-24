@@ -26,12 +26,14 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
 import net.succ.solar_punk.client.sound.BiomassGasifierSoundInstance;
 import net.succ.solar_punk.item.ModItems;
+import net.succ.solar_punk.util.OxyFuel;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -62,6 +64,11 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
 
     // Hoppers and funnels put fuel in and take the Biochar out
     public final IItemHandler automationHandler = AutomationItemHandler.inputOutput(itemHandler, 0, 1);
+
+    // Oxygen piped in from any side raises the stress capacity while burning
+    public final OxyFuel oxyFuel = new OxyFuel(Config.gasifierOxygenTank, Config.gasifierOxygenPerSecond,
+            Config.gasifierOxygenBoost, this::setChanged);
+    public final IFluidHandler fluidHandler = oxyFuel.handler(null);
 
     private int burnTimeRemaining = 0;
 
@@ -100,7 +107,7 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
 
     @Override
     public float calculateAddedStressCapacity() {
-        float capacity = burnTimeRemaining > 0 ? Config.gasifierSu : 0;
+        float capacity = burnTimeRemaining > 0 ? oxyFuel.capacity(Config.gasifierSu) : 0;
         // Keep lastCapacityProvided in sync like KineticBlockEntity's base impl does.
         // Without it, the network gains phantom SU on every world reload.
         this.lastCapacityProvided = capacity;
@@ -149,8 +156,11 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
             }
         }
 
-        // Goggles read the client's copy (fuel, Biochar, burn time)
-        if (level.getGameTime() % 20 == 0) sendData();
+        // Goggles read the client's copy (fuel, Biochar, burn time, Oxygen)
+        if (level.getGameTime() % 20 == 0) {
+            if (oxyFuel.tickSecond(burnTimeRemaining > 0)) updateGeneratedRotation();
+            sendData();
+        }
 
         boolean active = burnTimeRemaining > 0;
         if (active != wasActive) {
@@ -169,11 +179,13 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
         super.write(tag, registries, clientPacket);
         tag.put("Inventory", itemHandler.serializeNBT(registries));
         tag.putInt("BurnTime", burnTimeRemaining);
+        oxyFuel.write(tag);
     }
 
     @Override
     protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         burnTimeRemaining = tag.getInt("BurnTime");
+        oxyFuel.read(tag);
         super.read(tag, registries, clientPacket);
         if (tag.contains("Inventory")) itemHandler.deserializeNBT(registries, tag.getCompound("Inventory"));
     }
@@ -202,6 +214,7 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
                     .forGoggles(tooltip, 1);
         }
 
+        oxyFuel.addToGoggleTooltip(tooltip);
         return true;
     }
 }

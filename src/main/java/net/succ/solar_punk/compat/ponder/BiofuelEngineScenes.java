@@ -17,13 +17,14 @@ import net.succ.solar_punk.block.entity.custom.BiofuelEngineBlockEntity;
 import net.succ.solar_punk.fluid.ModFluids;
 
 // Schematic (ModPonderProvider "biofuel_engine/usage"): the engine at (1,2,2) on a Gearbox, a shaft
-// east into a Mechanical Drill facing a block of Andesite at (4,1,2), and a fuel pipe into the
-// engine's west side.
+// east into a Mechanical Drill facing a block of Andesite at (4,1,2), a fuel pipe into the
+// engine's west side and an Oxygen pipe into its south side.
 public class BiofuelEngineScenes {
 
     private static final BlockPos MACHINE = new BlockPos(1, 2, 2);
     private static final BlockPos GEARBOX = new BlockPos(1, 1, 2);
     private static final BlockPos PIPE = new BlockPos(0, 2, 2);
+    private static final BlockPos OXYGEN_PIPE = new BlockPos(1, 2, 3);
     private static final BlockPos ROCK = new BlockPos(4, 1, 2);
 
     public static void usage(SceneBuilder builder, SceneBuildingUtil util) {
@@ -90,6 +91,28 @@ public class BiofuelEngineScenes {
         }
         scene.world().setBlock(ROCK, Blocks.ANDESITE.defaultBlockState(), false);
         scene.idle(20);
+
+        scene.world().showSection(util.select().position(OXYGEN_PIPE), Direction.NORTH);
+        scene.idle(10);
+        scene.overlay().showControls(util.vector().topOf(OXYGEN_PIPE), Pointing.DOWN, 30)
+                .withItem(new ItemStack(ModFluids.OXYGEN_BUCKET.get()));
+        scene.idle(35);
+        scene.world().modifyBlockEntity(MACHINE, BiofuelEngineBlockEntity.class, be ->
+                be.oxyFuel.tank.fill(new FluidStack(ModFluids.OXYGEN_SOURCE.get(), 1000),
+                        IFluidHandler.FluidAction.EXECUTE));
+        scene.effects().indicateSuccess(MACHINE);
+        scene.overlay().showText(80)
+                .text("Pipe in Oxygen as well and it burns hotter: 50% more stress capacity, at the same speed")
+                .pointAt(util.vector().centerOf(OXYGEN_PIPE))
+                .placeNearTarget()
+                .attachKeyFrame();
+        scene.idle(90);
+
+        scene.overlay().showText(70)
+                .text("It uses 10 mB of Oxygen a second, from an Electrolyzer or a Bioreactor")
+                .pointAt(util.vector().topOf(MACHINE))
+                .placeNearTarget();
+        scene.idle(80);
 
         scene.overlay().showText(70)
                 .text("A full tank of 8 buckets lasts about 5 minutes")

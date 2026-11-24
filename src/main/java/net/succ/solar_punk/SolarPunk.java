@@ -249,6 +249,11 @@ public class SolarPunk {
                 (be, side) -> be.automationHandler
         );
         event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.BIOMASS_GASIFIER.get(),
+                (be, side) -> be.fluidHandler
+        );
+        event.registerBlockEntity(
                 Capabilities.ItemHandler.BLOCK,
                 ModBlockEntities.BIOFILTER.get(),
                 (be, side) -> be.automationHandler
@@ -256,7 +261,7 @@ public class SolarPunk {
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
                 ModBlockEntities.BIOFUEL_ENGINE.get(),
-                (be, side) -> be.biofuelTank
+                (be, side) -> be.fluidHandler
         );
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,

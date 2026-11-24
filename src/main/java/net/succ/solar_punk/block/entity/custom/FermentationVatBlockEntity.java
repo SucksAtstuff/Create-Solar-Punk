@@ -73,6 +73,18 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         protected void onContentsChanged() { setChanged(); sync(); }
     };
 
+    // Aerobic mode: Oxygen speeds up Rich Fertilizer (composting is aerobic). Biofuel is
+    // anaerobic, so Oxygen is only taken in while waste is loaded (acceptsOxygen()).
+    public final FluidTank oxygenTank = new FluidTank(Config.fermentationVatOxygenTank) {
+        @Override
+        public boolean isFluidValid(FluidStack stack) { return stack.getFluid().isSame(ModFluids.OXYGEN_SOURCE.get()); }
+        @Override
+        protected void onContentsChanged() { setChanged(); sync(); }
+    };
+
+    // Whether the running batch has Oxygen this second (saved for Goggles)
+    private boolean aerobic;
+
     public final ItemStackHandler itemHandler = new ItemStackHandler(1) {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
@@ -87,28 +99,33 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
     public final IFluidHandler combinedFluidHandler = new IFluidHandler() {
         private FermentationVatBlockEntity ctrl() { return getControllerBE(); }
 
-        @Override public int getTanks() { return 2; }
+        @Override public int getTanks() { return 3; }
+
+        private FluidTank tankAt(FermentationVatBlockEntity c, int tank) {
+            return tank == 0 ? c.waterTank : tank == 1 ? c.outputTank : c.oxygenTank;
+        }
 
         @Override public FluidStack getFluidInTank(int tank) {
             FermentationVatBlockEntity c = ctrl();
-            if (c == null) return FluidStack.EMPTY;
-            return tank == 0 ? c.waterTank.getFluid() : c.outputTank.getFluid();
+            return c != null ? tankAt(c, tank).getFluid() : FluidStack.EMPTY;
         }
 
         @Override public int getTankCapacity(int tank) {
             FermentationVatBlockEntity c = ctrl();
-            if (c == null) return 0;
-            return tank == 0 ? c.waterTank.getCapacity() : c.outputTank.getCapacity();
+            return c != null ? tankAt(c, tank).getCapacity() : 0;
         }
 
         @Override public boolean isFluidValid(int tank, FluidStack stack) {
-            return tank == 0 && stack.getFluid().isSame(Fluids.WATER);
+            return tank == 0 ? stack.getFluid().isSame(Fluids.WATER)
+                    : tank == 2 && stack.getFluid().isSame(ModFluids.OXYGEN_SOURCE.get());
         }
 
         @Override public int fill(FluidStack resource, FluidAction action) {
             FermentationVatBlockEntity c = ctrl();
             if (c == null) return 0;
-            return resource.getFluid().isSame(Fluids.WATER) ? c.waterTank.fill(resource, action) : 0;
+            if (resource.getFluid().isSame(Fluids.WATER)) return c.waterTank.fill(resource, action);
+            if (c.acceptsOxygen()) return c.oxygenTank.fill(resource, action);
+            return 0;
         }
 
         @Override public FluidStack drain(FluidStack resource, FluidAction action) {
@@ -218,12 +235,20 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
 
         if (!canFerment) {
             if (progress > 0) { progress = 0; setChanged(); sync(); }
+            if (aerobic) { aerobic = false; sync(); }
             setLit(false);
             return;
         }
 
         setLit(true);
-        progress++;
+        // Once a second, a Rich Fertilizer batch takes a second's Oxygen if there's enough
+        if (level.getGameTime() % 20 == 0) {
+            int cost = Config.fermentationAerobicOxygen * batchScale;
+            boolean now = makesFertilizer(itemHandler.getStackInSlot(0)) && oxygenTank.getFluidAmount() >= cost;
+            if (now) oxygenTank.drain(cost, IFluidHandler.FluidAction.EXECUTE);
+            if (now != aerobic) { aerobic = now; sync(); }
+        }
+        progress += aerobic ? Config.fermentationAerobicSpeed : 1;
         setChanged();
         if (progress % 20 == 0) sync();
 
@@ -239,9 +264,19 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         }
     }
 
+    private static boolean makesFertilizer(ItemStack input) {
+        return input.is(ModTags.Items.FERMENTATION_WASTE);
+    }
+
+    // Oxygen only goes in while waste is loaded, so pipes don't fill the Vat with it
+    // during Biofuel batches
+    public boolean acceptsOxygen() {
+        return makesFertilizer(itemHandler.getStackInSlot(0));
+    }
+
     // What a batch of `input` makes: Rich Fertilizer from waste, Biofuel from anything else.
     private FluidStack batchOutput(ItemStack input) {
-        return input.is(ModTags.Items.FERMENTATION_WASTE)
+        return makesFertilizer(input)
                 ? new FluidStack(ModFluids.RICH_FERTILIZER_SOURCE.get(), scaledBatchAmount(Config.fermentationRichFertilizerPerBatch))
                 : new FluidStack(ModFluids.BIOFUEL_SOURCE.get(), scaledBatchAmount(Config.fermentationBiofuelPerBatch));
     }
@@ -272,6 +307,8 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         tag.putInt("Progress", progress);
         FluidTankNBTHelper.save(tag, "WaterTank",   waterTank);
         FluidTankNBTHelper.save(tag, "BiofuelTank", outputTank);
+        FluidTankNBTHelper.save(tag, "OxygenTank",  oxygenTank);
+        tag.putBoolean("Aerobic", aerobic);
     }
 
     @Override
@@ -287,6 +324,8 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         }
         FluidTankNBTHelper.load(tag, "WaterTank",   waterTank);
         FluidTankNBTHelper.load(tag, "BiofuelTank", outputTank);
+        FluidTankNBTHelper.load(tag, "OxygenTank",  oxygenTank);
+        aerobic = tag.getBoolean("Aerobic");
     }
 
     // -------------------------------------------------------------------------
@@ -340,6 +379,14 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         SolarPunk.GOGGLES.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
         boolean fertilizer = outputTank.getFluid().getFluid().isSame(ModFluids.RICH_FERTILIZER_SOURCE.get());
         SolarPunk.GOGGLES.tank(tooltip, fertilizer ? "rich_fertilizer" : "biofuel", outputTank, ChatFormatting.GREEN);
+        if (!oxygenTank.isEmpty() || acceptsOxygen())
+            SolarPunk.GOGGLES.tank(tooltip, "oxygen", oxygenTank, ChatFormatting.AQUA);
+        if (aerobic) {
+            CreateLang.translate("solar_punk.tooltip.vat_aerobic")
+                    .style(ChatFormatting.GRAY)
+                    .add(CreateLang.text(Config.fermentationAerobicSpeed + "x speed").style(ChatFormatting.AQUA).component())
+                    .forGoggles(tooltip, 1);
+        }
 
         return true;
     }
