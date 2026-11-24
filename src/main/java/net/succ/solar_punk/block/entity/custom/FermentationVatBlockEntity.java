@@ -11,12 +11,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,12 +25,15 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.succ.solar_punk.Config;
-import net.succ.solar_punk.ModTags;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.FermentationVatBlock;
 import net.succ.solar_punk.block.custom.FermentationVatBlock.VatPosition;
 import net.succ.solar_punk.client.sound.FermentationVatSoundInstance;
 import net.succ.solar_punk.fluid.ModFluids;
+import net.succ.solar_punk.recipe.FermentingRecipe;
+import net.succ.solar_punk.recipe.ModRecipeTypes;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.succ.offbyonelib.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,9 +50,6 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
     @Nullable
     private FermentationVatSoundInstance soundInstance;
 
-    private static final TagKey<Item> BIO_FUELS =
-            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "bio_fuels"));
-
     public final FluidTank waterTank = new FluidTank(Config.fermentationVatTankPerBlock) {
         @Override
         public boolean isFluidValid(FluidStack stack) { return stack.getFluid().isSame(Fluids.WATER); }
@@ -61,20 +57,19 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         protected void onContentsChanged() { setChanged(); sync(); }
     };
 
-    // Biofuel from plant matter, or Rich Fertilizer from waste (FERMENTATION_WASTE). One fluid at
-    // a time: a batch waits until the tank is empty of the other one.
+    // Whatever the fermenting recipe makes (Biofuel from plant matter, Rich Fertilizer from
+    // waste by default). One fluid at a time: a batch waits until the tank is empty of another.
     public final FluidTank outputTank = new FluidTank(Config.fermentationVatTankPerBlock) {
         @Override
         public boolean isFluidValid(FluidStack stack) {
-            return stack.getFluid().isSame(ModFluids.BIOFUEL_SOURCE.get())
-                    || stack.getFluid().isSame(ModFluids.RICH_FERTILIZER_SOURCE.get());
+            return true;
         }
         @Override
         protected void onContentsChanged() { setChanged(); sync(); }
     };
 
-    // Aerobic mode: Oxygen speeds up Rich Fertilizer (composting is aerobic). Biofuel is
-    // anaerobic, so Oxygen is only taken in while waste is loaded (acceptsOxygen()).
+    // Aerobic mode: Oxygen speeds up aerobic recipes (Rich Fertilizer: composting is aerobic).
+    // Biofuel is anaerobic, so Oxygen is only taken in for an aerobic recipe (acceptsOxygen()).
     public final FluidTank oxygenTank = new FluidTank(Config.fermentationVatOxygenTank) {
         @Override
         public boolean isFluidValid(FluidStack stack) { return stack.getFluid().isSame(ModFluids.OXYGEN_SOURCE.get()); }
@@ -88,7 +83,7 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
     public final ItemStackHandler itemHandler = new ItemStackHandler(1) {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            return stack.is(BIO_FUELS) || stack.is(ModTags.Items.FERMENTATION_WASTE);
+            return level == null || recipeFor(stack) != null;
         }
         @Override
         public int getSlotLimit(int slot) { return 64; }
@@ -225,10 +220,11 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         }
 
         int batchScale    = width * width;
-        int waterNeeded   = scaledBatchAmount(Config.fermentationWaterPerBatch);
-        FluidStack output  = batchOutput(itemHandler.getStackInSlot(0));
+        FermentingRecipe recipe = recipeFor(itemHandler.getStackInSlot(0));
+        int waterNeeded   = recipe == null ? 0 : scaledBatchAmount(recipe.water());
+        FluidStack output  = batchOutput(recipe);
 
-        boolean hasInput   = itemHandler.getStackInSlot(0).getCount() >= batchScale;
+        boolean hasInput   = recipe != null && itemHandler.getStackInSlot(0).getCount() >= batchScale;
         boolean hasWater   = waterTank.getFluidAmount() >= waterNeeded;
         boolean hasSpace   = outputTank.fill(output, IFluidHandler.FluidAction.SIMULATE) == output.getAmount();
         boolean canFerment = hasInput && hasWater && hasSpace;
@@ -241,10 +237,10 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         }
 
         setLit(true);
-        // Once a second, a Rich Fertilizer batch takes a second's Oxygen if there's enough
+        // Once a second, an aerobic batch takes a second's Oxygen if there's enough
         if (level.getGameTime() % 20 == 0) {
             int cost = Config.fermentationAerobicOxygen * batchScale;
-            boolean now = makesFertilizer(itemHandler.getStackInSlot(0)) && oxygenTank.getFluidAmount() >= cost;
+            boolean now = recipe.aerobic() && oxygenTank.getFluidAmount() >= cost;
             if (now) oxygenTank.drain(cost, IFluidHandler.FluidAction.EXECUTE);
             if (now != aerobic) { aerobic = now; sync(); }
         }
@@ -252,7 +248,7 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         setChanged();
         if (progress % 20 == 0) sync();
 
-        if (progress >= Config.fermentationTicks) {
+        if (progress >= recipe.processingTime()) {
             itemHandler.extractItem(0, batchScale, false);
             waterTank.drain(waterNeeded, IFluidHandler.FluidAction.EXECUTE);
             outputTank.fill(output, IFluidHandler.FluidAction.EXECUTE);
@@ -264,21 +260,27 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         }
     }
 
-    private static boolean makesFertilizer(ItemStack input) {
-        return input.is(ModTags.Items.FERMENTATION_WASTE);
+    /** The fermenting recipe for this item, or null. Recipes are synced, so this works on the client too. */
+    @Nullable
+    private FermentingRecipe recipeFor(ItemStack input) {
+        if (level == null || input.isEmpty()) return null;
+        return level.getRecipeManager()
+                .getRecipeFor(ModRecipeTypes.FERMENTING.get(), new SingleRecipeInput(input), level)
+                .map(RecipeHolder::value)
+                .orElse(null);
     }
 
-    // Oxygen only goes in while waste is loaded, so pipes don't fill the Vat with it
-    // during Biofuel batches
+    // Oxygen only goes in for an aerobic recipe, so pipes don't fill the Vat with it during
+    // Biofuel batches
     public boolean acceptsOxygen() {
-        return makesFertilizer(itemHandler.getStackInSlot(0));
+        FermentingRecipe recipe = recipeFor(itemHandler.getStackInSlot(0));
+        return recipe != null && recipe.aerobic();
     }
 
-    // What a batch of `input` makes: Rich Fertilizer from waste, Biofuel from anything else.
-    private FluidStack batchOutput(ItemStack input) {
-        return makesFertilizer(input)
-                ? new FluidStack(ModFluids.RICH_FERTILIZER_SOURCE.get(), scaledBatchAmount(Config.fermentationRichFertilizerPerBatch))
-                : new FluidStack(ModFluids.BIOFUEL_SOURCE.get(), scaledBatchAmount(Config.fermentationBiofuelPerBatch));
+    // What a batch makes in this Vat: the recipe's per-block result, scaled to its size.
+    private FluidStack batchOutput(@Nullable FermentingRecipe recipe) {
+        return recipe == null ? FluidStack.EMPTY
+                : recipe.result().copyWithAmount(scaledBatchAmount(recipe.result().getAmount()));
     }
 
     // A batch consumes one item per footprint block. Fluid amounts scale with the
@@ -354,7 +356,8 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
         }
 
         int batchScale = width * width;
-        int outputPerBatch = batchOutput(itemHandler.getStackInSlot(0)).getAmount();
+        FermentingRecipe recipe = recipeFor(itemHandler.getStackInSlot(0));
+        int outputPerBatch = batchOutput(recipe).getAmount();
         CreateLang.translate("solar_punk.tooltip.vat_batch_scale")
                 .style(ChatFormatting.GRAY)
                 .add(CreateLang.number(batchScale).style(ChatFormatting.WHITE).component())
@@ -365,20 +368,24 @@ public class FermentationVatBlockEntity extends MultiBlockFluidBE<FermentationVa
                 .forGoggles(tooltip, 1);
 
         ItemStack input = itemHandler.getStackInSlot(0);
-        if (!input.isEmpty()) {
+        if (recipe != null) {
             CreateLang.translate("solar_punk.tooltip.fermenting")
                     .style(ChatFormatting.GRAY)
                     .add(input.getHoverName().copy().withStyle(ChatFormatting.WHITE))
                     .forGoggles(tooltip, 1);
             CreateLang.translate("solar_punk.tooltip.progress")
                     .style(ChatFormatting.GRAY)
-                    .add(CreateLang.number(progress).text(" / " + Config.fermentationTicks).style(ChatFormatting.YELLOW).component())
+                    .add(CreateLang.number(progress).text(" / " + recipe.processingTime()).style(ChatFormatting.YELLOW).component())
                     .forGoggles(tooltip, 1);
         }
 
         SolarPunk.GOGGLES.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
-        boolean fertilizer = outputTank.getFluid().getFluid().isSame(ModFluids.RICH_FERTILIZER_SOURCE.get());
-        SolarPunk.GOGGLES.tank(tooltip, fertilizer ? "rich_fertilizer" : "biofuel", outputTank, ChatFormatting.GREEN);
+        if (outputTank.getFluid().getFluid().isSame(ModFluids.RICH_FERTILIZER_SOURCE.get()))
+            SolarPunk.GOGGLES.tank(tooltip, "rich_fertilizer", outputTank, ChatFormatting.GREEN);
+        else if (outputTank.isEmpty() || outputTank.getFluid().getFluid().isSame(ModFluids.BIOFUEL_SOURCE.get()))
+            SolarPunk.GOGGLES.tank(tooltip, "biofuel", outputTank, ChatFormatting.GREEN);
+        else
+            SolarPunk.GOGGLES.namedTank(tooltip, "vat_biofuel_output", outputTank, ChatFormatting.GREEN);
         if (!oxygenTank.isEmpty() || acceptsOxygen())
             SolarPunk.GOGGLES.tank(tooltip, "oxygen", oxygenTank, ChatFormatting.AQUA);
         if (aerobic) {

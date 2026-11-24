@@ -24,6 +24,11 @@ public class ModRecipeTypes {
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<SolarHeaterRecipe>> SOLAR_HEATING_SERIALIZER =
             serializer("solar_heating", SolarHeaterRecipe.CODEC, SolarHeaterRecipe.STREAM_CODEC);
 
+    public static final DeferredHolder<RecipeType<?>, RecipeType<FermentingRecipe>> FERMENTING =
+            type("fermenting");
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FermentingRecipe>> FERMENTING_SERIALIZER =
+            serializer("fermenting", FermentingRecipe.CODEC, FermentingRecipe.STREAM_CODEC);
+
     public static final DeferredHolder<RecipeType<?>, RecipeType<CrystallizerRecipe>> CRYSTALLIZING =
             type("crystallizing");
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CrystallizerRecipe>> CRYSTALLIZING_SERIALIZER =

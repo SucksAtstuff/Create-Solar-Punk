@@ -15,6 +15,10 @@ repositories {
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
     maven { url = "https://maven.blamejared.com" } // JEI
     maven { url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" } // GeckoLib
+    exclusiveContent { // KubeJS and Rhino (test_kubejs only)
+        forRepository { maven { url = "https://maven.latvian.dev/releases" } }
+        filter { includeGroup "dev.latvian.mods" }
+    }
     exclusiveContent { // Cosmonautics, Sable, Aeronautics, New Age (test_cosmonautics / test_new_age only)
         forRepository { maven { url = "https://api.modrinth.com/maven" } }
         filter { includeGroup "maven.modrinth" }
@@ -24,6 +28,7 @@ repositories {
 // See test_cosmonautics and test_new_age in gradle.properties.
 def testCosmonautics = project.findProperty('test_cosmonautics')?.toString()?.toBoolean() ?: false
 def testNewAge = project.findProperty('test_new_age')?.toString()?.toBoolean() ?: false
+def testKubeJS = project.findProperty('test_kubejs')?.toString()?.toBoolean() ?: false
 
 base {
     archivesName = mod_id
@@ -60,6 +65,16 @@ neoForge {
             server()
             programArgument '--nogui'
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        // test_kubejs: a server in its own folder (run-kubejs), so KubeJS test scripts and
+        // worlds stay out of the normal run folder. Gradle task: runKubejsServer.
+        if (testKubeJS) {
+            kubejsServer {
+                server()
+                programArgument '--nogui'
+                gameDirectory = project.file('run-kubejs')
+            }
         }
 
         // This run config launches GameTestServer and runs all registered gametests, then exits.
@@ -146,6 +161,14 @@ dependencies {
     compileOnly("maven.modrinth:create-new-age:${new_age_version}") { transitive = false }
     if (testNewAge) {
         runtimeOnly("maven.modrinth:create-new-age:${new_age_version}")
+    }
+
+    // KubeJS integration lives in Off by One Lib; Solarpunk only ships data files for it
+    // (offbyonelib.kubejs.json, recipe schemas), so KubeJS is only ever needed to test it.
+    if (testKubeJS) {
+        // Its other libraries are bundled inside the jar; Rhino is a separate mod
+        runtimeOnly("dev.latvian.mods:kubejs-neoforge:${kubejs_version}") { transitive = false }
+        runtimeOnly("dev.latvian.mods:rhino:${rhino_version}") { transitive = false }
     }
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository

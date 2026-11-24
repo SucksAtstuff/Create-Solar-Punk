@@ -16,6 +16,7 @@ import com.simibubi.create.api.stress.BlockStressValues;
 import com.simibubi.create.api.stress.BlockStressValues.GeneratedRpm;
 import net.minecraft.core.Direction;
 import net.neoforged.bus.api.IEventBus;
+import net.succ.solar_punk.datamap.ModDataMaps;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
@@ -77,6 +78,7 @@ public class SolarPunk {
         ModTriggers.register(modEventBus);
         ModDisplaySources.register(modEventBus);
 
+        modEventBus.addListener(ModDataMaps::register);
         modEventBus.addListener(DataGenerators::gatherData);
         modEventBus.addListener(Config::onLoad);
         modEventBus.addListener(SolarPunk::registerCapabilities);

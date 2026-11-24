@@ -1,0 +1,11 @@
+{
+  "type": "solarpunk:fermenting",
+  "aerobic": true,
+  "ingredient": {
+    "tag": "solarpunk:fermentation_waste"
+  },
+  "result": {
+    "amount": 500,
+    "id": "solarpunk:rich_fertilizer"
+  }
+}

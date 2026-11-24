@@ -20,7 +20,7 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.compat.newage.NewAgeHeat;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
-import net.succ.solar_punk.fluid.ModFluids;
+import net.succ.solar_punk.datamap.ModDataMaps;
 
 import java.util.List;
 import net.succ.offbyonelib.util.FluidTankNBTHelper;
@@ -30,7 +30,8 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
     public final FluidTank fluidTank = new FluidTank(Config.heatBatteryTank) {
         @Override
         public boolean isFluidValid(FluidStack stack) {
-            return stack.getFluid().isSame(ModFluids.MOLTEN_SALT_SOURCE.get());
+            // solarpunk:heat_battery_fluids: Molten Salt by default
+            return ModDataMaps.heatBatteryFluid(stack) != null;
         }
 
         @Override
@@ -51,10 +52,11 @@ public class HeatBatteryBlockEntity extends BlockEntity implements IHaveGoggleIn
 
         boolean changed = false;
 
-        // Charge: consume 1 mB of molten salt and convert to heat
-        if (!fluidTank.isEmpty() && heatStored < Config.heatBatteryMaxHeat) {
+        // Charge: consume 1 mB of the stored fluid and turn it into heat
+        ModDataMaps.HeatBatteryFluid heatFluid = ModDataMaps.heatBatteryFluid(fluidTank.getFluid());
+        if (heatFluid != null && heatStored < Config.heatBatteryMaxHeat) {
             fluidTank.drain(1, IFluidHandler.FluidAction.EXECUTE);
-            heatStored = Math.min(Config.heatBatteryMaxHeat, heatStored + Config.heatBatteryHeatPerMb);
+            heatStored = Math.min(Config.heatBatteryMaxHeat, heatStored + heatFluid.heatPerMb());
             changed = true;
             if (!advancementFired) {
                 advancementFired = true;

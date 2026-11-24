@@ -1,0 +1,11 @@
+{
+  "values": {
+    "#c:bio_fuels": {
+      "burn_ticks": 200
+    },
+    "solarpunk:biomass_pellet": {
+      "biochar": 2,
+      "burn_ticks": 400
+    }
+  }
+}

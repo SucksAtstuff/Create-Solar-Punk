@@ -1,0 +1,7 @@
+{
+  "values": {
+    "solarpunk:molten_salt": {
+      "heat_per_mb": 10
+    }
+  }
+}

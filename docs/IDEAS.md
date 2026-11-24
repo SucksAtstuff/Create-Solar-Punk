@@ -13,31 +13,6 @@ with the strongest / most on-theme ideas near the top of each section.
    - **Geothermal Brine**: Lithium from the Well, tying geothermal to fusion.
    - **Nether vents**: stronger vents in Basalt Deltas, worth the danger.
 2. **Small wins**: the wire throughput Display Link.
-3. **KubeJS integration**, mirroring what KubeJS Create does for Create. KubeJS Create
-   (2101.3.x) is a `KubeJSPlugin` (listed in `kubejs.plugins.txt`) that adds four things;
-   Solarpunk could do the same in a `compat/kubejs/` package, compiled against KubeJS
-   compile-only and only loaded when it's installed:
-   - **Recipe schemas**: nicer script syntax for every recipe type (`.heated()`,
-     `.processingTime()`, chance outputs). KubeJS 2101 loads these from plain JSON at
-     `data/<namespace>/kubejs/recipe_schema/<type>.json`, so this part needs no Java. For us:
-     `event.recipes.solarpunk.solar_heating/crystallizing/particle_accelerator(...)` with
-     `.processingTime()`, `.byproduct()`, `.minDiameter()`, `.minSpeed()`, `.stress()`.
-     Hardcoded processes (fermentation, water evaporation, tower output) could become recipe
-     types first so they get schemas too.
-   - **Custom item/block types** for `StartupEvents.registry`: KubeJS Create adds
-     `create:sequenced_assembly` and `create:sandpaper` item types. For us, pack makers making
-     their own machines from ours: `solarpunk:solar_panel` (SU or FE, custom output),
-     `solarpunk:turbine_blade`, `solarpunk:reactor_blanket` (output/fuel weights),
-     `solarpunk:wire_tier` (custom spools with their own FE/t cap). Blocks with block entities
-     need our BE types to accept any block of the right class.
-   - **Startup events**, like `CreateEvents.boilerHeatHandler`/`pipeFluidEffect`/
-     `spoutHandler`. For us, a `SolarpunkEvents` group: turbine fuels (fluid -> steam value),
-     Biomass Gasifier and Biofuel Engine fuels, Heat Battery heat values, pollution sources
-     and absorbers, Greenhouse/Grow Lamp plant rules, geyser biomes.
-   - **Bindings** for scripts, like `CreateItem`: read the sun (`SolarHelper` phase/sky at a
-     position), chunk pollution get/add, and a fusion reactor/turbine state for custom logic.
-   Also register our data component types for script autocomplete
-   (`registerDataComponentTypeDescriptions`), as KubeJS Create does.
 
 ## After that: 2.4, a new generator
 

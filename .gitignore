@@ -19,6 +19,7 @@ hs_err_pid*
 
 # Common working directory
 run
+run-kubejs
 /src/generated/resources/.cache/
 /CLAUDE.md
 /commit.md

@@ -1,0 +1,64 @@
+{
+  "keys": [
+    {
+      "type": "item_stack",
+      "name": "result",
+      "role": "output"
+    },
+    {
+      "type": {
+        "type": "list",
+        "component": "flat_sized_ingredient"
+      },
+      "name": "ingredients",
+      "role": "input"
+    },
+    {
+      "type": "positive_int",
+      "always_write": true,
+      "function_names": [
+        "minDiameter"
+      ],
+      "name": "min_diameter",
+      "optional": 5,
+      "role": "other"
+    },
+    {
+      "type": {
+        "type": "int",
+        "max": 256,
+        "min": 1
+      },
+      "always_write": true,
+      "function_names": [
+        "minSpeed"
+      ],
+      "name": "min_speed",
+      "optional": 64,
+      "role": "other"
+    },
+    {
+      "type": "non_negative_float",
+      "always_write": true,
+      "function_names": [
+        "stress"
+      ],
+      "name": "stress",
+      "optional": 4096,
+      "role": "other"
+    },
+    {
+      "type": "ticks",
+      "always_write": true,
+      "function_names": [
+        "processingTime"
+      ],
+      "name": "processing_time",
+      "optional": 200,
+      "role": "input"
+    }
+  ],
+  "unique": [
+    "result"
+  ]
+}

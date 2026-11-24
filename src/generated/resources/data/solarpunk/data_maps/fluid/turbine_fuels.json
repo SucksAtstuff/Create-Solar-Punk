@@ -1,0 +1,16 @@
+{
+  "values": {
+    "northstar:liquid_hydrogen": {
+      "neoforge:conditions": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "northstar"
+        }
+      ],
+      "steam_value": 1.0
+    },
+    "solarpunk:steam": {
+      "steam_value": 1.0
+    }
+  }
+}

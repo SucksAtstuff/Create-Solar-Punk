@@ -1,0 +1,10 @@
+{
+  "type": "solarpunk:fermenting",
+  "ingredient": {
+    "tag": "c:bio_fuels"
+  },
+  "result": {
+    "amount": 1000,
+    "id": "solarpunk:biofuel"
+  }
+}

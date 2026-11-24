@@ -10,6 +10,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.platform.CatnipServices;
+import net.createmod.catnip.lang.LangBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,7 +28,7 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.BiofuelEngineBlock;
 import net.succ.solar_punk.client.sound.BiofuelEngineSoundInstance;
-import net.succ.solar_punk.fluid.ModFluids;
+import net.succ.solar_punk.datamap.ModDataMaps;
 import net.succ.offbyonelib.util.FluidTankNBTHelper;
 import net.succ.solar_punk.util.OxyFuel;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +42,8 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
     public final FluidTank biofuelTank = new FluidTank(Config.biofuelEngineTank) {
         @Override
         public boolean isFluidValid(FluidStack stack) {
-            return stack.getFluid().isSame(ModFluids.BIOFUEL_SOURCE.get());
+            // solarpunk:engine_fuels: Biofuel by default
+            return ModDataMaps.engineFuel(stack) != null;
         }
         @Override
         protected void onContentsChanged() {
@@ -80,10 +82,17 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
         return GeneratorHelper.directed(Config.biofuelEngineRpm, rotationDirection);
     }
 
-    // Runs only while the tank can pay for the next burn, so a leftover below
-    // one burn's worth can't keep it spinning without ever being drained
+    // mB burned each second: a bucket lasts the fuel's ticks_per_bucket
+    public int fuelPerSecond() {
+        ModDataMaps.EngineFuel fuel = ModDataMaps.engineFuel(biofuelTank.getFluid());
+        return fuel == null ? 0 : Math.max(1, Math.round(20_000f / fuel.ticksPerBucket()));
+    }
+
+    // Runs only while the tank can pay for the next second, so a leftover below
+    // one second's worth can't keep it spinning without ever being drained
     private boolean hasFuel() {
-        return biofuelTank.getFluidAmount() >= Config.biofuelConsumeMb;
+        int perSecond = fuelPerSecond();
+        return perSecond > 0 && biofuelTank.getFluidAmount() >= perSecond;
     }
 
     @Override
@@ -102,8 +111,8 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
             return;
         }
 
-        if (level.getGameTime() % Config.biofuelConsumePeriod == 0 && hasFuel())
-            biofuelTank.drain(Config.biofuelConsumeMb, IFluidHandler.FluidAction.EXECUTE);
+        if (level.getGameTime() % 20 == 0 && hasFuel())
+            biofuelTank.drain(fuelPerSecond(), IFluidHandler.FluidAction.EXECUTE);
 
         if (level.getGameTime() % 20 == 0) {
             oxyFuel.tickSecond(hasFuel());
@@ -147,10 +156,17 @@ public class BiofuelEngineBlockEntity extends GeneratingKineticBlockEntity imple
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         CreateLang.translate("solar_punk.tooltip.biofuel_engine_header").forGoggles(tooltip);
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
-        SolarPunk.GOGGLES.tank(tooltip, "biofuel", biofuelTank, ChatFormatting.GREEN);
+        // "Fuel:" with the fluid's name, since datapacks can add other fuels
+        LangBuilder fuelLine = SolarPunk.GOGGLES.tankLine("fuel",
+                biofuelTank.getFluidAmount(), biofuelTank.getCapacity(), ChatFormatting.GREEN);
+        if (!biofuelTank.isEmpty())
+            fuelLine.add(Component.literal(" (").withStyle(ChatFormatting.DARK_GRAY)
+                    .append(biofuelTank.getFluid().getHoverName().copy().withStyle(ChatFormatting.DARK_GREEN))
+                    .append(Component.literal(")").withStyle(ChatFormatting.DARK_GRAY)));
+        fuelLine.forGoggles(tooltip, 1);
         CreateLang.translate("solar_punk.tooltip.consumption")
                 .style(ChatFormatting.GRAY)
-                .add(CreateLang.number(Config.biofuelConsumeMb).text(" mB / " + Config.biofuelConsumePeriod + "t").style(ChatFormatting.YELLOW).component())
+                .add(CreateLang.number(fuelPerSecond()).text(" mB/s").style(ChatFormatting.YELLOW).component())
                 .forGoggles(tooltip, 1);
         oxyFuel.addToGoggleTooltip(tooltip);
         return true;

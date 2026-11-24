@@ -1,0 +1,7 @@
+{
+  "values": {
+    "solarpunk:biofuel": {
+      "ticks_per_bucket": 800
+    }
+  }
+}

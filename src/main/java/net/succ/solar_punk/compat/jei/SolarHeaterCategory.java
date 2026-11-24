@@ -52,4 +52,9 @@ public class SolarHeaterCategory extends SolarPunkCategory<SolarHeaterCategory.E
             }
         }
     }
+
+    @Override
+    protected net.minecraft.world.item.crafting.Recipe<?> recipeOf(Entry entry) {
+        return entry instanceof Entry.ItemMelt melt ? melt.recipe() : null;
+    }
 }

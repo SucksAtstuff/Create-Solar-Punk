@@ -31,12 +31,14 @@ import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.recipe.CrystallizerRecipe;
+import net.succ.solar_punk.recipe.FermentingRecipe;
 import net.succ.solar_punk.recipe.SolarHeaterRecipe;
 
 import java.util.concurrent.CompletableFuture;
 
 import static net.succ.solar_punk.datagen.DatagenUtil.anySalt;
 import static net.succ.offbyonelib.datagen.DatagenUtil.createItem;
+import static net.succ.offbyonelib.datagen.DatagenUtil.itemTag;
 
 public class ModRecipeProvider extends AddonRecipeProvider {
     public ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
@@ -95,6 +97,13 @@ public class ModRecipeProvider extends AddonRecipeProvider {
                         new SizedIngredient(Ingredient.of(Tags.Items.NETHERRACKS), 16),
                         new SizedIngredient(Ingredient.of(Tags.Items.GEMS_QUARTZ), 4)),
                 new ItemStack(Items.NETHERITE_SCRAP), 21, 32768, 192, 1200);
+
+        // Fermentation Vat (datapacks and KubeJS can add more). Amounts are per footprint block.
+        fermenting(output, "biofuel", Ingredient.of(itemTag("c", "bio_fuels")),
+                new FluidStack(ModFluids.BIOFUEL_SOURCE.get(), 1000), 1000, 400, false);
+        // Composting is aerobic, so Oxygen speeds it up
+        fermenting(output, "rich_fertilizer", Ingredient.of(ModTags.Items.FERMENTATION_WASTE),
+                new FluidStack(ModFluids.RICH_FERTILIZER_SOURCE.get(), 500), 1000, 400, true);
 
         // Default Crystallizer recipe (datapacks can add more). Much faster than the Solar
         // Heater's evaporation: it's the bulk path once you have a Molten Salt supply.
@@ -594,6 +603,15 @@ public class ModRecipeProvider extends AddonRecipeProvider {
         output.accept(
                 id("particle_accelerator/" + name),
                 new ParticleAcceleratorRecipe(ingredients, result, minDiameter, stress, minSpeed, processingTime),
+                null
+        );
+    }
+
+    private static void fermenting(RecipeOutput output, String name, Ingredient ingredient, FluidStack result,
+                                   int water, int processingTime, boolean aerobic) {
+        output.accept(
+                id("fermenting/" + name),
+                new FermentingRecipe(ingredient, result, water, processingTime, aerobic),
                 null
         );
     }

@@ -29,7 +29,7 @@ import net.succ.solar_punk.block.custom.TurbineBladeBlock;
 import net.succ.solar_punk.block.custom.TurbineRotorBlock;
 import net.succ.solar_punk.client.sound.TurbineSoundInstance;
 import net.succ.solar_punk.compat.crowns.CrownsCompat;
-import net.succ.solar_punk.compat.northstar.NorthstarCompat;
+import net.succ.solar_punk.datamap.ModDataMaps;
 import net.succ.solar_punk.fluid.ModFluids;
 import net.succ.offbyonelib.util.FluidTankNBTHelper;
 import org.jetbrains.annotations.Nullable;
@@ -94,15 +94,14 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
                 () -> new TurbineSoundInstance(this));
     }
 
-    // Steam is the mod's own fuel; Liquid Hydrogen (Northstar Redux, see NorthstarCompat)
-    // is accepted at the same rate. FluidTank.fill() refuses a fluid that doesn't match
-    // what's already stored, so the two can never mix: the tank has to drain fully
-    // before switching.
+    // Fuels are the solarpunk:turbine_fuels data map: Steam, and Northstar's Liquid Hydrogen
+    // when it's installed, by default; datapacks and KubeJS can add more. FluidTank.fill()
+    // refuses a fluid that doesn't match what's already stored, so fuels never mix: the tank
+    // has to drain fully before switching.
     // Create: CROWNS steam (water with a gas state, see CrownsCompat) is turned into
-    // our own Steam on the way in, so the tank only ever holds Solarpunk fluids.
+    // our own Steam on the way in.
     private static boolean isTurbineFuel(FluidStack stack) {
-        return stack.getFluid().isSame(ModFluids.STEAM_SOURCE.get())
-                || NorthstarCompat.isTurbineFuel(stack.getFluid());
+        return ModDataMaps.turbineFuel(stack) != null;
     }
 
     public final FluidTank steamTank = new FluidTank(Config.turbineSteamTank) {
@@ -249,13 +248,17 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
 
         int steamPerTick = Math.max(1,
                 (int) Math.ceil(Config.turbineSteamPerLayerPerTick * turbineHeight / bladeEfficiency));
+        // A fuel worth less (or more) than Steam per mB burns faster (or slower)
+        ModDataMaps.TurbineFuel fuel = ModDataMaps.turbineFuel(steamTank.getFluid());
+        int fuelPerTick = fuel == null ? steamPerTick
+                : Math.max(1, (int) Math.ceil(steamPerTick / fuel.steamValue()));
 
         // Update speed BEFORE draining so getGeneratedSpeed() sees a non-empty tank.
         // Also fire immediately on the first active tick so the kinetic network wakes up,
         // seeding the supply from what's in the tank so a startup doesn't ramp from 0 SU.
         boolean wasActive = isActive();
         if (!wasActive)
-            steamSupply = Math.min(1f, (float) steamTank.getFluidAmount() / steamPerTick);
+            steamSupply = Math.min(1f, (float) steamTank.getFluidAmount() / fuelPerTick);
         if (!wasActive || level.getGameTime() % 20 == 0) {
             updateGeneratedRotation();
             // Create pops a generator that turns against its network, and this block
@@ -264,7 +267,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
             setChanged();
         }
 
-        FluidStack consumed = steamTank.drain(steamPerTick, IFluidHandler.FluidAction.EXECUTE);
+        FluidStack consumed = steamTank.drain(fuelPerTick, IFluidHandler.FluidAction.EXECUTE);
 
         if (consumed.isEmpty()) {
             steamSupply = 0f;
@@ -273,7 +276,7 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
             return;
         }
 
-        float ratio = (float) consumed.getAmount() / steamPerTick;
+        float ratio = (float) consumed.getAmount() / fuelPerTick;
         steamSupply += (ratio - steamSupply) * SUPPLY_SMOOTHING;
 
         condensateAccumulator += consumed.getAmount();
@@ -576,9 +579,9 @@ public class TurbineRotorBlockEntity extends GeneratingKineticBlockEntity
                         .style(supplyPct >= 100 ? ChatFormatting.GREEN : ChatFormatting.GOLD).component())
                 .forGoggles(tooltip, 1);
 
-        // Own "Fuel:" key rather than the shared "Steam:" one, since this tank can also
-        // hold Liquid Hydrogen (see isTurbineFuel). The fluid's name is appended only
-        // while the tank holds something.
+        // Own "Fuel:" key rather than the shared "Steam:" one, since this tank can hold any
+        // turbine fuel (see isTurbineFuel). The fluid's name is appended only while the tank
+        // holds something.
         LangBuilder steamLine = SolarPunk.GOGGLES.tankLine("turbine_fuel",
                 steamTank.getFluidAmount(), steamTank.getCapacity(), ChatFormatting.AQUA);
         if (!steamTank.isEmpty())

@@ -15,12 +15,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,6 +28,7 @@ import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.custom.BiomassGasifierBlock;
 import net.succ.solar_punk.client.sound.BiomassGasifierSoundInstance;
+import net.succ.solar_punk.datamap.ModDataMaps;
 import net.succ.solar_punk.item.ModItems;
 import net.succ.solar_punk.util.OxyFuel;
 import org.jetbrains.annotations.Nullable;
@@ -42,14 +39,12 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
 
     ScrollOptionBehaviour<RotationDirection> rotationDirection;
 
-    private static final TagKey<Item> BIO_FUELS =
-            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "bio_fuels"));
-
     // Slot 0 = fuel input, Slot 1 = biochar output
     public final ItemStackHandler itemHandler = new ItemStackHandler(2) {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            return slot == 0 && stack.is(BIO_FUELS);
+            // solarpunk:gasifier_fuels: anything in c:bio_fuels by default
+            return slot == 0 && ModDataMaps.gasifierFuel(stack) != null;
         }
         @Override
         public int getSlotLimit(int slot) { return 64; }
@@ -89,15 +84,6 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
         behaviours.add(rotationDirection);
     }
 
-    private static int getBurnTicks(ItemStack stack) {
-        if (stack.is(ModItems.BIOMASS_PELLET.get())) return Config.pelletBurnTicks;
-        return Config.gasifierBurnTicks;
-    }
-
-    private static int getBiocharAmount(ItemStack stack) {
-        if (stack.is(ModItems.BIOMASS_PELLET.get())) return Config.pelletBiocharAmount;
-        return 1;
-    }
 
     @Override
     public float getGeneratedSpeed() {
@@ -139,18 +125,19 @@ public class BiomassGasifierBlockEntity extends GeneratingKineticBlockEntity imp
         }
 
         if (burnTimeRemaining == 0) {
-            ItemStack fuel = itemHandler.getStackInSlot(0);
+            ModDataMaps.GasifierFuel fuel = ModDataMaps.gasifierFuel(itemHandler.getStackInSlot(0));
             ItemStack charOutput = itemHandler.getStackInSlot(1);
-            int biocharAmount = getBiocharAmount(fuel);
-            boolean outputHasRoom = charOutput.isEmpty()
+            int biocharAmount = fuel == null ? 0 : fuel.biochar();
+            boolean outputHasRoom = biocharAmount == 0 || charOutput.isEmpty()
                     || (charOutput.is(ModItems.BIOCHAR.get()) && charOutput.getCount() + biocharAmount <= charOutput.getMaxStackSize());
-            if (!fuel.isEmpty() && outputHasRoom) {
+            if (fuel != null && outputHasRoom) {
                 itemHandler.extractItem(0, 1, false);
-                burnTimeRemaining = getBurnTicks(fuel);
-                if (charOutput.isEmpty()) {
-                    itemHandler.setStackInSlot(1, new ItemStack(ModItems.BIOCHAR.get(), biocharAmount));
-                } else {
-                    charOutput.grow(biocharAmount);
+                burnTimeRemaining = fuel.burnTicks();
+                if (biocharAmount > 0) {
+                    if (charOutput.isEmpty())
+                        itemHandler.setStackInSlot(1, new ItemStack(ModItems.BIOCHAR.get(), biocharAmount));
+                    else
+                        charOutput.grow(biocharAmount);
                 }
                 setChanged();
             }

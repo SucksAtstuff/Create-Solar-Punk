@@ -1,0 +1,17 @@
+{
+  "keys": [
+    {
+      "type": "fluid_stack",
+      "name": "result",
+      "role": "output"
+    },
+    {
+      "type": "ingredient",
+      "name": "ingredient",
+      "role": "input"
+    }
+  ],
+  "unique": [
+    "result"
+  ]
+}

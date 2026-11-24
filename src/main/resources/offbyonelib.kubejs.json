@@ -1,0 +1,9 @@
+{
+  "event_group": "SolarpunkEvents",
+  "data_maps": {
+    "turbineFuels": "solarpunk:turbine_fuels",
+    "gasifierFuels": "solarpunk:gasifier_fuels",
+    "engineFuels": "solarpunk:engine_fuels",
+    "heatBatteryFluids": "solarpunk:heat_battery_fluids"
+  }
+}

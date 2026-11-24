@@ -56,7 +56,11 @@ public class SolarPunkJeiPlugin implements IModPlugin {
 
         registration.addRecipes(SolarHeaterCategory.RECIPE_TYPE, solarHeaterEntries);
         registration.addRecipes(SolarPowerTowerCategory.RECIPE_TYPE, List.of(SolarPowerTowerCategory.SALT_INSTANCE, SolarPowerTowerCategory.STEAM_INSTANCE));
-        registration.addRecipes(FermentationVatCategory.RECIPE_TYPE, List.of(FermentationVatCategory.BIOFUEL, FermentationVatCategory.RICH_FERTILIZER));
+        registration.addRecipes(FermentationVatCategory.RECIPE_TYPE, level.getRecipeManager()
+                .getAllRecipesFor(ModRecipeTypes.FERMENTING.get())
+                .stream()
+                .map(RecipeHolder::value)
+                .toList());
         registration.addRecipes(BioreactorCategory.RECIPE_TYPE, List.of(BioreactorCategory.INSTANCE));
 
         List<CrystallizerRecipe> crystallizerRecipes = level.getRecipeManager()

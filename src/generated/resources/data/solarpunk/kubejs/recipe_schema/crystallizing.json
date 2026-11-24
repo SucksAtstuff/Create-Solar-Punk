@@ -1,0 +1,45 @@
+{
+  "keys": [
+    {
+      "type": "item_stack",
+      "name": "result",
+      "role": "output"
+    },
+    {
+      "type": "fluid_stack",
+      "name": "input_a",
+      "role": "input"
+    },
+    {
+      "type": "optional_fluid_stack",
+      "default_optional": true,
+      "function_names": [
+        "secondInput"
+      ],
+      "name": "input_b",
+      "role": "input"
+    },
+    {
+      "type": "optional_fluid_stack",
+      "default_optional": true,
+      "function_names": [
+        "byproduct"
+      ],
+      "name": "byproduct",
+      "role": "output"
+    },
+    {
+      "type": "ticks",
+      "always_write": true,
+      "function_names": [
+        "processingTime"
+      ],
+      "name": "processing_time",
+      "optional": 100,
+      "role": "input"
+    }
+  ],
+  "unique": [
+    "result"
+  ]
+}

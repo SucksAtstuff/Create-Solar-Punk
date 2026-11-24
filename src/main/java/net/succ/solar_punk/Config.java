@@ -148,24 +148,12 @@ public class Config {
 
     private static final ModConfigSpec.IntValue CFG_FIREBOX_BOILER_STEAM_PER_TICK;
 
-    private static final ModConfigSpec.IntValue CFG_FERMENTATION_TICKS;
-    private static final ModConfigSpec.IntValue CFG_FERMENTATION_WATER_PER_BATCH;
-    private static final ModConfigSpec.IntValue CFG_FERMENTATION_BIOFUEL_PER_BATCH;
-    private static final ModConfigSpec.IntValue CFG_FERMENTATION_RICH_FERTILIZER_PER_BATCH;
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_AEROBIC_SPEED;
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_AEROBIC_OXYGEN;
     private static final ModConfigSpec.IntValue CFG_FERMENTATION_VAT_OXYGEN_TANK;
     private static final ModConfigSpec.IntValue CFG_SPRINKLER_RICH_EXTRA_RANGE;
 
-    private static final ModConfigSpec.IntValue CFG_GASIFIER_BURN_TICKS;
-    private static final ModConfigSpec.IntValue CFG_PELLET_BURN_TICKS;
-    private static final ModConfigSpec.IntValue CFG_PELLET_BIOCHAR_AMOUNT;
-
-    private static final ModConfigSpec.IntValue CFG_BIOFUEL_CONSUME_MB;
-    private static final ModConfigSpec.IntValue CFG_BIOFUEL_CONSUME_PERIOD;
-
     private static final ModConfigSpec.IntValue CFG_HEAT_BATTERY_MAX_HEAT;
-    private static final ModConfigSpec.IntValue CFG_HEAT_BATTERY_HEAT_PER_MB;
     private static final ModConfigSpec.IntValue CFG_HEAT_BATTERY_HEAT_DECAY;
     private static final ModConfigSpec.IntValue CFG_HEAT_BATTERY_NEW_AGE_MAX_TEMPERATURE;
     private static final ModConfigSpec.DoubleValue CFG_HEAT_BATTERY_NEW_AGE_HEAT_RATE;
@@ -453,28 +441,12 @@ public class Config {
         BUILDER.pop();
 
         BUILDER.push("fermentation_vat");
-        CFG_FERMENTATION_TICKS            = BUILDER.comment("Ticks per fermentation batch").defineInRange("fermentation_ticks", 400, 1, 100_000);
-        CFG_FERMENTATION_WATER_PER_BATCH  = BUILDER.comment("mB of water consumed per batch (per footprint block)").defineInRange("water_per_batch_mb", 1000, 1, 100_000);
-        CFG_FERMENTATION_BIOFUEL_PER_BATCH = BUILDER.comment("mB of biofuel produced per batch (per footprint block)").defineInRange("biofuel_per_batch_mb", 1000, 1, 100_000);
-        CFG_FERMENTATION_RICH_FERTILIZER_PER_BATCH = BUILDER.comment("mB of Rich Fertilizer produced per batch of waste (per footprint block)").defineInRange("rich_fertilizer_per_batch_mb", 500, 1, 100_000);
-        CFG_FERMENTATION_AEROBIC_SPEED  = BUILDER.comment("How many times faster Rich Fertilizer batches run with Oxygen piped in (composting is aerobic). Biofuel batches don't take Oxygen").defineInRange("aerobic_speed_multiplier", 2, 1, 20);
-        CFG_FERMENTATION_AEROBIC_OXYGEN = BUILDER.comment("mB of Oxygen used per second per footprint block while a Rich Fertilizer batch runs with Oxygen").defineInRange("aerobic_oxygen_per_second", 2, 1, 100_000);
-        BUILDER.pop();
-
-        BUILDER.push("biomass_gasifier");
-        CFG_GASIFIER_BURN_TICKS = BUILDER.comment("Ticks raw Biomass burns for in the Gasifier.").defineInRange("burn_ticks", 200, 1, 100_000);
-        CFG_PELLET_BURN_TICKS   = BUILDER.comment("Ticks one Biomass Pellet burns for in the Gasifier. Pellets are denser, so they burn longer.").defineInRange("pellet_burn_ticks", 400, 1, 100_000);
-        CFG_PELLET_BIOCHAR_AMOUNT = BUILDER.comment("Biochar produced per Biomass Pellet burned (raw Biomass always produces 1).").defineInRange("pellet_biochar_amount", 2, 1, 64);
-        BUILDER.pop();
-
-        BUILDER.push("biofuel_engine");
-        CFG_BIOFUEL_CONSUME_MB     = BUILDER.comment("mB of biofuel consumed per consumption cycle").defineInRange("consume_mb", 50, 1, 10_000);
-        CFG_BIOFUEL_CONSUME_PERIOD = BUILDER.comment("Ticks between each fuel consumption").defineInRange("consume_period_ticks", 40, 1, 10_000);
+        CFG_FERMENTATION_AEROBIC_SPEED  = BUILDER.comment("How many times faster aerobic fermenting recipes (Rich Fertilizer: composting) run with Oxygen piped in. Other recipes don't take Oxygen").defineInRange("aerobic_speed_multiplier", 2, 1, 20);
+        CFG_FERMENTATION_AEROBIC_OXYGEN = BUILDER.comment("mB of Oxygen used per second per footprint block while an aerobic batch runs with Oxygen").defineInRange("aerobic_oxygen_per_second", 2, 1, 100_000);
         BUILDER.pop();
 
         BUILDER.push("heat_battery");
         CFG_HEAT_BATTERY_MAX_HEAT   = BUILDER.comment("Maximum heat the battery can store").defineInRange("max_heat", 80_000, 1000, 10_000_000);
-        CFG_HEAT_BATTERY_HEAT_PER_MB = BUILDER.comment("Heat units gained per mB of molten salt consumed").defineInRange("heat_per_mb", 10, 1, 10_000);
         CFG_HEAT_BATTERY_HEAT_DECAY  = BUILDER.comment("Heat units lost per tick (passive dissipation)").defineInRange("heat_decay_per_tick", 2, 0, 10_000);
         CFG_HEAT_BATTERY_NEW_AGE_MAX_TEMPERATURE = BUILDER.comment(
                 "Create: New Age compat. A Heat Battery acts as a New Age heat block whose temperature",
@@ -787,12 +759,9 @@ public class Config {
 
     public static int solarHeaterMeltTicks, solarHeaterEvaporationTicks, solarHeaterWaterPerSalt;
     public static int fireboxBoilerSteamPerTick;
-    public static int fermentationTicks, fermentationWaterPerBatch, fermentationBiofuelPerBatch, fermentationRichFertilizerPerBatch;
     public static int fermentationAerobicSpeed, fermentationAerobicOxygen, fermentationVatOxygenTank;
     public static int sprinklerRichExtraRange;
-    public static int gasifierBurnTicks, pelletBurnTicks, pelletBiocharAmount;
-    public static int biofuelConsumeMb, biofuelConsumePeriod;
-    public static int heatBatteryMaxHeat, heatBatteryHeatPerMb, heatBatteryHeatDecay;
+    public static int heatBatteryMaxHeat, heatBatteryHeatDecay;
     public static int heatBatteryNewAgeMaxTemperature;
     public static double heatBatteryNewAgeHeatRate;
     public static int sprinklerFluidPerCycle, sprinklerRange;
@@ -923,23 +892,11 @@ public class Config {
 
         fireboxBoilerSteamPerTick = CFG_FIREBOX_BOILER_STEAM_PER_TICK.get();
 
-        fermentationTicks          = CFG_FERMENTATION_TICKS.get();
-        fermentationWaterPerBatch  = CFG_FERMENTATION_WATER_PER_BATCH.get();
         fermentationAerobicSpeed   = CFG_FERMENTATION_AEROBIC_SPEED.get();
         fermentationAerobicOxygen  = CFG_FERMENTATION_AEROBIC_OXYGEN.get();
         fermentationVatOxygenTank  = CFG_FERMENTATION_VAT_OXYGEN_TANK.get();
-        fermentationBiofuelPerBatch = CFG_FERMENTATION_BIOFUEL_PER_BATCH.get();
-        fermentationRichFertilizerPerBatch = CFG_FERMENTATION_RICH_FERTILIZER_PER_BATCH.get();
-
-        gasifierBurnTicks    = CFG_GASIFIER_BURN_TICKS.get();
-        pelletBurnTicks      = CFG_PELLET_BURN_TICKS.get();
-        pelletBiocharAmount  = CFG_PELLET_BIOCHAR_AMOUNT.get();
-
-        biofuelConsumeMb     = CFG_BIOFUEL_CONSUME_MB.get();
-        biofuelConsumePeriod = CFG_BIOFUEL_CONSUME_PERIOD.get();
 
         heatBatteryMaxHeat   = CFG_HEAT_BATTERY_MAX_HEAT.get();
-        heatBatteryHeatPerMb = CFG_HEAT_BATTERY_HEAT_PER_MB.get();
         heatBatteryHeatDecay = CFG_HEAT_BATTERY_HEAT_DECAY.get();
         heatBatteryNewAgeMaxTemperature = CFG_HEAT_BATTERY_NEW_AGE_MAX_TEMPERATURE.get();
         heatBatteryNewAgeHeatRate = CFG_HEAT_BATTERY_NEW_AGE_HEAT_RATE.get();

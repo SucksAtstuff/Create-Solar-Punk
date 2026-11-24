@@ -7,6 +7,12 @@
 - **Oxy-fuel burning** - pipe Oxygen into a Biomass Gasifier or Biofuel Engine and it burns hotter, for 50% more stress capacity at the same speed. It only boosts a fuel, so it does nothing on its own. Feed it from an Electrolyzer, or put a Bioreactor's Oxygen to use instead of venting it.
 - **Aerobic composting** - pipe Oxygen into a Fermentation Vat making Rich Fertilizer and its batches run twice as fast. Biofuel is made without air, so the Vat only takes Oxygen while it holds waste.
 
+### Custom Recipes and Fuels
+
+- **KubeJS support** - write Solarpunk recipes in scripts like Create's: `event.recipes.solarpunk.fermenting(...)`, `.crystallizing(...)`, `.solar_heating(...)` and `.particle_accelerator(...)`, with builder calls like `.processingTime(200)`.
+- **Fermentation Vat recipes** - what the Vat ferments is now a recipe, so modpacks can add their own (any item into any fluid), and JEI shows every one.
+- **Custom fuels** - modpacks can change what the Steam Turbine, Biomass Gasifier and Biofuel Engine burn and what the Heat Battery stores heat from, with a datapack or with KubeJS (`SolarpunkEvents.turbineFuels(...)` and friends). See Custom Recipes on the wiki.
+
 ## Compatibility
 
 - **Create: Northstar Redux** - Solarpunk Oxygen is breathable: the Oxygen Sealer and Oxygen Filler take it, so a Bioreactor can keep a space base's air going.
@@ -16,6 +22,7 @@
 
 - Biofuel Engines can be filled with a bucket of Biofuel, and emptied with an empty one.
 - Biomass and Biomass Pellets can be put in a Biomass Gasifier by hand.
+- Removed the config options for Fermentation Vat batches, Biomass Gasifier burn times, Biofuel Engine fuel use and Heat Battery heat per mB. They're now set by recipes and data maps, with the same defaults, so changed values in an old config are ignored.
 
 # 2.2.1-1.21.1
 

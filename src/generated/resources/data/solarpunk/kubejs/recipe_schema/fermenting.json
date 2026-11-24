@@ -1,0 +1,44 @@
+{
+  "keys": [
+    {
+      "type": "fluid_stack",
+      "name": "result",
+      "role": "output"
+    },
+    {
+      "type": "ingredient",
+      "name": "ingredient",
+      "role": "input"
+    },
+    {
+      "type": "non_negative_int",
+      "function_names": [
+        "water"
+      ],
+      "name": "water",
+      "optional": 1000,
+      "role": "input"
+    },
+    {
+      "type": "ticks",
+      "function_names": [
+        "processingTime"
+      ],
+      "name": "processing_time",
+      "optional": 400,
+      "role": "input"
+    },
+    {
+      "type": "boolean",
+      "function_names": [
+        "aerobic"
+      ],
+      "name": "aerobic",
+      "optional": false,
+      "role": "other"
+    }
+  ],
+  "unique": [
+    "result"
+  ]
+}
