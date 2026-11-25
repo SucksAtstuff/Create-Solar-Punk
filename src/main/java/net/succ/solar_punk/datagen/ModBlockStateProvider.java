@@ -35,6 +35,7 @@ import net.succ.solar_punk.block.custom.FiligreeRailingSlopeBlock;
 import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
+import net.succ.solar_punk.block.custom.RuinedSolarMirrorBlock;
 import net.succ.solar_punk.block.custom.StreetlampBlock;
 import net.succ.offbyonelib.wire.WireConnectorBlock;
 import net.succ.offbyonelib.wire.RedstoneWireRelayBlock;
@@ -173,6 +174,7 @@ public class ModBlockStateProvider extends AddonBlockStateProvider {
         fluidBlock(ModFluids.HYDROGEN_BLOCK,    mcLoc("block/water_still"));
         fluidBlock(ModFluids.OXYGEN_BLOCK,      mcLoc("block/water_still"));
         fluidBlock(ModFluids.HEMP_SEED_OIL_BLOCK, mcLoc("block/water_still"));
+        fluidBlock(ModFluids.GEOTHERMAL_BRINE_BLOCK, mcLoc("block/water_still"));
         fluidBlock(ModFluids.ALGAE_CULTURE_BLOCK, mcLoc("block/water_still"));
 
         ResourceLocation casingTex = modLoc("block/industrial_iron_casing/industrial_iron_casing");
@@ -546,6 +548,18 @@ public class ModBlockStateProvider extends AddonBlockStateProvider {
                     .build();
         });
         simpleBlockItem(ModBlocks.SOLAR_MIRROR.get(), itemModel);
+
+        // Ruined copy: the lower half draws the whole static mirror, turned by FACING; the
+        // upper half is invisible, like the Solar Mirror's
+        ModelFile ruined = new UncheckedModelFile(modLoc("block/ruined_solar_mirror"));
+        ModelFile ruinedTop = new UncheckedModelFile(modLoc("block/ruined_solar_mirror_top"));
+        getVariantBuilder(ModBlocks.RUINED_SOLAR_MIRROR.get()).forAllStates(state ->
+                state.getValue(RuinedSolarMirrorBlock.HALF) == DoubleBlockHalf.UPPER
+                        ? ConfiguredModel.builder().modelFile(ruinedTop).build()
+                        : ConfiguredModel.builder().modelFile(ruined)
+                                .rotationY(horizontalYRot(state.getValue(RuinedSolarMirrorBlock.FACING))).build());
+        simpleBlockItem(ModBlocks.RUINED_SOLAR_MIRROR.get(), ruined);
+        facingCustomModelBlock(ModBlocks.RUINED_SOLAR_HEATER, true);
     }
 
     // The lower half draws the whole two-block lamp; the upper half is an invisible

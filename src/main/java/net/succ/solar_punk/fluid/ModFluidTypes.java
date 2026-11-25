@@ -156,6 +156,21 @@ public class ModFluidTypes {
                             .temperature(295)
             ));
 
+    // Hot mineral water a Geyser Well brings up with its Steam; the Crystallizer gets Salt and a
+    // little Lithium Dust from it. A cloudy grey-green, heavy and warm.
+    public static final Supplier<FluidType> GEOTHERMAL_BRINE_TYPE = FLUID_TYPES.register("geothermal_brine",
+            () -> new BaseFluidType(
+                    WATER_STILL,
+                    WATER_FLOW,
+                    WATER_OVERLAY,
+                    0xFF8FA595,
+                    new Vector3f(143f / 255f, 165f / 255f, 149f / 255f),
+                    FluidType.Properties.create()
+                            .density(1200)
+                            .viscosity(1200)
+                            .temperature(340)
+            ));
+
     // The Bioreactor's living culture. A bright blue-green like spirulina, well away from the
     // duller greens of Biofuel and the Fertilizers. Its movement comes from the Bioreactor's
     // particles (AlgaeParticles), not the texture.

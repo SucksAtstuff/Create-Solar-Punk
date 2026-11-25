@@ -239,6 +239,8 @@ public class ModClientEvents {
         tip(ModBlocks.GEYSER_CAP);
         tip(ModBlocks.GEYSER_WELL);
         tip(ModBlocks.RUSTED_GEYSER_CAP);
+        tip(ModBlocks.RUINED_SOLAR_HEATER);
+        tip(ModBlocks.RUINED_SOLAR_MIRROR);
         tip(ModBlocks.GEYSER_VENT);
         tip(ModBlocks.NETHER_GEYSER_VENT);
         tip(ModBlocks.SOLAR_POWER_TOWER);

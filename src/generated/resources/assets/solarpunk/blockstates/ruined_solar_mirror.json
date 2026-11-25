@@ -1,0 +1,31 @@
+{
+  "variants": {
+    "facing=east,half=lower": {
+      "model": "solarpunk:block/ruined_solar_mirror",
+      "y": 90
+    },
+    "facing=east,half=upper": {
+      "model": "solarpunk:block/ruined_solar_mirror_top"
+    },
+    "facing=north,half=lower": {
+      "model": "solarpunk:block/ruined_solar_mirror"
+    },
+    "facing=north,half=upper": {
+      "model": "solarpunk:block/ruined_solar_mirror_top"
+    },
+    "facing=south,half=lower": {
+      "model": "solarpunk:block/ruined_solar_mirror",
+      "y": 180
+    },
+    "facing=south,half=upper": {
+      "model": "solarpunk:block/ruined_solar_mirror_top"
+    },
+    "facing=west,half=lower": {
+      "model": "solarpunk:block/ruined_solar_mirror",
+      "y": 270
+    },
+    "facing=west,half=upper": {
+      "model": "solarpunk:block/ruined_solar_mirror_top"
+    }
+  }
+}

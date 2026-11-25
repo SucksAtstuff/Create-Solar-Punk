@@ -1,0 +1,17 @@
+{
+  "type": "solarpunk:crystallizing",
+  "bonus": {
+    "count": 1,
+    "id": "solarpunk:lithium_dust"
+  },
+  "bonus_chance": 0.25,
+  "input_a": {
+    "amount": 250,
+    "id": "solarpunk:geothermal_brine"
+  },
+  "processing_time": 100,
+  "result": {
+    "count": 1,
+    "id": "solarpunk:salt"
+  }
+}

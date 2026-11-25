@@ -1,5 +1,9 @@
 package net.succ.solar_punk.compat.jei;
 
+import net.minecraft.network.chat.Component;
+
+import net.minecraft.ChatFormatting;
+
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -35,6 +39,15 @@ public class CrystallizerCategory extends SolarPunkCategory<CrystallizerRecipe> 
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 88, twoOutputs ? 4 : 13)
                 .addItemStack(recipe.result());
+
+        // The bonus item, beside the result, with its chance
+        if (!recipe.bonus().isEmpty()) {
+            int percent = Math.round(recipe.bonusChance() * 100);
+            builder.addSlot(RecipeIngredientRole.OUTPUT, 107, twoOutputs ? 4 : 13)
+                    .addItemStack(recipe.bonus())
+                    .addRichTooltipCallback((view, tooltip) -> tooltip.add(
+                            Component.translatable("jei.solarpunk.chance", percent).withStyle(ChatFormatting.GOLD)));
+        }
 
         if (twoOutputs) {
             builder.addSlot(RecipeIngredientRole.OUTPUT, 88, 22)

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "solarpunk:block/ruined_solar_heater",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "solarpunk:block/ruined_solar_heater"
+    },
+    "facing=south": {
+      "model": "solarpunk:block/ruined_solar_heater",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "solarpunk:block/ruined_solar_heater",
+      "y": 270
+    }
+  }
+}

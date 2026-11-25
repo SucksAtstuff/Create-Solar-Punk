@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "level=0": {
+      "model": "solarpunk:block/geothermal_brine"
+    },
+    "level=1": {
+      "model": "solarpunk:block/geothermal_brine"
+    },
+    "level=10": {
+      "model": "solarpunk:block/geothermal_brine"
+    },
+    "level=11": {
+      "model": "solarpunk:block/geothermal_brine"
+    },
+    "level=12": {
+      "model": "solarpunk:block/geothermal_brine"
+    },
+    "level=13": {
+      "model": "solarpunk:block/geothermal_brine"
+    },
+    "level=14": {
+      "model": "solarpunk:block/geothermal_brine"
+    },
+    "level=15": {
+      "model": "solarpunk:block/geothermal_brine"
+    },
+    "level=2": {
+      "model": "solarpunk:block/geothermal_brine"
+    },
+    "level=3": {
+      "model": "solarpunk:block/geothermal_brine"
+    },
+    "level=4": {
+      "model": "solarpunk:block/geothermal_brine"
+    },
+    "level=5": {
+      "model": "solarpunk:block/geothermal_brine"
+    },
+    "level=6": {
+      "model": "solarpunk:block/geothermal_brine"
+    },
+    "level=7": {
+      "model": "solarpunk:block/geothermal_brine"
+    },
+    "level=8": {
+      "model": "solarpunk:block/geothermal_brine"
+    },
+    "level=9": {
+      "model": "solarpunk:block/geothermal_brine"
+    }
+  }
+}

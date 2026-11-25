@@ -31,12 +31,16 @@ public class ModKubeSchemaProvider extends KubeRecipeSchemaProvider {
 
         // crystallizing('4x solarpunk:salt', Fluid.of('solarpunk:molten_salt', 100))
         //     .secondInput(Fluid.water(50)).byproduct(Fluid.of('solarpunk:steam', 25)).processingTime(100)
+        //     .bonus('solarpunk:lithium_dust').bonusChance(0.25)
         schema("crystallizing")
                 .key("result", Role.OUTPUT, ITEM_STACK)
                 .key("input_a", Role.INPUT, FLUID_STACK)
                 .key("input_b", Role.INPUT, OPTIONAL_FLUID_STACK).optional().functionNames("secondInput")
                 .key("byproduct", Role.OUTPUT, OPTIONAL_FLUID_STACK).optional().functionNames("byproduct")
                 .key("processing_time", Role.INPUT, TICKS).optional(100).alwaysWrite().functionNames("processingTime")
+                // KubeJS's own component name; the library has no constant for it
+                .key("bonus", Role.OUTPUT, "optional_item_stack").optional().functionNames("bonus")
+                .key("bonus_chance", Role.OTHER, floatRange(0, 1)).optional(1).functionNames("bonusChance")
                 .unique("result");
 
         // particle_accelerator('solarpunk:tritium_capsule', ['32x #c:dusts/lithium', 'solarpunk:empty_fuel_capsule'])

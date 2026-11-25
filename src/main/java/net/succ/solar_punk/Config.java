@@ -94,7 +94,7 @@ public class Config {
     private static final ModConfigSpec.IntValue CFG_GEYSER_RPM;
     private static final ModConfigSpec.IntValue CFG_GEYSER_SU;
     private static final ModConfigSpec.DoubleValue CFG_NETHER_GEYSER_MULTIPLIER;
-    private static final ModConfigSpec.IntValue CFG_GEYSER_WELL_STEAM, CFG_GEYSER_WELL_TANK, CFG_RUSTED_CAP_CHANCE;
+    private static final ModConfigSpec.IntValue CFG_GEYSER_WELL_STEAM, CFG_GEYSER_WELL_BRINE, CFG_GEYSER_WELL_TANK, CFG_RUSTED_CAP_CHANCE;
     private static final ModConfigSpec.IntValue CFG_WEAK_VENT_CHANCE, CFG_STRONG_VENT_CHANCE;
     private static final ModConfigSpec.DoubleValue CFG_WEAK_VENT_MULTIPLIER, CFG_STRONG_VENT_MULTIPLIER;
 
@@ -322,6 +322,7 @@ public class Config {
 
         BUILDER.push("geyser_well");
         CFG_GEYSER_WELL_STEAM = BUILDER.comment("mB of Steam a Geyser Well makes per tick (using the same Water), times geyser_cap.nether_multiplier on a Nether vent. Default 4 runs a 4-layer Steam Turbine, about twice a Geyser Cap's power").defineInRange("steam_per_tick", 4, 1, 10_000);
+        CFG_GEYSER_WELL_BRINE = BUILDER.comment("mB of Steam per 1 mB of Geothermal Brine the Well brings up. Default 8: half a mB a tick on a normal vent, about one Crystallizer batch every 25 seconds").defineInRange("steam_per_brine", 8, 1, 10_000);
         BUILDER.pop();
 
         BUILDER.push("geyser_vent");
@@ -758,7 +759,7 @@ public class Config {
     public static int solarGlassMorningFe, solarGlassNoonFe, solarGlassPaneMorningFe, solarGlassPaneNoonFe, solarGlassBuffer, solarGlassMaxExtract;
     public static int geyserCapRpm, geyserCapSu;
     public static float netherGeyserMultiplier;
-    public static int geyserWellSteamPerTick, geyserWellTank, rustedGeyserCapChance;
+    public static int geyserWellSteamPerTick, geyserWellSteamPerBrine, geyserWellTank, rustedGeyserCapChance;
     public static int weakVentChance, strongVentChance;
     public static float weakVentMultiplier, strongVentMultiplier;
     public static boolean geyserEruptions;
@@ -873,6 +874,7 @@ public class Config {
         geyserCapSu          = CFG_GEYSER_SU.get();
         netherGeyserMultiplier = CFG_NETHER_GEYSER_MULTIPLIER.get().floatValue();
         geyserWellSteamPerTick = CFG_GEYSER_WELL_STEAM.get();
+        geyserWellSteamPerBrine = CFG_GEYSER_WELL_BRINE.get();
         geyserWellTank         = CFG_GEYSER_WELL_TANK.get();
         rustedGeyserCapChance  = CFG_RUSTED_CAP_CHANCE.get();
         weakVentChance         = CFG_WEAK_VENT_CHANCE.get();

@@ -5,10 +5,10 @@ with the strongest / most on-theme ideas near the top of each section.
 
 ## Next up: 2.3, Oxygen, Geothermal and Modpack Support
 
-1. **Geothermal** (the headline): the Geyser Well is in. A vent should be worth
-   more once you find it, not let geothermal work anywhere. In this order (details under
-   Geothermal):
-   - **Geothermal Brine**: Lithium from the Well, tying geothermal to fusion.
+1. **Geothermal** (the headline): the Geyser Well, vent strength, Nether vents and Geothermal
+   Brine are in. More ideas under Geothermal.
+2. **Proper Sable / Create Aeronautics compat**: tag every block with the right weight, so
+   machines, tanks and multiblocks on a contraption weigh what they should.
 
 ## After that: 2.4, a new generator
 
@@ -60,11 +60,6 @@ Glass have little to feed. The Electric Motor (2.2) gives FE a big job; these co
 Vents are meant to be scarce, so ideas here should make a natural vent worth more rather than
 let geothermal work anywhere.
 
-- **Geothermal Brine** (real: the Salton Sea geothermal plants are now a big lithium source) -
-  the Well also gives out a trickle of **Geothermal Brine** with the Steam. The Crystallizer
-  turns Brine into Salt plus a little Lithium Dust (a `crystallizing` recipe, no new
-  machine). A renewable Lithium source for the Fusion Reactor, and geothermal's first link to
-  another chain. Brine has to be piped away or the Well backs up, like the turbine's water.
 - **Geyser Collector** - for players who like the eruptions: sits beside an uncapped vent and
   catches each eruption as a big burst of Steam into its tank, keeping the eruptions. Lower
   output than the Well on average, but bursty, so it pairs with storage. Lower priority.
@@ -113,7 +108,7 @@ decorative should at least come from the mod's own materials (Salt, Biochar, Ash
 - **Abandoned solarpunk village** - a run-down, overgrown settlement that tried and failed,
   showing what global warming does without anyone having it turned on. Built from pieces in
   `structure/abandoned_village/`; so far the Lost Greenhouse (placed sunk 1 block into the
-  ground). Wire it up as a jigsaw structure once there are enough pieces.
+  ground). The Ruined Solar Heater and Ruined Solar Mirror blocks are ready for it. It's a `solarpunk:simple_village` already (no jigsaws: drop houses into the folder); it generates in open plains, meadows and savannas; it needs more houses of its own.
 
 ## Seasonal events
 

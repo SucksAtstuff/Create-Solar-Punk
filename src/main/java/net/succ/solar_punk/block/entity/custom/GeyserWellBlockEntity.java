@@ -34,8 +34,11 @@ import java.util.List;
 
 /**
  * Geyser Well: the Steam option for a natural Geyser Vent, instead of the Geyser Cap's SU.
- * Water piped into either port boils into Steam (1:1) at {@code steam_per_tick}, more on a
- * Nether vent, for the Steam Turbine. Only runs on a vent, and like the Cap it stops the vent
+ * Water boils into Steam (1:1) at {@code steam_per_tick}, scaled by the vent, for the Steam
+ * Turbine, and brings up a trickle of Geothermal Brine (1 mB per {@code steam_per_brine} mB of
+ * Steam) that has to be piped away or the Well stops. Fluids are sided: the port on FACING gives
+ * Steam, the opposite port gives Brine, both ports and the top take Water (a pipe pumping out of
+ * a port can't also bring Water in). Only runs on a vent, and like the Cap it stops the vent
  * erupting. The two gauges on its sides show the vent's strength ({@link #ventStrength()});
  * the needles ease towards it on the client for {@code GeyserWellRenderer}.
  */
@@ -61,34 +64,65 @@ public class GeyserWellBlockEntity extends BlockEntity implements IHaveGoggleInf
         protected void onContentsChanged() { setChanged(); }
     };
 
-    /** Water in, Steam out. Exposed on the two ports (and to buckets). */
-    public final IFluidHandler fluidHandler = new IFluidHandler() {
-        @Override public int getTanks() { return 2; }
-
-        @Override public FluidStack getFluidInTank(int tank) {
-            return tank == 0 ? steamTank.getFluid() : waterTank.getFluid();
+    public final FluidTank brineTank = new FluidTank(Config.geyserWellTank) {
+        @Override
+        public boolean isFluidValid(FluidStack stack) {
+            return stack.getFluid().isSame(ModFluids.GEOTHERMAL_BRINE_SOURCE.get());
         }
 
-        @Override public int getTankCapacity(int tank) {
-            return tank == 0 ? steamTank.getCapacity() : waterTank.getCapacity();
+        @Override
+        protected void onContentsChanged() { setChanged(); }
+    };
+
+    // Steam made towards the next mB of Brine
+    private int brineProgress;
+
+    /** The Steam port: takes Water, gives Steam. */
+    private final IFluidHandler steamPort = new Port(steamTank, null);
+    /** The Brine port: takes Water, gives Brine. */
+    private final IFluidHandler brinePort = new Port(brineTank, null);
+    /** The top: takes Water only. */
+    private final IFluidHandler waterInlet = new Port(null, null);
+    /** Buckets: Water in, Steam out, then Brine once the Steam is gone. */
+    public final IFluidHandler fluidHandler = new Port(steamTank, brineTank);
+
+    /** Takes Water into the water tank and gives from up to two output tanks, in order. */
+    private class Port implements IFluidHandler {
+        private final List<FluidTank> outputs;
+
+        Port(@Nullable FluidTank first, @Nullable FluidTank second) {
+            outputs = java.util.stream.Stream.of(first, second).filter(java.util.Objects::nonNull).toList();
         }
 
-        @Override public boolean isFluidValid(int tank, FluidStack stack) {
-            return tank == 0 ? steamTank.isFluidValid(stack) : waterTank.isFluidValid(stack);
+        private FluidTank tank(int tank) {
+            return tank == 0 ? waterTank : outputs.get(tank - 1);
         }
+
+        @Override public int getTanks() { return 1 + outputs.size(); }
+        @Override public FluidStack getFluidInTank(int tank) { return tank(tank).getFluid(); }
+        @Override public int getTankCapacity(int tank) { return tank(tank).getCapacity(); }
+        @Override public boolean isFluidValid(int tank, FluidStack stack) { return tank(tank).isFluidValid(stack); }
 
         @Override public int fill(FluidStack resource, FluidAction action) {
             return waterTank.isFluidValid(resource) ? waterTank.fill(resource, action) : 0;
         }
 
         @Override public FluidStack drain(FluidStack resource, FluidAction action) {
-            return steamTank.drain(resource, action);
+            for (FluidTank out : outputs) {
+                FluidStack drained = out.drain(resource, action);
+                if (!drained.isEmpty()) return drained;
+            }
+            return FluidStack.EMPTY;
         }
 
         @Override public FluidStack drain(int maxDrain, FluidAction action) {
-            return steamTank.drain(maxDrain, action);
+            for (FluidTank out : outputs) {
+                FluidStack drained = out.drain(maxDrain, action);
+                if (!drained.isEmpty()) return drained;
+            }
+            return FluidStack.EMPTY;
         }
-    };
+    }
 
     // Client only: gauge needle position (0 to 1), this tick and last
     public float needle, lastNeedle;
@@ -97,11 +131,15 @@ public class GeyserWellBlockEntity extends BlockEntity implements IHaveGoggleInf
         super(type, pos, state);
     }
 
-    /** The fluid handler for a face: only the two ports along FACING have one. */
+    /** The fluid handler for a face: Steam port on FACING, Brine port opposite, Water in the top. */
     @Nullable
     public IFluidHandler fluidHandler(@Nullable Direction side) {
         if (side == null) return fluidHandler;
-        return side.getAxis() == getBlockState().getValue(GeyserWellBlock.FACING).getAxis() ? fluidHandler : null;
+        Direction facing = getBlockState().getValue(GeyserWellBlock.FACING);
+        if (side == facing) return steamPort;
+        if (side == facing.getOpposite()) return brinePort;
+        if (side == Direction.UP) return waterInlet;
+        return null;
     }
 
     private boolean hasVent() {
@@ -132,12 +170,21 @@ public class GeyserWellBlockEntity extends BlockEntity implements IHaveGoggleInf
         }
 
         int rate = steamRate();
+        // A full Brine tank backs the Well up, like a turbine's condensed water
         boolean running = rate > 0
                 && waterTank.getFluidAmount() >= rate
-                && steamTank.getFluidAmount() + rate <= steamTank.getCapacity();
+                && steamTank.getFluidAmount() + rate <= steamTank.getCapacity()
+                && brineTank.getFluidAmount() < brineTank.getCapacity();
         if (running) {
             waterTank.drain(rate, IFluidHandler.FluidAction.EXECUTE);
             steamTank.fill(new FluidStack(ModFluids.STEAM_SOURCE.get(), rate), IFluidHandler.FluidAction.EXECUTE);
+            int perBrine = Math.max(1, Config.geyserWellSteamPerBrine);
+            brineProgress += rate;
+            if (brineProgress >= perBrine) {
+                brineTank.fill(new FluidStack(ModFluids.GEOTHERMAL_BRINE_SOURCE.get(), brineProgress / perBrine),
+                        IFluidHandler.FluidAction.EXECUTE);
+                brineProgress %= perBrine;
+            }
         }
 
         BlockState state = getBlockState();
@@ -170,6 +217,7 @@ public class GeyserWellBlockEntity extends BlockEntity implements IHaveGoggleInf
             CreateLang.translate("solar_punk.tooltip.geyser_well_no_vent").style(ChatFormatting.RED).forGoggles(tooltip, 1);
         SolarPunk.GOGGLES.tank(tooltip, "water", waterTank, ChatFormatting.AQUA);
         SolarPunk.GOGGLES.tank(tooltip, "steam", steamTank, ChatFormatting.AQUA);
+        SolarPunk.GOGGLES.tank(tooltip, "brine", brineTank, ChatFormatting.GREEN);
         return true;
     }
 
@@ -178,6 +226,8 @@ public class GeyserWellBlockEntity extends BlockEntity implements IHaveGoggleInf
         super.saveAdditional(tag, registries);
         FluidTankNBTHelper.save(tag, "WaterTank", waterTank);
         FluidTankNBTHelper.save(tag, "SteamTank", steamTank);
+        FluidTankNBTHelper.save(tag, "BrineTank", brineTank);
+        tag.putInt("BrineProgress", brineProgress);
     }
 
     @Override
@@ -185,6 +235,8 @@ public class GeyserWellBlockEntity extends BlockEntity implements IHaveGoggleInf
         super.loadAdditional(tag, registries);
         FluidTankNBTHelper.load(tag, "WaterTank", waterTank);
         FluidTankNBTHelper.load(tag, "SteamTank", steamTank);
+        FluidTankNBTHelper.load(tag, "BrineTank", brineTank);
+        brineProgress = tag.getInt("BrineProgress");
     }
 
     @Override

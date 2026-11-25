@@ -10,6 +10,8 @@
 ### Geyser Well
 
 - **Geyser Well** - a second way to use a Geyser Vent. Put it on a vent instead of a Geyser Cap, pipe Water in and it boils it into Steam for a Steam Turbine: more power than a Cap if you build the turbine, and even more on a Nether vent. Its gauges show how strong the vent is.
+- **Geothermal Brine** - the Geyser Well also brings up a trickle of Brine from a second port. A Crystallizer turns it into Salt and, a quarter of the time, Lithium Dust: a renewable Lithium supply for the Fusion Reactor. Pipe the Brine away, or the Well stops. Steam comes out of the port that faced you when you placed the Well, and Water goes in the top.
+- **Crystallizer bonus outputs** - Crystallizer recipes can have a bonus item with a chance, which goes in a second output slot. Datapacks and KubeJS (`.bonus(item).bonusChance(0.25)`) can use it too.
 - **Vent strength** - every newly generated Geyser Vent is weak, normal or strong, and Goggles show which. A strong vent gives a Geyser Cap or Well twice the output and puffs more steam, so a good vent is worth travelling for. Vents in existing worlds count as normal.
 - **Rusted Geyser Caps** - some Geyser Vents still have an old cap on them, seized up with rust. Scrape it with an axe and it works again.
 
@@ -20,11 +22,13 @@
 ### Solarpunk Village Houses
 
 - Villages can now build a solarpunk house, with its own villager. Plains, desert, savanna, snowy and taiga villages each have their own design.
+- **Solar Engineer** - a new villager who works at a Crystallizer. Trades Biomass, Hemp and Lithium for emeralds, and sells Salt, lights, Photovoltaic Cells and solar panels.
 
 ### Exploring
 
 - **Dirt Huts** - small mossy huts in plains, forests, meadows and taigas, with a barrel of supplies for getting started.
 - Some Geyser Vents now generate with an old wooden frame built over them instead of the usual stone dome.
+- **Ruined Solar Heater** and **Ruined Solar Mirror** - broken, weathered copies of the real thing, for building ruins. Right-click one with Glass Panes (3 for the Heater, 1 for the Mirror) to fix its cracked glass and get a working one back.
 - Geyser Vents are rarer, about 3 in an area where there used to be 8, so finding one means more.
 
 ### Wire Power Meter

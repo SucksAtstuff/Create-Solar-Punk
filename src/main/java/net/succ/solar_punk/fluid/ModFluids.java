@@ -209,6 +209,26 @@ public class ModFluids {
             .block(HEMP_SEED_OIL_BLOCK)
             .bucket(HEMP_SEED_OIL_BUCKET);
 
+    public static final Supplier<FlowingFluid> GEOTHERMAL_BRINE_SOURCE = FLUIDS.register("geothermal_brine",
+            () -> new BaseFlowingFluid.Source(ModFluids.GEOTHERMAL_BRINE_PROPERTIES));
+    public static final Supplier<FlowingFluid> GEOTHERMAL_BRINE_FLOWING = FLUIDS.register("geothermal_brine_flowing",
+            () -> new BaseFlowingFluid.Flowing(ModFluids.GEOTHERMAL_BRINE_PROPERTIES));
+
+    public static final DeferredBlock<LiquidBlock> GEOTHERMAL_BRINE_BLOCK = ModBlocks.BLOCKS.register("geothermal_brine",
+            () -> new LiquidBlock(GEOTHERMAL_BRINE_SOURCE.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)
+                    .mapColor(MapColor.COLOR_LIGHT_GREEN)));
+
+    public static final DeferredItem<BucketItem> GEOTHERMAL_BRINE_BUCKET = ModItems.ITEMS.registerItem("geothermal_brine_bucket",
+            properties -> new BucketItem(GEOTHERMAL_BRINE_SOURCE.get(), properties.stacksTo(1).craftRemainder(Items.BUCKET)));
+
+    public static final BaseFlowingFluid.Properties GEOTHERMAL_BRINE_PROPERTIES = new BaseFlowingFluid.Properties(
+            ModFluidTypes.GEOTHERMAL_BRINE_TYPE, GEOTHERMAL_BRINE_SOURCE, GEOTHERMAL_BRINE_FLOWING)
+            .tickRate(10)
+            .slopeFindDistance(3)
+            .levelDecreasePerBlock(1)
+            .block(GEOTHERMAL_BRINE_BLOCK)
+            .bucket(GEOTHERMAL_BRINE_BUCKET);
+
     public static final Supplier<FlowingFluid> ALGAE_CULTURE_SOURCE = FLUIDS.register("algae_culture",
             () -> new BaseFlowingFluid.Source(ModFluids.ALGAE_CULTURE_PROPERTIES));
     public static final Supplier<FlowingFluid> ALGAE_CULTURE_FLOWING = FLUIDS.register("algae_culture_flowing",

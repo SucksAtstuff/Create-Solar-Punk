@@ -64,6 +64,8 @@ import net.succ.solar_punk.block.custom.GeyserCapBlock;
 import net.succ.solar_punk.block.custom.GeyserVentBlock;
 import net.succ.solar_punk.block.custom.GeyserWellBlock;
 import net.succ.solar_punk.block.custom.RustedGeyserCapBlock;
+import net.succ.solar_punk.block.custom.RuinedSolarHeaterBlock;
+import net.succ.solar_punk.block.custom.RuinedSolarMirrorBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.KineticBatteryBlock;
 import net.succ.solar_punk.block.custom.ParticleAcceleratorInputBlock;
@@ -207,6 +209,21 @@ public class ModBlocks {
 
     public static final DeferredBlock<SolarMirrorBlock> SOLAR_MIRROR = REG.block("solar_mirror",
             () -> new SolarMirrorBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .requiresCorrectToolForDrops()
+                    .noOcclusion()
+                    .strength(2.0f, 4.0f)));
+
+    // Broken, decoration-only copies for ruins (Building Blocks tab)
+    public static final DeferredBlock<RuinedSolarHeaterBlock> RUINED_SOLAR_HEATER = REG.decorative("ruined_solar_heater",
+            () -> new RuinedSolarHeaterBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_ORANGE)
+                    .requiresCorrectToolForDrops()
+                    .strength(2.0f, 4.0f)
+                    .noOcclusion()));
+
+    public static final DeferredBlock<RuinedSolarMirrorBlock> RUINED_SOLAR_MIRROR = REG.decorative("ruined_solar_mirror",
+            () -> new RuinedSolarMirrorBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.METAL)
                     .requiresCorrectToolForDrops()
                     .noOcclusion()

@@ -1,0 +1,8 @@
+{
+  "parent": "solarpunk:block/solar_mirror",
+  "ambientocclusion": false,
+  "textures": {
+    "1": "solarpunk:block/solar_power_tower/solar_power_tower_mirror/ruined_solar_power_tower_mirror",
+    "particle": "solarpunk:block/solar_power_tower/solar_power_tower_mirror/ruined_solar_power_tower_mirror"
+  }
+}

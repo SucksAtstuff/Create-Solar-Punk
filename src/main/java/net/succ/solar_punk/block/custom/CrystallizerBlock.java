@@ -68,7 +68,7 @@ public class CrystallizerBlock extends Block implements IBE<CrystallizerBlockEnt
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                                                Player player, BlockHitResult hit) {
         if (!(level.getBlockEntity(pos) instanceof CrystallizerBlockEntity be)) return InteractionResult.PASS;
-        return MachineInteractions.takeOut(level, player, be, be.itemHandler, 0);
+        return MachineInteractions.takeOut(level, player, be, be.itemHandler, 0, 1);
     }
 
     @Override

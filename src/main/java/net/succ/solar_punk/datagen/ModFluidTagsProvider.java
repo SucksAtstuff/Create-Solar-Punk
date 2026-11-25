@@ -29,6 +29,8 @@ public class ModFluidTagsProvider extends FluidTagsProvider {
             TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "steam"));
     private static final TagKey<Fluid> HEMP_SEED_OIL =
             TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "hemp_seed_oil"));
+    private static final TagKey<Fluid> BRINE =
+            TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "brine"));
     // Northstar's Oxygen Sealer and Oxygen Filler take anything in #northstar:breathable, which
     // includes #c:oxygen, so our Oxygen works as life support there
     private static final TagKey<Fluid> OXYGEN =
@@ -73,6 +75,10 @@ public class ModFluidTagsProvider extends FluidTagsProvider {
         tag(HEMP_SEED_OIL)
                 .add(ModFluids.HEMP_SEED_OIL_SOURCE.get())
                 .add(ModFluids.HEMP_SEED_OIL_FLOWING.get());
+
+        tag(BRINE)
+                .add(ModFluids.GEOTHERMAL_BRINE_SOURCE.get())
+                .add(ModFluids.GEOTHERMAL_BRINE_FLOWING.get());
 
         tag(OXYGEN)
                 .add(ModFluids.OXYGEN_SOURCE.get())

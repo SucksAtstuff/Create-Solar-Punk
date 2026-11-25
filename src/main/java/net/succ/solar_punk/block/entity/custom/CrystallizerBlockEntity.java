@@ -38,9 +38,9 @@ import net.succ.offbyonelib.util.FluidTankNBTHelper;
  */
 public class CrystallizerBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 
-    // Slot 0: recipe result output. No external insertion - this block only ever produces
-    // an item, never consumes one.
-    public final ItemStackHandler itemHandler = new ItemStackHandler(1) {
+    // Slot 0: recipe result output, slot 1: a recipe's bonus item. No external insertion -
+    // this block only ever produces items, never consumes them.
+    public final ItemStackHandler itemHandler = new ItemStackHandler(2) {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) { return false; }
 
@@ -170,10 +170,14 @@ public class CrystallizerBlockEntity extends BlockEntity implements IHaveGoggleI
     // -------------------------------------------------------------------------
 
     private boolean canOutputResult(CrystallizerRecipe recipe) {
-        ItemStack current = itemHandler.getStackInSlot(0);
+        return hasRoom(0, recipe.result()) && (recipe.bonus().isEmpty() || hasRoom(1, recipe.bonus()));
+    }
+
+    private boolean hasRoom(int slot, ItemStack stack) {
+        ItemStack current = itemHandler.getStackInSlot(slot);
         return current.isEmpty()
-                || (ItemStack.isSameItemSameComponents(current, recipe.result())
-                        && current.getCount() + recipe.result().getCount() <= current.getMaxStackSize());
+                || (ItemStack.isSameItemSameComponents(current, stack)
+                        && current.getCount() + stack.getCount() <= current.getMaxStackSize());
     }
 
     // Room for all of it, and the same fluid as what's already in the tank, or the
@@ -231,12 +235,16 @@ public class CrystallizerBlockEntity extends BlockEntity implements IHaveGoggleI
     }
 
     private void outputResult(CrystallizerRecipe recipe) {
-        ItemStack current = itemHandler.getStackInSlot(0);
-        if (current.isEmpty()) {
-            itemHandler.setStackInSlot(0, recipe.result().copy());
-        } else {
-            itemHandler.setStackInSlot(0, current.copyWithCount(current.getCount() + recipe.result().getCount()));
-        }
+        addTo(0, recipe.result());
+        if (!recipe.bonus().isEmpty() && level.getRandom().nextFloat() < recipe.bonusChance())
+            addTo(1, recipe.bonus());
+    }
+
+    private void addTo(int slot, ItemStack stack) {
+        ItemStack current = itemHandler.getStackInSlot(slot);
+        itemHandler.setStackInSlot(slot, current.isEmpty()
+                ? stack.copy()
+                : current.copyWithCount(current.getCount() + stack.getCount()));
     }
 
     private void setLit(boolean lit) {
@@ -264,8 +272,9 @@ public class CrystallizerBlockEntity extends BlockEntity implements IHaveGoggleI
         SolarPunk.GOGGLES.namedTank(tooltip, "crystallizer_input_b", inputTankB, ChatFormatting.GOLD);
         SolarPunk.GOGGLES.namedTank(tooltip, "crystallizer_byproduct", outputFluidTank, ChatFormatting.YELLOW);
 
-        ItemStack output = itemHandler.getStackInSlot(0);
-        if (!output.isEmpty()) {
+        for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
+            ItemStack output = itemHandler.getStackInSlot(slot);
+            if (output.isEmpty()) continue;
             CreateLang.translate("solar_punk.tooltip.crystallizer_item_output")
                     .style(ChatFormatting.GRAY)
                     .add(CreateLang.number(output.getCount())
@@ -294,7 +303,16 @@ public class CrystallizerBlockEntity extends BlockEntity implements IHaveGoggleI
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        if (tag.contains("Inventory")) itemHandler.deserializeNBT(registries, tag.getCompound("Inventory"));
+        if (tag.contains("Inventory")) {
+            itemHandler.deserializeNBT(registries, tag.getCompound("Inventory"));
+            // Crystallizers saved before the bonus slot have one slot; deserializing shrank
+            // the handler to that, so grow it back keeping the output
+            if (itemHandler.getSlots() < 2) {
+                ItemStack output = itemHandler.getStackInSlot(0);
+                itemHandler.setSize(2);
+                itemHandler.setStackInSlot(0, output);
+            }
+        }
         progress = tag.getInt("Progress");
         FluidTankNBTHelper.load(tag, "InputTankA", inputTankA);
         FluidTankNBTHelper.load(tag, "InputTankB", inputTankB);

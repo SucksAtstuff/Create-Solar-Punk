@@ -18,8 +18,9 @@ import net.succ.solar_punk.block.entity.custom.GeyserWellBlockEntity;
 import net.succ.solar_punk.fluid.ModFluids;
 
 // Schematic (ModPonderProvider "geyser_well/usage"): a Geyser Vent at (2,1,2) with a Geyser Well
-// facing north on it, so its ports are north and south. A Water line runs in from the north edge
-// (z 0-1) and a Steam line out to the south edge (z 3-4), both at y=2.
+// facing north on it: Steam port north, Brine port south. A Steam line runs off the north edge
+// (z 0-1) and a Brine line off the south edge (z 3-4), both at y=2, and a Water line comes in
+// the top (2,3,2) from the west edge (x 0-1, y=3).
 public class GeyserWellScenes {
 
     private static final BlockPos VENT = new BlockPos(2, 1, 2);
@@ -30,8 +31,9 @@ public class GeyserWellScenes {
         scene.title("geyser_well_usage", "Using the Geyser Well");
         scene.configureBasePlate(0, 0, 5);
 
-        var waterLine = util.select().fromTo(2, 2, 0, 2, 2, 1);
-        var steamLine = util.select().fromTo(2, 2, 3, 2, 2, 4);
+        var waterLine = util.select().fromTo(0, 3, 2, 2, 3, 2);
+        var steamLine = util.select().fromTo(2, 2, 0, 2, 2, 1);
+        var brineLine = util.select().fromTo(2, 2, 3, 2, 2, 4);
 
         scene.world().showSection(util.select().layer(0), Direction.UP);
         scene.idle(10);
@@ -54,13 +56,13 @@ public class GeyserWellScenes {
                 .attachKeyFrame();
         scene.idle(80);
 
-        scene.world().showSection(waterLine, Direction.SOUTH);
+        scene.world().showSection(waterLine, Direction.DOWN);
         scene.idle(10);
-        scene.overlay().showControls(util.vector().blockSurface(WELL, Direction.NORTH), Pointing.DOWN, 70)
+        scene.overlay().showControls(util.vector().topOf(WELL), Pointing.DOWN, 70)
                 .withItem(new ItemStack(Items.WATER_BUCKET));
         scene.overlay().showText(70)
-                .text("Pipe Water into either of its two ports")
-                .pointAt(util.vector().blockSurface(WELL, Direction.NORTH))
+                .text("Pipe Water into the top, or into either port")
+                .pointAt(util.vector().topOf(WELL))
                 .placeNearTarget()
                 .attachKeyFrame();
         scene.world().modifyBlockEntity(WELL, GeyserWellBlockEntity.class, be ->
@@ -78,14 +80,25 @@ public class GeyserWellScenes {
                 .attachKeyFrame();
         scene.idle(90);
 
-        scene.world().showSection(steamLine, Direction.NORTH);
+        scene.world().showSection(steamLine, Direction.SOUTH);
         scene.idle(10);
         scene.overlay().showText(80)
-                .text("Pump the Steam out of either port to a Steam Turbine. The turbine's condensed Water can go straight back in")
-                .pointAt(util.vector().blockSurface(WELL, Direction.SOUTH))
+                .text("Steam comes out of the port that faced you when you placed it. Pump it to a Steam Turbine, and the turbine's condensed Water can go straight back in")
+                .pointAt(util.vector().blockSurface(WELL, Direction.NORTH))
                 .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(90);
+
+        scene.world().showSection(brineLine, Direction.NORTH);
+        scene.idle(10);
+        scene.world().modifyBlockEntity(WELL, GeyserWellBlockEntity.class, be ->
+                be.brineTank.fill(new FluidStack(ModFluids.GEOTHERMAL_BRINE_SOURCE.get(), 500), IFluidHandler.FluidAction.EXECUTE));
+        scene.overlay().showText(90)
+                .text("The other port gives a trickle of Geothermal Brine. A Crystallizer turns it into Salt and some Lithium Dust")
+                .pointAt(util.vector().blockSurface(WELL, Direction.SOUTH))
+                .placeNearTarget()
+                .attachKeyFrame();
+        scene.idle(100);
 
         scene.overlay().showText(70)
                 .text("That's about twice the power of a Geyser Cap, if you build the turbine")
@@ -119,7 +132,7 @@ public class GeyserWellScenes {
 
         scene.world().modifyBlock(WELL, s -> s.setValue(GeyserWellBlock.LIT, false), false);
         scene.overlay().showText(80)
-                .text("Out of Water, or with its Steam tank full, it stops until there's room")
+                .text("Out of Water, or with its Steam or Brine tank full, it stops until there's room. Pipe the Brine away too")
                 .pointAt(util.vector().centerOf(WELL))
                 .colored(PonderPalette.RED)
                 .placeNearTarget()

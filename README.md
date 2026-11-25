@@ -86,7 +86,7 @@ The **Biomass Gasifier** and **Biofuel Engine** support rotation direction contr
 
 ### Geothermal
 - **Geyser Vent** - spawns naturally in desert, badlands, and savanna biomes (configurable). Uncapped vents erupt every few minutes, rumbling first and then blasting a column of steam that scalds and launches anything standing over them. Goggles show a countdown, and a Comparator signal rises as an eruption gets close
-- **Geyser Well** - goes on a vent instead of a Geyser Cap and boils piped-in Water into Steam for a Steam Turbine, for more power than a Cap. Some vents also have an old Rusted Geyser Cap on them, which an axe scrapes back into a working one
+- **Geyser Well** - goes on a vent instead of a Geyser Cap and boils piped-in Water into Steam for a Steam Turbine, for more power than a Cap. It also brings up Geothermal Brine, which a Crystallizer turns into Salt and some Lithium Dust. Some vents also have an old Rusted Geyser Cap on them, which an axe scrapes back into a working one
 - **Nether Geyser Vent** - a rarer, hotter vent in Basalt Deltas. Its eruptions also set you on fire, and a Geyser Cap on one gives twice the stress capacity
 - **Geyser Cap** - stops the eruptions and harnesses the vent's geothermal energy as rotational force; passive, works day and night in any weather; also supports rotation direction control via scroll
 

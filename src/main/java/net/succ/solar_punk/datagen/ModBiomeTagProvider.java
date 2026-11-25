@@ -31,6 +31,11 @@ public class ModBiomeTagProvider extends BiomeTagsProvider {
                 .addTag(BiomeTags.IS_FOREST)
                 .addTag(BiomeTags.IS_TAIGA);
 
+        // Open, sunny, green places that suit a solarpunk settlement
+        tag(ModTags.Biomes.HAS_ABANDONED_VILLAGE)
+                .add(Biomes.PLAINS, Biomes.SUNFLOWER_PLAINS, Biomes.MEADOW,
+                        Biomes.SAVANNA, Biomes.SAVANNA_PLATEAU);
+
         // No has_geysers tag: geyser placement biomes come from Config.geyserBiomes at
         // runtime via ConfigurableGeyserBiomeModifier, not a static datapack tag - see
         // that class and ModWorldGenProvider#bootstrapBiomeModifiers.

@@ -22,6 +22,7 @@ public class ModLangProvider extends AddonLangProvider {
         add("itemGroup.solar_punk", "Create: Solarpunk");
         add("itemGroup.solar_punk.building_blocks", "Create: Solarpunk Building Blocks");
         jei("category.solar_heating", "Solar Heating");
+        jei("chance", "%s%% chance");
         jei("category.solar_power_tower", "Solar Power Tower");
         jei("solar_power_tower.water_note", "On a %sx%s tower. Each mB made costs %s mB of Water per footprint block");
         jei("category.fermentation_vat", "Fermentation Vat");
@@ -84,6 +85,7 @@ public class ModLangProvider extends AddonLangProvider {
         goggle("geyser_vent_erupting", "Erupting!");
         goggle("geyser_vent_quiet", "None");
 
+        add("entity.minecraft.villager.solarpunk.solar_engineer", "Solar Engineer");
         add("death.attack.solarpunk.scalding", "%1$s was scalded by a geyser");
         add("death.attack.solarpunk.scalding.player", "%1$s was scalded by a geyser while fighting %2$s");
 
@@ -165,6 +167,7 @@ public class ModLangProvider extends AddonLangProvider {
         goggle("new_age_temperature", "New Age Temperature: ");
         goggle("molten_salt", "Molten Salt: ");
         goggle("steam", "Steam: ");
+        goggle("brine", "Brine: ");
         goggle("tower_mode", "Mode: ");
         add("solarpunk.tooltip.tower_mode_salt", "Molten Salt");
         add("solarpunk.tooltip.tower_mode_steam", "Steam");
@@ -315,8 +318,14 @@ public class ModLangProvider extends AddonLangProvider {
                 "Vent strength", "A _weak_ vent gives half the stress capacity, a _strong_ one twice as much, and a _Nether_ vent twice again. RPM stays the same.");
 
         tooltip(ModBlocks.GEYSER_WELL, "Sits on a natural _Geyser Vent_ like a Geyser Cap, but boils _Water_ into _Steam_ for a _Steam Turbine_ instead of turning a shaft. More power than a Cap, if you build the turbine.",
-                "When placed on a Geyser Vent", "Pipe Water into either _port_ and pump Steam out of either. Makes _4 mB_ of Steam per tick on a normal vent, half on a weak one, twice on a strong one, and twice again on a Nether vent. Stops the vent erupting.",
+                "When placed on a Geyser Vent", "Pipe Water into the _top_ or either port. Makes _4 mB_ of Steam per tick on a normal vent, half on a weak one, twice on a strong one, and twice again on a Nether vent. Stops the vent erupting.",
+                "Ports", "Steam comes out of the port that faced you when you placed it, and _Geothermal Brine_ out of the other. Pipe the Brine away, or the Well stops. A _Crystallizer_ turns Brine into Salt and some _Lithium Dust_.",
                 "Gauges", "Both gauges show how _strong_ the vent below is.");
+
+        tooltip(ModBlocks.RUINED_SOLAR_HEATER, "A broken _Solar Heater_ with a cracked, weathered mirror. It doesn't work as it is.",
+                "Right-click with 3 Glass Panes", "Replaces the cracked mirror and turns it back into a working _Solar Heater_.");
+        tooltip(ModBlocks.RUINED_SOLAR_MIRROR, "A broken _Solar Mirror_, stuck in place with a cracked plate. It doesn't track the sun or link to a tower as it is.",
+                "Right-click with a Glass Pane", "Replaces the cracked plate and turns it back into a working _Solar Mirror_.");
 
         tooltip(ModBlocks.RUSTED_GEYSER_CAP, "An old _Geyser Cap_ seized up with rust, left on some Geyser Vents. It makes no power, but still stops the vent erupting.",
                 "When scraped with an Axe", "The rust comes off and it turns back into a working _Geyser Cap_.");

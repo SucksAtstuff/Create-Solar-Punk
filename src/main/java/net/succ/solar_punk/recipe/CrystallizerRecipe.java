@@ -16,34 +16,55 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 /**
- * Crystallizer recipe: Fluid A (+ optional Fluid B) -> Item (+ optional fluid byproduct).
- * inputB and byproduct are FluidStack.EMPTY when omitted. Datapacks can add more.
+ * Crystallizer recipe: Fluid A (+ optional Fluid B) -> Item (+ optional fluid byproduct, + an
+ * optional bonus item with a chance, which goes in the Crystallizer's second slot).
+ * inputB and byproduct are FluidStack.EMPTY and bonus ItemStack.EMPTY when omitted.
+ * Datapacks can add more.
  */
 public record CrystallizerRecipe(
         FluidStack inputA,
         FluidStack inputB,
         ItemStack result,
         FluidStack byproduct,
-        int processingTime
+        int processingTime,
+        ItemStack bonus,
+        float bonusChance
 ) implements Recipe<CrystallizerRecipe.Input> {
+
+    /** A recipe with no bonus item. */
+    public CrystallizerRecipe(FluidStack inputA, FluidStack inputB, ItemStack result, FluidStack byproduct, int processingTime) {
+        this(inputA, inputB, result, byproduct, processingTime, ItemStack.EMPTY, 1);
+    }
 
     public static final MapCodec<CrystallizerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             FluidStack.CODEC.fieldOf("input_a").forGetter(CrystallizerRecipe::inputA),
             FluidStack.CODEC.optionalFieldOf("input_b", FluidStack.EMPTY).forGetter(CrystallizerRecipe::inputB),
             ItemStack.CODEC.fieldOf("result").forGetter(CrystallizerRecipe::result),
             FluidStack.CODEC.optionalFieldOf("byproduct", FluidStack.EMPTY).forGetter(CrystallizerRecipe::byproduct),
-            Codec.INT.fieldOf("processing_time").forGetter(CrystallizerRecipe::processingTime)
+            Codec.INT.fieldOf("processing_time").forGetter(CrystallizerRecipe::processingTime),
+            ItemStack.CODEC.optionalFieldOf("bonus", ItemStack.EMPTY).forGetter(CrystallizerRecipe::bonus),
+            Codec.floatRange(0, 1).optionalFieldOf("bonus_chance", 1f).forGetter(CrystallizerRecipe::bonusChance)
     ).apply(instance, CrystallizerRecipe::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, CrystallizerRecipe> STREAM_CODEC =
-            StreamCodec.composite(
-                    FluidStack.OPTIONAL_STREAM_CODEC, CrystallizerRecipe::inputA,
-                    FluidStack.OPTIONAL_STREAM_CODEC, CrystallizerRecipe::inputB,
-                    ItemStack.OPTIONAL_STREAM_CODEC, CrystallizerRecipe::result,
-                    FluidStack.OPTIONAL_STREAM_CODEC, CrystallizerRecipe::byproduct,
-                    ByteBufCodecs.VAR_INT, CrystallizerRecipe::processingTime,
-                    CrystallizerRecipe::new
-            );
+    // Seven fields is one more than StreamCodec.composite takes, so it's written out by hand
+    public static final StreamCodec<RegistryFriendlyByteBuf, CrystallizerRecipe> STREAM_CODEC = StreamCodec.of(
+            (buf, r) -> {
+                FluidStack.OPTIONAL_STREAM_CODEC.encode(buf, r.inputA());
+                FluidStack.OPTIONAL_STREAM_CODEC.encode(buf, r.inputB());
+                ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, r.result());
+                FluidStack.OPTIONAL_STREAM_CODEC.encode(buf, r.byproduct());
+                ByteBufCodecs.VAR_INT.encode(buf, r.processingTime());
+                ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, r.bonus());
+                ByteBufCodecs.FLOAT.encode(buf, r.bonusChance());
+            },
+            buf -> new CrystallizerRecipe(
+                    FluidStack.OPTIONAL_STREAM_CODEC.decode(buf),
+                    FluidStack.OPTIONAL_STREAM_CODEC.decode(buf),
+                    ItemStack.OPTIONAL_STREAM_CODEC.decode(buf),
+                    FluidStack.OPTIONAL_STREAM_CODEC.decode(buf),
+                    ByteBufCodecs.VAR_INT.decode(buf),
+                    ItemStack.OPTIONAL_STREAM_CODEC.decode(buf),
+                    ByteBufCodecs.FLOAT.decode(buf)));
 
     /** The two fluids currently in the Crystallizer's input tanks. */
     public record Input(FluidStack fluidA, FluidStack fluidB) implements RecipeInput {

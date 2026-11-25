@@ -1,0 +1,27 @@
+{
+  "type": "solarpunk:simple_village",
+  "biomes": "#solarpunk:has_structure/abandoned_village",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin",
+  "spawn_overrides": {},
+  "houses": "solarpunk:abandoned_village",
+  "house_count": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 4,
+    "max_inclusive": 7
+  },
+  "radius": 56,
+  "street_width": 3,
+  "street": {
+    "type": "minecraft:weighted_state_provider",
+    "entries": [
+      { "data": { "Name": "minecraft:coarse_dirt" }, "weight": 1 },
+      { "data": { "Name": "solarpunk:rammed_earth" }, "weight": 1 },
+      { "data": { "Name": "minecraft:packed_mud" }, "weight": 1 }
+    ]
+  },
+  "street_on_water": {
+    "type": "minecraft:simple_state_provider",
+    "state": { "Name": "minecraft:spruce_planks" }
+  }
+}

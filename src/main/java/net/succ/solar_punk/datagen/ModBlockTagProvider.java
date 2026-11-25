@@ -103,6 +103,8 @@ public class ModBlockTagProvider extends AddonBlockTagsProvider {
                 .add(ModBlocks.GEYSER_CAP.get())
                 .add(ModBlocks.SOLAR_POWER_TOWER.get())
                 .add(ModBlocks.SOLAR_MIRROR.get())
+                .add(ModBlocks.RUINED_SOLAR_MIRROR.get())
+                .add(ModBlocks.RUINED_SOLAR_HEATER.get())
                 .add(ModBlocks.GEYSER_VENT.get())
                 .add(ModBlocks.NETHER_GEYSER_VENT.get())
                 .add(ModBlocks.GEYSER_WELL.get())

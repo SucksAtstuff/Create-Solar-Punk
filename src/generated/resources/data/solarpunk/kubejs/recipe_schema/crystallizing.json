@@ -37,6 +37,28 @@
       "name": "processing_time",
       "optional": 100,
       "role": "input"
+    },
+    {
+      "type": "optional_item_stack",
+      "default_optional": true,
+      "function_names": [
+        "bonus"
+      ],
+      "name": "bonus",
+      "role": "output"
+    },
+    {
+      "type": {
+        "type": "float",
+        "max": 1.0,
+        "min": 0.0
+      },
+      "function_names": [
+        "bonusChance"
+      ],
+      "name": "bonus_chance",
+      "optional": 1,
+      "role": "other"
     }
   ],
   "unique": [

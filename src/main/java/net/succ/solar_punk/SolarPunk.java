@@ -47,6 +47,8 @@ import net.succ.solar_punk.sound.ModSounds;
 import net.succ.solar_punk.worldgen.ModBiomeModifierTypes;
 import net.succ.solar_punk.worldgen.ModFeatures;
 import net.succ.solar_punk.worldgen.structure.VillageHouses;
+import net.succ.solar_punk.villager.ModVillagers;
+import net.succ.solar_punk.worldgen.structure.village.ModStructures;
 
 @Mod(SolarPunk.MODID)
 public class SolarPunk {
@@ -78,6 +80,8 @@ public class SolarPunk {
         ModBiomeModifierTypes.register(modEventBus);
         ModTriggers.register(modEventBus);
         ModDisplaySources.register(modEventBus);
+        ModVillagers.register(modEventBus);
+        ModStructures.register(modEventBus);
 
         modEventBus.addListener(ModDataMaps::register);
         modEventBus.addListener(DataGenerators::gatherData);
@@ -87,6 +91,7 @@ public class SolarPunk {
 
         NeoForge.EVENT_BUS.addListener(GlobalWarmingHandler::onLevelTick);
         NeoForge.EVENT_BUS.addListener(VillageHouses::onServerAboutToStart);
+        NeoForge.EVENT_BUS.addListener(ModVillagers::onVillagerTrades);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }

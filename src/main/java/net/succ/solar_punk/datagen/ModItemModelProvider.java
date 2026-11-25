@@ -59,6 +59,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModFluids.HYDROGEN_BUCKET.get());
         basicItem(ModFluids.OXYGEN_BUCKET.get());
         basicItem(ModFluids.HEMP_SEED_OIL_BUCKET.get());
+        basicItem(ModFluids.GEOTHERMAL_BRINE_BUCKET.get());
         basicItem(ModFluids.ALGAE_CULTURE_BUCKET.get());
     }
 }

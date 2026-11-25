@@ -19,6 +19,11 @@ public class ModTags {
                 Registries.BIOME,
                 ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "has_structure/dirt_hut")
         );
+        // Where the Abandoned Village can generate (empty until it has enough houses)
+        public static final TagKey<Biome> HAS_ABANDONED_VILLAGE = TagKey.create(
+                Registries.BIOME,
+                ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "has_structure/abandoned_village")
+        );
     }
 
     // The reactor_* tags define Fusion Reactor membership: which blocks count as Casing

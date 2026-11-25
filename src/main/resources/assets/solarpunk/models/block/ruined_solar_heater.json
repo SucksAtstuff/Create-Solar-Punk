@@ -1,0 +1,7 @@
+{
+  "parent": "solarpunk:block/solar_heater",
+  "textures": {
+    "mirror": "solarpunk:block/solar_heater/ruined_solar_heater_top",
+    "particle": "solarpunk:block/solar_heater/ruined_solar_heater_top"
+  }
+}

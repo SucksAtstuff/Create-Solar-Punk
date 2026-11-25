@@ -119,6 +119,16 @@ public class ModRecipeProvider extends AddonRecipeProvider {
                 new FluidStack(ModFluids.STEAM_SOURCE.get(), 25),
                 100);
 
+        // Geothermal Brine from a Geyser Well: Salt, and now and then Lithium Dust, the renewable
+        // Lithium source that ties geothermal to fusion (like the real Salton Sea plants)
+        crystallizing(output, "geothermal_brine",
+                new FluidStack(ModFluids.GEOTHERMAL_BRINE_SOURCE.get(), 250),
+                FluidStack.EMPTY,
+                new ItemStack(ModItems.SALT.get(), 1),
+                FluidStack.EMPTY,
+                100,
+                new ItemStack(ModItems.LITHIUM_DUST.get(), 1), 0.25f);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SALT_BLOCK.get())
                 .pattern("SSS")
                 .pattern("SSS")
@@ -644,9 +654,16 @@ public class ModRecipeProvider extends AddonRecipeProvider {
 
     private static void crystallizing(RecipeOutput output, String name, FluidStack inputA, FluidStack inputB,
                                        ItemStack result, FluidStack byproduct, int processingTime) {
+        crystallizing(output, name, inputA, inputB, result, byproduct, processingTime, ItemStack.EMPTY, 1);
+    }
+
+    // With a bonus item that comes out bonusChance of the time, in the Crystallizer's second slot
+    private static void crystallizing(RecipeOutput output, String name, FluidStack inputA, FluidStack inputB,
+                                       ItemStack result, FluidStack byproduct, int processingTime,
+                                       ItemStack bonus, float bonusChance) {
         output.accept(
                 id("crystallizing/" + name),
-                new CrystallizerRecipe(inputA, inputB, result, byproduct, processingTime),
+                new CrystallizerRecipe(inputA, inputB, result, byproduct, processingTime, bonus, bonusChance),
                 null
         );
     }

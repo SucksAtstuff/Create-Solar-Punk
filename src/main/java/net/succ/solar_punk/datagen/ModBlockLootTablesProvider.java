@@ -13,6 +13,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.HempCropBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
+import net.succ.solar_punk.block.custom.RuinedSolarMirrorBlock;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -47,6 +48,8 @@ public class ModBlockLootTablesProvider extends AddonBlockLootProvider {
         // should ever produce a drop, same as vanilla's tall-flower loot tables.
         add(ModBlocks.SOLAR_MIRROR.get(), block ->
                 createSinglePropConditionTable(block, SolarMirrorBlock.HALF, DoubleBlockHalf.LOWER));
+        add(ModBlocks.RUINED_SOLAR_MIRROR.get(), block ->
+                createSinglePropConditionTable(block, RuinedSolarMirrorBlock.HALF, DoubleBlockHalf.LOWER));
         add(ModBlocks.STREETLAMP.get(), block ->
                 createSinglePropConditionTable(block, StreetlampBlock.HALF, DoubleBlockHalf.LOWER));
         // Like vanilla glass and panes: only drop with Silk Touch.

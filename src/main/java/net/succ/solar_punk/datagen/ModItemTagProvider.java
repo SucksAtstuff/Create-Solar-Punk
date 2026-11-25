@@ -105,6 +105,7 @@ public class ModItemTagProvider extends ItemTagsProvider {
                 .add(ModFluids.FERTILIZER_BUCKET.get())
                 .add(ModFluids.RICH_FERTILIZER_BUCKET.get())
                 .add(ModFluids.HEMP_SEED_OIL_BUCKET.get())
+                .add(ModFluids.GEOTHERMAL_BRINE_BUCKET.get())
                 .add(ModFluids.ALGAE_CULTURE_BUCKET.get());
         // Waste the Fermentation Vat turns into Rich Fertilizer.
         tag(ModTags.Items.FERMENTATION_WASTE).add(Items.ROTTEN_FLESH, Items.SPIDER_EYE, Items.POISONOUS_POTATO,

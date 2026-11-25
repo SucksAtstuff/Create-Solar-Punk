@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "solarpunk:ruined_solar_mirror",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "half": "lower"
+              }
+            }
+          ],
+          "name": "solarpunk:ruined_solar_mirror"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "solarpunk:blocks/ruined_solar_mirror"
+}
