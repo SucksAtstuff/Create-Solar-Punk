@@ -2,10 +2,10 @@
 	"format_version": "1.21.6",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "solarpunk:block/solar_mirror/polished_blackstone",
-		"1": "solarpunk:block/solar_mirror/smithing_table_top",
-		"2": "solarpunk:block/solar_mirror/solar_mirror_top",
-		"particle": "solarpunk:block/solar_mirror/polished_blackstone"
+		"0": "solarpunk:block/solar_heater/polished_blackstone",
+		"1": "solarpunk:block/solar_heater/smithing_table_top",
+		"2": "solarpunk:block/solar_heater/solar_heater_top",
+		"particle": "solarpunk:block/solar_heater/polished_blackstone"
 	},
 	"elements": [
 		{

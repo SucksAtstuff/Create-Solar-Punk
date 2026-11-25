@@ -36,7 +36,7 @@ public class GeyserCapScenes {
         scene.idle(20);
 
         scene.overlay().showText(70)
-                .text("Geyser Vents are found naturally in deserts, badlands and savannas")
+                .text("Geyser Vents are found naturally in deserts, badlands and savannas, and stronger ones in the Nether's Basalt Deltas")
                 .pointAt(util.vector().topOf(VENT))
                 .placeNearTarget()
                 .attachKeyFrame();
@@ -55,11 +55,18 @@ public class GeyserCapScenes {
         scene.world().setKineticSpeed(util.select().position(CAP), 32f);
         scene.effects().indicateSuccess(CAP);
         scene.overlay().showText(70)
-                .text("It gives a constant 32 RPM and 16384 SU of stress capacity - no fuel, no sunlight, day and night")
+                .text("On a normal vent it gives a constant 32 RPM and 16384 SU of stress capacity - no fuel, no sunlight, day and night")
                 .pointAt(util.vector().centerOf(CAP))
                 .placeNearTarget()
                 .attachKeyFrame();
         scene.idle(80);
+
+        scene.overlay().showText(80)
+                .text("Every vent is weak, normal or strong: Goggles on it show which. A weak vent gives half the stress capacity and a strong one twice as much")
+                .pointAt(util.vector().topOf(CAP))
+                .placeNearTarget()
+                .attachKeyFrame();
+        scene.idle(90);
 
         scene.world().showSection(util.select().position(SHAFT_WEST), Direction.EAST);
         scene.world().showSection(util.select().position(SHAFT_EAST), Direction.WEST);

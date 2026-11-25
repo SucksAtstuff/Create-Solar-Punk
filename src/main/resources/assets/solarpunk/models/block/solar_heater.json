@@ -1,10 +1,10 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "mirror": "solarpunk:block/solar_mirror/solar_mirror_top",
-    "side": "solarpunk:block/solar_mirror/polished_blackstone",
-    "base": "solarpunk:block/solar_mirror/smithing_table_top",
-    "particle": "solarpunk:block/solar_mirror/solar_mirror_top"
+    "mirror": "solarpunk:block/solar_heater/solar_heater_top",
+    "side": "solarpunk:block/solar_heater/polished_blackstone",
+    "base": "solarpunk:block/solar_heater/smithing_table_top",
+    "particle": "solarpunk:block/solar_heater/solar_heater_top"
   },
   "elements": [
     {

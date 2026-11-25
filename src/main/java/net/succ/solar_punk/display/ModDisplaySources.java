@@ -26,6 +26,7 @@ import net.succ.solar_punk.block.entity.custom.HeatBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.KineticBatteryBlockEntity;
 import net.succ.solar_punk.block.entity.custom.ElectricMotorBlockEntity;
 import net.succ.offbyonelib.util.EnergyFormat;
+import net.succ.offbyonelib.wire.WireConnectorBlockEntity;
 import net.succ.solar_punk.block.entity.custom.SolarPowerTowerBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,6 +54,14 @@ public class ModDisplaySources {
                     be -> be.getChargeLevel() / (float) Config.kineticBatteryMaxCharge));
 
     // --- Solar Power Tower ---
+
+    // --- Wire Connector ---
+
+    // FE/t through the connector over the last second, like its goggles: a power meter
+    public static final DeferredHolder<DisplaySource, DisplaySource> WIRE_CONNECTOR_THROUGHPUT = register("wire_connector_throughput",
+            () -> new NumericLineDisplaySource<>(ModDisplaySources::wireConnector,
+                    connector -> Component.literal(EnergyFormat.feRate(connector.throughput()))
+                            .withStyle(connector.throughput() > 0 ? ChatFormatting.GREEN : ChatFormatting.GRAY)));
 
     // --- Electric Motor ---
 
@@ -201,6 +210,11 @@ public class ModDisplaySources {
     @Nullable
     private static HeatBatteryBlockEntity heatBattery(DisplayLinkContext context) {
         return context.getSourceBlockEntity() instanceof HeatBatteryBlockEntity be ? be : null;
+    }
+
+    @Nullable
+    private static WireConnectorBlockEntity wireConnector(DisplayLinkContext context) {
+        return context.getSourceBlockEntity() instanceof WireConnectorBlockEntity connector ? connector : null;
     }
 
     @Nullable

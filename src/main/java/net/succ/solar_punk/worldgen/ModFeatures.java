@@ -14,7 +14,10 @@ public class ModFeatures {
             DeferredRegister.create(Registries.FEATURE, SolarPunk.MODID);
 
     public static final DeferredHolder<Feature<?>, GeyserFeature> GEYSER_BLOB =
-            FEATURES.register("geyser_blob", () -> new GeyserFeature(NoneFeatureConfiguration.CODEC));
+            FEATURES.register("geyser_blob", () -> new GeyserFeature(NoneFeatureConfiguration.CODEC, false));
+
+    public static final DeferredHolder<Feature<?>, GeyserFeature> NETHER_GEYSER_BLOB =
+            FEATURES.register("nether_geyser_blob", () -> new GeyserFeature(NoneFeatureConfiguration.CODEC, true));
 
     public static void register(IEventBus eventBus) {
         FEATURES.register(eventBus);

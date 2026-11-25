@@ -15,8 +15,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
-import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.block.custom.GeyserCapBlock;
+import net.succ.solar_punk.block.custom.GeyserVentBlock;
 import net.succ.solar_punk.sound.ModSounds;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -51,7 +51,11 @@ public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implement
     }
 
     private boolean hasVent() {
-        return level != null && level.getBlockState(worldPosition.below()).is(ModBlocks.GEYSER_VENT.get());
+        return level != null && level.getBlockState(worldPosition.below()).getBlock() instanceof GeyserVentBlock;
+    }
+
+    private boolean onNetherVent() {
+        return level != null && GeyserVentBlock.isNether(level.getBlockState(worldPosition.below()));
     }
 
     @Override
@@ -62,7 +66,9 @@ public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implement
 
     @Override
     public float calculateAddedStressCapacity() {
-        float capacity = hasVent() ? Config.geyserCapSu : 0;
+        // Scaled by the vent's strength, and more on a Nether vent (RPM stays the same)
+        float capacity = level == null ? 0
+                : Config.geyserCapSu * GeyserVentBlockEntity.outputMultiplier(level, worldPosition.below());
         this.lastCapacityProvided = capacity;
         return capacity;
     }
@@ -102,7 +108,10 @@ public class GeyserCapBlockEntity extends GeneratingKineticBlockEntity implement
             ServerLevel serverLevel = (ServerLevel) level;
             double cx = worldPosition.getX() + 0.5, cy = worldPosition.getY() + 1.0, cz = worldPosition.getZ() + 0.5;
             SeasonalSteam.send(serverLevel, cx, cy, cz, 6, 0.25, 0.05, 0.25, 0.04);
-            serverLevel.sendParticles(ParticleTypes.SPLASH, cx, cy, cz, 8, 0.2,  0.1,  0.2,  0.1);
+            if (onNetherVent())
+                serverLevel.sendParticles(ParticleTypes.FLAME, cx, cy, cz, 3, 0.2, 0.1, 0.2, 0.01);
+            else
+                serverLevel.sendParticles(ParticleTypes.SPLASH, cx, cy, cz, 8, 0.2,  0.1,  0.2,  0.1);
         }
     }
 

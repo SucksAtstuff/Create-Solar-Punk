@@ -86,6 +86,8 @@ The **Biomass Gasifier** and **Biofuel Engine** support rotation direction contr
 
 ### Geothermal
 - **Geyser Vent** - spawns naturally in desert, badlands, and savanna biomes (configurable). Uncapped vents erupt every few minutes, rumbling first and then blasting a column of steam that scalds and launches anything standing over them. Goggles show a countdown, and a Comparator signal rises as an eruption gets close
+- **Geyser Well** - goes on a vent instead of a Geyser Cap and boils piped-in Water into Steam for a Steam Turbine, for more power than a Cap. Some vents also have an old Rusted Geyser Cap on them, which an axe scrapes back into a working one
+- **Nether Geyser Vent** - a rarer, hotter vent in Basalt Deltas. Its eruptions also set you on fire, and a Geyser Cap on one gives twice the stress capacity
 - **Geyser Cap** - stops the eruptions and harnesses the vent's geothermal energy as rotational force; passive, works day and night in any weather; also supports rotation direction control via scroll
 
 ### Fusion Reactor
@@ -131,7 +133,7 @@ An opt-in pollution system, disabled by default and toggled in the config.
 
 ### Create Integration
 - **Ponder** scenes for every machine and multiblock, walking through each one step by step
-- **Display Link** sources for the Heat Battery, Kinetic Battery, Solar Power Tower, Fusion Reactor, Particle Accelerator, Greenhouse Controller, Bioreactor, Biofilter and Electric Motor, so their live stats can go on a Display Board or Nixie Tube. Solar Panels also show the **Sun Angle**, **Sun Offset** and **Sun Exposure**, handy for lining up sun-tracking arrays
+- **Display Link** sources for the Heat Battery, Kinetic Battery, Solar Power Tower, Fusion Reactor, Particle Accelerator, Greenhouse Controller, Bioreactor, Biofilter, Electric Motor and Wire Connectors, so their live stats can go on a Display Board or Nixie Tube. Solar Panels also show the **Sun Angle**, **Sun Offset** and **Sun Exposure**, handy for lining up sun-tracking arrays
 - **Comparator** signals from the batteries, Solar Panels (how directly they face the sun), Biofilter (chunk pollution), Greenhouse Controller (sealed and how fast plants grow), Bioreactor, Wire Switches and Geyser Vents
 - **Goggle** readouts on every machine
 - Progression follows Create's own: cheap to get started, then sheets, sequenced assembly, Mechanical Crafters, and Precision Mechanisms for the higher-tier machines

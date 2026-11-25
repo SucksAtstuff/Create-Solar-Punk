@@ -67,6 +67,11 @@ public class ModBlockStateProvider extends AddonBlockStateProvider {
         itemModels().withExistingParent("geyser_cap", modLoc("block/geyser_cap_display"));
 
         blockWithItem(ModBlocks.GEYSER_VENT);
+        blockWithItem(ModBlocks.NETHER_GEYSER_VENT);
+        facingCustomModelBlock(ModBlocks.RUSTED_GEYSER_CAP, true);
+        // The block model has no gauge needles (GeyserWellRenderer draws them); the item keeps them
+        facingCustomModelBlock(ModBlocks.GEYSER_WELL, false);
+        itemModels().withExistingParent("geyser_well", modLoc("block/geyser_well_item"));
 
         litCustomModelBlock(ModBlocks.ANDESITE_SOLAR_PANEL, false);
         litCustomModelBlock(ModBlocks.BRASS_SOLAR_PANEL, true);

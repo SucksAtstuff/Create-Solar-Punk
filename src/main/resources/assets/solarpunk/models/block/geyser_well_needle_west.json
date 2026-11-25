@@ -1,0 +1,91 @@
+{
+	"credit": "Made by Firstwitch",
+	"texture_size": [
+		32,
+		32
+	],
+	"textures": {
+		"0": "solarpunk:block/geyser_well",
+		"particle": "solarpunk:block/geyser_well"
+	},
+	"render_type": "minecraft:cutout",
+	"elements": [
+		{
+			"from": [
+				1.75,
+				6.5,
+				7.5
+			],
+			"to": [
+				1.75,
+				9.5,
+				8.5
+			],
+			"rotation": {
+				"angle": 0,
+				"axis": "y",
+				"origin": [
+					1,
+					7,
+					8
+				]
+			},
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						0.5,
+						0,
+						2
+					],
+					"texture": "#0"
+				},
+				"east": {
+					"uv": [
+						12,
+						2,
+						12.5,
+						3.5
+					],
+					"texture": "#0"
+				},
+				"south": {
+					"uv": [
+						1,
+						0.5,
+						1,
+						2
+					],
+					"texture": "#0"
+				},
+				"west": {
+					"uv": [
+						12,
+						2,
+						12.5,
+						3.5
+					],
+					"texture": "#0"
+				},
+				"up": {
+					"uv": [
+						1,
+						0,
+						1,
+						0.5
+					],
+					"texture": "#0"
+				},
+				"down": {
+					"uv": [
+						1,
+						0.5,
+						1,
+						1
+					],
+					"texture": "#0"
+				}
+			}
+		}
+	]
+}

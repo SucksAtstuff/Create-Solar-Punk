@@ -6,6 +6,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.DoublePlantBlock;
+import net.succ.solar_punk.ModTags;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -58,10 +60,15 @@ public class SolarPlantBedBlock extends Block implements EntityBlock {
         return SHAPE;
     }
 
-    // Anything that grows on dirt or farmland: crops, stems, flowers, saplings, berry bushes.
+    // Anything one block tall that grows on dirt or farmland: crops, flowers, saplings, berry
+    // bushes. Not two-tall plants or anything in #solarpunk:solar_plant_bed_blacklist (stems,
+    // whose fruit needs ground beside them, Hemp, the Pitcher crop).
     @Override
     public TriState canSustainPlant(BlockState state, BlockGetter level, BlockPos soilPosition, Direction facing, BlockState plant) {
-        return facing == Direction.UP && plant.getBlock() instanceof BushBlock ? TriState.TRUE : TriState.DEFAULT;
+        if (facing != Direction.UP || !(plant.getBlock() instanceof BushBlock)) return TriState.DEFAULT;
+        if (plant.getBlock() instanceof DoublePlantBlock || plant.is(ModTags.Blocks.SOLAR_PLANT_BED_BLACKLIST))
+            return TriState.FALSE;
+        return TriState.TRUE;
     }
 
     // Counts as watered farmland, so crops grow at the hydrated speed with no water nearby.

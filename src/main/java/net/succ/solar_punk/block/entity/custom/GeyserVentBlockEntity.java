@@ -4,6 +4,7 @@ import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.utility.CreateLang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -26,6 +27,7 @@ import net.minecraft.world.phys.Vec3;
 import net.succ.solar_punk.Config;
 import net.succ.solar_punk.advancement.ModTriggers;
 import net.succ.solar_punk.block.ModBlocks;
+import net.succ.solar_punk.block.custom.GeyserVentBlock;
 import net.succ.solar_punk.damage.ModDamageTypes;
 import net.succ.solar_punk.particle.SeasonalSteam;
 import net.succ.solar_punk.sound.ModSounds;
@@ -45,10 +47,43 @@ public class GeyserVentBlockEntity extends BlockEntity implements IHaveGoggleInf
 
     private static final int HIT_INTERVAL = 10;
     private static final double LAUNCH_SPEED = 0.9;
+    // How long a Nether vent's eruption sets things on fire for
+    private static final float NETHER_BURN_SECONDS = 4;
 
     // Game time the next eruption starts at, 0 when none is scheduled (capped, eruptions
     // turned off, or in Ponder, where only the client runs)
     private long nextEruption;
+
+    /**
+     * How strong the vent is, rolled when it generates (GeyserFeature) and saved with it. Scales
+     * a Geyser Cap's stress capacity and a Geyser Well's Steam. Vents placed by hand, and ones
+     * from before strength existed, are NORMAL.
+     */
+    public enum Strength {
+        WEAK, NORMAL, STRONG;
+
+        public float multiplier() {
+            return switch (this) {
+                case WEAK -> Config.weakVentMultiplier;
+                case NORMAL -> 1;
+                case STRONG -> Config.strongVentMultiplier;
+            };
+        }
+
+        public static Strength roll(RandomSource random) {
+            int roll = random.nextInt(100);
+            if (roll < Config.weakVentChance) return WEAK;
+            if (roll < Config.weakVentChance + Config.strongVentChance) return STRONG;
+            return NORMAL;
+        }
+
+        static Strength byName(String name) {
+            for (Strength s : values()) if (s.name().equalsIgnoreCase(name)) return s;
+            return NORMAL;
+        }
+    }
+
+    private Strength strength = Strength.NORMAL;
     // Saved with the schedule, since clients don't share the server's COMMON config
     private int warningTicks, eruptionTicks;
     // Comparator output, kept so neighbours only update when it changes
@@ -89,6 +124,26 @@ public class GeyserVentBlockEntity extends BlockEntity implements IHaveGoggleInf
         }
     }
 
+    public Strength getStrength() {
+        return strength;
+    }
+
+    public void setStrength(Strength strength) {
+        this.strength = strength;
+        setChanged();
+    }
+
+    /**
+     * What a Geyser Cap or Well on the vent at {@code ventPos} gets out of it: the vent's strength
+     * times the Nether multiplier on a Nether vent. 0 when there's no vent there.
+     */
+    public static float outputMultiplier(BlockGetter level, BlockPos ventPos) {
+        BlockState vent = level.getBlockState(ventPos);
+        if (!(vent.getBlock() instanceof GeyserVentBlock)) return 0;
+        float strength = level.getBlockEntity(ventPos) instanceof GeyserVentBlockEntity be ? be.strength.multiplier() : 1;
+        return strength * (GeyserVentBlock.isNether(vent) ? Config.netherGeyserMultiplier : 1);
+    }
+
     private void setSchedule(long eruption) {
         nextEruption = eruption;
         warningTicks = Config.geyserWarningTicks;
@@ -98,7 +153,10 @@ public class GeyserVentBlockEntity extends BlockEntity implements IHaveGoggleInf
     }
 
     private boolean isCapped() {
-        return level.getBlockState(worldPosition.above()).is(ModBlocks.GEYSER_CAP.get());
+        // A Geyser Cap, Geyser Well or Rusted Geyser Cap on top all stop the eruptions
+        BlockState above = level.getBlockState(worldPosition.above());
+        return above.is(ModBlocks.GEYSER_CAP.get()) || above.is(ModBlocks.GEYSER_WELL.get())
+                || above.is(ModBlocks.RUSTED_GEYSER_CAP.get());
     }
 
     public Phase getPhase() {
@@ -149,9 +207,14 @@ public class GeyserVentBlockEntity extends BlockEntity implements IHaveGoggleInf
             Vec3 motion = entity.getDeltaMovement();
             entity.setDeltaMovement(motion.x, Math.max(motion.y, LAUNCH_SPEED), motion.z);
             entity.hurtMarked = true;  // sends the new motion to players
+            if (isNether()) entity.igniteForSeconds(NETHER_BURN_SECONDS);
             if (entity instanceof ServerPlayer player)
                 ModTriggers.GEYSER_SCALDED.get().trigger(player);
         }
+    }
+
+    private boolean isNether() {
+        return GeyserVentBlock.isNether(getBlockState());
     }
 
     private void tickClient() {
@@ -194,7 +257,7 @@ public class GeyserVentBlockEntity extends BlockEntity implements IHaveGoggleInf
                             cz + (random.nextDouble() - 0.5) * 0.6, (random.nextDouble() - 0.5) * 0.1,
                             speed * (0.7 + random.nextDouble() * 0.5), (random.nextDouble() - 0.5) * 0.1);
                 for (int i = 0; i < 8; i++)
-                    level.addParticle(ParticleTypes.SPLASH, cx + (random.nextDouble() - 0.5) * 0.5, cy,
+                    level.addParticle(isNether() ? (i % 2 == 0 ? ParticleTypes.FLAME : ParticleTypes.LARGE_SMOKE) : ParticleTypes.SPLASH, cx + (random.nextDouble() - 0.5) * 0.5, cy,
                             cz + (random.nextDouble() - 0.5) * 0.5, (random.nextDouble() - 0.5) * 0.4,
                             speed * (0.8 + random.nextDouble() * 0.6), (random.nextDouble() - 0.5) * 0.4);
             }
@@ -204,6 +267,15 @@ public class GeyserVentBlockEntity extends BlockEntity implements IHaveGoggleInf
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         CreateLang.translate("solar_punk.tooltip.geyser_vent_header").forGoggles(tooltip);
+        CreateLang.translate("solar_punk.tooltip.geyser_vent_strength")
+                .style(ChatFormatting.GRAY)
+                .add(CreateLang.translate("solar_punk.tooltip.geyser_vent_strength_" + strength.name().toLowerCase())
+                        .style(switch (strength) {
+                            case WEAK -> ChatFormatting.RED;
+                            case NORMAL -> ChatFormatting.YELLOW;
+                            case STRONG -> ChatFormatting.GREEN;
+                        }).component())
+                .forGoggles(tooltip, 1);
         Component status = switch (getPhase()) {
             case ERUPTING -> CreateLang.translate("solar_punk.tooltip.geyser_vent_erupting")
                     .style(ChatFormatting.RED).component();
@@ -234,6 +306,7 @@ public class GeyserVentBlockEntity extends BlockEntity implements IHaveGoggleInf
         tag.putLong("NextEruption", nextEruption);
         tag.putInt("WarningTicks", warningTicks);
         tag.putInt("EruptionTicks", eruptionTicks);
+        tag.putString("Strength", strength.name());
     }
 
     @Override
@@ -242,6 +315,7 @@ public class GeyserVentBlockEntity extends BlockEntity implements IHaveGoggleInf
         nextEruption = tag.getLong("NextEruption");
         warningTicks = tag.getInt("WarningTicks");
         eruptionTicks = tag.getInt("EruptionTicks");
+        strength = Strength.byName(tag.getString("Strength"));
     }
 
     @Override

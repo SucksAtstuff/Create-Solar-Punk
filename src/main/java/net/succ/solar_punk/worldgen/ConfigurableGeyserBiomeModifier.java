@@ -1,5 +1,6 @@
 package net.succ.solar_punk.worldgen;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -23,12 +24,15 @@ import net.succ.solar_punk.Config;
  * baked at world/server startup, well after that.
  */
 public record ConfigurableGeyserBiomeModifier(HolderSet<PlacedFeature> features,
-                                               GenerationStep.Decoration step) implements BiomeModifier {
+                                               GenerationStep.Decoration step,
+                                               boolean nether) implements BiomeModifier {
 
     public static final MapCodec<ConfigurableGeyserBiomeModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
             .group(
                     PlacedFeature.LIST_CODEC.fieldOf("features").forGetter(ConfigurableGeyserBiomeModifier::features),
-                    GenerationStep.Decoration.CODEC.fieldOf("step").forGetter(ConfigurableGeyserBiomeModifier::step))
+                    GenerationStep.Decoration.CODEC.fieldOf("step").forGetter(ConfigurableGeyserBiomeModifier::step),
+                    // true reads nether_geyser_biomes instead of geyser_biomes
+                    Codec.BOOL.optionalFieldOf("nether", false).forGetter(ConfigurableGeyserBiomeModifier::nether))
             .apply(instance, ConfigurableGeyserBiomeModifier::new));
 
     @Override
@@ -40,7 +44,8 @@ public record ConfigurableGeyserBiomeModifier(HolderSet<PlacedFeature> features,
 
     private boolean matchesConfiguredBiomes(Holder<Biome> biome) {
         return biome.unwrapKey()
-                .map(key -> Config.geyserBiomes.contains(key.location().toString()))
+                .map(key -> (nether ? Config.netherGeyserBiomes : Config.geyserBiomes)
+                        .contains(key.location().toString()))
                 .orElse(false);
     }
 

@@ -1,0 +1,27 @@
+{
+  "feature": "solarpunk:nether_geyser_blob",
+  "placement": [
+    {
+      "type": "minecraft:rarity_filter",
+      "chance": 96
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "max_inclusive": {
+          "absolute": 72
+        },
+        "min_inclusive": {
+          "absolute": 36
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

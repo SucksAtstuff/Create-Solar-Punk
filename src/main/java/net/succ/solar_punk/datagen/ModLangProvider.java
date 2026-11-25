@@ -73,6 +73,12 @@ public class ModLangProvider extends AddonLangProvider {
         goggle("biofilter_carbon", "Carbon Dust: ");
 
         goggle("geyser_vent_header", "Geyser Vent");
+        goggle("geyser_vent_strength", "Strength: ");
+        goggle("geyser_vent_strength_weak", "Weak");
+        goggle("geyser_vent_strength_normal", "Normal");
+        goggle("geyser_vent_strength_strong", "Strong");
+        goggle("geyser_well_header", "Geyser Well");
+        goggle("geyser_well_no_vent", "Not on a Geyser Vent");
         goggle("geyser_vent_next", "Next eruption: ");
         goggle("geyser_vent_warning", "Any second now!");
         goggle("geyser_vent_erupting", "Erupting!");
@@ -99,6 +105,7 @@ public class ModLangProvider extends AddonLangProvider {
         goggle("fe_input", "Input: ");
         goggle("electric_motor_sustains", "Not enough FE: holds up to %1$s RPM");
         add("solarpunk.display_source.electric_motor_consumption", "Electric Motor FE Use");
+        add("solarpunk.display_source.wire_connector_throughput", "Wire Throughput");
         goggle("electrolyzer_header", "Electrolyzer");
         goggle("hydrogen", "Hydrogen: ");
         goggle("oxygen", "Oxygen: ");
@@ -304,11 +311,24 @@ public class ModLangProvider extends AddonLangProvider {
                 "With Oxygen piped in", "Burns hotter for _50% more stress capacity_, using a little _Oxygen_ every second.");
 
         tooltip(ModBlocks.GEYSER_CAP, "Harnesses the energy of a _Geyser Vent_ for passive, round-the-clock _Rotational Force_.",
-                "When placed on a Geyser Vent", "Generates 32 RPM with 16384 SU of stress capacity. Works day and night in all weather.");
+                "When placed on a Geyser Vent", "Generates 32 RPM with 16384 SU of stress capacity on a normal vent. Works day and night in all weather.",
+                "Vent strength", "A _weak_ vent gives half the stress capacity, a _strong_ one twice as much, and a _Nether_ vent twice again. RPM stays the same.");
+
+        tooltip(ModBlocks.GEYSER_WELL, "Sits on a natural _Geyser Vent_ like a Geyser Cap, but boils _Water_ into _Steam_ for a _Steam Turbine_ instead of turning a shaft. More power than a Cap, if you build the turbine.",
+                "When placed on a Geyser Vent", "Pipe Water into either _port_ and pump Steam out of either. Makes _4 mB_ of Steam per tick on a normal vent, half on a weak one, twice on a strong one, and twice again on a Nether vent. Stops the vent erupting.",
+                "Gauges", "Both gauges show how _strong_ the vent below is.");
+
+        tooltip(ModBlocks.RUSTED_GEYSER_CAP, "An old _Geyser Cap_ seized up with rust, left on some Geyser Vents. It makes no power, but still stops the vent erupting.",
+                "When scraped with an Axe", "The rust comes off and it turns back into a working _Geyser Cap_.");
 
         tooltip(ModBlocks.GEYSER_VENT, "A rare natural vent. Left uncapped, it _erupts_ every few minutes, scalding and launching anything standing over it.",
                 "Before an eruption", "Rumbles for a few seconds first. _Goggles_ show the countdown, and a _Comparator_ signal rises as it gets close.",
-                "When capped", "A _Geyser Cap_ stops the eruptions and turns the vent into steady _Rotational Force_.");
+                "When capped", "A _Geyser Cap_ stops the eruptions and turns the vent into steady _Rotational Force_.",
+                "Strength", "Each vent is _weak_, _normal_ or _strong_, which _Goggles_ show. Strong vents puff more steam and give a Cap or Well twice the output.");
+
+        tooltip(ModBlocks.NETHER_GEYSER_VENT, "A rarer, hotter vent found in _Basalt Deltas_. Its eruptions _set you on fire_ as well as launching you.",
+                "Before an eruption", "Rumbles for a few seconds first. _Goggles_ show the countdown, and a _Comparator_ signal rises as it gets close.",
+                "When capped", "A _Geyser Cap_ on it gives _twice_ the stress capacity of an Overworld vent.");
 
         tooltip(ModBlocks.SOLAR_POWER_TOWER, "Multiblock tower that concentrates reflected sunlight to produce _Molten Salt_ or _Steam_ from water. Right-click with a Wrench to switch modes.",
                 "At least 3x3 and 3 tall, in clear daylight", "Output grows with tower height and its _Solar Mirror_ field. Efficiency peaks at an optimal mirror count that grows with height, and falls off past it.");
@@ -324,7 +344,7 @@ public class ModLangProvider extends AddonLangProvider {
                 "When powered", "Takes _FE_ from cables or from a _Brass Solar Panel_ or _Solar Glass_ touching its base. A full charge lasts a whole night.");
         tooltip(ModBlocks.GROW_LAMP, "A purple grow light that runs on _FE_. Hang it under a ceiling, or from a wall or another Grow Lamp at either end.",
                 "When powered", "Lights up so crops grow at _night_ and _underground_, and makes plants in a _3x3_ area below it grow _faster_. A _redstone_ signal switches it off.");
-        tooltip(ModBlocks.SOLAR_PLANT_BED, "A raised bed for _one plant_, for roofs and balconies. Its soil never dries out, so it needs _no water_ nearby.",
+        tooltip(ModBlocks.SOLAR_PLANT_BED, "A raised bed for _one plant_ (one block tall: no stems, Hemp or tall flowers), for roofs and balconies. Its soil never dries out, so it needs _no water_ nearby.",
                 "During the day", "The panel on top charges from _sunlight_. Needs open sky above the panel.",
                 "At night", "The grow light runs on the stored charge and makes the plant grow _faster_. A _redstone_ signal switches it off.");
         tooltip(ModBlocks.WIRE_CONNECTOR, "Place on any block, then click two connectors with a _Spool_ to string a wire between them. Carries _FE_ from block to block.",

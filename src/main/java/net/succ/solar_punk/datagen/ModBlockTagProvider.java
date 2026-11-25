@@ -104,6 +104,9 @@ public class ModBlockTagProvider extends AddonBlockTagsProvider {
                 .add(ModBlocks.SOLAR_POWER_TOWER.get())
                 .add(ModBlocks.SOLAR_MIRROR.get())
                 .add(ModBlocks.GEYSER_VENT.get())
+                .add(ModBlocks.NETHER_GEYSER_VENT.get())
+                .add(ModBlocks.GEYSER_WELL.get())
+                .add(ModBlocks.RUSTED_GEYSER_CAP.get())
                 .add(ModBlocks.BIOFILTER.get())
                 .add(ModBlocks.KINETIC_SPRINKLER.get())
                 .add(ModBlocks.TURBINE_CASING.get())
@@ -143,6 +146,11 @@ public class ModBlockTagProvider extends AddonBlockTagsProvider {
                 ModBlocks.GREENHOUSE_PANEL.get(), ModBlocks.LARGE_GREENHOUSE_PANEL.get());
         tag(Tags.Blocks.GLASS_PANES).add(ModBlocks.GREENHOUSE_GLASS_PANE.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS_PANE.get());
         // Roofs a greenhouse's plants grow faster under: every greenhouse glass block, and Solar Glass.
+        tag(ModTags.Blocks.SOLAR_PLANT_BED_BLACKLIST)
+                .add(Blocks.PUMPKIN_STEM, Blocks.ATTACHED_PUMPKIN_STEM, Blocks.MELON_STEM, Blocks.ATTACHED_MELON_STEM,
+                        Blocks.PITCHER_CROP, ModBlocks.HEMP.get())
+                .addTag(BlockTags.TALL_FLOWERS);
+
         tag(ModTags.Blocks.GREENHOUSE_GLASS).add(ModBlocks.GREENHOUSE_GLASS.get(), ModBlocks.GREENHOUSE_GLASS_PANE.get(),
                 ModBlocks.CLEAR_GREENHOUSE_GLASS.get(), ModBlocks.CLEAR_GREENHOUSE_GLASS_PANE.get(),
                 ModBlocks.GREENHOUSE_PANEL.get(), ModBlocks.LARGE_GREENHOUSE_PANEL.get(),

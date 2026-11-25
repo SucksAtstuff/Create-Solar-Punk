@@ -1,0 +1,7 @@
+{
+  "parent": "solarpunk:block/geyser_cap_display",
+  "textures": {
+    "tex": "solarpunk:block/geyser_cap/rusted_geyser_cap",
+    "particle": "solarpunk:block/geyser_cap/rusted_geyser_cap"
+  }
+}

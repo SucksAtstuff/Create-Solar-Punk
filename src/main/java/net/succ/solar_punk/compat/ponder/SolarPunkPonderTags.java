@@ -101,6 +101,7 @@ public class SolarPunkPonderTags {
         helper.addToTag(STEAM_TURBINE)
                 .add(ModBlocks.TURBINE_ROTOR.getId())
                 .add(ModBlocks.FIREBOX_BOILER.getId())
+                .add(ModBlocks.GEYSER_WELL.getId())
                 .add(ModBlocks.TURBINE_CASING.getId())
                 .add(ModBlocks.TURBINE_CASING_GLASS.getId())
                 .add(ModBlocks.ANDESITE_TURBINE_BLADE.getId())

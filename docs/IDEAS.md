@@ -5,14 +5,10 @@ with the strongest / most on-theme ideas near the top of each section.
 
 ## Next up: 2.3, Oxygen, Geothermal and Modpack Support
 
-1. **Geothermal** (the headline): nothing new since the Geyser Cap. A vent should be worth
+1. **Geothermal** (the headline): the Geyser Well is in. A vent should be worth
    more once you find it, not let geothermal work anywhere. In this order (details under
    Geothermal):
-   - **Geothermal Well**: the Steam option for a vent, for the Steam Turbine. Only on a
-     natural Geyser Vent, like the Cap.
    - **Geothermal Brine**: Lithium from the Well, tying geothermal to fusion.
-   - **Nether vents**: stronger vents in Basalt Deltas, worth the danger.
-2. **Small wins**: the wire throughput Display Link.
 
 ## After that: 2.4, a new generator
 
@@ -45,8 +41,6 @@ spots). See Biggest gaps.
 Right now FE mostly just powers lights and Grow Lamps, so Brass Panels, Shingles and Solar
 Glass have little to feed. The Electric Motor (2.2) gives FE a big job; these come after.
 
-- **Wire throughput readout** - connectors already count FE/s moved; a Display Link source on
-  connectors would turn wires into power meters.
 - **Electric Sprinkler** - an FE-powered Kinetic Sprinkler, so a greenhouse can run entirely
   on its own Solar Glass roof.
 - **Electric Heater** - FE heats a Create boiler (passive heat at low FE/t, superheat at
@@ -66,26 +60,11 @@ Glass have little to feed. The Electric Motor (2.2) gives FE a big job; these co
 Vents are meant to be scarce, so ideas here should make a natural vent worth more rather than
 let geothermal work anywhere.
 
-- **Geothermal Well** (like a real flash steam plant on natural vents) - a second block for a
-  natural Geyser Vent, instead of the Geyser Cap. It can't go anywhere else, so it doesn't
-  add geothermal spots: it's another way to use a vent you've found. Pipe Water in, Steam
-  comes out, for the Steam Turbine. So a vent gives a
-  choice: SU straight from the Cap, or Steam from the Well (more total power, but you need a
-  turbine and a water supply). Steam rate set so one vent runs a small turbine. Like the Cap,
-  it stops eruptions. Ponder scene, and the turbine's condensed water can loop back in.
 - **Geothermal Brine** (real: the Salton Sea geothermal plants are now a big lithium source) -
   the Well also gives out a trickle of **Geothermal Brine** with the Steam. The Crystallizer
   turns Brine into Salt plus a little Lithium Dust (a `crystallizing` recipe, no new
   machine). A renewable Lithium source for the Fusion Reactor, and geothermal's first link to
   another chain. Brine has to be piped away or the Well backs up, like the turbine's water.
-- **Vent strength** - each vent rolls weak, normal or strong at world gen (saved in the vent's
-  block entity), scaling Cap and Well output (e.g. 0.5x / 1x / 2x). Goggles on a vent show
-  it, and strong vents puff more steam, so a good vent is worth travelling for. Old vents
-  read as normal.
-- **Nether vents** - vents in Basalt Deltas, with more output than Overworld vents (a
-  multiplier on the Cap and Well, or always strong if vent strength gets built), surrounded
-  by lava and magma. High risk, high reward, and a reason to build in the Nether. The Cap works there as
-  is; the Well needs Water piped in, which is fine, since Water doesn't evaporate in pipes.
 - **Geyser Collector** - for players who like the eruptions: sits beside an uncapped vent and
   catches each eruption as a big burst of Steam into its tank, keeping the eruptions. Lower
   output than the Well on average, but bursty, so it pairs with storage. Lower priority.
@@ -130,6 +109,11 @@ Display Links cover most monitoring.
 Pure decoration drifts from the mod's power focus, so the best ideas here also do something
 small: make power, absorb pollution, give light, or use up a byproduct. Blocks that are only
 decorative should at least come from the mod's own materials (Salt, Biochar, Ash, Lithium).
+
+- **Abandoned solarpunk village** - a run-down, overgrown settlement that tried and failed,
+  showing what global warming does without anyone having it turned on. Built from pieces in
+  `structure/abandoned_village/`; so far the Lost Greenhouse (placed sunk 1 block into the
+  ground). Wire it up as a jigsaw structure once there are enough pieces.
 
 ## Seasonal events
 

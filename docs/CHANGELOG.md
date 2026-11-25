@@ -7,6 +7,30 @@
 - **Oxy-fuel burning** - pipe Oxygen into a Biomass Gasifier or Biofuel Engine and it burns hotter, for 50% more stress capacity at the same speed. It only boosts a fuel, so it does nothing on its own. Feed it from an Electrolyzer, or put a Bioreactor's Oxygen to use instead of venting it.
 - **Aerobic composting** - pipe Oxygen into a Fermentation Vat making Rich Fertilizer and its batches run twice as fast. Biofuel is made without air, so the Vat only takes Oxygen while it holds waste.
 
+### Geyser Well
+
+- **Geyser Well** - a second way to use a Geyser Vent. Put it on a vent instead of a Geyser Cap, pipe Water in and it boils it into Steam for a Steam Turbine: more power than a Cap if you build the turbine, and even more on a Nether vent. Its gauges show how strong the vent is.
+- **Vent strength** - every newly generated Geyser Vent is weak, normal or strong, and Goggles show which. A strong vent gives a Geyser Cap or Well twice the output and puffs more steam, so a good vent is worth travelling for. Vents in existing worlds count as normal.
+- **Rusted Geyser Caps** - some Geyser Vents still have an old cap on them, seized up with rust. Scrape it with an axe and it works again.
+
+### Nether Geyser Vents
+
+- **Nether Geyser Vents** now generate in Basalt Deltas, in a dome of basalt, blackstone and magma. They're rarer and hotter than Overworld vents: eruptions set you on fire as well as launching you, and a Geyser Cap on one gives twice the stress capacity.
+
+### Solarpunk Village Houses
+
+- Villages can now build a solarpunk house, with its own villager. Plains, desert, savanna, snowy and taiga villages each have their own design.
+
+### Exploring
+
+- **Dirt Huts** - small mossy huts in plains, forests, meadows and taigas, with a barrel of supplies for getting started.
+- Some Geyser Vents now generate with an old wooden frame built over them instead of the usual stone dome.
+- Geyser Vents are rarer, about 3 in an area where there used to be 8, so finding one means more.
+
+### Wire Power Meter
+
+- Point a Display Link at a Wire Connector to show how much power is going through it, turning any connector into a power meter.
+
 ### Custom Recipes and Fuels
 
 - **KubeJS support** - write Solarpunk recipes in scripts like Create's: `event.recipes.solarpunk.fermenting(...)`, `.crystallizing(...)`, `.solar_heating(...)`, `.evaporating(...)` and `.particle_accelerator(...)`, with builder calls like `.processingTime(200)`.
@@ -23,6 +47,7 @@
 
 - Biofuel Engines can be filled with a bucket of Biofuel, and emptied with an empty one.
 - Biomass and Biomass Pellets can be put in a Biomass Gasifier by hand.
+- The Solar Plant Bed only takes plants that fit on it: no more melon and pumpkin stems, Hemp, Pitcher Pods or tall flowers.
 - Removed the config options for Fermentation Vat batches, Solar Heater evaporation, Biomass Gasifier burn times, Biofuel Engine fuel use and Heat Battery heat per mB. They're now set by recipes and data maps, with the same defaults, so changed values in an old config are ignored.
 
 # 2.2.1-1.21.1

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "solarpunk:block/rusted_geyser_cap",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "solarpunk:block/rusted_geyser_cap"
+    },
+    "facing=south": {
+      "model": "solarpunk:block/rusted_geyser_cap",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "solarpunk:block/rusted_geyser_cap",
+      "y": 270
+    }
+  }
+}

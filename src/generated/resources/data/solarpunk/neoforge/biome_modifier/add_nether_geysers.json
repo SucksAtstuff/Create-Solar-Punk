@@ -1,0 +1,6 @@
+{
+  "type": "solarpunk:configurable_geyser_biomes",
+  "features": "solarpunk:nether_geyser_blob",
+  "nether": true,
+  "step": "surface_structures"
+}

@@ -547,6 +547,18 @@ public class ModRecipeProvider extends AddonRecipeProvider {
                 .unlockedBy("has_andesite_casing", has(createItem("andesite_casing")))
                 .save(output);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.GEYSER_WELL.get())
+                .pattern("SPS")
+                .pattern("GTG")
+                .pattern("SCS")
+                .define('S', createItem("copper_sheet"))
+                .define('P', createItem("fluid_pipe"))
+                .define('G', Items.CLOCK)
+                .define('T', createItem("fluid_tank"))
+                .define('C', createItem("copper_casing"))
+                .unlockedBy("has_copper_casing", has(createItem("copper_casing")))
+                .save(output);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.KINETIC_SPRINKLER.get())
                 .pattern("C C")
                 .pattern("CAC")

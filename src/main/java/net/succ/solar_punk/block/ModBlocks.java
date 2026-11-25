@@ -62,6 +62,8 @@ import net.succ.solar_punk.block.custom.FusionReactorCasingGlassBlock;
 import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
 import net.succ.solar_punk.block.custom.GeyserCapBlock;
 import net.succ.solar_punk.block.custom.GeyserVentBlock;
+import net.succ.solar_punk.block.custom.GeyserWellBlock;
+import net.succ.solar_punk.block.custom.RustedGeyserCapBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.KineticBatteryBlock;
 import net.succ.solar_punk.block.custom.ParticleAcceleratorInputBlock;
@@ -347,10 +349,35 @@ public class ModBlocks {
                     .strength(3.5f, 6.0f)
                     .noOcclusion()));
 
+    public static final DeferredBlock<GeyserWellBlock> GEYSER_WELL = REG.block("geyser_well",
+            () -> new GeyserWellBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_ORANGE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)
+                    .sound(SoundType.COPPER)
+                    .noOcclusion()));
+
+    // Found on some natural vents; an axe scrapes it into a working Geyser Cap
+    public static final DeferredBlock<RustedGeyserCapBlock> RUSTED_GEYSER_CAP = REG.block("rusted_geyser_cap",
+            () -> new RustedGeyserCapBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.TERRACOTTA_ORANGE)
+                    .requiresCorrectToolForDrops()
+                    .strength(3.5f, 6.0f)
+                    .noOcclusion()));
+
     public static final DeferredBlock<GeyserVentBlock> GEYSER_VENT = REG.block("geyser_vent",
-            () -> new GeyserVentBlock(BlockBehaviour.Properties.of()
+            () -> new GeyserVentBlock(false, BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .strength(-1, 3600000f)
+                    .requiresCorrectToolForDrops()
+                    .pushReaction(PushReaction.BLOCK)));
+
+    // Basalt Deltas variant: a stronger vent (Config.netherGeyserMultiplier) that erupts fire
+    public static final DeferredBlock<GeyserVentBlock> NETHER_GEYSER_VENT = REG.block("nether_geyser_vent",
+            () -> new GeyserVentBlock(true, BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLACK)
+                    .strength(-1, 3600000f)
+                    .lightLevel(state -> 3)
                     .requiresCorrectToolForDrops()
                     .pushReaction(PushReaction.BLOCK)));
 

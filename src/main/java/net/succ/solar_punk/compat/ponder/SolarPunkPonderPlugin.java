@@ -87,6 +87,9 @@ public class SolarPunkPonderPlugin implements PonderPlugin {
         helper.addStoryBoard(ModBlocks.BIOFILTER.getId(), "biofilter/usage",
                 BiofilterScenes::usage, SolarPunkPonderTags.BIO_MACHINES);
 
+        helper.addStoryBoard(ModBlocks.GEYSER_WELL.getId(), "geyser_well/usage",
+                GeyserWellScenes::usage, SolarPunkPonderTags.STEAM_TURBINE);
+
         helper.addStoryBoard(ModBlocks.FIREBOX_BOILER.getId(), "firebox_boiler/usage",
                 FireboxBoilerScenes::usage, SolarPunkPonderTags.STEAM_TURBINE);
 

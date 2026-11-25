@@ -31,6 +31,7 @@ import net.succ.solar_punk.block.ModBlocks;
 import net.succ.solar_punk.damage.ModDamageTypes;
 import net.succ.solar_punk.worldgen.ConfigurableGeyserBiomeModifier;
 import net.succ.solar_punk.worldgen.ModFeatures;
+import net.minecraft.world.level.block.Block;
 
 import java.util.List;
 import java.util.Set;
@@ -46,6 +47,21 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
     public static final ResourceKey<PlacedFeature> GEYSER_BLOB_PLACED = ResourceKey.create(
             Registries.PLACED_FEATURE,
             ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "geyser_blob")
+    );
+
+    public static final ResourceKey<ConfiguredFeature<?, ?>> NETHER_GEYSER_BLOB_CONFIGURED = ResourceKey.create(
+            Registries.CONFIGURED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "nether_geyser_blob")
+    );
+
+    public static final ResourceKey<PlacedFeature> NETHER_GEYSER_BLOB_PLACED = ResourceKey.create(
+            Registries.PLACED_FEATURE,
+            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "nether_geyser_blob")
+    );
+
+    public static final ResourceKey<BiomeModifier> ADD_NETHER_GEYSERS = ResourceKey.create(
+            NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+            ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "add_nether_geysers")
     );
 
     public static final ResourceKey<BiomeModifier> ADD_GEYSERS = ResourceKey.create(
@@ -97,6 +113,9 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
         context.register(GEYSER_BLOB_CONFIGURED, new ConfiguredFeature<>(
                 ModFeatures.GEYSER_BLOB.get(), NoneFeatureConfiguration.INSTANCE
         ));
+        context.register(NETHER_GEYSER_BLOB_CONFIGURED, new ConfiguredFeature<>(
+                ModFeatures.NETHER_GEYSER_BLOB.get(), NoneFeatureConfiguration.INSTANCE
+        ));
 
         context.register(SALT_DEPOSIT_CONFIGURED, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(
                 List.of(
@@ -128,10 +147,22 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
 
     private static void bootstrapPlacedFeatures(BootstrapContext<PlacedFeature> context) {
         var geyserConfigured = context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(GEYSER_BLOB_CONFIGURED);
+        // About 3 vents in a 256x256 area of a geyser biome: scarce enough to be worth finding
         context.register(GEYSER_BLOB_PLACED, new PlacedFeature(geyserConfigured, List.of(
-                RarityFilter.onAverageOnceEvery(32),
+                RarityFilter.onAverageOnceEvery(80),
                 InSquarePlacement.spread(),
                 HeightmapPlacement.onHeightmap(Heightmap.Types.WORLD_SURFACE_WG),
+                BiomeFilter.biome()
+        )));
+
+        // The feature scans down from a random height to the floor, so this range sits just
+        // above the Basalt Deltas floor (the lava sea is at Y 31). Nearly every attempt places
+        // a vent, so a little rarer than the Overworld ones.
+        var netherGeyserConfigured = context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(NETHER_GEYSER_BLOB_CONFIGURED);
+        context.register(NETHER_GEYSER_BLOB_PLACED, new PlacedFeature(netherGeyserConfigured, List.of(
+                RarityFilter.onAverageOnceEvery(96),
+                InSquarePlacement.spread(),
+                HeightRangePlacement.uniform(VerticalAnchor.absolute(36), VerticalAnchor.absolute(72)),
                 BiomeFilter.biome()
         )));
 
@@ -161,7 +192,14 @@ public class ModWorldGenProvider extends DatapackBuiltinEntriesProvider {
         // See ConfigurableGeyserBiomeModifier.
         context.register(ADD_GEYSERS, new ConfigurableGeyserBiomeModifier(
                 HolderSet.direct(placed.getOrThrow(GEYSER_BLOB_PLACED)),
-                GenerationStep.Decoration.SURFACE_STRUCTURES
+                GenerationStep.Decoration.SURFACE_STRUCTURES,
+                false
+        ));
+        // Nether Geyser Vents, from Config.netherGeyserBiomes (Basalt Deltas by default)
+        context.register(ADD_NETHER_GEYSERS, new ConfigurableGeyserBiomeModifier(
+                HolderSet.direct(placed.getOrThrow(NETHER_GEYSER_BLOB_PLACED)),
+                GenerationStep.Decoration.SURFACE_STRUCTURES,
+                true
         ));
 
         var biomes = context.lookup(Registries.BIOME);

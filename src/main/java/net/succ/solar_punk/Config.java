@@ -93,6 +93,10 @@ public class Config {
 
     private static final ModConfigSpec.IntValue CFG_GEYSER_RPM;
     private static final ModConfigSpec.IntValue CFG_GEYSER_SU;
+    private static final ModConfigSpec.DoubleValue CFG_NETHER_GEYSER_MULTIPLIER;
+    private static final ModConfigSpec.IntValue CFG_GEYSER_WELL_STEAM, CFG_GEYSER_WELL_TANK, CFG_RUSTED_CAP_CHANCE;
+    private static final ModConfigSpec.IntValue CFG_WEAK_VENT_CHANCE, CFG_STRONG_VENT_CHANCE;
+    private static final ModConfigSpec.DoubleValue CFG_WEAK_VENT_MULTIPLIER, CFG_STRONG_VENT_MULTIPLIER;
 
     private static final ModConfigSpec.BooleanValue CFG_GEYSER_ERUPTIONS;
     private static final ModConfigSpec.IntValue CFG_GEYSER_MIN_INTERVAL;
@@ -211,6 +215,10 @@ public class Config {
 
     private static final ModConfigSpec.IntValue CFG_GEYSER_SPAWN_CHANCE;
     private static final ModConfigSpec.ConfigValue<List<? extends String>> CFG_GEYSER_BIOMES;
+    private static final ModConfigSpec.IntValue CFG_NETHER_GEYSER_SPAWN_CHANCE;
+    private static final ModConfigSpec.IntValue CFG_VILLAGE_SOLAR_HOUSE_WEIGHT;
+    private static final ModConfigSpec.IntValue CFG_GEYSER_FRAME_CHANCE;
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> CFG_NETHER_GEYSER_BIOMES;
 
     // -------------------------------------------------------------------------
     // Global warming
@@ -309,9 +317,18 @@ public class Config {
         BUILDER.push("geyser_cap");
         CFG_GEYSER_RPM = BUILDER.comment("RPM output").defineInRange("rpm", 32, 1, 256);
         CFG_GEYSER_SU  = BUILDER.comment("Stress capacity").defineInRange("su", 512, 1, 1_000_000);
+        CFG_NETHER_GEYSER_MULTIPLIER = BUILDER.comment("Stress capacity multiplier on a Nether Geyser Vent (RPM stays the same)").defineInRange("nether_multiplier", 2.0, 0.0, 100.0);
+        BUILDER.pop();
+
+        BUILDER.push("geyser_well");
+        CFG_GEYSER_WELL_STEAM = BUILDER.comment("mB of Steam a Geyser Well makes per tick (using the same Water), times geyser_cap.nether_multiplier on a Nether vent. Default 4 runs a 4-layer Steam Turbine, about twice a Geyser Cap's power").defineInRange("steam_per_tick", 4, 1, 10_000);
         BUILDER.pop();
 
         BUILDER.push("geyser_vent");
+        CFG_WEAK_VENT_CHANCE       = BUILDER.comment("Chance (%) a newly generated Geyser Vent is weak").defineInRange("weak_chance", 30, 0, 100);
+        CFG_STRONG_VENT_CHANCE     = BUILDER.comment("Chance (%) a newly generated Geyser Vent is strong (the rest are normal)").defineInRange("strong_chance", 20, 0, 100);
+        CFG_WEAK_VENT_MULTIPLIER   = BUILDER.comment("Geyser Cap stress capacity and Geyser Well Steam on a weak vent, as a multiplier").defineInRange("weak_multiplier", 0.5, 0.0, 100.0);
+        CFG_STRONG_VENT_MULTIPLIER = BUILDER.comment("Geyser Cap stress capacity and Geyser Well Steam on a strong vent, as a multiplier").defineInRange("strong_multiplier", 2.0, 0.0, 100.0);
         CFG_GEYSER_ERUPTIONS    = BUILDER.comment("Uncapped Geyser Vents erupt now and then, scalding and launching anything standing over them").define("eruptions", true);
         CFG_GEYSER_MIN_INTERVAL = BUILDER.comment("Shortest time between eruptions, in seconds").defineInRange("min_interval_seconds", 120, 10, 86_400);
         CFG_GEYSER_MAX_INTERVAL = BUILDER.comment("Longest time between eruptions, in seconds (raised to the minimum if lower)").defineInRange("max_interval_seconds", 300, 10, 86_400);
@@ -608,6 +625,7 @@ public class Config {
         CFG_SOLAR_POWER_TOWER_TANK_PER_BLOCK = BUILDER.comment("Solar Power Tower: fluid capacity per multiblock block (mB)").defineInRange("solar_power_tower_per_block_mb", 8000, 100, 1_000_000);
         CFG_SPRINKLER_TANK                  = BUILDER.comment("Kinetic Sprinkler: fluid tank capacity (mB)").defineInRange("kinetic_sprinkler_mb", 4000, 100, 1_000_000);
         CFG_SOLAR_HEATER_TANK               = BUILDER.comment("Solar Heater: output fluid tank capacity (mB)").defineInRange("solar_heater_mb", 8000, 100, 1_000_000);
+        CFG_GEYSER_WELL_TANK                = BUILDER.comment("Geyser Well: water and steam tank capacity (mB, each tank)").defineInRange("geyser_well_mb", 4000, 100, 1_000_000);
         CFG_FIREBOX_BOILER_TANK             = BUILDER.comment("Firebox Boiler: water and steam tank capacity (mB, each tank)").defineInRange("firebox_boiler_mb", 4000, 100, 1_000_000);
         CFG_CRYSTALLIZER_TANK                = BUILDER.comment("Crystallizer: input A, input B, and byproduct output tank capacity (mB, each tank)").defineInRange("crystallizer_mb", 4000, 100, 1_000_000);
         CFG_ELECTROLYZER_TANK                = BUILDER.comment("Electrolyzer: Water, Hydrogen and Oxygen tank capacity (mB, each tank)").defineInRange("electrolyzer_mb", 4000, 100, 1_000_000);
@@ -638,6 +656,15 @@ public class Config {
                                 "minecraft:windswept_savanna")),
                         () -> "minecraft:plains",
                         modIdPathValidator("geyser_biomes"));
+        CFG_RUSTED_CAP_CHANCE = BUILDER.comment("Chance (%) that an Overworld Geyser Vent's stone dome has an old Rusted Geyser Cap on it, which an axe scrapes back into a working Geyser Cap").defineInRange("rusted_geyser_cap_chance", 15, 0, 100);
+        CFG_GEYSER_FRAME_CHANCE = BUILDER.comment("Chance (%) that an Overworld Geyser Vent generates with an old wooden frame over it instead of the plain stone dome").defineInRange("geyser_frame_chance", 25, 0, 100);
+        CFG_NETHER_GEYSER_SPAWN_CHANCE = BUILDER.comment("Per-attempt spawn chance for Nether Geyser Vents (0 = never, 100 = always)").defineInRange("nether_geyser_spawn_chance", 100, 0, 100);
+        CFG_NETHER_GEYSER_BIOMES       = BUILDER.comment("Biomes where Nether Geyser Vents can spawn (resource location format, e.g. minecraft:basalt_deltas)")
+                .defineListAllowEmpty("nether_geyser_biomes",
+                        () -> new ArrayList<>(List.of("minecraft:basalt_deltas")),
+                        () -> "minecraft:basalt_deltas",
+                        modIdPathValidator("nether_geyser_biomes"));
+        CFG_VILLAGE_SOLAR_HOUSE_WEIGHT = BUILDER.comment("How often villages build a solarpunk house, as a weight in the village's house pool (vanilla houses use 1 to 6). 0 leaves them out").defineInRange("village_solar_house_weight", 2, 0, 100);
         BUILDER.pop();
 
         BUILDER.push("global_warming");
@@ -730,6 +757,10 @@ public class Config {
     public static int shingleMorningFe, shingleNoonFe, shingleBuffer, shingleMaxExtract;
     public static int solarGlassMorningFe, solarGlassNoonFe, solarGlassPaneMorningFe, solarGlassPaneNoonFe, solarGlassBuffer, solarGlassMaxExtract;
     public static int geyserCapRpm, geyserCapSu;
+    public static float netherGeyserMultiplier;
+    public static int geyserWellSteamPerTick, geyserWellTank, rustedGeyserCapChance;
+    public static int weakVentChance, strongVentChance;
+    public static float weakVentMultiplier, strongVentMultiplier;
     public static boolean geyserEruptions;
     public static int geyserMinIntervalTicks, geyserMaxIntervalTicks, geyserWarningTicks, geyserEruptionTicks, geyserHeight;
     public static float geyserDamage;
@@ -786,6 +817,10 @@ public class Config {
 
     public static int geyserSpawnChance;
     public static List<? extends String> geyserBiomes;
+    public static int netherGeyserSpawnChance;
+    public static int villageSolarHouseWeight;
+    public static int geyserFrameChance;
+    public static List<? extends String> netherGeyserBiomes;
 
     public static boolean globalWarmingEnabled;
     public static int pollutionPerSource, pollutionRadiusBlocks, pollutionDecayRate;
@@ -836,6 +871,14 @@ public class Config {
 
         geyserCapRpm         = CFG_GEYSER_RPM.get();
         geyserCapSu          = CFG_GEYSER_SU.get();
+        netherGeyserMultiplier = CFG_NETHER_GEYSER_MULTIPLIER.get().floatValue();
+        geyserWellSteamPerTick = CFG_GEYSER_WELL_STEAM.get();
+        geyserWellTank         = CFG_GEYSER_WELL_TANK.get();
+        rustedGeyserCapChance  = CFG_RUSTED_CAP_CHANCE.get();
+        weakVentChance         = CFG_WEAK_VENT_CHANCE.get();
+        strongVentChance       = CFG_STRONG_VENT_CHANCE.get();
+        weakVentMultiplier     = CFG_WEAK_VENT_MULTIPLIER.get().floatValue();
+        strongVentMultiplier   = CFG_STRONG_VENT_MULTIPLIER.get().floatValue();
 
         geyserEruptions        = CFG_GEYSER_ERUPTIONS.get();
         geyserMinIntervalTicks = CFG_GEYSER_MIN_INTERVAL.get() * 20;
@@ -946,6 +989,10 @@ public class Config {
 
         geyserSpawnChance = CFG_GEYSER_SPAWN_CHANCE.get();
         geyserBiomes      = CFG_GEYSER_BIOMES.get();
+        netherGeyserSpawnChance = CFG_NETHER_GEYSER_SPAWN_CHANCE.get();
+        villageSolarHouseWeight = CFG_VILLAGE_SOLAR_HOUSE_WEIGHT.get();
+        geyserFrameChance = CFG_GEYSER_FRAME_CHANCE.get();
+        netherGeyserBiomes      = CFG_NETHER_GEYSER_BIOMES.get();
 
         globalWarmingEnabled  = CFG_GLOBAL_WARMING_ENABLED.get();
         pollutionPerSource    = CFG_POLLUTION_PER_SOURCE.get();

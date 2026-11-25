@@ -157,6 +157,15 @@ public class ModPonderProvider extends PonderSchematicProvider {
                 .addBlock(4, 2, 2, "create:mechanical_press", "facing", "east")
                 .addBlock(0, 2, 2, "create:encased_fan", "facing", "west"));
 
+        // Geyser Well facing north on a vent: Water line in from the north, Steam line out south.
+        // See GeyserWellScenes.
+        SCHEMATICS.put("geyser_well/usage", addPipe(addPipe(addPipe(addPipe(new SceneStructure()
+                .withBasePlate()
+                .addBlock(2, 1, 2, "solarpunk:geyser_vent")
+                .addBlock(2, 2, 2, "solarpunk:geyser_well", "facing", "north", "lit", "false"),
+                2, 2, 0, "north", "south"), 2, 2, 1, "north", "south"),
+                2, 2, 3, "north", "south"), 2, 2, 4, "north", "south"));
+
         // 2x2x4, the smallest vat that ferments, and a 3x3x6 one to show scaling.
         // Sizes live in FermentationVatScenes so the scene and schematic can't drift apart.
         SCHEMATICS.put("fermentation_vat/usage", addVatLayers(new SceneStructure().withBasePlate(),

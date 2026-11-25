@@ -25,6 +25,12 @@ public class ModBiomeTagProvider extends BiomeTagsProvider {
                 .addTag(BiomeTags.IS_BADLANDS)
                 .addTag(BiomeTags.IS_SAVANNA);
 
+        // Green, temperate places with room for a little hut
+        tag(ModTags.Biomes.HAS_DIRT_HUT)
+                .add(Biomes.PLAINS, Biomes.SUNFLOWER_PLAINS, Biomes.MEADOW)
+                .addTag(BiomeTags.IS_FOREST)
+                .addTag(BiomeTags.IS_TAIGA);
+
         // No has_geysers tag: geyser placement biomes come from Config.geyserBiomes at
         // runtime via ConfigurableGeyserBiomeModifier, not a static datapack tag - see
         // that class and ModWorldGenProvider#bootstrapBiomeModifiers.

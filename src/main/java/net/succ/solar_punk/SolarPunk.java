@@ -46,6 +46,7 @@ import net.succ.solar_punk.particle.ModParticles;
 import net.succ.solar_punk.sound.ModSounds;
 import net.succ.solar_punk.worldgen.ModBiomeModifierTypes;
 import net.succ.solar_punk.worldgen.ModFeatures;
+import net.succ.solar_punk.worldgen.structure.VillageHouses;
 
 @Mod(SolarPunk.MODID)
 public class SolarPunk {
@@ -85,6 +86,7 @@ public class SolarPunk {
         modEventBus.addListener(SolarPunk::commonSetup);
 
         NeoForge.EVENT_BUS.addListener(GlobalWarmingHandler::onLevelTick);
+        NeoForge.EVENT_BUS.addListener(VillageHouses::onServerAboutToStart);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
@@ -205,6 +207,12 @@ public class SolarPunk {
                 Capabilities.FluidHandler.BLOCK,
                 ModBlockEntities.FIREBOX_BOILER.get(),
                 (be, side) -> be.combinedFluidHandler
+        );
+        // Geyser Well: only through its two pipe ports
+        event.registerBlockEntity(
+                Capabilities.FluidHandler.BLOCK,
+                ModBlockEntities.GEYSER_WELL.get(),
+                (be, side) -> be.fluidHandler(side)
         );
         event.registerBlockEntity(
                 Capabilities.FluidHandler.BLOCK,
@@ -333,6 +341,7 @@ public class SolarPunk {
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.BIOREACTOR.get(), ModDisplaySources.BIOREACTOR_LIGHT.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.BIOREACTOR.get(), ModDisplaySources.BIOREACTOR_CULTURE.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.ELECTRIC_MOTOR.get(), ModDisplaySources.ELECTRIC_MOTOR_CONSUMPTION.get());
+            DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.WIRE_CONNECTOR.get(), ModDisplaySources.WIRE_CONNECTOR_THROUGHPUT.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.SOLAR_POWER_TOWER.get(), ModDisplaySources.SOLAR_POWER_TOWER_EFFICIENCY.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.SOLAR_POWER_TOWER.get(), ModDisplaySources.SOLAR_POWER_TOWER_MIRROR_COUNT.get());
             DisplaySource.BY_BLOCK_ENTITY.add(ModBlockEntities.SOLAR_POWER_TOWER.get(), ModDisplaySources.SOLAR_POWER_TOWER_GENERATION_RATE.get());

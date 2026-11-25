@@ -14,6 +14,11 @@ public class ModTags {
                 Registries.BIOME,
                 ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "has_salt_deposits")
         );
+        // Where the Dirt Hut structure can generate
+        public static final TagKey<Biome> HAS_DIRT_HUT = TagKey.create(
+                Registries.BIOME,
+                ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "has_structure/dirt_hut")
+        );
     }
 
     // The reactor_* tags define Fusion Reactor membership: which blocks count as Casing
@@ -24,6 +29,13 @@ public class ModTags {
         public static final TagKey<Block> POLLUTION_SOURCES = TagKey.create(
                 Registries.BLOCK,
                 ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "pollution_sources")
+        );
+
+        // Plants a Solar Plant Bed won't take: ones that need more than its one block, like
+        // stems (fruit beside them) and two-tall crops. Two-tall plants are refused in code too.
+        public static final TagKey<Block> SOLAR_PLANT_BED_BLACKLIST = TagKey.create(
+                Registries.BLOCK,
+                ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "solar_plant_bed_blacklist")
         );
 
         // Greenhouse walls that let light in: plants under them grow faster (GreenhouseControllerBlockEntity).

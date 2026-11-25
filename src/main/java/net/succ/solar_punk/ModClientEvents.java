@@ -49,6 +49,7 @@ import net.succ.solar_punk.client.renderer.FusionReactorCoreRenderer;
 import net.succ.solar_punk.client.renderer.ElectricMotorRenderer;
 import net.succ.solar_punk.client.SeasonalModels;
 import net.succ.solar_punk.client.renderer.GeyserCapRenderer;
+import net.succ.solar_punk.client.renderer.GeyserWellRenderer;
 import net.succ.offbyonelib.client.renderer.HalfShaftRenderer;
 import net.succ.solar_punk.client.renderer.KineticBatteryRenderer;
 import net.succ.solar_punk.client.renderer.KineticSprinklerRenderer;
@@ -129,6 +130,8 @@ public class ModClientEvents {
         event.register(ModelResourceLocation.standalone(SolarPowerTowerRenderer.GAUGE_DIAL.modelLocation()));
         event.register(ModelResourceLocation.standalone(SolarMirrorRenderer.POST.modelLocation()));
         event.register(ModelResourceLocation.standalone(SolarMirrorRenderer.PLATE.modelLocation()));
+        event.register(ModelResourceLocation.standalone(GeyserWellRenderer.WEST_NEEDLE.modelLocation()));
+        event.register(ModelResourceLocation.standalone(GeyserWellRenderer.EAST_NEEDLE.modelLocation()));
         SeasonalModels.registerAdditional(event);
     }
 
@@ -178,6 +181,7 @@ public class ModClientEvents {
         event.registerBlockEntityRenderer(ModBlockEntities.BIOFUEL_ENGINE.get(), HalfShaftRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.BIOMASS_GASIFIER.get(), HalfShaftRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.GEYSER_CAP.get(), GeyserCapRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.GEYSER_WELL.get(), GeyserWellRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.TURBINE_ROTOR.get(), TurbineRotorRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.KINETIC_BATTERY.get(), KineticBatteryRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.FERMENTATION_VAT.get(), FermentationVatRenderer::new);
@@ -233,7 +237,10 @@ public class ModClientEvents {
         tip(ModBlocks.BIOMASS_GASIFIER);
         tip(ModBlocks.BIOFUEL_ENGINE);
         tip(ModBlocks.GEYSER_CAP);
+        tip(ModBlocks.GEYSER_WELL);
+        tip(ModBlocks.RUSTED_GEYSER_CAP);
         tip(ModBlocks.GEYSER_VENT);
+        tip(ModBlocks.NETHER_GEYSER_VENT);
         tip(ModBlocks.SOLAR_POWER_TOWER);
         tip(ModBlocks.SOLAR_MIRROR);
         tip(ModBlocks.BIOFILTER);
