@@ -1,0 +1,22 @@
+{
+  "values": [
+    "solarpunk:wire_connector",
+    "solarpunk:grow_lamp",
+    "solarpunk:garden_light",
+    "solarpunk:trellis",
+    "solarpunk:wire_switch",
+    "solarpunk:redstone_wire_relay",
+    "solarpunk:brass_filigree_railing",
+    "solarpunk:brass_filigree_railing_slope",
+    "solarpunk:brass_filigree_railing_steep_slope",
+    "solarpunk:andesite_filigree_railing",
+    "solarpunk:andesite_filigree_railing_slope",
+    "solarpunk:andesite_filigree_railing_steep_slope",
+    "solarpunk:copper_filigree_railing",
+    "solarpunk:copper_filigree_railing_slope",
+    "solarpunk:copper_filigree_railing_steep_slope",
+    "solarpunk:iron_filigree_railing",
+    "solarpunk:iron_filigree_railing_slope",
+    "solarpunk:iron_filigree_railing_steep_slope"
+  ]
+}

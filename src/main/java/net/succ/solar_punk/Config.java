@@ -660,9 +660,9 @@ public class Config {
         CFG_RUSTED_CAP_CHANCE = BUILDER.comment("Chance (%) that an Overworld Geyser Vent's stone dome has an old Rusted Geyser Cap on it, which an axe scrapes back into a working Geyser Cap").defineInRange("rusted_geyser_cap_chance", 15, 0, 100);
         CFG_GEYSER_FRAME_CHANCE = BUILDER.comment("Chance (%) that an Overworld Geyser Vent generates with an old wooden frame over it instead of the plain stone dome").defineInRange("geyser_frame_chance", 25, 0, 100);
         CFG_NETHER_GEYSER_SPAWN_CHANCE = BUILDER.comment("Per-attempt spawn chance for Nether Geyser Vents (0 = never, 100 = always)").defineInRange("nether_geyser_spawn_chance", 100, 0, 100);
-        CFG_NETHER_GEYSER_BIOMES       = BUILDER.comment("Biomes where Nether Geyser Vents can spawn (resource location format, e.g. minecraft:basalt_deltas)")
+        CFG_NETHER_GEYSER_BIOMES       = BUILDER.comment("Biomes where Nether Geyser Vents can spawn (resource location format, e.g. minecraft:basalt_deltas). In a Crimson or Warped Forest the vent gets a wooden frame of that forest's wood instead of the basalt dome")
                 .defineListAllowEmpty("nether_geyser_biomes",
-                        () -> new ArrayList<>(List.of("minecraft:basalt_deltas")),
+                        () -> new ArrayList<>(List.of("minecraft:basalt_deltas", "minecraft:crimson_forest", "minecraft:warped_forest")),
                         () -> "minecraft:basalt_deltas",
                         modIdPathValidator("nether_geyser_biomes"));
         CFG_VILLAGE_SOLAR_HOUSE_WEIGHT = BUILDER.comment("How often villages build a solarpunk house, as a weight in the village's house pool (vanilla houses use 1 to 6). 0 leaves them out").defineInRange("village_solar_house_weight", 2, 0, 100);

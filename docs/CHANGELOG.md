@@ -17,7 +17,7 @@
 
 ### Nether Geyser Vents
 
-- **Nether Geyser Vents** now generate in Basalt Deltas, in a dome of basalt, blackstone and magma. They're rarer and hotter than Overworld vents: eruptions set you on fire as well as launching you, and a Geyser Cap on one gives twice the stress capacity.
+- **Nether Geyser Vents** now generate in Basalt Deltas, in a dome of basalt, blackstone and magma, and in Crimson and Warped Forests, under an old frame of that forest's wood. They're rarer and hotter than Overworld vents: eruptions set you on fire as well as launching you, and a Geyser Cap on one gives twice the stress capacity.
 
 ### Solarpunk Village Houses
 
@@ -26,6 +26,7 @@
 
 ### Exploring
 
+- **Abandoned Villages** - the overgrown remains of a solarpunk settlement that didn't make it, found in plains, meadows and savannas. Dirt and rammed earth streets wind out from a ruined solar tower, past ruined greenhouses, sheds, a bioreactor, a turbine, a waterwheel and a glass dome.
 - **Dirt Huts** - small mossy huts in plains, forests, meadows and taigas, with a barrel of supplies for getting started.
 - Some Geyser Vents now generate with an old wooden frame built over them instead of the usual stone dome.
 - **Ruined Solar Heater** and **Ruined Solar Mirror** - broken, weathered copies of the real thing, for building ruins. Right-click one with Glass Panes (3 for the Heater, 1 for the Mirror) to fix its cracked glass and get a working one back.
@@ -46,6 +47,7 @@
 
 - **Create: Northstar Redux** - Solarpunk Oxygen is breathable: the Oxygen Sealer and Oxygen Filler take it, so a Bioreactor can keep a space base's air going.
 - **Create: Cosmonautics** - rockets burn Solarpunk Hydrogen as fuel and take Solarpunk Oxygen as oxidizer.
+- **Create Aeronautics** - Solarpunk blocks weigh what they should on a flying contraption: Turbine and Reactor casings, Salt and Rammed Earth are as heavy as stone, Kinetic and Heat Batteries heavier still, and solar panels, lamps and railings light.
 
 ## Changes
 

@@ -3,6 +3,7 @@ package net.succ.solar_punk.worldgen.structure.village;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -11,6 +12,8 @@ import net.succ.solar_punk.SolarPunk;
 public class ModStructures {
     public static final DeferredRegister<StructureType<?>> STRUCTURE_TYPES =
             DeferredRegister.create(Registries.STRUCTURE_TYPE, SolarPunk.MODID);
+    public static final DeferredRegister<StructureProcessorType<?>> STRUCTURE_PROCESSORS =
+            DeferredRegister.create(Registries.STRUCTURE_PROCESSOR, SolarPunk.MODID);
     public static final DeferredRegister<StructurePieceType> STRUCTURE_PIECES =
             DeferredRegister.create(Registries.STRUCTURE_PIECE, SolarPunk.MODID);
 
@@ -24,7 +27,11 @@ public class ModStructures {
             STRUCTURE_PIECES.register("village_street",
                     () -> (StructurePieceType.ContextlessType) VillageStreetPiece::new);
 
+    public static final DeferredHolder<StructureProcessorType<?>, StructureProcessorType<KeepGroundProcessor>> KEEP_GROUND =
+            STRUCTURE_PROCESSORS.register("keep_ground", () -> () -> KeepGroundProcessor.CODEC);
+
     public static void register(IEventBus eventBus) {
+        STRUCTURE_PROCESSORS.register(eventBus);
         STRUCTURE_TYPES.register(eventBus);
         STRUCTURE_PIECES.register(eventBus);
     }

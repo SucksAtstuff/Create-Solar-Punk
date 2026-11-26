@@ -171,13 +171,17 @@ public class SimpleVillageStructure extends Structure {
             if (houseTemplates.isEmpty()) return List.of();
 
             BoundingBox hub = placeCenter();
+            if (hub == null) return List.of();
             int target = houseCount.sample(random);
             growStreets(hub, target);
             int placed = placeHouses(houseTemplates, target);
             return placed > 0 ? pieces : List.of();
         }
 
-        /** The centre piece, or a small square of street when there is none. */
+        /**
+         * The centre piece, or a small square of street when there is none. Null when the centre
+         * piece doesn't fit (water or too steep under it), and then there's no village here.
+         */
         private BoundingBox placeCenter() {
             List<VillageTemplates.Piece> centers = center
                     .map(folder -> VillageTemplates.folder(context.structureTemplateManager(), folder))
@@ -188,6 +192,7 @@ public class SimpleVillageStructure extends Structure {
                 BoundingBox atZero = piece.template().getBoundingBox(settings(rotation), BlockPos.ZERO);
                 BlockPos mid = atZero.getCenter();
                 BlockPos origin = new BlockPos(x - mid.getX(), y - piece.floor(), z - mid.getZ());
+                if (!flatEnough(piece.template().getBoundingBox(settings(rotation), origin))) return null;
                 VillageHousePiece house = new VillageHousePiece(context.structureTemplateManager(), piece.id(), origin, rotation, piece.floor());
                 pieces.add(house);
                 occupied.add(house.getBoundingBox());
@@ -347,17 +352,29 @@ public class SimpleVillageStructure extends Structure {
                     : along - (seg.dir().getAxis() == Direction.Axis.X ? box.minX() : box.minZ());
         }
 
+        /**
+         * Dry and level enough for a house: no water anywhere under it or in a one-block ring
+         * around it (checked every other block both ways, edges included, so a pond or shoreline
+         * between the corners still counts), and the ground within {@code max_slope}.
+         */
         private boolean flatEnough(BoundingBox box) {
-            int[][] points = {{box.minX(), box.minZ()}, {box.maxX(), box.minZ()}, {box.minX(), box.maxZ()},
-                    {box.maxX(), box.maxZ()}, {box.getCenter().getX(), box.getCenter().getZ()}};
+            int minX = box.minX() - 1, maxX = box.maxX() + 1, minZ = box.minZ() - 1, maxZ = box.maxZ() + 1;
             int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
-            for (int[] p : points) {
-                if (terrain.water(p[0], p[1])) return false;
-                int h = terrain.ground(p[0], p[1]);
-                min = Math.min(min, h);
-                max = Math.max(max, h);
+            for (int px = minX; px <= maxX; px = next(px, minX, maxX)) {
+                for (int pz = minZ; pz <= maxZ; pz = next(pz, minZ, maxZ)) {
+                    if (terrain.water(px, pz)) return false;
+                    int h = terrain.ground(px, pz);
+                    min = Math.min(min, h);
+                    max = Math.max(max, h);
+                    if (max - min > maxSlope) return false;
+                }
             }
-            return max - min <= maxSlope;
+            return true;
+        }
+
+        /** Every other coordinate from the first, always ending on {@code max}. */
+        private static int next(int c, int min, int max) {
+            return c == max ? max + 1 : Math.min(c + 2, max);
         }
 
         /** The street's cross-section at one centre-line cell. */

@@ -1,0 +1,10 @@
+{
+  "remove": [
+    "solarpunk:salt_block"
+  ],
+  "values": [
+    "solarpunk:kinetic_battery",
+    "solarpunk:heat_battery",
+    "solarpunk:fusion_reactor_core"
+  ]
+}

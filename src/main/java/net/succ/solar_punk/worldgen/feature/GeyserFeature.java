@@ -19,6 +19,7 @@ import net.minecraft.core.Direction;
 import net.succ.solar_punk.SolarPunk;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.succ.solar_punk.block.ModBlocks;
@@ -40,14 +41,29 @@ public class GeyserFeature extends Feature<NoneFeatureConfiguration> {
     private static final int NETHER_FLOOR_SEARCH_UP = 16;
     private static final int NETHER_FLOOR_SEARCH = 64;
 
-    private static final ResourceLocation FRAME = ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, "geyser_frame");
-    // The vent column in geyser_frame.nbt
-    private static final BlockPos FRAME_CENTER = new BlockPos(4, 0, 4);
-    private static final int FRAME_VENT_Y = 5;
+    /** A frame template built over a vent: its vent column (x, z) and the vent's layer. */
+    private record Frame(ResourceLocation id, BlockPos center, int ventY) {
+        Frame(String name, int x, int z, int ventY) {
+            this(ResourceLocation.fromNamespaceAndPath(SolarPunk.MODID, name), new BlockPos(x, 0, z), ventY);
+        }
+
+        /** How far above the surface block the vent ends up (the bottom layer sits one below it). */
+        int ventHeight() {
+            return ventY - 1;
+        }
+    }
+
+    private static final Frame FRAME = new Frame("geyser_frame", 4, 4, 5);
+    // Nether vents in Crimson and Warped Forests always get their wooden frame instead of the dome
+    private static final Frame CRIMSON_FRAME = new Frame("nether_geyser_crimson", 4, 4, 5);
+    private static final Frame WARPED_FRAME = new Frame("nether_geyser_warped", 3, 4, 4);
 
     private final boolean nether;
 
-    /** @param nether the Basalt Deltas version: a basalt and magma dome around a Nether Geyser Vent */
+    /**
+     * @param nether the Nether version: a basalt and magma dome around a Nether Geyser Vent, or in a
+     *               Crimson or Warped Forest that forest's frame
+     */
     public GeyserFeature(Codec<NoneFeatureConfiguration> codec, boolean nether) {
         super(codec);
         this.nether = nether;
@@ -67,8 +83,10 @@ public class GeyserFeature extends Feature<NoneFeatureConfiguration> {
         int r = 3 + random.nextInt(2); // dome radius: 3 or 4
         // Now and then an Overworld vent comes with an old wooden frame over it (geyser_frame.nbt)
         // instead of the plain dome. The frame's mound is 9x9, so check the wider footprint.
-        boolean frame = !nether && random.nextInt(100) < Config.geyserFrameChance;
-        if (frame) r = 4;
+        // In the Nether forests the vent always gets that forest's frame.
+        Frame frame = nether ? netherFrame(level, origin)
+                : random.nextInt(100) < Config.geyserFrameChance ? FRAME : null;
+        if (frame != null) r = nether ? frame.ventHeight() : 4;
 
         // getHeightmapPos returns the first air position above the surface; .below() is the surface block.
         // The Nether has a roof, so there the floor is found by scanning down from the placement height.
@@ -92,7 +110,7 @@ public class GeyserFeature extends Feature<NoneFeatureConfiguration> {
             }
         }
 
-        if (frame && placeFrame(level, surface, random)) return true;
+        if (frame != null && placeFrame(level, surface, random, frame)) return true;
 
         for (int x = -r; x <= r; x++) {
             for (int y = -1; y <= r; y++) {
@@ -126,22 +144,30 @@ public class GeyserFeature extends Feature<NoneFeatureConfiguration> {
         return true;
     }
 
+    /** The frame a Nether vent gets in a Crimson or Warped Forest, or null for the plain dome. */
+    private static Frame netherFrame(WorldGenLevel level, BlockPos origin) {
+        var biome = level.getBiome(origin);
+        if (biome.is(Biomes.CRIMSON_FOREST)) return CRIMSON_FRAME;
+        if (biome.is(Biomes.WARPED_FOREST)) return WARPED_FRAME;
+        return null;
+    }
+
     /**
-     * Places the geyser frame centred on the vent column, its bottom layer one below the surface
-     * like the dome's, turned a random way. False if the template is missing (a datapack removed
-     * it), so the plain dome goes in instead.
+     * Places a frame centred on the vent column, its bottom layer one below the surface like the
+     * dome's, turned a random way. False if the template is missing (a datapack removed it), so
+     * the plain dome goes in instead.
      */
-    private static boolean placeFrame(WorldGenLevel level, BlockPos surface, RandomSource random) {
-        StructureTemplate template = level.getLevel().getServer().getStructureManager().get(FRAME).orElse(null);
+    private static boolean placeFrame(WorldGenLevel level, BlockPos surface, RandomSource random, Frame frame) {
+        StructureTemplate template = level.getLevel().getServer().getStructureManager().get(frame.id()).orElse(null);
         if (template == null) return false;
         StructurePlaceSettings settings = new StructurePlaceSettings()
                 .setRotation(Rotation.getRandom(random))
-                .setRotationPivot(FRAME_CENTER)
+                .setRotationPivot(frame.center())
                 .setIgnoreEntities(true);
-        BlockPos corner = surface.offset(-FRAME_CENTER.getX(), -1, -FRAME_CENTER.getZ());
+        BlockPos corner = surface.offset(-frame.center().getX(), -1, -frame.center().getZ());
         template.placeInWorld(level, corner, corner, settings, random, Block.UPDATE_CLIENTS);
         // The pivot keeps the vent column in place whichever way the frame turned
-        rollStrength(level, corner.offset(FRAME_CENTER.getX(), FRAME_VENT_Y, FRAME_CENTER.getZ()), random);
+        rollStrength(level, corner.offset(frame.center().getX(), frame.ventY(), frame.center().getZ()), random);
         return true;
     }
 

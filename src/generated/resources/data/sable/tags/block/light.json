@@ -1,0 +1,32 @@
+{
+  "values": [
+    "solarpunk:andesite_solar_panel",
+    "solarpunk:brass_solar_panel",
+    "solarpunk:solar_mirror",
+    "solarpunk:ruined_solar_mirror",
+    "solarpunk:solar_heater",
+    "solarpunk:ruined_solar_heater",
+    "solarpunk:solar_shingles",
+    "solarpunk:solar_glass_shingles",
+    "solarpunk:greenhouse_panel",
+    "solarpunk:large_greenhouse_panel",
+    "solarpunk:kinetic_sprinkler",
+    "solarpunk:streetlamp",
+    "solarpunk:salt_lamp",
+    "solarpunk:wire_switch",
+    "solarpunk:redstone_wire_relay",
+    "solarpunk:hempcrete",
+    "solarpunk:hempcrete_wall",
+    "solarpunk:polished_hempcrete",
+    "solarpunk:polished_hempcrete_wall",
+    "solarpunk:chiseled_polished_hempcrete",
+    "solarpunk:polished_hempcrete_bricks",
+    "solarpunk:polished_hempcrete_brick_wall",
+    "solarpunk:ash_block",
+    "solarpunk:polished_ash",
+    "solarpunk:polished_ash_wall",
+    "solarpunk:ash_bricks",
+    "solarpunk:ash_brick_wall",
+    "solarpunk:chiseled_ash_bricks"
+  ]
+}

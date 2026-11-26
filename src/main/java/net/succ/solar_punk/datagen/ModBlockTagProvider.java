@@ -162,6 +162,8 @@ public class ModBlockTagProvider extends AddonBlockTagsProvider {
         tag(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("sereneseasons", "greenhouse_glass")))
                 .addTag(ModTags.Blocks.GREENHOUSE_GLASS);
 
+        sableWeights();
+
         tag(Tags.Blocks.STORAGE_BLOCKS).add(ModBlocks.SALT_BLOCK.get())
                 .add(ModBlocks.LITHIUM_BLOCK.get())
                 .add(ModBlocks.BERYLLIUM_BLOCK.get());
@@ -196,5 +198,83 @@ public class ModBlockTagProvider extends AddonBlockTagsProvider {
         // Create Aeronautics portable engines, one per dye colour
         for (DyeColor colour : DyeColor.values())
             pollutionSources.addOptional(ResourceLocation.fromNamespaceAndPath("simulated", colour.getName() + "_portable_engine"));
+    }
+
+    /**
+     * How much our blocks weigh on a Sable sub-level (Create Aeronautics contraptions). Sable reads
+     * its own block tags: normal blocks weigh 1, {@code sable:light} 0.5, {@code super_light} 0.25,
+     * {@code heavy} 2 (stone) and {@code super_heavy} 4 (metal storage blocks, Create's flywheel);
+     * {@code quarter_volume} makes thin blocks float like iron bars. These are only tag files in
+     * Sable's namespace listing our own blocks, so without Sable nothing reads them. Slabs and
+     * stairs are already light and half volume through #minecraft:slabs and #minecraft:stairs,
+     * and glass panes super light through #c:glass_panes.
+     */
+    private void sableWeights() {
+        // Lithium and Beryllium blocks are super heavy through #c:storage_blocks; salt is about as
+        // dense as stone, so the Salt Block is only heavy
+        tag(sable("super_heavy")).add(ModBlocks.KINETIC_BATTERY.get(), ModBlocks.HEAT_BATTERY.get(),
+                        ModBlocks.FUSION_REACTOR_CORE.get())
+                .remove(ModBlocks.SALT_BLOCK.get());
+
+        var heavy = tag(sable("heavy")).add(ModBlocks.SALT_BLOCK.get(), ModBlocks.POLISHED_SALT.get(),
+                ModBlocks.POLISHED_SALT_WALL.get(), ModBlocks.SALT_BRICKS.get(), ModBlocks.SALT_BRICK_WALL.get(),
+                ModBlocks.CHISELED_SALT_BRICKS.get(),
+                ModBlocks.TURBINE_CASING.get(), ModBlocks.TURBINE_CASING_GLASS.get(), ModBlocks.TURBINE_CASING_WALL.get(),
+                ModBlocks.TURBINE_ROTOR.get(),
+                ModBlocks.FUSION_REACTOR_CASING.get(), ModBlocks.FUSION_REACTOR_CASING_GLASS.get(),
+                ModBlocks.FUSION_REACTOR_CASING_WALL.get(),
+                ModBlocks.LITHIUM_BREEDER_MODULE.get(), ModBlocks.BERYLLIUM_REFLECTOR_MODULE.get(),
+                ModBlocks.FIREBOX_BOILER.get(),
+                ModBlocks.GEYSER_CAP.get(), ModBlocks.GEYSER_WELL.get(), ModBlocks.RUSTED_GEYSER_CAP.get());
+        // Slabs of the heavy materials weigh what a full normal block does, like Sable's stone slabs
+        var normal = tag(sable("normal")).add(ModBlocks.SALT_SLAB.get(), ModBlocks.POLISHED_SALT_SLAB.get(),
+                ModBlocks.SALT_BRICK_SLAB.get(), ModBlocks.TURBINE_CASING_SLAB.get(),
+                ModBlocks.FUSION_REACTOR_CASING_SLAB.get());
+        ModBlocks.RAMMED_EARTH.values().forEach(set -> {
+            heavy.add(set.block().get(), set.wall().get(), set.bricks().get(), set.brickWall().get(),
+                    set.chiseledBricks().get());
+            normal.add(set.slab().get(), set.brickSlab().get());
+        });
+
+        // Hempcrete and Ash are far lighter than stone
+        tag(sable("light")).add(ModBlocks.ANDESITE_SOLAR_PANEL.get(), ModBlocks.BRASS_SOLAR_PANEL.get(),
+                ModBlocks.SOLAR_MIRROR.get(), ModBlocks.RUINED_SOLAR_MIRROR.get(),
+                ModBlocks.SOLAR_HEATER.get(), ModBlocks.RUINED_SOLAR_HEATER.get(),
+                ModBlocks.SOLAR_SHINGLES.get(), ModBlocks.SOLAR_GLASS_SHINGLES.get(),
+                ModBlocks.GREENHOUSE_PANEL.get(), ModBlocks.LARGE_GREENHOUSE_PANEL.get(),
+                ModBlocks.KINETIC_SPRINKLER.get(), ModBlocks.STREETLAMP.get(), ModBlocks.SALT_LAMP.get(),
+                ModBlocks.WIRE_SWITCH.get(), ModBlocks.REDSTONE_WIRE_RELAY.get(),
+                ModBlocks.HEMPCRETE.get(), ModBlocks.HEMPCRETE_WALL.get(), ModBlocks.POLISHED_HEMPCRETE.get(),
+                ModBlocks.POLISHED_HEMPCRETE_WALL.get(), ModBlocks.CHISELED_POLISHED_HEMPCRETE.get(),
+                ModBlocks.POLISHED_HEMPCRETE_BRICKS.get(), ModBlocks.POLISHED_HEMPCRETE_BRICK_WALL.get(),
+                ModBlocks.ASH_BLOCK.get(), ModBlocks.POLISHED_ASH.get(), ModBlocks.POLISHED_ASH_WALL.get(),
+                ModBlocks.ASH_BRICKS.get(), ModBlocks.ASH_BRICK_WALL.get(), ModBlocks.CHISELED_ASH_BRICKS.get());
+
+        // Thin and small, like Sable's iron bars and lanterns
+        Block[] thin = {ModBlocks.WIRE_CONNECTOR.get(), ModBlocks.GROW_LAMP.get(), ModBlocks.GARDEN_LIGHT.get(),
+                ModBlocks.TRELLIS.get(), ModBlocks.WIRE_SWITCH.get(), ModBlocks.REDSTONE_WIRE_RELAY.get(),
+                ModBlocks.BRASS_FILIGREE_RAILING.get(), ModBlocks.BRASS_FILIGREE_RAILING_SLOPE.get(),
+                ModBlocks.BRASS_FILIGREE_RAILING_STEEP_SLOPE.get(),
+                ModBlocks.ANDESITE_FILIGREE_RAILING.get(), ModBlocks.ANDESITE_FILIGREE_RAILING_SLOPE.get(),
+                ModBlocks.ANDESITE_FILIGREE_RAILING_STEEP_SLOPE.get(),
+                ModBlocks.COPPER_FILIGREE_RAILING.get(), ModBlocks.COPPER_FILIGREE_RAILING_SLOPE.get(),
+                ModBlocks.COPPER_FILIGREE_RAILING_STEEP_SLOPE.get(),
+                ModBlocks.IRON_FILIGREE_RAILING.get(), ModBlocks.IRON_FILIGREE_RAILING_SLOPE.get(),
+                ModBlocks.IRON_FILIGREE_RAILING_STEEP_SLOPE.get()};
+        tag(sable("quarter_volume")).add(thin);
+        tag(sable("super_light")).add(ModBlocks.WIRE_CONNECTOR.get(), ModBlocks.GROW_LAMP.get(),
+                ModBlocks.GARDEN_LIGHT.get(), ModBlocks.TRELLIS.get(),
+                ModBlocks.BRASS_FILIGREE_RAILING.get(), ModBlocks.BRASS_FILIGREE_RAILING_SLOPE.get(),
+                ModBlocks.BRASS_FILIGREE_RAILING_STEEP_SLOPE.get(),
+                ModBlocks.ANDESITE_FILIGREE_RAILING.get(), ModBlocks.ANDESITE_FILIGREE_RAILING_SLOPE.get(),
+                ModBlocks.ANDESITE_FILIGREE_RAILING_STEEP_SLOPE.get(),
+                ModBlocks.COPPER_FILIGREE_RAILING.get(), ModBlocks.COPPER_FILIGREE_RAILING_SLOPE.get(),
+                ModBlocks.COPPER_FILIGREE_RAILING_STEEP_SLOPE.get(),
+                ModBlocks.IRON_FILIGREE_RAILING.get(), ModBlocks.IRON_FILIGREE_RAILING_SLOPE.get(),
+                ModBlocks.IRON_FILIGREE_RAILING_STEEP_SLOPE.get());
+    }
+
+    private static TagKey<Block> sable(String name) {
+        return blockTag("sable", name);
     }
 }

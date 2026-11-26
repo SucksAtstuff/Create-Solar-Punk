@@ -23,17 +23,19 @@ public class VillageHousePiece extends TemplateStructurePiece implements PieceBe
     private final int floor;
 
     public VillageHousePiece(StructureTemplateManager manager, ResourceLocation template, BlockPos origin, Rotation rotation, int floor) {
-        super(ModStructures.VILLAGE_HOUSE.get(), 0, manager, template, template.toString(), settings(rotation), origin);
+        super(ModStructures.VILLAGE_HOUSE.get(), 0, manager, template, template.toString(), settings(rotation, floor), origin);
         this.floor = floor;
     }
 
     public VillageHousePiece(StructureTemplateManager manager, CompoundTag tag) {
-        super(ModStructures.VILLAGE_HOUSE.get(), tag, manager, id -> settings(Rotation.valueOf(tag.getString("Rot"))));
+        super(ModStructures.VILLAGE_HOUSE.get(), tag, manager, id -> settings(Rotation.valueOf(tag.getString("Rot")), tag.getInt("Floor")));
         this.floor = tag.getInt("Floor");
     }
 
-    private static StructurePlaceSettings settings(Rotation rotation) {
-        return new StructurePlaceSettings().setRotation(rotation).addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK);
+    private static StructurePlaceSettings settings(Rotation rotation, int floor) {
+        return new StructurePlaceSettings().setRotation(rotation)
+                .addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK)
+                .addProcessor(new KeepGroundProcessor(floor));
     }
 
     @Override
@@ -41,6 +43,11 @@ public class VillageHousePiece extends TemplateStructurePiece implements PieceBe
         super.addAdditionalSaveData(context, tag);
         tag.putString("Rot", placeSettings.getRotation().name());
         tag.putInt("Floor", floor);
+    }
+
+    @Override
+    public String toString() {
+        return templateName + " " + placeSettings.getRotation() + " at " + templatePosition.toShortString();
     }
 
     @Override

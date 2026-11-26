@@ -5,10 +5,6 @@ with the strongest / most on-theme ideas near the top of each section.
 
 ## Next up: 2.3, Oxygen, Geothermal and Modpack Support
 
-1. **Geothermal** (the headline): the Geyser Well, vent strength, Nether vents and Geothermal
-   Brine are in. More ideas under Geothermal.
-2. **Proper Sable / Create Aeronautics compat**: tag every block with the right weight, so
-   machines, tanks and multiblocks on a contraption weigh what they should.
 
 ## After that: 2.4, a new generator
 
@@ -99,16 +95,29 @@ Display Links cover most monitoring.
 - **Energy monitor block** with an output-over-time graph GUI.
 - **Brownout behavior** when demand exceeds supply.
 
+## Wires
+
+- **Wires to and between Aeronautics contraptions** - right now a wire can't join a contraption
+  to the world, or two contraptions to each other. Being able to would be very cool: power a
+  docked airship from a ground station's solar roof, tow a battery barge, or string lights
+  between two moving ships. Tricky, because a block on a Sable sub-level lives at plot
+  coordinates, not its real position: a wire would have to know which sub-level each end is on
+  and map it to the real world every frame (`SableCompat.placement()` already does that for the
+  sun), the renderer would draw a wire whose length and sag change as the ship moves, and the
+  wire would need to snap and drop its items when the ends move further apart than its tier
+  allows. The network search also only walks loaded connectors by position, so it would need
+  to follow an end onto a sub-level.
+
 ## Solarpunk building / aesthetic
 
 Pure decoration drifts from the mod's power focus, so the best ideas here also do something
 small: make power, absorb pollution, give light, or use up a byproduct. Blocks that are only
 decorative should at least come from the mod's own materials (Salt, Biochar, Ash, Lithium).
 
-- **Abandoned solarpunk village** - a run-down, overgrown settlement that tried and failed,
-  showing what global warming does without anyone having it turned on. Built from pieces in
-  `structure/abandoned_village/`; so far the Lost Greenhouse (placed sunk 1 block into the
-  ground). The Ruined Solar Heater and Ruined Solar Mirror blocks are ready for it. It's a `solarpunk:simple_village` already (no jigsaws: drop houses into the folder); it generates in open plains, meadows and savannas; it needs more houses of its own.
+- **More Abandoned Village pieces** - it has 6 buildings around the ruined solar tower. A few
+  small pieces (a broken streetlamp, a rusted Kinetic Sprinkler in a dead field) would fill the
+  gaps along the streets, and a second centre piece in `abandoned_village/center/` would vary
+  the middle.
 
 ## Seasonal events
 
