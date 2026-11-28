@@ -329,6 +329,10 @@ public class ModLangProvider extends AddonLangProvider {
 
         tooltip(ModBlocks.RUSTED_GEYSER_CAP, "An old _Geyser Cap_ seized up with rust, left on some Geyser Vents. It makes no power, but still stops the vent erupting.",
                 "When scraped with an Axe", "The rust comes off and it turns back into a working _Geyser Cap_.");
+        tooltip(ModBlocks.RUSTED_KINETIC_SPRINKLER, "An old _Kinetic Sprinkler_, seized up with rust. It doesn't spray as it is.",
+                "When scraped with an Axe", "The rust comes off and it turns back into a working _Kinetic Sprinkler_.");
+        tooltip(ModBlocks.BROKEN_STREETLAMP, "An old _Streetlamp_, corroded and long dead. It doesn't light up as it is.",
+                "When scraped with an Axe", "The corrosion comes off and it turns back into a working _Streetlamp_.");
 
         tooltip(ModBlocks.GEYSER_VENT, "A rare natural vent. Left uncapped, it _erupts_ every few minutes, scalding and launching anything standing over it.",
                 "Before an eruption", "Rumbles for a few seconds first. _Goggles_ show the countdown, and a _Comparator_ signal rises as it gets close.",

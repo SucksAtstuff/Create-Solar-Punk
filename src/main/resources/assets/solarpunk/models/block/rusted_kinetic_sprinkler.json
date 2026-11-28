@@ -1,0 +1,11 @@
+{
+	"parent": "minecraft:block/block",
+	"loader": "neoforge:obj",
+	"model": "solarpunk:models/block/rusted_kinetic_sprinkler.obj",
+	"flip_v": true,
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"texture": "solarpunk:block/kinetic_sprinkler/rusty_sprinkler",
+		"particle": "solarpunk:block/kinetic_sprinkler/rusty_sprinkler"
+	}
+}

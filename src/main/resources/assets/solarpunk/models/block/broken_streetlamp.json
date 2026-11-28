@@ -1,0 +1,7 @@
+{
+	"parent": "solarpunk:block/streetlamp",
+	"textures": {
+		"0": "solarpunk:block/streetlamp/streetlamp_broken",
+		"particle": "solarpunk:block/streetlamp/streetlamp_broken"
+	}
+}

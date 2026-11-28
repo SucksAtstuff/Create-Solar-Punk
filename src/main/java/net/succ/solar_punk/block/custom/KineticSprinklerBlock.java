@@ -18,7 +18,7 @@ import net.succ.solar_punk.block.entity.custom.KineticSprinklerBlockEntity;
 
 public class KineticSprinklerBlock extends Block implements IBE<KineticSprinklerBlockEntity>, IWrenchable {
 
-    private static final VoxelShape SHAPE = Shapes.or(
+    static final VoxelShape SHAPE = Shapes.or(
         Block.box(0, 0, 0, 16, 6, 16),
         Block.box(3, 6, 3, 13, 11, 13)
     );

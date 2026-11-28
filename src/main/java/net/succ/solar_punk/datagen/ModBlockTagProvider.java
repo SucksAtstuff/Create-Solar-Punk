@@ -78,6 +78,7 @@ public class ModBlockTagProvider extends AddonBlockTagsProvider {
                 .add(ModBlocks.SALT_LAMP.get())
                 .add(ModBlocks.GARDEN_LIGHT.get())
                 .add(ModBlocks.STREETLAMP.get())
+                .add(ModBlocks.BROKEN_STREETLAMP.get())
                 .add(ModBlocks.WIRE_CONNECTOR.get())
                 .add(ModBlocks.WIRE_SWITCH.get())
                 .add(ModBlocks.REDSTONE_WIRE_RELAY.get())
@@ -111,6 +112,7 @@ public class ModBlockTagProvider extends AddonBlockTagsProvider {
                 .add(ModBlocks.RUSTED_GEYSER_CAP.get())
                 .add(ModBlocks.BIOFILTER.get())
                 .add(ModBlocks.KINETIC_SPRINKLER.get())
+                .add(ModBlocks.RUSTED_KINETIC_SPRINKLER.get())
                 .add(ModBlocks.TURBINE_CASING.get())
                 .add(ModBlocks.TURBINE_CASING_GLASS.get())
                 .add(ModBlocks.TURBINE_ROTOR.get())
@@ -242,7 +244,8 @@ public class ModBlockTagProvider extends AddonBlockTagsProvider {
                 ModBlocks.SOLAR_HEATER.get(), ModBlocks.RUINED_SOLAR_HEATER.get(),
                 ModBlocks.SOLAR_SHINGLES.get(), ModBlocks.SOLAR_GLASS_SHINGLES.get(),
                 ModBlocks.GREENHOUSE_PANEL.get(), ModBlocks.LARGE_GREENHOUSE_PANEL.get(),
-                ModBlocks.KINETIC_SPRINKLER.get(), ModBlocks.STREETLAMP.get(), ModBlocks.SALT_LAMP.get(),
+                ModBlocks.KINETIC_SPRINKLER.get(), ModBlocks.RUSTED_KINETIC_SPRINKLER.get(),
+                ModBlocks.STREETLAMP.get(), ModBlocks.BROKEN_STREETLAMP.get(), ModBlocks.SALT_LAMP.get(),
                 ModBlocks.WIRE_SWITCH.get(), ModBlocks.REDSTONE_WIRE_RELAY.get(),
                 ModBlocks.HEMPCRETE.get(), ModBlocks.HEMPCRETE_WALL.get(), ModBlocks.POLISHED_HEMPCRETE.get(),
                 ModBlocks.POLISHED_HEMPCRETE_WALL.get(), ModBlocks.CHISELED_POLISHED_HEMPCRETE.get(),

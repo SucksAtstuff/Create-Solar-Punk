@@ -21,6 +21,7 @@ import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.succ.solar_punk.block.custom.BrokenStreetlampBlock;
 import net.succ.solar_punk.block.custom.StreetlampBlock;
 import net.succ.solar_punk.block.custom.TrellisBlock;
 import net.succ.solar_punk.block.custom.TrellisPlant;
@@ -52,6 +53,8 @@ public class ModBlockLootTablesProvider extends AddonBlockLootProvider {
                 createSinglePropConditionTable(block, RuinedSolarMirrorBlock.HALF, DoubleBlockHalf.LOWER));
         add(ModBlocks.STREETLAMP.get(), block ->
                 createSinglePropConditionTable(block, StreetlampBlock.HALF, DoubleBlockHalf.LOWER));
+        add(ModBlocks.BROKEN_STREETLAMP.get(), block ->
+                createSinglePropConditionTable(block, BrokenStreetlampBlock.HALF, DoubleBlockHalf.LOWER));
         // Like vanilla glass and panes: only drop with Silk Touch.
         dropWhenSilkTouch(ModBlocks.SOLAR_GLASS.get());
         dropWhenSilkTouch(ModBlocks.SOLAR_GLASS_PANE.get());

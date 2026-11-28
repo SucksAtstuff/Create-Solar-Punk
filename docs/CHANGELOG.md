@@ -30,6 +30,7 @@
 - **Dirt Huts** - small mossy huts in plains, forests, meadows and taigas, with a barrel of supplies for getting started.
 - Some Geyser Vents now generate with an old wooden frame built over them instead of the usual stone dome.
 - **Ruined Solar Heater** and **Ruined Solar Mirror** - broken, weathered copies of the real thing, for building ruins. Right-click one with Glass Panes (3 for the Heater, 1 for the Mirror) to fix its cracked glass and get a working one back.
+- **Rusted Kinetic Sprinkler** and **Broken Streetlamp** - old, corroded copies for building ruins. Scrape one with an axe to get a working one back.
 - Geyser Vents are rarer, about 3 in an area where there used to be 8, so finding one means more.
 
 ### Wire Power Meter

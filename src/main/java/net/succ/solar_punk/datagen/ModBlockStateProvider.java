@@ -36,6 +36,7 @@ import net.succ.solar_punk.block.custom.FusionReactorCoreBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.SolarMirrorBlock;
 import net.succ.solar_punk.block.custom.RuinedSolarMirrorBlock;
+import net.succ.solar_punk.block.custom.BrokenStreetlampBlock;
 import net.succ.solar_punk.block.custom.StreetlampBlock;
 import net.succ.offbyonelib.wire.WireConnectorBlock;
 import net.succ.offbyonelib.wire.RedstoneWireRelayBlock;
@@ -573,6 +574,13 @@ public class ModBlockStateProvider extends AddonBlockStateProvider {
                         : state.getValue(StreetlampBlock.LIT) ? lit : unlit)
                 .build());
         simpleBlockItem(ModBlocks.STREETLAMP.get(), unlit);
+
+        ModelFile broken = new UncheckedModelFile(modLoc("block/broken_streetlamp"));
+        ModelFile brokenTop = new UncheckedModelFile(modLoc("block/broken_streetlamp_top"));
+        getVariantBuilder(ModBlocks.BROKEN_STREETLAMP.get()).forAllStates(state -> ConfiguredModel.builder()
+                .modelFile(state.getValue(BrokenStreetlampBlock.HALF) == DoubleBlockHalf.UPPER ? brokenTop : broken)
+                .build());
+        simpleBlockItem(ModBlocks.BROKEN_STREETLAMP.get(), broken);
     }
 
     // Pointing away from the block it's on, rotated like an End Rod (the model points up).
@@ -639,6 +647,11 @@ public class ModBlockStateProvider extends AddonBlockStateProvider {
     }
 
     private void kineticSprinklerBlock() {
+        // The rusted copy is a static OBJ model, so it needs no GeckoLib item renderer
+        ModelFile rusted = new UncheckedModelFile(modLoc("block/rusted_kinetic_sprinkler"));
+        simpleBlock(ModBlocks.RUSTED_KINETIC_SPRINKLER.get(), rusted);
+        simpleBlockItem(ModBlocks.RUSTED_KINETIC_SPRINKLER.get(), rusted);
+
         ModelFile model = new UncheckedModelFile(modLoc("block/kinetic_sprinkler"));
         getVariantBuilder(ModBlocks.KINETIC_SPRINKLER.get()).forAllStates(state ->
                 ConfiguredModel.builder().modelFile(model).build());

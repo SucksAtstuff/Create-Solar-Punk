@@ -40,11 +40,11 @@ public class StreetlampBlock extends Block implements EntityBlock {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
     // Base plate and the lower part of the post (matches streetlamp.json).
-    private static final VoxelShape LOWER_SHAPE = Shapes.or(
+    static final VoxelShape LOWER_SHAPE = Shapes.or(
             Block.box(5, 0, 5, 11, 4, 11),
             Block.box(7, 4, 7, 9, 16, 9));
     // Rest of the post, the lamp head and its shade.
-    private static final VoxelShape UPPER_SHAPE = Shapes.or(
+    static final VoxelShape UPPER_SHAPE = Shapes.or(
             Block.box(7, 0, 7, 9, 10, 9),
             Block.box(6, 10, 6, 10, 16, 10),
             Block.box(4, 15, 4, 12, 16, 12));

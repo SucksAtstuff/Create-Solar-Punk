@@ -51,6 +51,22 @@ Glass have little to feed. The Electric Motor (2.2) gives FE a big job; these co
 - **Stirling dish concentrator** - direct SU/FE from a focused dish, no molten salt loop.
   Overlaps the Solar Heater and tower, so low priority.
 
+## Weather
+
+- **Cloud Seeder** (working name; "Cloud Breaker" only covers clearing) - a mid-game cannon
+  that fires seeding rockets into the clouds (real cloud seeding). Rain cuts solar output and
+  would boost the ion wind turbine, so both directions are useful:
+  - **Make rain**: Salt (real hygroscopic seeding) plus Steam.
+  - **Clear rain**: overseed so the clouds rain out early somewhere else (a heavier load, or
+    Biochar/Ash as the particles).
+  - Local, not global, so one player can't change a server's weather: each shot clears or
+    seeds a configurable radius for a set time, tracked like `GreenhouseProtection`. Needs
+    mixins (none in the mod yet): `Level.isRainingAt` server side, rain particles and sound
+    in `LevelRenderer` client side. The sky stays grey since `rainLevel` is global, which
+    reads fine as broken-up clouds overhead.
+  - Rejected looks: suction (unrealistic), a Particle Accelerator beam (implausible, and ties
+    it to a huge build), solar heating to divert storms (heating makes storms, not clears them).
+
 ## Geothermal
 
 Vents are meant to be scarce, so ideas here should make a natural vent worth more rather than
@@ -115,9 +131,9 @@ small: make power, absorb pollution, give light, or use up a byproduct. Blocks t
 decorative should at least come from the mod's own materials (Salt, Biochar, Ash, Lithium).
 
 - **More Abandoned Village pieces** - it has 6 buildings around the ruined solar tower. A few
-  small pieces (a broken streetlamp, a rusted Kinetic Sprinkler in a dead field) would fill the
-  gaps along the streets, and a second centre piece in `abandoned_village/center/` would vary
-  the middle.
+  small pieces (a broken streetlamp, a rusted Kinetic Sprinkler in a dead field of Coarse Dirt,
+  Dead Grass Blocks and Dead Bushes) would fill the gaps along the streets, and a second centre
+  piece in `abandoned_village/center/` would vary the middle.
 
 ## Seasonal events
 

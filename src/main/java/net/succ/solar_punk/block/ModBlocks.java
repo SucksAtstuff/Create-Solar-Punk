@@ -65,6 +65,8 @@ import net.succ.solar_punk.block.custom.GeyserVentBlock;
 import net.succ.solar_punk.block.custom.GeyserWellBlock;
 import net.succ.solar_punk.block.custom.RustedGeyserCapBlock;
 import net.succ.solar_punk.block.custom.RuinedSolarHeaterBlock;
+import net.succ.solar_punk.block.custom.RustedKineticSprinklerBlock;
+import net.succ.solar_punk.block.custom.BrokenStreetlampBlock;
 import net.succ.solar_punk.block.custom.RuinedSolarMirrorBlock;
 import net.succ.solar_punk.block.custom.HeatBatteryBlock;
 import net.succ.solar_punk.block.custom.KineticBatteryBlock;
@@ -352,6 +354,14 @@ public class ModBlocks {
                     .strength(2.5f, 4.0f)
                     .noOcclusion()),
             block -> new KineticSprinklerItem(block, new Item.Properties()));
+
+    // Decoration-only copy for ruins (Building Blocks tab); an axe scrapes it into a working one
+    public static final DeferredBlock<RustedKineticSprinklerBlock> RUSTED_KINETIC_SPRINKLER = REG.decorative("rusted_kinetic_sprinkler",
+            () -> new RustedKineticSprinklerBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WARPED_NYLIUM)
+                    .requiresCorrectToolForDrops()
+                    .strength(2.5f, 4.0f)
+                    .noOcclusion()));
 
     // Two blocks tall; no item of its own, Hemp Seeds (ModItems) plant it.
     public static final DeferredBlock<HempCropBlock> HEMP = BLOCKS.register("hemp",
@@ -753,6 +763,16 @@ public class ModBlocks {
                     .pushReaction(PushReaction.BLOCK)
                     .lightLevel(state -> state.getValue(StreetlampBlock.LIT)
                             && state.getValue(StreetlampBlock.HALF) == DoubleBlockHalf.UPPER ? 15 : 0)));
+
+    // Dead, corroded copy for ruins; an axe scrapes it into a working Streetlamp
+    public static final DeferredBlock<BrokenStreetlampBlock> BROKEN_STREETLAMP = REG.decorative("broken_streetlamp",
+            () -> new BrokenStreetlampBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WARPED_NYLIUM)
+                    .requiresCorrectToolForDrops()
+                    .strength(2.0f, 4.0f)
+                    .sound(SoundType.LANTERN)
+                    .noOcclusion()
+                    .pushReaction(PushReaction.BLOCK)));
 
     // Scorched planks, made by applying Biochar to planks. Charring makes wood fire resistant,
     // so unlike planks it doesn't burn.
